@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Calendar — CME Learning</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#8a7f77;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif; --ui:'Inter', sans-serif;
+  }
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#38bdf8;--ink:#0f2438;--slate-700:#31465e;--muted:#6b8199;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#c9a227;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#f59e0b;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes evIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @keyframes dayPop{0%{transform:scale(.8)}60%{transform:scale(1.12)}100%{transform:scale(1)}}
+  .rise{animation:rise .55s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} .scroll{padding-top:max(10px,env(safe-area-inset-top));} }
+
+  .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:6px 18px 20px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .ptop{display:flex;align-items:center;justify-content:space-between;padding:8px 0 2px;}
+  .ptop h1{font-size:24px;font-weight:800;font-family:var(--display);letter-spacing:-.03em;}
+  .ptop .sub{font-size:10.5px;color:var(--muted);margin-top:2px;}
+  .icon-btn{width:44px;height:44px;border-radius:50%;background:var(--chip);border:none;display:grid;place-items:center;cursor:pointer;color:var(--ink);transition:transform .16s, opacity .16s;}
+  .icon-btn:active{transform:scale(.94);}
+
+  /* segmented control */
+  .seg{display:flex;background:var(--chip);border-radius:13px;padding:3px;margin-top:14px;position:relative;}
+  .seg button{flex:1;border:none;background:none;font-family:inherit;font-size:11px;font-weight:700;color:var(--muted);padding:14px 8px;border-radius:10px;cursor:pointer;z-index:1;transition:color .2s, transform .16s, opacity .16s;}
+  .seg button.active{color:#fff;}
+  .seg button:active{transform:scale(.94);}
+  .seg .pill{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:10px;background:var(--brand);transition:transform .3s cubic-bezier(.34,1.3,.5,1);box-shadow:0 6px 14px -6px var(--brand);}
+  .seg.agenda .pill{transform:translateX(100%);}
+
+  /* Next-up hero */
+  .nextup{margin-top:16px;border-radius:20px;padding:16px;color:#fff;position:relative;overflow:hidden;
+    background:linear-gradient(120deg,var(--d1),var(--d2) 55%,var(--d3));box-shadow:0 18px 34px -18px rgba(0,0,0,.5);}
+  .nextup::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);}
+  .nu-lbl{font-size:8.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.85;position:relative;}
+  .nu-t{font-size:17px;font-weight:800;font-family:var(--display);margin:6px 0 3px;position:relative;max-width:82%;}
+  .nu-m{font-size:10px;opacity:.9;display:flex;gap:14px;position:relative;}
+  .nu-m span{display:inline-flex;align-items:center;gap:5px;}
+  .nu-cd{display:flex;gap:8px;margin-top:13px;position:relative;}
+  .nu-cd .b{flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:9px 4px;text-align:center;}
+  .nu-cd .b b{display:block;font-size:18px;font-weight:800;font-family:var(--display);}
+  .nu-cd .b span{font-size:7.5px;font-weight:700;opacity:.8;letter-spacing:.06em;}
+  .nu-btn{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff;
+    font-family:inherit;font-size:10px;font-weight:700;padding:7px 12px;border-radius:11px;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;transition:transform .16s, opacity .16s, background .2s;}
+  .nu-btn:hover{background:rgba(255,255,255,.26);}
+  .nu-btn:active{transform:scale(.94);}
+
+  /* month card */
+  .calx{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px 14px;box-shadow:0 12px 28px -18px rgba(0,0,0,.28);}
+  .cx-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .cx-head .mo{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .cx-head .mo small{font-size:11px;color:var(--muted);font-weight:600;font-family:var(--ui);}
+  .cx-nav{display:flex;gap:7px;}
+  .cx-nav button{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:border-color .15s, color .15s, transform .16s, opacity .16s;}
+  .cx-nav button:hover{border-color:var(--brand);color:var(--brand);}
+  .cx-nav button:active{transform:scale(.94);}
+  .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:8px;}
+  .dow span{text-align:center;font-size:8.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
+  .day{min-height:44px;border:none;background:none;border-radius:12px;font-family:inherit;font-size:12px;font-weight:700;color:var(--ink);
+    cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:background .18s, color .18s, transform .16s, opacity .16s;}
+  .day:not(.other):active{transform:scale(.94);}
+  .day.other{opacity:0;pointer-events:none;}
+  .day:hover:not(.sel){background:var(--chip);}
+  .day.today{color:var(--brand);box-shadow:inset 0 0 0 1.5px var(--brand);}
+  .day.sel{color:#fff;background:linear-gradient(135deg,var(--g1),var(--g2));box-shadow:0 8px 18px -6px var(--brand);animation:dayPop .35s cubic-bezier(.34,1.5,.5,1);}
+  .day .dots{display:flex;gap:2px;height:4px;align-items:center;}
+  .day .dots i{width:4px;height:4px;border-radius:50%;}
+  .day.sel .dots i{background:#fff !important;}
+
+  /* month summary */
+  .cx-sum{display:flex;gap:9px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);}
+  .cx-sum div{flex:1;text-align:center;display:flex;flex-direction:column;gap:2px;}
+  .cx-sum b{font-size:15px;font-weight:800;font-family:var(--display);color:var(--brand);}
+  .cx-sum span{font-size:8px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+
+  /* selected-day / agenda list */
+  .sel-h{display:flex;align-items:center;justify-content:space-between;margin:20px 0 12px;}
+  .sel-h h2{font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .sel-h .cnt{font-size:9.5px;font-weight:700;color:var(--brand);background:var(--brand-soft);padding:4px 9px;border-radius:20px;}
+  .events{display:flex;flex-direction:column;gap:10px;}
+  .ev{display:flex;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;cursor:pointer;
+    transition:transform .16s, box-shadow .16s, border-color .16s;animation:evIn .4s ease both;position:relative;overflow:hidden;}
+  .ev::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--cc,var(--brand));}
+  .ev:hover{transform:translateY(-2px);box-shadow:0 14px 26px -16px rgba(0,0,0,.3);border-color:var(--brand);}
+  .ev:active{transform:scale(.985);}
+  .ev .tm{flex:0 0 auto;text-align:center;min-width:50px;display:flex;flex-direction:column;justify-content:center;padding-left:6px;}
+  .ev .tm .h{font-size:14px;font-weight:800;font-family:var(--display);color:var(--ink);}
+  .ev .tm .ap{font-size:8px;font-weight:700;color:var(--muted);}
+  .ev .ei{flex:1;min-width:0;border-left:1px solid var(--line);padding-left:12px;}
+  .ev .cat{font-size:7.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--cc,var(--brand));}
+  .ev .et{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin-top:3px;line-height:1.25;}
+  .ev .em{font-size:9.5px;color:var(--muted);margin-top:5px;display:flex;gap:9px;flex-wrap:wrap;}
+  .ev .em span{display:inline-flex;align-items:center;gap:4px;}
+  .ev .lv{font-size:8px;font-weight:800;color:#fff;background:#ef4444;padding:2px 7px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;}
+  .ev .lv .d{width:4px;height:4px;border-radius:50%;background:#fff;animation:pulse 1.4s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+  .ag-date{font-size:10px;font-weight:800;color:var(--muted);letter-spacing:.03em;margin:16px 0 9px;text-transform:uppercase;}
+  .ag-date:first-child{margin-top:0;}
+  .empty{text-align:center;color:var(--muted);font-size:11px;padding:26px 10px;}
+
+  .nav{flex:0 0 auto;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:9px 0 22px;}
+  .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:10.5px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;transition:transform .16s, opacity .16s;}
+  .navitem.active{color:var(--brand);font-weight:600;}
+  .navitem:active{transform:scale(.9);opacity:.7;}
+  @media (max-width:600px){ .nav{padding-bottom:max(22px,env(safe-area-inset-bottom));} }
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+  .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-family:var(--ui);font-size:12px;font-weight:600;padding:11px 18px;border-radius:22px;box-shadow:0 12px 28px -10px rgba(0,0,0,.5);opacity:0;pointer-events:none;transition:opacity .22s, transform .22s;z-index:50;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="scroll">
+    <div class="ptop rise">
+      <div><h1>Calendar</h1><div class="sub">Your CME schedule</div></div>
+      <button class="icon-btn" id="addBtn" aria-label="Add event"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    </div>
+
+    <!-- view toggle -->
+    <div class="seg rise" id="seg">
+      <span class="pill"></span>
+      <button class="active" data-v="month">Month</button>
+      <button data-v="agenda">Agenda</button>
+    </div>
+
+    <!-- next up -->
+    <div class="nextup rise">
+      <div class="nu-lbl">Next session · in 3 days</div>
+      <div class="nu-t">Cardiometabolic Update 2025</div>
+      <div class="nu-m">
+        <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>Sat, 24 May</span>
+        <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>09:00 AM IST</span>
+      </div>
+      <div class="nu-cd">
+        <div class="b"><b>03</b><span>DAYS</span></div>
+        <div class="b"><b>21</b><span>HRS</span></div>
+        <div class="b"><b>45</b><span>MIN</span></div>
+      </div>
+      <button class="nu-btn" onclick="location.href='speakers.html?type=event&title=Cardiometabolic%20Update%202025&sub=09%3A00%20AM%20IST'">Details ›</button>
+    </div>
+
+    <!-- Month view -->
+    <div id="monthView">
+      <div class="calx rise">
+        <div class="cx-head">
+          <div class="mo" id="monthLabel">May <small>2025</small></div>
+          <div class="cx-nav">
+            <button id="prevM" aria-label="Previous"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+            <button id="nextM" aria-label="Next"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+          </div>
+        </div>
+        <div class="dow"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
+        <div class="days" id="days"></div>
+        <div class="cx-sum">
+          <div><b>6</b><span>Sessions</span></div>
+          <div><b>9</b><span>CME this month</span></div>
+          <div><b>4</b><span>Specialties</span></div>
+        </div>
+      </div>
+
+      <div class="sel-h rise"><h2 id="selLabel">Sat, 24 May</h2><span class="cnt" id="selCnt">2 sessions</span></div>
+      <div class="events" id="events"></div>
+    </div>
+
+    <!-- Agenda view -->
+    <div id="agendaView" hidden>
+      <div id="agendaList"></div>
+    </div>
+  </div>
+
+  <div class="nav">
+    <a class="navitem" href="home.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg>Home</a>
+    <a class="navitem active" href="cme.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>CME</a>
+    <a class="navitem" href="network.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg>Network</a>
+    <a class="navitem" href="post.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>Post</a>
+    <a class="navitem" href="referral.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h2"/><path d="M14 14h6"/><path d="m17 11 3 3-3 3"/></svg>Referral</a>
+  </div>
+  <div class="home-ind"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</div>
+
+<script>
+  try{ const t = localStorage.getItem('cmeTheme') || 'blue'; if(t!=='classical') document.documentElement.setAttribute('data-theme', t); }catch(e){}
+
+  const clock = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>';
+  const award = '<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg>';
+
+  const CAT = {
+    cardio:{c:'#ef4444', n:'Cardiology'},
+    endo:  {c:'#1e5fbf', n:'Endocrinology'},
+    diab:  {c:'#0f9d58', n:'Diabetes'},
+    nephro:{c:'#0ea5e9', n:'Nephrology'},
+    lipid: {c:'#f59e0b', n:'Lipidology'}
+  };
+
+  // The seeded events + "today" live in May 2025. The grid navigates freely; dots/today/selection
+  // only render on the month that actually owns them.
+  const EVENT_MONTH = 4, EVENT_YEAR = 2025;   // May 2025 (0-indexed month)
+  const TODAY_MONTH = 4, TODAY_YEAR = 2025, today = 21;
+  const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  let curMonth = EVENT_MONTH, curYear = EVENT_YEAR;   // currently displayed month
+  const events = {
+    8:  [{h:'11',ap:'AM',t:'Thyroid Disorders Review',by:'Dr. Priya Nair',cr:'1 CME',cat:'endo'}],
+    14: [{h:'06',ap:'PM',t:'GLP-1 Agonists Deep Dive',by:'Dr. Meera Iyer',cr:'1.5 CME',cat:'diab'}],
+    21: [{h:'05',ap:'PM',t:'Heart Failure Grand Round',by:'Dr. Arvind Kumar',cr:'1 CME',cat:'cardio'}],
+    24: [
+      {h:'09',ap:'AM',t:'Cardiometabolic Update 2025',by:'12 speakers',cr:'2 CME',cat:'cardio',live:true},
+      {h:'02',ap:'PM',t:'CGM in Clinical Practice',by:'Dr. Vijay Menon',cr:'1 CME',cat:'diab'}
+    ],
+    28: [{h:'07',ap:'PM',t:'Dyslipidemia Masterclass',by:'Dr. Priya Nair',cr:'1.5 CME',cat:'lipid'}]
+  };
+  const dowNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  // selection is a full date so it survives month navigation
+  let selDay = 24, selMonth = EVENT_MONTH, selYear = EVENT_YEAR;
+
+  function isEventMonth(){ return curMonth===EVENT_MONTH && curYear===EVENT_YEAR; }
+
+  function buildDays(){
+    const firstDow = new Date(curYear, curMonth, 1).getDay();
+    const daysInMonth = new Date(curYear, curMonth+1, 0).getDate();
+    const eventMonth = isEventMonth();
+    const cells = [];
+    for(let i=0;i<firstDow;i++) cells.push({other:true});
+    for(let d=1; d<=daysInMonth; d++) cells.push({d});
+    document.getElementById('days').innerHTML = cells.map(c=>{
+      if(c.other) return `<button class="day other" disabled></button>`;
+      const evs = eventMonth ? (events[c.d]||[]) : [];
+      const cats = [...new Set(evs.map(e=>e.cat))].slice(0,3);
+      const dots = cats.map(k=>`<i style="background:${CAT[k].c}"></i>`).join('');
+      const cls = ['day'];
+      if(c.d===today && curMonth===TODAY_MONTH && curYear===TODAY_YEAR) cls.push('today');
+      if(c.d===selDay && curMonth===selMonth && curYear===selYear) cls.push('sel');
+      return `<button class="${cls.join(' ')}" data-d="${c.d}">${c.d}<span class="dots">${dots}</span></button>`;
+    }).join('');
+    document.getElementById('monthLabel').innerHTML = `${MONTHS[curMonth]} <small>${curYear}</small>`;
+    document.querySelectorAll('.day[data-d]').forEach(b=>b.addEventListener('click',()=>{
+      selDay=+b.dataset.d; selMonth=curMonth; selYear=curYear; buildDays(); renderEvents();
+    }));
+  }
+
+  function gotoMonth(delta){
+    curMonth += delta;
+    if(curMonth<0){ curMonth=11; curYear--; }
+    else if(curMonth>11){ curMonth=0; curYear++; }
+    buildDays();
+  }
+
+  function evCard(e,i){
+    const cc = CAT[e.cat].c;
+    return `<div class="ev" style="--cc:${cc};animation-delay:${i*70}ms" onclick="location.href='speakers.html?type=event&title=${encodeURIComponent(e.t)}&sub=${encodeURIComponent(e.h+':00 '+e.ap)}'">
+        <div class="tm"><span class="h">${e.h}</span><span class="ap">${e.ap}</span></div>
+        <div class="ei">
+          <div class="cat">${CAT[e.cat].n}</div>
+          <div class="et">${e.t}</div>
+          <div class="em"><span>${e.by}</span><span>${award}${e.cr}</span>${e.live?'<span class="lv"><span class="d"></span>LIVE</span>':''}</div>
+        </div>
+      </div>`;
+  }
+
+  function renderEvents(){
+    const dow = dowNames[new Date(selYear, selMonth, selDay).getDay()];
+    document.getElementById('selLabel').textContent = `${dow}, ${selDay} ${MONTHS[selMonth].slice(0,3)}`;
+    const list = (selMonth===EVENT_MONTH && selYear===EVENT_YEAR) ? (events[selDay]||[]) : [];
+    document.getElementById('selCnt').textContent = list.length ? `${list.length} session${list.length>1?'s':''}` : 'No sessions';
+    const el = document.getElementById('events');
+    el.innerHTML = list.length ? list.map(evCard).join('') : `<div class="empty">No CME sessions this day.<br>Explore CMEs to add some.</div>`;
+  }
+
+  function renderAgenda(){
+    const days = Object.keys(events).map(Number).sort((a,b)=>a-b);
+    let html='', i=0;
+    days.forEach(d=>{
+      const dow = dowNames[new Date(EVENT_YEAR, EVENT_MONTH, d).getDay()];
+      html += `<div class="ag-date">${dow}, ${d} ${MONTHS[EVENT_MONTH]} ${EVENT_YEAR}</div>`;
+      html += events[d].map(e=>evCard(e,i++)).join('');
+    });
+    document.getElementById('agendaList').innerHTML = html;
+  }
+
+  // toast helper — fixed bottom-center pill, auto-dismiss
+  let toastTimer;
+  function toast(msg){
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>t.classList.remove('show'), 1400);
+  }
+
+  // view toggle
+  const seg = document.getElementById('seg');
+  seg.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{
+    seg.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    const agenda = b.dataset.v==='agenda';
+    seg.classList.toggle('agenda', agenda);
+    document.getElementById('monthView').hidden = agenda;
+    document.getElementById('agendaView').hidden = !agenda;
+    if(agenda) renderAgenda();
+  }));
+
+  buildDays(); renderEvents();
+  document.getElementById('prevM').addEventListener('click',()=>gotoMonth(-1));
+  document.getElementById('nextM').addEventListener('click',()=>gotoMonth(1));
+  document.getElementById('addBtn').addEventListener('click',()=>toast('Add event — coming soon'));
+</script>
+<script>
+  (function(){
+    var p=document.querySelector('.phone'), BASE=390;
+    function fit(){
+      if(window.innerWidth<=600){
+        var s=window.innerWidth/BASE;
+        p.style.width=BASE+'px'; p.style.height=(window.innerHeight/s)+'px'; p.style.transform='scale('+s+')';
+      } else { p.style.transform=''; p.style.width=''; p.style.height=''; }
+    }
+    fit(); window.addEventListener('resize',fit); window.addEventListener('orientationchange',fit);
+  })();
+</script>
+</body>
+</html>

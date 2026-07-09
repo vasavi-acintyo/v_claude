@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create CME Program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif;
+    --ui:'Inter', sans-serif;
+  }
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} }
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .appbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:6px 18px 12px;}
+  .icon-btn{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1);}
+  .icon-btn:active{transform:scale(.92);}
+  .ttl{flex:1;min-width:0;}
+  .ttl .k{font-size:9.5px;color:var(--muted);font-weight:700;letter-spacing:.14em;text-transform:uppercase;}
+  .ttl .h{font-size:18px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;margin-top:1px;}
+  .save{font-size:11px;font-weight:700;color:var(--brand);background:none;border:none;cursor:pointer;padding:10px 2px;}
+  .save:active{opacity:.6;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:4px 18px 20px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .sub{font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5;}
+
+  .sec-h{display:flex;align-items:center;gap:10px;margin:26px 0 4px;}
+  .scroll>.sec-h:first-child{margin-top:6px;}
+  .sec-h .n{width:24px;height:24px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:11px;font-weight:800;flex:0 0 auto;}
+  .sec-h h2{font-size:14.5px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+
+  .field{margin-top:15px;}
+  .field > label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--slate-700);margin-bottom:7px;}
+  .field .req{color:var(--brand);}
+  .field .hint{font-size:9.5px;color:var(--muted);font-weight:600;margin-left:auto;}
+  .inp,textarea.inp,select.inp{width:100%;min-height:46px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:12.5px;font-family:inherit;color:var(--ink);}
+  textarea.inp{min-height:88px;resize:vertical;line-height:1.55;}
+  .inp::placeholder,textarea.inp::placeholder{color:var(--muted);}
+  .inp:focus,textarea.inp:focus,select.inp:focus{outline:none;border-color:var(--brand);}
+  .row2{display:flex;gap:11px;} .row2>*{flex:1;min-width:0;}
+  .cc{font-size:9.5px;color:var(--muted);font-weight:600;text-align:right;margin-top:5px;}
+
+  .seg{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;}
+  .opt{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 4px;cursor:pointer;text-align:center;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s, background .16s;}
+  .opt:active{transform:scale(.96);}
+  .opt .oi{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);flex:0 0 auto;}
+  .opt .oi svg{width:13px;height:13px;}
+  .opt .on{font-size:10.5px;font-weight:800;letter-spacing:-.01em;}
+  .opt.sel{border-color:var(--brand);background:var(--brand-soft);}
+
+  .chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .chip{display:inline-flex;align-items:center;min-height:40px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:9px 13px;font-size:11.5px;font-weight:700;color:var(--ink);cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s, color .16s, background .16s;}
+  .chip:active{transform:scale(.95);}
+  .chip.sel{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);}
+  .chip.add-custom{gap:6px;border-style:dashed;color:var(--brand);}
+  .chip.add-custom svg{width:13px;height:13px;}
+  .add-circle{width:30px;height:30px;min-height:30px;flex:0 0 auto;padding:0;border:none;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1), background .16s, color .16s;}
+  .add-circle svg{width:14px;height:14px;}
+  .add-circle:active{transform:scale(.88);}
+  .add-circle.open{background:var(--brand);color:#fff;transform:rotate(45deg);}
+  .add-circle.open:active{transform:rotate(45deg) scale(.88);}
+  .picker-panel{margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;animation:fadeIn .22s ease both;}
+  .mini-search{position:relative;}
+  .mini-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .mini-search input{width:100%;background:var(--chip);border:1px solid transparent;border-radius:10px;padding:10px 12px 10px 34px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .mini-search input::placeholder{color:var(--muted);}
+  .mini-search input:focus{outline:none;border-color:var(--brand);}
+  .spec-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;max-height:150px;overflow-y:auto;}
+  .spec-list::-webkit-scrollbar{width:0;}
+  .picker-empty{font-size:11px;color:var(--muted);padding:8px 2px;}
+  .spk-results{display:flex;flex-direction:column;gap:8px;margin-top:10px;max-height:220px;overflow-y:auto;}
+  .spk-results::-webkit-scrollbar{width:0;}
+  .spk-row{display:flex;align-items:center;gap:11px;padding:6px 2px;cursor:pointer;}
+  .spk-row img{width:34px;height:34px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .spk-row .nm{flex:1;min-width:0;} .spk-row .nm b{font-size:11.5px;font-weight:800;font-family:var(--display);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .spk-row .nm span{font-size:9.5px;color:var(--muted);}
+  .spk-row .add{width:28px;height:28px;border-radius:50%;border:none;background:var(--brand-soft);color:var(--brand);cursor:pointer;display:grid;place-items:center;flex:0 0 auto;}
+  .spk-row .add svg{width:13px;height:13px;}
+  .spk-row.added .add{background:var(--green);color:#fff;}
+  .spk-initial{width:34px;height:34px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;font-size:13px;font-weight:800;font-family:var(--display);}
+  .spk .spk-initial{width:38px;height:38px;font-size:14px;}
+
+
+  .tog{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:13px 14px;margin-top:11px;cursor:pointer;}
+  .tog .ti{flex:1;} .tog .ti b{font-size:12.5px;font-weight:800;font-family:var(--display);display:block;}
+  .tog .ti span{font-size:9.5px;color:var(--muted);line-height:1.5;display:block;margin-top:2px;}
+  .sw{width:46px;height:28px;border-radius:20px;background:var(--line);position:relative;flex:0 0 auto;transition:background .2s;}
+  .sw::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:transform .2s;}
+  .tog.on .sw{background:var(--brand);} .tog.on .sw::after{transform:translateX(18px);}
+
+  .add-btn{width:100%;min-height:46px;margin-top:10px;border:1.5px dashed var(--line);background:none;border-radius:12px;color:var(--brand);font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:border-color .16s, background .16s;}
+  .add-btn:hover{border-color:var(--brand);background:var(--brand-soft);} .add-btn:active{transform:scale(.98);}
+  .add-btn svg{width:16px;height:16px;transition:transform .18s cubic-bezier(.22,1,.36,1);}
+  .add-btn.open{border-style:solid;border-color:var(--brand);background:var(--brand-soft);}
+  .add-btn.open svg{transform:rotate(45deg);}
+  .mat-list{display:flex;flex-direction:column;gap:8px;}
+  .mat-list:not(:empty){margin-bottom:9px;}
+  .mat{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 11px;transition:border-color .16s;}
+  .mat.viewable{cursor:pointer;} .mat.viewable:hover{border-color:var(--brand);}
+  .mat .mi{width:32px;height:32px;border-radius:9px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;}
+  .mat .mi svg{width:16px;height:16px;}
+  .mat .mn{flex:1;min-width:0;} .mat .mn b{font-size:11.5px;font-weight:700;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mat .mn span{font-size:9px;color:var(--muted);}
+  .mat .rm{width:30px;height:30px;border-radius:9px;border:none;background:var(--chip);color:var(--muted);cursor:pointer;display:grid;place-items:center;flex:0 0 auto;}
+  .mat .rm:hover{color:var(--brand);} .mat .rm svg{width:13px;height:13px;}
+  .spk-list{display:flex;flex-direction:column;gap:9px;}
+  .spk{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 11px;}
+  .spk-top{display:flex;align-items:center;gap:11px;}
+  .spk img{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .spk .nm{flex:1;min-width:0;} .spk .nm b{font-size:12px;font-weight:800;font-family:var(--display);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .spk .nm span{font-size:9.5px;color:var(--muted);}
+  .spk .rm{width:32px;height:32px;border-radius:9px;border:none;background:var(--chip);color:var(--muted);cursor:pointer;display:grid;place-items:center;flex:0 0 auto;}
+  .spk .rm:hover{color:var(--brand);} .spk .rm svg{width:14px;height:14px;}
+  .spk-desc{width:100%;margin-top:8px;min-height:40px;background:var(--chip);border:1px solid transparent;border-radius:10px;padding:8px 10px;font-size:10.5px;font-family:inherit;color:var(--ink);resize:vertical;line-height:1.5;}
+  .spk-desc::placeholder{color:var(--muted);}
+  .spk-desc:focus{outline:none;border-color:var(--brand);background:var(--card);}
+
+  /* video chapters (recorded) */
+  .chap{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px;margin-bottom:10px;}
+  .chap-top{display:flex;align-items:center;gap:9px;}
+  .chap-n{width:26px;height:26px;border-radius:8px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:11px;font-weight:800;flex:0 0 auto;}
+  .chap-top .chap-title{flex:1;min-width:0;min-height:42px;}
+  .chap-rm{width:32px;height:32px;border-radius:9px;border:none;background:var(--chip);color:var(--muted);cursor:pointer;display:grid;place-items:center;flex:0 0 auto;}
+  .chap-rm:hover{color:var(--brand);} .chap-rm svg{width:14px;height:14px;}
+  .chap-up{display:flex;align-items:center;gap:9px;margin-top:9px;border:1.5px dashed var(--line);border-radius:11px;padding:10px 11px;cursor:pointer;transition:border-color .16s,background .16s;}
+  .chap-up:hover{border-color:var(--brand);}
+  .chap-up.has{border-style:solid;border-color:var(--brand);background:var(--brand-soft);}
+  .chap-up input[type=file]{display:none;}
+  .chap-up .ci{width:30px;height:30px;border-radius:8px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;}
+  .chap-up .ci svg{width:16px;height:16px;}
+  .chap-up .ct{flex:1;min-width:0;font-size:11px;font-weight:700;color:var(--slate-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cert-row{display:flex;align-items:stretch;gap:9px;}
+  .cert-row .chap-up{flex:1;margin-top:0;}
+  .cert-row .chap-rm{flex:0 0 auto;}
+  .chap-stamps{margin-top:10px;padding-top:10px;border-top:1px dashed var(--line);}
+  .stamps-list{display:flex;flex-direction:column;gap:7px;}
+  .stamp-row{display:flex;align-items:center;gap:7px;}
+  .stamp-row svg{width:13px;height:13px;color:var(--muted);flex:0 0 auto;}
+  .stamp-row .stamp-time{width:52px;flex:0 0 auto;background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:7px 6px;font-size:10.5px;font-family:inherit;color:var(--ink);text-align:center;}
+  .stamp-row .stamp-label{flex:1;min-width:0;background:var(--chip);border:1px solid var(--line);border-radius:8px;padding:7px 9px;font-size:10.5px;font-family:inherit;color:var(--ink);}
+  .stamp-row input::placeholder{color:var(--muted);}
+  .stamp-row input:focus{outline:none;border-color:var(--brand);}
+  .stamp-rm{width:26px;height:26px;border-radius:8px;border:none;background:var(--chip);color:var(--muted);cursor:pointer;display:grid;place-items:center;flex:0 0 auto;}
+  .stamp-rm:hover{color:var(--brand);} .stamp-rm svg{width:11px;height:11px;}
+  .stamp-add{margin-top:8px;display:inline-flex;align-items:center;gap:6px;background:none;border:none;font-family:inherit;font-size:10.5px;font-weight:800;color:var(--brand);cursor:pointer;padding:4px 2px;}
+  .stamp-add svg{width:13px;height:13px;}
+  .stamp-empty{font-size:10px;color:var(--muted);padding:2px;}
+
+  /* banner image */
+  .banner-up{position:relative;display:block;border:1.5px dashed var(--line);border-radius:14px;overflow:hidden;cursor:pointer;background:var(--chip);transition:border-color .16s;}
+  .banner-up:hover{border-color:var(--brand);}
+  .banner-up.has{border-style:solid;border-color:var(--brand);}
+  .banner-up input[type=file]{display:none;}
+  .banner-up img{width:100%;height:140px;object-fit:cover;display:block;}
+  .banner-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;height:140px;color:var(--muted);}
+  .banner-empty .ci{width:38px;height:38px;border-radius:11px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;}
+  .banner-empty .ci svg{width:19px;height:19px;}
+  .banner-empty .ct{font-size:11px;font-weight:700;text-align:center;padding:0 24px;}
+  .banner-rm{position:absolute;top:8px;right:8px;width:30px;height:30px;border-radius:50%;border:none;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center;cursor:pointer;}
+  .banner-rm svg{width:14px;height:14px;}
+
+  .consent{display:flex;gap:11px;align-items:flex-start;margin-top:24px;cursor:pointer;}
+  .consent .box{width:22px;height:22px;border-radius:7px;border:1.5px solid var(--line);background:var(--card);flex:0 0 auto;display:grid;place-items:center;color:#fff;transition:background .16s,border-color .16s;margin-top:1px;}
+  .consent .box svg{width:13px;height:13px;opacity:0;transition:opacity .16s;}
+  .consent.on .box{background:var(--brand);border-color:var(--brand);} .consent.on .box svg{opacity:1;}
+  .consent p{font-size:10.5px;color:var(--slate-700);line-height:1.55;}
+
+  .foot{flex:0 0 auto;display:flex;gap:11px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line);}
+  .btn{flex:1;min-height:50px;border-radius:13px;font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border:none;background:var(--brand);color:#fff;transition:transform .16s cubic-bezier(.22,1,.36,1), background .18s;}
+  .btn:hover{background:var(--brand-dark);} .btn:active{transform:scale(.98);}
+  .btn svg{width:18px;height:18px;}
+
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.5;border-radius:3px;pointer-events:none;}
+  .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:60;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .done{position:absolute;inset:0;z-index:80;background:var(--surface);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 34px;}
+  .done.show{display:flex;}
+  .done .check{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--brand);box-shadow:0 18px 40px -14px var(--brand);}
+  .done .check svg{width:44px;height:44px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+  .done h3{font-size:21px;font-weight:800;font-family:var(--display);margin-top:20px;letter-spacing:-.02em;}
+  .done p{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6;max-width:250px;}
+  .done .acts{margin-top:26px;width:100%;display:flex;flex-direction:column;gap:10px;}
+  .done .acts .btn{width:100%;}
+  .done .acts .ghost{background:none;color:var(--brand);border:1.5px solid var(--line);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="appbar">
+    <button class="icon-btn" id="back" aria-label="Back"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
+    <div class="ttl"><div class="k" id="ttlKicker" hidden></div><div class="h">Create CME</div></div>
+    <button class="save" id="saveDraft">Save draft</button>
+  </div>
+
+  <div class="scroll" id="scroll">
+    <!-- 1 · BASICS -->
+    <div class="sec-h"><span class="n">1</span><h2>Program basics</h2></div>
+    <div class="field">
+      <label>Program title <span class="req">*</span></label>
+      <input class="inp" id="fTitle" maxlength="70" placeholder="e.g. Cardiometabolic Update 2025" oninput="cc(this,'ccTitle')">
+      <div class="cc"><span id="ccTitle">0</span>/70</div>
+    </div>
+    <div class="field">
+      <label>Banner image <span class="hint">shown on the CME card</span></label>
+      <label class="banner-up" id="bannerUp">
+        <input type="file" id="fBanner" accept="image/*">
+        <img id="bannerPrev" alt="" hidden>
+        <div class="banner-empty" id="bannerEmpty">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg></span>
+          <span class="ct">Upload banner · JPG / PNG, 16:9 recommended</span>
+        </div>
+        <button type="button" class="banner-rm" id="bannerRm" aria-label="Remove banner" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+      </label>
+    </div>
+    <div class="field">
+      <label>Format <span class="req">*</span></label>
+      <div class="seg" id="fmt">
+        <div class="opt sel" data-v="Online"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 3.6 6 3.6 9s-1.1 6.5-3.6 9c-2.5-2.5-3.6-6-3.6-9s1.1-6.5 3.6-9Z"/></svg></span><span class="on">Online</span></div>
+        <div class="opt" data-v="Offline"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="on">Offline</span></div>
+        <div class="opt" data-v="Recorded"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><polygon points="10 9 15 12 10 15" fill="currentColor" stroke="none"/></svg></span><span class="on">Recorded</span></div>
+      </div>
+    </div>
+    <div class="field" id="specField">
+      <label>Specialty <span class="hint">choose all that apply</span></label>
+      <div class="chips" id="specChips"></div>
+      <div class="picker-panel" id="specPicker" hidden>
+        <div class="mini-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+          <input id="specSearch" placeholder="Search specialty…" autocomplete="off">
+        </div>
+        <div class="spec-list" id="specList"></div>
+      </div>
+    </div>
+    <div class="field"><label>Organized by</label><input class="inp" id="fOrg" placeholder="e.g. Cardiological Society of India"></div>
+    <div class="field">
+      <label>Description</label>
+      <textarea class="inp" id="fDesc" maxlength="320" placeholder="What will attendees learn? Key topics, audience, takeaways…" oninput="cc(this,'ccDesc')"></textarea>
+      <div class="cc"><span id="ccDesc">0</span>/320</div>
+    </div>
+    <div class="field">
+      <label>Program brochure <span class="req">*</span></label>
+      <div class="mat-list" id="matList"></div>
+      <label class="add-btn" id="matUp">
+        <input type="file" id="fMaterials" multiple hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add files
+      </label>
+    </div>
+
+    <!-- 2 · SCHEDULE -->
+    <div class="sec-h"><span class="n">2</span><h2 id="schedH">Schedule</h2></div>
+    <div class="row2">
+      <div class="field" id="wRegStart"><label>Registration start date</label><input class="inp" id="fRegStart" type="date" value="2025-08-10"></div>
+      <div class="field" id="wRegEnd"><label>Registration end date <span class="hint">optional</span></label><input class="inp" id="fRegEnd" type="date" value="2025-08-22"></div>
+    </div>
+    <div class="row2">
+      <div class="field" id="wEventStartDate"><label>Event start date <span class="req">*</span></label><input class="inp" id="fEventStartDate" type="date" value="2025-08-24"></div>
+      <div class="field" id="wEventEndDate"><label>Event end date <span class="hint">optional</span></label><input class="inp" id="fEventEndDate" type="date" value="2025-08-24"></div>
+    </div>
+    <div class="row2">
+      <div class="field" id="wEventStartTime"><label>Event start time</label><input class="inp" id="fEventStartTime" type="time" value="18:00"></div>
+      <div class="field" id="wEventEndTime"><label>Event end time <span class="hint">optional</span></label><input class="inp" id="fEventEndTime" type="time" value="19:00"></div>
+    </div>
+    <div class="field" id="wTz"><label>Timezone</label><select class="inp" id="fTz"><option selected>IST · India Standard Time (GMT+5:30)</option><option>GST · Gulf (GMT+4)</option><option>GMT · London (GMT+0)</option><option>EST · New York (GMT−5)</option></select></div>
+    <div class="field"><label>Accreditation body</label><input class="inp" id="fAccr" placeholder="e.g. Maharashtra Medical Council (MMC)"></div>
+    <div class="field">
+      <label>Certificate template <span class="hint">optional · issued to attendees on completion</span></label>
+      <div class="cert-row">
+        <label class="chap-up" id="certUp">
+          <input type="file" id="fCert" accept="application/pdf,image/*">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
+          <span class="ct" id="certCt">Upload template · PDF or image</span>
+        </label>
+        <button type="button" class="chap-rm" id="certRm" aria-label="Remove certificate template" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+      </div>
+    </div>
+    <div class="field" id="wLoc"><label id="locLabel">Meeting link</label><input class="inp" id="fLoc" placeholder="https://meet.example.com/room"></div>
+    <div class="field" id="wChapters">
+      <label>Video chapters <span class="hint" id="chapHint">upload by topic</span></label>
+      <div class="chap-list" id="chapList"></div>
+      <button class="add-btn" id="addChap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add chapter</button>
+    </div>
+
+    <!-- 3 · SPEAKERS & ACCESS -->
+    <div class="sec-h"><span class="n">3</span><h2>Speakers &amp; access</h2></div>
+    <div class="field" id="spkField">
+      <label>Faculty / speakers</label>
+      <div class="spk-list" id="spkList"></div>
+      <button type="button" class="add-btn" id="addSpk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="lbl">Add speaker</span></button>
+      <div class="picker-panel" id="spkPicker" hidden>
+        <div class="mini-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+          <input id="spkSearch" placeholder="Search speakers by name or specialty…" autocomplete="off">
+        </div>
+        <div class="spk-results" id="spkResults"></div>
+      </div>
+    </div>
+    <div class="tog" id="tgSeats"><div class="ti"><b>Limit seats</b><span>Cap attendance across the conference and its workshops.</span></div><div class="sw"></div></div>
+    <div class="field" id="seatWrap" hidden><label>Conference seats</label><input class="inp" id="fSeats" type="number" value="100" min="1"></div>
+    <div class="row2" id="seatWrapWorkshops" hidden>
+      <div class="field"><label>Pre-conference workshop <span class="hint">optional</span></label><input class="inp" id="fSeatsPre" type="number" min="0" placeholder="e.g. 50"></div>
+      <div class="field"><label>Post-conference workshop <span class="hint">optional</span></label><input class="inp" id="fSeatsPost" type="number" min="0" placeholder="e.g. 50"></div>
+    </div>
+    <div class="tog" id="tgPaid"><div class="ti"><b>Paid program</b><span>Charge a fee. Off = free to attend.</span></div><div class="sw"></div></div>
+    <div class="field" id="feeWrap" hidden><label>Fee per seat (₹)</label><input class="inp" id="fFee" type="number" value="499" min="0"></div>
+    <div class="tog" id="tgEarlyBird" hidden><div class="ti"><b>Early bird offer</b><span>Discounted price for early registrations.</span></div><div class="sw"></div></div>
+    <div class="row2" id="earlyBirdWrap" hidden>
+      <div class="field"><label>Early bird fee (₹)</label><input class="inp" id="fEarlyFee" type="number" value="299" min="0"></div>
+      <div class="field"><label>Valid until</label><input class="inp" id="fEarlyDeadline" type="date" value="2025-08-15"></div>
+    </div>
+
+    <div class="field"><label>Support name <span class="hint">optional</span></label><input class="inp" id="fSupportName" placeholder="e.g. Priya Sharma"></div>
+    <div class="row2">
+      <div class="field"><label>Support email <span class="hint">optional</span></label><input class="inp" id="fSupportEmail" type="email" placeholder="support@example.com"></div>
+      <div class="field"><label>Support phone <span class="hint">optional</span></label><input class="inp" id="fSupportPhone" type="tel" placeholder="+91 98765 43210"></div>
+    </div>
+
+    <div class="sec-h"><span class="n">4</span><h2>Third-party organizer <span class="hint">optional</span></h2></div>
+    <div class="field"><label>Organization name</label><input class="inp" id="fTpoOrg" placeholder="e.g. Med Events Pvt Ltd"></div>
+    <div class="field"><label>Contact person</label><input class="inp" id="fTpoContact" placeholder="e.g. Ramesh Iyer"></div>
+    <div class="row2">
+      <div class="field"><label>Contact email</label><input class="inp" id="fTpoEmail" type="email" placeholder="events@example.com"></div>
+      <div class="field"><label>Contact number</label><input class="inp" id="fTpoPhone" type="tel" placeholder="+91 98765 43210"></div>
+    </div>
+
+    <label class="consent" id="consent">
+      <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="4 12.5 10 18.5 20 6.5"/></svg></span>
+      <p>I confirm this program meets my council's CME accreditation requirements and I'm authorised to publish it.</p>
+    </label>
+  </div>
+
+  <div class="foot">
+    <button class="btn" id="publishBtn">Publish program
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+    </button>
+  </div>
+
+  <div class="done" id="done">
+    <div class="check"><svg viewBox="0 0 24 24"><polyline points="4 12.5 10 18.5 20 6.5"/></svg></div>
+    <h3>Program published</h3>
+    <p id="doneMsg">Your CME is now live for doctors to discover.</p>
+    <div class="acts">
+      <button class="btn" id="viewDetailsBtn">View program details</button>
+      <button class="btn ghost" onclick="location.href='cme.html'">View in CME feed</button>
+      <button class="btn ghost" onclick="location.href='cme.html'">Done</button>
+    </div>
+  </div>
+
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
+  function cc(el,id){ document.getElementById(id).textContent=el.value.length; }
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='cme.html'; });
+
+  // load a saved draft, if opened via ?draft=<id>
+  const requestedDraftId = new URLSearchParams(location.search).get('draft');
+  let draftData=null;
+  if(requestedDraftId){
+    try{ const drafts=JSON.parse(localStorage.getItem('cmeDrafts')||'[]'); draftData=drafts.find(d=>d.id===requestedDraftId)||null; }catch(e){}
+  }
+  let draftId = draftData ? draftData.id : ('d'+Date.now().toString(36)+Math.random().toString(36).slice(2,7));
+  if(draftData){ const k=document.getElementById('ttlKicker'); k.textContent='Editing draft'; k.hidden=false; }
+
+  function applyDraftBasics(){
+    if(!draftData) return;
+    const set=(id,val)=>{ if(val==null||val==='') return; const el=document.getElementById(id); if(el) el.value=val; };
+    set('fTitle', draftData.title); cc(document.getElementById('fTitle'),'ccTitle');
+    set('fOrg', draftData.org);
+    set('fDesc', draftData.description); cc(document.getElementById('fDesc'),'ccDesc');
+    set('fRegStart', draftData.regStart);
+    set('fRegEnd', draftData.regEnd);
+    set('fEventStartDate', draftData.eventStartDate);
+    set('fEventEndDate', draftData.eventEndDate);
+    set('fEventStartTime', draftData.eventStartTime);
+    set('fEventEndTime', draftData.eventEndTime);
+    set('fTz', draftData.timezone);
+    set('fAccr', draftData.accrBody);
+    set('fLoc', draftData.location);
+    set('fSeats', draftData.seats);
+    set('fSeatsPre', draftData.seatsPre);
+    set('fSeatsPost', draftData.seatsPost);
+    set('fFee', draftData.fee);
+    set('fEarlyFee', draftData.earlyFee);
+    set('fEarlyDeadline', draftData.earlyDeadline);
+    set('fSupportName', draftData.supportName);
+    set('fSupportEmail', draftData.supportEmail);
+    set('fSupportPhone', draftData.supportPhone);
+    set('fTpoOrg', draftData.tpoOrg);
+    set('fTpoContact', draftData.tpoContact);
+    set('fTpoEmail', draftData.tpoEmail);
+    set('fTpoPhone', draftData.tpoPhone);
+    if(draftData.bannerName){
+      document.getElementById('bannerEmpty').querySelector('.ct').textContent='Previously uploaded: '+draftData.bannerName+' · tap to replace';
+      document.getElementById('bannerUp').classList.add('has');
+      document.getElementById('bannerRm').hidden=false;
+    }
+    if(draftData.certName){
+      document.getElementById('certCt').textContent=draftData.certName;
+      document.getElementById('certUp').classList.add('has');
+      document.getElementById('certRm').hidden=false;
+    }
+    if(draftData.seatsLimited){ document.getElementById('tgSeats').classList.add('on'); document.getElementById('seatWrap').hidden=false; document.getElementById('seatWrapWorkshops').hidden=false; }
+    if(draftData.paid){ document.getElementById('tgPaid').classList.add('on'); document.getElementById('feeWrap').hidden=false; document.getElementById('tgEarlyBird').hidden=false; }
+    if(draftData.earlyBird){ document.getElementById('tgEarlyBird').classList.add('on'); document.getElementById('earlyBirdWrap').hidden=false; }
+  }
+
+  // banner image
+  (function(){
+    const input=document.getElementById('fBanner'), up=document.getElementById('bannerUp'),
+      prev=document.getElementById('bannerPrev'), empty=document.getElementById('bannerEmpty'),
+      rm=document.getElementById('bannerRm');
+    let url=null;
+    input.addEventListener('change', ()=>{
+      const f=input.files&&input.files[0]; if(!f) return;
+      if(url) URL.revokeObjectURL(url);
+      url=URL.createObjectURL(f);
+      prev.src=url; prev.hidden=false; empty.hidden=true; rm.hidden=false; up.classList.add('has');
+    });
+    rm.addEventListener('click', e=>{
+      e.preventDefault(); e.stopPropagation();
+      input.value=''; if(url){ URL.revokeObjectURL(url); url=null; }
+      prev.hidden=true; prev.src=''; empty.hidden=false; rm.hidden=true; up.classList.remove('has');
+    });
+  })();
+
+  // certificate template
+  (function(){
+    const input=document.getElementById('fCert'), up=document.getElementById('certUp'),
+      ct=document.getElementById('certCt'), rm=document.getElementById('certRm');
+    const defaultCt=ct.textContent;
+    input.addEventListener('change', ()=>{
+      const f=input.files&&input.files[0]; if(!f) return;
+      ct.textContent=f.name; up.classList.add('has'); rm.hidden=false;
+    });
+    rm.addEventListener('click', e=>{
+      e.preventDefault(); e.stopPropagation();
+      input.value=''; ct.textContent=defaultCt; up.classList.remove('has'); rm.hidden=true;
+    });
+  })();
+
+  // program materials (multi-file upload)
+  let materials = (draftData && draftData.materials && draftData.materials.length)
+    ? draftData.materials.map(m=>({name:m, size:null}))
+    : [];
+  (function(){
+    const matList=document.getElementById('matList'), input=document.getElementById('fMaterials');
+    const fileIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>';
+    const rmIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
+    function formatSize(bytes){
+      if(bytes==null) return 'Previously uploaded';
+      if(bytes<1024) return bytes+' B';
+      if(bytes<1024*1024) return (bytes/1024).toFixed(0)+' KB';
+      return (bytes/(1024*1024)).toFixed(1)+' MB';
+    }
+    function renderMaterials(){
+      matList.innerHTML = materials.map((m,i)=>`
+        <div class="mat${m.url?' viewable':''}" data-i="${i}">
+          <span class="mi">${fileIco}</span>
+          <div class="mn"><b>${esc(m.name)}</b><span>${m.url?'Tap to view · ':''}${formatSize(m.size)}</span></div>
+          <button type="button" class="rm" data-i="${i}" aria-label="Remove ${esc(m.name)}">${rmIco}</button>
+        </div>`).join('');
+    }
+    input.addEventListener('change', ()=>{
+      const files=Array.from(input.files||[]);
+      files.forEach(f=>materials.push({name:f.name, size:f.size, url:URL.createObjectURL(f)}));
+      input.value=''; renderMaterials();
+      if(files.length) toast(files.length+' file'+(files.length>1?'s':'')+' added');
+    });
+    matList.addEventListener('click', e=>{
+      const rm=e.target.closest('.rm');
+      if(rm){ const m=materials[+rm.dataset.i]; if(m&&m.url) URL.revokeObjectURL(m.url); materials.splice(+rm.dataset.i,1); renderMaterials(); return; }
+      const row=e.target.closest('.mat[data-i]');
+      if(row){ const m=materials[+row.dataset.i]; if(m&&m.url) window.open(m.url,'_blank'); else toast('Re-upload this file to preview it'); }
+    });
+    renderMaterials();
+  })();
+
+  applyDraftBasics();
+
+  // specialties — searchable, multi-select
+  const SPECIALTIES=['Cardiology','Endocrinology','Diabetes','Neurology','Nephrology','Rheumatology','Oncology','Pulmonology',
+    'Gastroenterology','Dermatology','Psychiatry','Ophthalmology','Urology','Radiology','Anesthesiology','Orthopaedics',
+    'Pediatrics','Neonatology','Gynaecology','ENT','General Medicine','Internal Medicine','Infectious Diseases','Hematology',
+    'Immunology & Allergy','Geriatrics','Emergency Medicine','Family Medicine','Pathology','Plastic Surgery','Critical Care',
+    'Sports Medicine','Pain Medicine','Sleep Medicine','Palliative Care'];
+  let myProfile=null;
+  try{ myProfile=JSON.parse(localStorage.getItem('clinicalProfile')||'null'); }catch(e){}
+  const initialSpecs = draftData ? (draftData.specialties||[]) : (myProfile && myProfile.selected ? [myProfile.selected] : []);
+  const selectedSpecs=new Set(initialSpecs.length ? initialSpecs : ['General Medicine']);
+  let specPickerOpen=false;
+
+  function chipHtml(s){ return `<button type="button" class="chip ${selectedSpecs.has(s)?'sel':''}" data-s="${esc(s)}">${esc(s)}</button>`; }
+
+  function renderSpecChips(){
+    const shown=Array.from(selectedSpecs);
+    document.getElementById('specChips').innerHTML = shown.map(chipHtml).join('') +
+      `<button type="button" class="add-circle${specPickerOpen?' open':''}" id="specAddBtn" aria-label="${specPickerOpen?'Close specialty search':'Add specialty'}">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>`;
+  }
+  function renderSpecList(){
+    const q=(document.getElementById('specSearch').value||'').trim();
+    const ql=q.toLowerCase();
+    const filtered=SPECIALTIES.filter(s=>!ql || s.toLowerCase().includes(ql));
+    const exists=!q || SPECIALTIES.some(s=>s.toLowerCase()===ql) || Array.from(selectedSpecs).some(s=>s.toLowerCase()===ql);
+    let html=filtered.map(chipHtml).join('');
+    if(q && !exists){
+      html += `<button type="button" class="chip add-custom" data-custom="${esc(q)}">${plusIco}Add "${esc(q)}"</button>`;
+    }
+    document.getElementById('specList').innerHTML = html || `<div class="picker-empty">No specialty matches "${esc(q)}".</div>`;
+  }
+  function toggleSpec(name){
+    if(selectedSpecs.has(name)) selectedSpecs.delete(name); else selectedSpecs.add(name);
+    renderSpecChips();
+    if(specPickerOpen) renderSpecList();
+  }
+  document.getElementById('specField').addEventListener('click', e=>{
+    const addBtn=e.target.closest('#specAddBtn');
+    if(addBtn){
+      specPickerOpen=!specPickerOpen;
+      document.getElementById('specPicker').hidden=!specPickerOpen;
+      renderSpecChips();
+      if(specPickerOpen){ document.getElementById('specSearch').value=''; renderSpecList(); document.getElementById('specSearch').focus(); }
+      return;
+    }
+    const custom=e.target.closest('.chip[data-custom]');
+    if(custom){ toggleSpec(custom.dataset.custom); document.getElementById('specSearch').value=''; renderSpecList(); return; }
+    const chip=e.target.closest('.chip[data-s]');
+    if(chip) toggleSpec(chip.dataset.s);
+  });
+  document.getElementById('specSearch').addEventListener('input', renderSpecList);
+  document.getElementById('specSearch').addEventListener('keydown', e=>{
+    if(e.key!=='Enter') return;
+    const q=e.target.value.trim(); if(!q) return;
+    const match=SPECIALTIES.find(s=>s.toLowerCase()===q.toLowerCase());
+    toggleSpec(match||q); e.target.value=''; renderSpecList();
+  });
+  renderSpecChips();
+
+  // format → location label
+  const LOC={Online:{l:'Meeting link',p:'https://meet.example.com/room'},Offline:{l:'Venue address',p:'e.g. Taj Lands End, Mumbai'},Recorded:{l:'Recording link',p:'https://vimeo.com/…'}};
+  let fmt='Online';
+  function applyFormat(v){
+    fmt=v;
+    const c=LOC[v]; document.getElementById('locLabel').textContent=c.l; const inp=document.getElementById('fLoc'); inp.placeholder=c.p;
+    const rec = v==='Recorded';            // recorded = on-demand: no live date/time, upload by chapter
+    ['wRegStart','wRegEnd','wEventStartDate','wEventEndDate','wEventStartTime','wEventEndTime','wTz','wLoc'].forEach(id=>{ document.getElementById(id).hidden=rec; });
+    document.getElementById('chapHint').textContent = rec?'upload by topic':'optional · add a recording after the session';
+    document.getElementById('schedH').textContent = rec?'On-demand details':'Schedule';
+  }
+  document.getElementById('fmt').addEventListener('click', e=>{ const o=e.target.closest('.opt'); if(!o) return; document.querySelectorAll('#fmt .opt').forEach(x=>x.classList.remove('sel')); o.classList.add('sel'); applyFormat(o.dataset.v); });
+  const initialFmt = draftData && draftData.format ? draftData.format : 'Online';
+  document.querySelectorAll('#fmt .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===initialFmt));
+  applyFormat(initialFmt);
+
+  // toggles
+  function tg(id,reveal){
+    const el=document.getElementById(id);
+    el.addEventListener('click',()=>{
+      const on=el.classList.toggle('on');
+      if(reveal) (Array.isArray(reveal)?reveal:[reveal]).forEach(r=>{ document.getElementById(r).hidden=!on; });
+    });
+  }
+  tg('tgSeats',['seatWrap','seatWrapWorkshops']);
+  tg('tgPaid',['feeWrap','tgEarlyBird']);
+  tg('tgEarlyBird','earlyBirdWrap');
+  document.getElementById('tgPaid').addEventListener('click', ()=>{
+    if(!document.getElementById('tgPaid').classList.contains('on')){
+      document.getElementById('tgEarlyBird').classList.remove('on');
+      document.getElementById('earlyBirdWrap').hidden=true;
+    }
+  });
+
+  // speakers — searchable, multi-add
+  const pool=[
+    {n:'Dr. Meera Iyer',r:'Endocrinology',img:'https://randomuser.me/api/portraits/women/68.jpg'},
+    {n:'Dr. Arvind Kumar',r:'Cardiology',img:'https://randomuser.me/api/portraits/men/32.jpg'},
+    {n:'Dr. Rohan Sinha',r:'Hypertension',img:'https://randomuser.me/api/portraits/men/45.jpg'},
+    {n:'Dr. Priya Nair',r:'Lipidology',img:'https://randomuser.me/api/portraits/women/44.jpg'},
+    {n:'Dr. Vijay Menon',r:'Diabetology',img:'https://randomuser.me/api/portraits/men/76.jpg'},
+    {n:'Dr. Sara Iyer',r:'Neurology',img:'https://randomuser.me/api/portraits/women/12.jpg'},
+    {n:'Dr. Rohan Verma',r:'Oncology',img:'https://randomuser.me/api/portraits/men/54.jpg'},
+    {n:'Dr. Neha Kapoor',r:'Dermatology',img:'https://randomuser.me/api/portraits/women/32.jpg'},
+    {n:'Dr. Vikram Rao',r:'Orthopaedics',img:'https://randomuser.me/api/portraits/men/64.jpg'},
+    {n:'Dr. Ananya Ghosh',r:'Paediatrics',img:'https://randomuser.me/api/portraits/women/23.jpg'},
+    {n:'Dr. Imran Shaikh',r:'Gastroenterology',img:'https://randomuser.me/api/portraits/men/71.jpg'},
+    {n:'Dr. Priya Menon',r:'Nephrology',img:'https://randomuser.me/api/portraits/women/90.jpg'},
+    {n:'Dr. Kabir Singh',r:'Pulmonology',img:'https://randomuser.me/api/portraits/men/22.jpg'},
+    {n:'Dr. Anjali Desai',r:'Rheumatology',img:'https://randomuser.me/api/portraits/women/56.jpg'}
+  ];
+  let speakers=[{...pool[0], desc:'', custom:false}];
+  if(draftData && draftData.speakers && draftData.speakers.length){
+    speakers=draftData.speakers.map(s=>({n:s.n, r:s.r||'', img:s.img||'', desc:s.desc||'', custom:!!s.custom}));
+  }
+  let spkPickerOpen=false;
+  const xIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
+  const plusIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+  const checkIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 5 13"/></svg>';
+
+  function spkAvatar(s){ return s.img ? `<img src="${s.img}" alt="">` : `<div class="spk-initial">${esc((s.n||'?').replace('Dr. ','').charAt(0).toUpperCase())}</div>`; }
+  function renderSpk(){
+    document.getElementById('spkList').innerHTML = speakers.map((s,i)=>`
+      <div class="spk">
+        <div class="spk-top">
+          ${spkAvatar(s)}
+          <div class="nm"><b>${esc(s.n)}</b><span>${esc(s.r||'Guest speaker')}</span></div>
+          <button class="rm" data-i="${i}" aria-label="Remove">${xIco}</button>
+        </div>
+        ${s.custom ? `<textarea class="spk-desc" data-i="${i}" placeholder="Add a short description or topic for this speaker…">${esc(s.desc||'')}</textarea>` : ''}
+      </div>`).join('') || `<div class="sub" style="padding:2px">No speakers yet.</div>`;
+  }
+  function renderSpkResults(){
+    const q=(document.getElementById('spkSearch').value||'').trim();
+    const ql=q.toLowerCase();
+    const filtered=pool.filter(p=>!ql || (p.n+' '+p.r).toLowerCase().includes(ql));
+    const exists=!q || pool.some(p=>p.n.toLowerCase()===ql) || speakers.some(s=>s.n.toLowerCase()===ql);
+    let html = filtered.map(p=>{
+      const added=speakers.some(s=>s.n===p.n);
+      return `<div class="spk-row${added?' added':''}" data-n="${esc(p.n)}"><img src="${p.img}" alt=""><div class="nm"><b>${esc(p.n)}</b><span>${esc(p.r)}</span></div><button type="button" class="add" aria-label="${added?'Already added':'Add speaker'}">${added?checkIco:plusIco}</button></div>`;
+    }).join('');
+    if(q && !exists){
+      html += `<div class="spk-row" data-custom-spk="${esc(q)}"><div class="spk-initial">${esc(q.charAt(0).toUpperCase())}</div><div class="nm"><b>${esc(q)}</b><span>Add as a new speaker</span></div><button type="button" class="add" aria-label="Add ${esc(q)} as speaker">${plusIco}</button></div>`;
+    }
+    document.getElementById('spkResults').innerHTML = html || `<div class="picker-empty">No speakers match "${esc(q)}".</div>`;
+  }
+  function addSpeaker(name){
+    if(speakers.some(s=>s.n===name)) return;
+    const p=pool.find(p=>p.n===name); if(!p) return;
+    speakers.push({...p, desc:'', custom:false}); renderSpk(); renderSpkResults(); toast(p.n+' added');
+  }
+  function addCustomSpeaker(name){
+    name=name.trim(); if(!name || speakers.some(s=>s.n===name)) return;
+    speakers.push({n:name, r:'', img:'', desc:'', custom:true}); renderSpk(); renderSpkResults(); toast(name+' added');
+  }
+  document.getElementById('spkList').addEventListener('click', e=>{
+    const b=e.target.closest('.rm'); if(!b) return;
+    speakers.splice(+b.dataset.i,1); renderSpk(); if(spkPickerOpen) renderSpkResults();
+  });
+  document.getElementById('spkList').addEventListener('input', e=>{
+    const t=e.target.closest('.spk-desc'); if(t) speakers[+t.dataset.i].desc=t.value;
+  });
+  document.getElementById('spkField').addEventListener('click', e=>{
+    const addBtn=e.target.closest('#addSpk');
+    if(addBtn){
+      spkPickerOpen=!spkPickerOpen;
+      document.getElementById('spkPicker').hidden=!spkPickerOpen;
+      addBtn.classList.toggle('open',spkPickerOpen);
+      addBtn.querySelector('.lbl').textContent = spkPickerOpen?'Close search':'Add speaker';
+      if(spkPickerOpen){ document.getElementById('spkSearch').value=''; renderSpkResults(); document.getElementById('spkSearch').focus(); }
+      return;
+    }
+    const custom=e.target.closest('[data-custom-spk]');
+    if(custom){ addCustomSpeaker(custom.dataset.customSpk); document.getElementById('spkSearch').value=''; renderSpkResults(); return; }
+    const row=e.target.closest('.spk-row'); if(row) addSpeaker(row.dataset.n);
+  });
+  document.getElementById('spkSearch').addEventListener('input', renderSpkResults);
+  document.getElementById('spkSearch').addEventListener('keydown', e=>{
+    if(e.key!=='Enter') return;
+    const q=e.target.value.trim(); if(!q) return;
+    const match=pool.find(p=>p.n.toLowerCase()===q.toLowerCase());
+    if(match) addSpeaker(match.n); else addCustomSpeaker(q);
+    e.target.value=''; renderSpkResults();
+  });
+  renderSpk();
+
+  // video chapters (recorded programs)
+  let chapters = (draftData && draftData.chapters && draftData.chapters.length)
+    ? draftData.chapters.map(c=>({title:c.title||'', file:c.file||'', stamps:(c.stamps||[]).map(s=>({t:s.t||'', label:s.label||''}))}))
+    : [{title:'',file:'',stamps:[]}];
+  const upIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>';
+  const clockIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>';
+  const chapList=document.getElementById('chapList');
+  function renderChapters(){
+    chapList.innerHTML = chapters.map((c,i)=>`
+      <div class="chap">
+        <div class="chap-top">
+          <span class="chap-n">${i+1}</span>
+          <input class="inp chap-title" data-i="${i}" placeholder="Chapter title — e.g. Introduction" value="${esc(c.title)}">
+          <button class="chap-rm" data-i="${i}" aria-label="Remove chapter">${xIco}</button>
+        </div>
+        <label class="chap-up${c.file?' has':''}">
+          <input type="file" accept="video/*" data-i="${i}">
+          <span class="ci">${upIco}</span>
+          <span class="ct">${c.file?esc(c.file):'Upload video · MP4 / MOV'}</span>
+        </label>
+        ${c.file ? `
+        <div class="chap-stamps">
+          <div class="stamps-list">
+            ${c.stamps.length ? c.stamps.map((s,si)=>`
+              <div class="stamp-row" data-ci="${i}" data-si="${si}">
+                ${clockIco}
+                <input class="stamp-time" placeholder="00:00" value="${esc(s.t)}">
+                <input class="stamp-label" placeholder="Label — e.g. Case discussion" value="${esc(s.label)}">
+                <button type="button" class="stamp-rm" aria-label="Remove timestamp">${xIco}</button>
+              </div>`).join('') : `<div class="stamp-empty">No timestamps yet — mark key moments in this video.</div>`}
+          </div>
+          <button type="button" class="stamp-add" data-ci="${i}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add timestamp</button>
+        </div>` : ''}
+      </div>`).join('');
+  }
+  chapList.addEventListener('input', e=>{
+    const t=e.target.closest('.chap-title'); if(t){ chapters[+t.dataset.i].title=t.value; return; }
+    const row=e.target.closest('.stamp-row'); if(!row) return;
+    const stamp=chapters[+row.dataset.ci].stamps[+row.dataset.si];
+    if(e.target.closest('.stamp-time')) stamp.t=e.target.value;
+    else if(e.target.closest('.stamp-label')) stamp.label=e.target.value;
+  });
+  chapList.addEventListener('change', e=>{ const f=e.target.closest('input[type=file]'); if(f&&f.files&&f.files[0]){ chapters[+f.dataset.i].file=f.files[0].name; renderChapters(); } });
+  chapList.addEventListener('click', e=>{
+    const rm=e.target.closest('.chap-rm');
+    if(rm){ chapters.splice(+rm.dataset.i,1); if(!chapters.length) chapters.push({title:'',file:'',stamps:[]}); renderChapters(); return; }
+    const add=e.target.closest('.stamp-add');
+    if(add){ chapters[+add.dataset.ci].stamps.push({t:'',label:''}); renderChapters(); return; }
+    const srm=e.target.closest('.stamp-rm');
+    if(srm){ const row=srm.closest('.stamp-row'); chapters[+row.dataset.ci].stamps.splice(+row.dataset.si,1); renderChapters(); }
+  });
+  document.getElementById('addChap').addEventListener('click', ()=>{ chapters.push({title:'',file:'',stamps:[]}); renderChapters(); });
+  renderChapters();
+
+  // save as draft
+  function collectDraft(){
+    const val=id=>{ const el=document.getElementById(id); return el?el.value.trim():''; };
+    const on=id=>document.getElementById(id).classList.contains('on');
+    const bannerFile=document.getElementById('fBanner').files[0];
+    const certFile=document.getElementById('fCert').files[0];
+    return {
+      id: draftId,
+      title: val('fTitle'),
+      format: fmt,
+      specialties: Array.from(selectedSpecs),
+      org: val('fOrg'),
+      description: val('fDesc'),
+      materials: materials.map(m=>m.name),
+      bannerName: bannerFile ? bannerFile.name : (draftData?draftData.bannerName||'':''),
+      regStart: val('fRegStart'), regEnd: val('fRegEnd'),
+      eventStartDate: val('fEventStartDate'), eventEndDate: val('fEventEndDate'),
+      eventStartTime: val('fEventStartTime'), eventEndTime: val('fEventEndTime'),
+      timezone: val('fTz'),
+      accrBody: val('fAccr'),
+      certName: certFile ? certFile.name : (draftData?draftData.certName||'':''),
+      location: val('fLoc'),
+      speakers: speakers.map(s=>({n:s.n, r:s.r||'', img:s.img||'', desc:s.desc||'', custom:!!s.custom})),
+      seatsLimited: on('tgSeats'), seats: val('fSeats'), seatsPre: val('fSeatsPre'), seatsPost: val('fSeatsPost'),
+      paid: on('tgPaid'), fee: val('fFee'),
+      earlyBird: on('tgEarlyBird'), earlyFee: val('fEarlyFee'), earlyDeadline: val('fEarlyDeadline'),
+      supportName: val('fSupportName'), supportEmail: val('fSupportEmail'), supportPhone: val('fSupportPhone'),
+      tpoOrg: val('fTpoOrg'), tpoContact: val('fTpoContact'), tpoEmail: val('fTpoEmail'), tpoPhone: val('fTpoPhone'),
+      chapters: chapters.map(c=>({title:c.title, file:c.file, stamps:c.stamps.map(s=>({t:s.t, label:s.label}))})),
+      savedAt: Date.now()
+    };
+  }
+  function saveDraft(){
+    const data=collectDraft();
+    let drafts=[]; try{ drafts=JSON.parse(localStorage.getItem('cmeDrafts')||'[]'); }catch(e){}
+    const idx=drafts.findIndex(d=>d.id===draftId);
+    if(idx>-1) drafts[idx]=data; else drafts.unshift(data);
+    try{ localStorage.setItem('cmeDrafts', JSON.stringify(drafts)); }catch(e){}
+    draftData=data;
+    const k=document.getElementById('ttlKicker'); k.textContent='Editing draft'; k.hidden=false;
+    history.replaceState(null,'','create-cme.html?draft='+encodeURIComponent(draftId));
+    toast('Draft saved');
+  }
+  function removeDraft(id){
+    let drafts=[]; try{ drafts=JSON.parse(localStorage.getItem('cmeDrafts')||'[]'); }catch(e){}
+    drafts=drafts.filter(d=>d.id!==id);
+    try{ localStorage.setItem('cmeDrafts', JSON.stringify(drafts)); }catch(e){}
+  }
+  document.getElementById('saveDraft').addEventListener('click', saveDraft);
+
+  // consent + publish
+  let consent=false;
+  document.getElementById('consent').addEventListener('click', ()=>{ consent=!consent; document.getElementById('consent').classList.toggle('on',consent); });
+  document.getElementById('publishBtn').addEventListener('click', ()=>{
+    const title=document.getElementById('fTitle').value.trim();
+    if(!title){ toast('Add a program title first'); document.getElementById('scroll').scrollTop=0; setTimeout(()=>document.getElementById('fTitle').focus(),150); return; }
+    if(!materials.length){ toast('Upload a program brochure first'); document.getElementById('matUp').scrollIntoView({behavior:'smooth', block:'center'}); return; }
+    if(!consent){ toast('Please confirm the accreditation checkbox'); document.getElementById('scroll').scrollTop=document.getElementById('scroll').scrollHeight; return; }
+    document.getElementById('doneMsg').textContent='“'+title+'” is now live for doctors to discover and register.';
+    const published=collectDraft();
+    published.publishedAt=Date.now();
+    let programs=[]; try{ programs=JSON.parse(localStorage.getItem('cmePrograms')||'[]'); }catch(e){}
+    const pIdx=programs.findIndex(p=>p.id===draftId);
+    if(pIdx>-1) programs[pIdx]=published; else programs.unshift(published);
+    try{ localStorage.setItem('cmePrograms', JSON.stringify(programs)); }catch(e){}
+    document.getElementById('viewDetailsBtn').onclick=()=>{ location.href='cme-details.html?id='+encodeURIComponent(draftId); };
+    removeDraft(draftId);
+    document.getElementById('done').classList.add('show');
+  });
+
+  // responsive fit
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

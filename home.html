@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Home</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif;
+    --ui:'Inter', sans-serif;
+  }
+  /* native device font — chosen at startup by platform (APK / TestFlight) */
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#38bdf8;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#c9a227;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#f59e0b;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  .rise{animation:rise .55s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} .scroll{padding-top:max(10px,env(safe-area-inset-top));} }
+
+  .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:8px 20px 20px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  /* header */
+  .htop{display:flex;align-items:flex-start;gap:9px;padding:6px 0 2px;}
+  .htop .greet{flex:1;min-width:0;}
+  .htop .wm{font-size:10px;color:var(--muted);font-weight:700;letter-spacing:.14em;text-transform:uppercase;}
+  .htop .dr{font-size:20px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;line-height:1.15;margin-top:3px;word-break:break-word;}
+  .htop .sp{flex:1;}
+  .icon-btn{width:44px;height:44px;min-width:44px;min-height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);position:relative;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s;}
+  .icon-btn:active{transform:scale(.94);}
+  .icon-btn .ndot{position:absolute;top:8px;right:9px;width:7px;height:7px;background:var(--brand);border:2px solid var(--card);border-radius:50%;}
+  .htop .me{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);border:1px solid var(--line);display:block;}
+  .htop a{display:inline-flex;border-radius:50%;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s;}
+  .htop a:active{transform:scale(.94);}
+
+  .search{position:relative;margin-top:14px;}
+  .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .search input{width:100%;min-height:38px;height:38px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px 0 36px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .search input::placeholder{color:var(--muted);}
+  .search input:focus{outline:none;border-color:var(--brand);}
+
+  /* profile completion nudge */
+  .pcomplete{position:relative;display:flex;align-items:center;gap:13px;margin-top:16px;background:var(--soft2);border:1px solid transparent;border-radius:16px;padding:13px 40px 13px 13px;text-decoration:none;color:inherit;transition:transform .18s, border-color .18s;}
+  .pcomplete:hover{border-color:var(--brand);}
+  .pcomplete:active{transform:scale(.99);}
+  .pcomplete .ring{position:relative;width:46px;height:46px;flex:0 0 auto;}
+  .pcomplete .ring svg{transform:rotate(-90deg);}
+  .pcomplete .ring .rtrack{stroke:rgba(0,0,0,.09);}
+  .pcomplete .ring .rbar{stroke:var(--brand);stroke-linecap:round;transition:stroke-dashoffset .7s cubic-bezier(.22,1,.36,1);}
+  [data-theme="dark"] .pcomplete .ring .rtrack{stroke:rgba(255,255,255,.12);}
+  .pcomplete .ring b{position:absolute;inset:0;display:grid;place-items:center;font-size:11px;font-weight:800;font-family:var(--display);color:var(--brand);}
+  .pcomplete .pc-body{flex:1;min-width:0;}
+  .pcomplete .pc-t{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .pcomplete .pc-s{font-size:9.5px;color:var(--muted);margin-top:2px;}
+  .pcomplete .pc-x{position:absolute;top:9px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;font-size:12px;line-height:1;border-radius:50%;}
+  .pcomplete .pc-x:active{transform:scale(.9);}
+
+  .lbl{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:24px 0 12px;}
+
+  /* modules — cohesive neutral cards, single accent */
+  .modules{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;}
+  .mtile{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:flex-start;gap:9px;background:var(--soft1);border:1px solid transparent;border-radius:15px;padding:14px 7px;min-height:96px;text-decoration:none;color:inherit;
+    transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .mtile:nth-child(2n){background:var(--soft2);}
+  .mtile:hover{transform:translateY(-3px);border-color:var(--brand);}
+  .mtile:active{transform:scale(.985);}
+  .mtile .ic{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;color:var(--brand);background:rgba(255,255,255,.55);}
+  .mtile .ic svg{width:21px;height:21px;}
+  .mtile .nm{font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.2;}
+  .mtile .ms{display:none;}
+  .mtile .badge{position:absolute;top:8px;right:8px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ef4444;color:#fff;font-size:9px;font-weight:800;display:grid;place-items:center;line-height:1;}
+  .mtile .arw{display:none;}
+  .mtile:hover .arw{opacity:1;transform:translateX(2px);}
+
+  /* featured (live CME) — calm light card */
+  .feature{margin-top:12px;border-radius:18px;overflow:hidden;position:relative;color:var(--ink);text-decoration:none;display:block;
+    background:var(--soft1);border:1px solid transparent;
+    transition:transform .18s, border-color .18s;}
+  .feature:hover{transform:translateY(-2px);border-color:var(--brand);}
+  .feature:active{transform:scale(.985);}
+  .feature .pad{padding:16px;position:relative;}
+  .feature .tag{display:inline-flex;align-items:center;gap:6px;font-size:8.5px;font-weight:800;letter-spacing:.05em;color:#c0464a;background:rgba(224,106,106,.12);border:1px solid rgba(224,106,106,.28);padding:4px 10px;border-radius:20px;}
+  .feature .tag .d{width:5px;height:5px;border-radius:50%;background:#e06a6a;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .feature h3{font-size:17px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin:11px 0 5px;}
+  .feature .meta{font-size:10px;color:var(--muted);}
+  .feature .foot{display:flex;align-items:center;gap:10px;margin-top:15px;padding-top:14px;border-top:1px solid var(--line);}
+  .feature .avs{display:flex;}
+  .feature .avs img{width:26px;height:26px;border-radius:50%;border:2px solid var(--card);margin-left:-8px;object-fit:cover;background:var(--chip);}
+  .feature .avs img:first-child{margin-left:0;}
+  .feature .net{font-size:9.5px;color:var(--muted);}
+  .feature .go{margin-left:auto;background:var(--brand);color:#fff;border:none;font-family:inherit;font-size:11px;font-weight:800;padding:9px 18px;border-radius:12px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s;}
+  .feature .go:active{transform:scale(.94);}
+  /* upcoming (nothing live, but a session is scheduled) */
+  .feature .tag.soon{color:var(--gold);background:rgba(176,137,79,.14);border-color:rgba(176,137,79,.3);}
+  .feature .tag.soon .d{background:var(--gold);animation:none;}
+  .feature .go.ghost{background:var(--brand-soft);color:var(--brand);}
+  /* empty state (nothing live, nothing scheduled) */
+  .feature.empty{text-align:center;}
+  .feature.empty .pad{padding:26px 18px;display:flex;flex-direction:column;align-items:center;gap:4px;}
+  .feature.empty .eic{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);margin-bottom:8px;}
+  .feature.empty h3{margin:0;font-size:15px;}
+  .feature.empty .meta{max-width:230px;line-height:1.5;}
+  .feature.empty .go{margin:14px 0 2px;}
+
+  /* section head */
+  .sh{display:flex;align-items:baseline;justify-content:space-between;margin:24px 0 12px;}
+  .sh h2{font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .sh a{font-size:10px;font-weight:700;color:var(--brand);text-decoration:none;}
+
+  /* activity */
+  .feed{display:flex;flex-direction:column;}
+  .fitem{display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit;}
+  .fitem:last-child{border-bottom:none;}
+  .fitem .fi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);flex:0 0 auto;}
+  .fitem .fi svg{width:19px;height:19px;}
+  .fitem .m{flex:1;min-width:0;}
+  .fitem .ft{font-size:12px;font-weight:700;}
+  .fitem .fs{font-size:9.5px;color:var(--muted);margin-top:2px;}
+  .fitem .fw{font-size:9px;color:var(--muted);font-weight:600;flex:0 0 auto;}
+
+  .fitem{cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s;}
+  .fitem:active{transform:scale(.985);}
+  .sh a{cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s;}
+  .sh a:active{transform:scale(.94);opacity:.7;}
+
+  /* activity empty state */
+  .feed-empty{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;padding:26px 18px;background:var(--soft1);border-radius:18px;}
+  .feed-empty .eic{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;color:var(--brand);background:rgba(255,255,255,.55);margin-bottom:8px;}
+  .feed-empty h4{font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .feed-empty p{font-size:10px;color:var(--muted);max-width:230px;line-height:1.5;}
+
+  /* continue learning (shown when no recent activity) */
+  .cont{display:block;background:var(--soft1);border:1px solid transparent;border-radius:18px;padding:16px;text-decoration:none;color:inherit;transition:transform .18s, border-color .18s;}
+  .cont:hover{transform:translateY(-2px);border-color:var(--brand);}
+  .cont:active{transform:scale(.985);}
+  .cont .k{font-size:8.5px;font-weight:800;letter-spacing:.06em;color:var(--brand);}
+  .cont h3{font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin:7px 0 10px;}
+  .cont .bar{height:7px;border-radius:5px;background:rgba(0,0,0,.06);overflow:hidden;}
+  .cont .bar i{display:block;height:100%;border-radius:5px;background:var(--brand);}
+  .cont .foot{display:flex;align-items:center;justify-content:space-between;margin-top:11px;}
+  .cont .prog{font-size:10px;color:var(--muted);font-weight:600;}
+  .cont .go{background:var(--brand);color:#fff;font-size:11px;font-weight:800;padding:8px 16px;border-radius:11px;}
+
+  /* recommended for you (fallback when nothing in progress) */
+  .recs .k{font-size:8.5px;font-weight:800;letter-spacing:.06em;color:var(--brand);margin:0 2px 8px;}
+  .rec{display:flex;align-items:center;gap:13px;padding:13px 0;border-bottom:1px solid var(--line);text-decoration:none;color:inherit;cursor:pointer;transition:transform .18s;}
+  .rec:last-child{border-bottom:none;}
+  .rec:active{transform:scale(.985);}
+  .rec .ri{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);flex:0 0 auto;}
+  .rec .ri svg{width:19px;height:19px;}
+  .rec .m{flex:1;min-width:0;}
+  .rec .rt{font-size:12px;font-weight:700;}
+  .rec .rs{font-size:9.5px;color:var(--muted);margin-top:2px;}
+  .rec .rc{font-size:9px;color:var(--brand);font-weight:800;flex:0 0 auto;background:var(--brand-soft);padding:4px 8px;border-radius:8px;}
+
+  /* popular doctors — horizontal scroll row */
+  .people{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px;margin:0 -2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  .people::-webkit-scrollbar{display:none;}
+  .pcard{scroll-snap-align:start;flex:0 0 auto;width:130px;display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--soft1);border:1px solid transparent;border-radius:18px;padding:16px 12px 14px;text-decoration:none;color:inherit;cursor:pointer;transition:transform .18s, border-color .18s;}
+  .pcard:hover{border-color:var(--brand);}
+  .pcard:active{transform:scale(.97);}
+  .pcard img{width:52px;height:52px;border-radius:50%;object-fit:cover;background:var(--chip);border:2px solid rgba(255,255,255,.6);}
+  .pcard .pn{font-size:11.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin-top:8px;line-height:1.15;}
+  .pcard .pr{font-size:9px;color:var(--muted);line-height:1.3;margin-top:2px;}
+  .pcard .pf{font-size:8.5px;color:var(--muted);margin-top:2px;}
+  .pcard .pc{margin-top:10px;width:100%;min-height:30px;background:var(--brand);color:#fff;border:none;font-family:inherit;font-size:10.5px;font-weight:800;padding:7px 0;border-radius:20px;cursor:pointer;transition:transform .16s, background .16s;}
+  .pcard .pc:active{transform:scale(.94);}
+  .pcard .pc.pending{background:var(--gold);}
+  .pcard .pc.done{background:var(--green);}
+
+  /* all-doctors sheet (See all) */
+  .sheet.docs{display:flex;flex-direction:column;height:90%;padding-bottom:0;}
+  .docs-top{display:flex;align-items:baseline;gap:8px;margin:0 2px 2px;}
+  .docs-top h2{font-size:19px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .docs-top .docs-count{font-size:10px;color:var(--muted);font-weight:700;}
+  .docs-search{margin:12px 0 6px;}
+  .docs-list{flex:1;overflow-y:auto;margin:0 -2px;padding:2px 2px calc(16px + env(safe-area-inset-bottom));scrollbar-width:none;}
+  .docs-list::-webkit-scrollbar{display:none;}
+  .drow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer;transition:opacity .16s;}
+  .drow:last-child{border-bottom:none;}
+  .drow img{width:46px;height:46px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;border:2px solid rgba(255,255,255,.5);}
+  .drow .m{flex:1;min-width:0;}
+  .drow .dn{font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.15;}
+  .drow .dsub{font-size:9.5px;color:var(--muted);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .drow .pc{flex:0 0 auto;min-height:30px;background:var(--brand);color:#fff;border:none;font-family:inherit;font-size:10.5px;font-weight:800;padding:8px 14px;border-radius:20px;cursor:pointer;transition:transform .16s, background .16s;}
+  .drow .pc:active{transform:scale(.94);}
+  .drow .pc.pending{background:var(--gold);}
+  .drow .pc.done{background:var(--green);}
+  .docs-empty{text-align:center;color:var(--muted);font-size:11px;padding:36px 0;}
+
+  /* activity detail bottom-sheet */
+  .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;z-index:30;}
+  .backdrop.open{opacity:1;visibility:visible;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--card);border-radius:22px 22px 0 0;padding:8px 18px calc(20px + env(safe-area-inset-bottom));
+    transform:translateY(100%);transition:transform .5s cubic-bezier(.34,1.3,.5,1);box-shadow:0 -12px 40px -12px rgba(0,0,0,.4);}
+  .sheet.open{transform:translateY(0);}
+  .sheet .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:6px auto 16px;}
+
+  /* theme chooser */
+  .theme-head{margin:0 2px 4px;}
+  .theme-head h2{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .theme-head p{font-size:10px;color:var(--muted);margin-top:3px;}
+  .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 6px;}
+  .theme-opt{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);cursor:pointer;color:inherit;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
+  .theme-opt:active{transform:scale(.96);}
+  .theme-opt.active{border-color:var(--brand);}
+  .theme-opt .sw{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.6);box-shadow:0 2px 6px rgba(0,0,0,.15);}
+  .theme-opt .tn{font-size:10.5px;font-weight:700;letter-spacing:-.01em;}
+  .theme-opt .tick{position:absolute;top:8px;right:8px;width:15px;height:15px;color:var(--brand);opacity:0;transition:opacity .16s;}
+  .theme-opt.active .tick{opacity:1;}
+  .act-head{display:flex;align-items:center;gap:13px;}
+  .act-ic{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);flex:0 0 auto;}
+  .act-ic svg{width:24px;height:24px;}
+  .act-t{font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.25;}
+  .act-s{font-size:10px;color:var(--muted);margin-top:3px;}
+  .act-status{display:inline-flex;align-items:center;gap:6px;font-size:9.5px;font-weight:800;letter-spacing:.03em;padding:6px 12px;border-radius:20px;margin-top:16px;}
+  .act-status .dot{width:6px;height:6px;border-radius:50%;}
+  .st-pending{background:rgba(176,137,79,.16);color:var(--gold);} .st-pending .dot{background:var(--gold);}
+  .st-done{background:rgba(63,125,78,.16);color:var(--green);} .st-done .dot{background:var(--green);}
+  .st-ready{background:var(--brand-soft);color:var(--brand);} .st-ready .dot{background:var(--brand);}
+  .act-todo{margin-top:14px;background:var(--chip);border-radius:14px;padding:13px 14px;}
+  .act-todo .l{font-size:8.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);}
+  .act-todo p{font-size:11.5px;line-height:1.6;color:var(--slate-700);margin-top:6px;}
+  .act-btns{display:flex;gap:10px;margin-top:18px;}
+  .act-btns button{border:none;font-family:inherit;font-size:12.5px;font-weight:700;padding:13px;min-height:44px;border-radius:13px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s, background .18s;}
+  .act-btns button:active{transform:scale(.94);}
+  .act-secondary{flex:0 0 auto;background:var(--chip);color:var(--ink);padding-left:18px;padding-right:18px;}
+  .act-primary{flex:1;background:var(--brand);color:#fff;box-shadow:0 12px 24px -8px var(--brand);}
+  .act-primary:hover{background:var(--brand-dark);}
+  /* requester avatar in the activity sheet (tap to open profile) */
+  .act-ic.person{padding:0;overflow:hidden;cursor:pointer;position:relative;}
+  .act-ic.person img{width:100%;height:100%;object-fit:cover;border-radius:15px;}
+  .act-viewp{font-size:9px;font-weight:800;color:var(--brand);margin-top:10px;cursor:pointer;display:inline-flex;align-items:center;gap:3px;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s;}
+  .act-viewp:active{transform:scale(.94);opacity:.7;}
+  .act-ic.person{transition:transform .18s cubic-bezier(.22,1,.36,1);}
+  .act-ic.person:active{transform:scale(.94);}
+
+  /* ---- Profile sheet ---- */
+  .sheet.profile{z-index:33;max-height:90%;overflow-y:auto;padding:8px 0 0;}
+  .sheet.profile::-webkit-scrollbar{width:0;}
+  #profBackdrop{z-index:32;}
+  .ps-body{padding:0 18px calc(20px + env(safe-area-inset-bottom));}
+  .p-hero{height:84px;border-radius:16px;margin-top:6px;position:relative;background:linear-gradient(120deg,var(--d1),var(--d2) 58%,var(--d3));overflow:hidden;}
+  .p-hero::after{content:"";position:absolute;right:-24px;top:-24px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);}
+  .p-av{width:74px;height:74px;border-radius:50%;border:3px solid var(--card);object-fit:cover;position:absolute;left:4px;top:48px;background:var(--chip);z-index:2;}
+  .p-top{margin:40px 0 0 86px;}
+  .p-name{font-size:18px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .p-role{font-size:11px;color:var(--slate-700);font-weight:600;margin-top:2px;}
+  .p-loc{font-size:9.5px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:4px;}
+  .p-stats{display:flex;margin:16px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .p-stats div{flex:1;text-align:center;padding:11px 4px;border-right:1px solid var(--line);}
+  .p-stats div:last-child{border-right:none;}
+  .p-stats b{font-size:15px;font-weight:800;font-family:var(--display);color:var(--brand);display:block;}
+  .p-stats span{font-size:8px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+  .p-actions{display:flex;gap:10px;}
+  .p-actions button{border:none;font-family:inherit;font-size:12.5px;font-weight:700;padding:12px;min-height:44px;border-radius:12px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s, background .18s;}
+  .p-actions button:active{transform:scale(.94);}
+  .p-pri{flex:1;background:var(--brand);color:#fff;box-shadow:0 10px 22px -8px var(--brand);}
+  .p-pri.pending{background:var(--gold);box-shadow:none;}
+  .p-pri.done{background:var(--green);box-shadow:none;}
+  .p-sec{flex:0 0 auto;background:var(--chip);color:var(--ink);padding-left:18px;padding-right:18px;}
+  .p-h{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:20px 0 8px;}
+  .p-bio{font-size:11.5px;line-height:1.65;color:var(--slate-700);}
+  .p-tags{display:flex;flex-wrap:wrap;gap:7px;}
+  .p-tag{font-size:9.5px;font-weight:700;color:var(--brand);background:var(--brand-soft);padding:6px 11px;border-radius:20px;}
+  .p-list{display:flex;flex-direction:column;gap:12px;}
+  .p-li{display:flex;gap:11px;}
+  .p-li .pi{width:36px;height:36px;border-radius:11px;background:var(--chip);display:grid;place-items:center;color:var(--brand);flex:0 0 auto;}
+  .p-li .pi svg{width:18px;height:18px;}
+  .p-li .pt{font-size:11.5px;font-weight:700;}
+  .p-li .psub{font-size:9.5px;color:var(--muted);margin-top:2px;}
+
+  .nav{flex:0 0 auto;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:9px 0 22px;}
+  .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s, color .18s;}
+  .navitem.active{color:var(--brand);font-weight:600;}
+  .navitem:active{transform:scale(.9);opacity:.7;}
+  @media (max-width:600px){ .nav{padding-bottom:max(22px,env(safe-area-inset-bottom));} }
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+
+  /* toast */
+  .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);z-index:40;
+    background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;font-family:inherit;
+    padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);
+    opacity:0;pointer-events:none;transition:opacity .22s, transform .22s;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="scroll">
+    <div class="htop rise">
+      <div class="greet">
+        <div class="wm">Good morning</div>
+        <div class="dr" id="drGreet">Dr. Ananya</div>
+      </div>
+      <button class="icon-btn" id="bellBtn" aria-label="Notifications">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>
+        <span class="ndot"></span>
+      </button>
+      <a href="profile.html" aria-label="My profile"><img class="me" src="https://randomuser.me/api/portraits/women/79.jpg" alt="Me"></a>
+    </div>
+
+    <!-- Profile completion nudge (auto-hides at 100% or when dismissed) -->
+    <a class="pcomplete rise" id="pcomplete" href="profile.html">
+      <div class="ring">
+        <svg width="46" height="46" viewBox="0 0 46 46">
+          <circle class="rtrack" cx="23" cy="23" r="19" fill="none" stroke-width="4"/>
+          <circle class="rbar" id="pcRing" cx="23" cy="23" r="19" fill="none" stroke-width="4"/>
+        </svg>
+        <b id="pcPct"></b>
+      </div>
+      <div class="pc-body">
+        <div class="pc-t">Complete your profile</div>
+        <div class="pc-s" id="pcNext"></div>
+      </div>
+      <button class="pc-x" id="pcX" type="button" aria-label="Dismiss">✕</button>
+    </a>
+
+    <div class="search rise">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+      <input placeholder="Search…">
+    </div>
+
+    <!-- Modules -->
+    <div class="modules rise">
+      <a class="mtile" href="network.html">
+        <span class="badge">3</span>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><line x1="8.1" y1="10.8" x2="15.9" y2="6.2"/><line x1="8.1" y1="13.2" x2="15.9" y2="17.8"/></svg></span>
+        <div><div class="nm">Network &amp; Posts</div><div class="ms">Feeds, cases &amp; colleagues</div></div>
+        <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+      </a>
+      <a class="mtile" href="referral.html">
+        <span class="badge">3</span>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg></span>
+        <div><div class="nm">Referrals</div><div class="ms">Send &amp; track patients</div></div>
+        <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+      </a>
+      <a class="mtile" href="cme.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 9h6M7 12.5h4"/></svg></span>
+        <div><div class="nm">CME / Conferences</div><div class="ms">Credits, live &amp; hosted</div></div>
+        <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+      </a>
+      <a class="mtile" href="medicolegal.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="M7 20h10"/><path d="M5 8h14"/><path d="M5 8l-2.5 5.5a2.6 2.6 0 0 0 5 0Z"/><path d="M19 8l-2.5 5.5a2.6 2.6 0 0 0 5 0Z"/></svg></span>
+        <div><div class="nm">Medico Legal</div><div class="ms">Support &amp; documentation</div></div>
+        <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+      </a>
+      <a class="mtile" href="presentations.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-4.5-4.5L6 21"/></svg></span>
+        <div><div class="nm">Presentations</div><div class="ms">Build &amp; share decks</div></div>
+        <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+      </a>
+      <a class="mtile" href="files.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 0 1 2-2h10"/></svg></span>
+        <div><div class="nm">My Files</div><div class="ms">Library &amp; documents</div></div>
+        <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+      </a>
+    </div>
+
+    <!-- Featured / happening now (live → upcoming → empty, rendered by JS) -->
+    <div class="lbl rise" id="featuredLbl">Happening now</div>
+    <div class="rise" id="featured"></div>
+
+    <!-- Recent activity -->
+    <div class="sh rise"><h2>Recent activity</h2><a href="mylearning.html" id="feedSeeAll">See all</a></div>
+    <div class="feed rise" id="feed"></div>
+
+    <!-- Popular doctors on the platform -->
+    <div class="sh rise"><h2>Popular doctors</h2><a href="network.html" id="popSeeAll">See all</a></div>
+    <div class="people rise" id="people"></div>
+  </div>
+
+  <!-- Bottom nav (modules) -->
+  <div class="nav">
+    <a class="navitem active" href="home.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg>Home</a>
+    <a class="navitem" href="cme.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>CME</a>
+    <a class="navitem" href="network.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg>Network</a>
+    <a class="navitem" href="post.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>Post</a>
+    <a class="navitem" href="referral.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h2"/><path d="M14 14h6"/><path d="m17 11 3 3-3 3"/></svg>Referral</a>
+  </div>
+  <div class="home-ind"></div>
+
+  <!-- Activity detail sheet -->
+  <div class="backdrop" id="actBackdrop"></div>
+  <div class="sheet" id="actSheet">
+    <div class="grab"></div>
+    <div class="act-head"><span class="act-ic" id="actIc"></span><div><div class="act-t" id="actT"></div><div class="act-s" id="actS"></div><span class="act-viewp" id="actViewP" hidden>View full profile
+      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span></div></div>
+    <div class="act-status" id="actStatus"><span class="dot"></span><span id="actStatusTxt"></span></div>
+    <div class="act-todo"><div class="l">Action needed</div><p id="actTodo"></p></div>
+    <div class="act-btns"><button class="act-secondary" id="actSec"></button><button class="act-primary" id="actPri"></button></div>
+  </div>
+
+  <!-- Theme chooser sheet -->
+  <div class="backdrop" id="themeBackdrop"></div>
+  <div class="sheet" id="themeSheet">
+    <div class="grab"></div>
+    <div class="theme-head"><h2>Appearance</h2><p>Pick a colour theme. Fonts adapt to your device automatically.</p></div>
+    <div class="theme-grid" id="themeGrid"></div>
+  </div>
+
+  <!-- All doctors sheet (opened from Popular doctors → See all) -->
+  <div class="backdrop" id="docsBackdrop"></div>
+  <div class="sheet docs" id="docsSheet">
+    <div class="grab"></div>
+    <div class="docs-top"><h2>Doctors</h2><span class="docs-count" id="docsCount"></span></div>
+    <div class="search docs-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+      <input id="docsSearch" placeholder="Search by name or specialty…">
+    </div>
+    <div class="docs-list" id="docsList"></div>
+  </div>
+
+  <!-- Profile sheet -->
+  <div class="backdrop" id="profBackdrop"></div>
+  <div class="sheet profile" id="profSheet">
+    <div class="grab"></div>
+    <div class="ps-body" id="profBody"></div>
+  </div>
+</div>
+
+<script>
+  // ---- Native device font: pick platform font at startup (APK / TestFlight webview) ----
+  (function(){
+    const ua = navigator.userAgent || '';
+    const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isAndroid = /Android/.test(ua);
+    document.documentElement.setAttribute('data-os', isIOS ? 'ios' : isAndroid ? 'android' : 'other');
+  })();
+
+  // ---- Theme: apply saved choice on load ----
+  function applyTheme(t){
+    if(!t || t==='classical') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', t);
+  }
+  try{ applyTheme(localStorage.getItem('cmeTheme') || 'blue'); }catch(e){}
+  // greet the signed-in doctor by the name given at registration
+  try{ const g=document.getElementById('drGreet'); if(g) g.textContent = localStorage.getItem('docName') || 'Dr. Ananya Rao'; }catch(e){}
+
+  // ---- Toast helper (fixed bottom-center pill, auto-fades) ----
+  let toastTimer;
+  function toast(msg){
+    let el = document.getElementById('toast');
+    if(!el){ el = document.createElement('div'); el.id='toast'; el.className='toast'; (document.querySelector('.phone')||document.body).appendChild(el); }
+    el.textContent = msg;
+    void el.offsetWidth;
+    el.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>el.classList.remove('show'), 1400);
+  }
+
+  // ---- Theme chooser sheet ----
+  (function(){
+    const THEMES = [
+      { id:'classical', name:'Classic', c:'#7d2c3b' },
+      { id:'blue',      name:'Ocean',   c:'#1e5fbf' },
+      { id:'green',     name:'Forest',  c:'#0f7a5a' },
+      { id:'indigo',    name:'Indigo',  c:'#5b3df5' },
+      { id:'dark',      name:'Midnight',c:'#1b1d27' }
+    ];
+    const grid = document.getElementById('themeGrid');
+    const sheet = document.getElementById('themeSheet');
+    const backdrop = document.getElementById('themeBackdrop');
+    let current = 'blue';
+    try{ current = localStorage.getItem('cmeTheme') || 'blue'; }catch(e){}
+    const tick = '<svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    grid.innerHTML = THEMES.map(t=>`
+      <button class="theme-opt${t.id===current?' active':''}" data-t="${t.id}">
+        ${tick}
+        <span class="sw" style="background:${t.c}"></span>
+        <span class="tn">${t.name}</span>
+      </button>`).join('');
+    function open(){ backdrop.classList.add('open'); sheet.classList.add('open'); }
+    function close(){ backdrop.classList.remove('open'); sheet.classList.remove('open'); }
+    { const _tb=document.getElementById('themeBtn'); if(_tb) _tb.addEventListener('click', open); }
+    backdrop.addEventListener('click', close);
+    grid.addEventListener('click', e=>{
+      const btn = e.target.closest('.theme-opt'); if(!btn) return;
+      const t = btn.dataset.t;
+      applyTheme(t);
+      try{ localStorage.setItem('cmeTheme', t); }catch(err){}
+      grid.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active', b===btn));
+      toast(THEMES.find(x=>x.id===t).name + ' theme applied');
+      setTimeout(close, 260);
+    });
+  })();
+
+  // ---- Profile completion nudge (compact ring card, dismissible, hides at 100%) ----
+  (function(){
+    const card = document.getElementById('pcomplete');
+    if(!card) return;
+    let dismissed = false;
+    try{ dismissed = localStorage.getItem('profileNudgeDismissed') === '1'; }catch(e){}
+
+    // In production these flags come from the user's profile. Verification is weighted higher.
+    const steps = [
+      { label:'Add a profile photo',          done:true },
+      { label:'Add your specialty',           done:true },
+      { label:'Add your hospital',            done:true },
+      { label:'Write a short bio',            done:true },
+      { label:'Add your education',           done:true },
+      { label:'Verify your medical licence',  done:false, weight:2 }
+    ];
+    const total = steps.reduce((a,s)=>a+(s.weight||1),0);
+    const doneW = steps.reduce((a,s)=>a+(s.done?(s.weight||1):0),0);
+    const pct = Math.round(doneW/total*100);
+
+    if(dismissed || pct>=100){ card.style.display='none'; return; }
+
+    const next = steps.find(s=>!s.done);
+    document.getElementById('pcPct').textContent = pct + '%';
+    document.getElementById('pcNext').textContent = (next ? next.label : 'Almost there') + ' →';
+
+    // draw + animate the progress ring
+    const r = 19, C = 2*Math.PI*r, ring = document.getElementById('pcRing');
+    ring.setAttribute('stroke-dasharray', C.toFixed(1));
+    ring.setAttribute('stroke-dashoffset', C.toFixed(1));
+    requestAnimationFrame(()=>{ ring.style.strokeDashoffset = (C*(1-pct/100)).toFixed(1); });
+
+    document.getElementById('pcX').addEventListener('click', e=>{
+      e.preventDefault(); e.stopPropagation();
+      card.style.display='none';
+      try{ localStorage.setItem('profileNudgeDismissed','1'); }catch(err){}
+      toast('Finish your profile anytime from Profile');
+    });
+  })();
+
+  // ---- Featured card: live now, else next upcoming, else on-demand empty state ----
+  (function(){
+    // In production this comes from the API. Here we pick a state at random on
+    // each load so all three layouts (live / upcoming / empty) can be previewed.
+    const featured = {
+      live: {
+        title:'Cardiometabolic Update 2025', meta:'24 May · 2 CME Credits · 12 speakers',
+        watching:'2,480', href:'speakers.html?type=live&title=Cardiometabolic%20Update%202025',
+        avs:['women/68','men/32','men/45'], net:'5 from your network'
+      },
+      upcoming: {
+        title:'Advances in Heart Failure', meta:'Tomorrow · 6:00 PM · 1.5 CME Credits',
+        starts:'Starts in 18h', href:'speakers.html?type=upcoming&title=Advances%20in%20Heart%20Failure',
+        avs:['men/54','women/44'], net:'12 registered'
+      }
+    };
+    const state = ['live','upcoming','empty'][Math.floor(Math.random()*3)];
+
+    const lbl = document.getElementById('featuredLbl');
+    const el = document.getElementById('featured');
+    const avs = a => `<div class="avs">${a.map(x=>`<img src="https://randomuser.me/api/portraits/${x}.jpg" alt="">`).join('')}</div>`;
+
+    if(state==='live'){
+      const f = featured.live;
+      lbl.textContent = 'Happening now';
+      el.innerHTML = `
+        <a class="feature" href="${f.href}">
+          <div class="pad">
+            <span class="tag"><span class="d" style="animation:pulse 1.4s infinite"></span>LIVE · ${f.watching} watching</span>
+            <h3>${f.title}</h3>
+            <div class="meta">${f.meta}</div>
+            <div class="foot">${avs(f.avs)}<span class="net">${f.net}</span><span class="go">Join</span></div>
+          </div>
+        </a>`;
+    } else if(state==='upcoming'){
+      const f = featured.upcoming;
+      lbl.textContent = 'Up next';
+      el.innerHTML = `
+        <a class="feature" href="${f.href}">
+          <div class="pad">
+            <span class="tag soon"><span class="d"></span>${f.starts}</span>
+            <h3>${f.title}</h3>
+            <div class="meta">${f.meta}</div>
+            <div class="foot">${avs(f.avs)}<span class="net">${f.net}</span><span class="go ghost" id="remindGo">Remind me</span></div>
+          </div>
+        </a>`;
+      const r = document.getElementById('remindGo');
+      if(r) r.addEventListener('click', e=>{ e.preventDefault(); toast("We'll remind you before it starts"); });
+    } else {
+      lbl.textContent = 'CME library';
+      el.innerHTML = `
+        <a class="feature empty" href="cme.html">
+          <div class="pad">
+            <span class="eic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
+            <h3>No live sessions right now</h3>
+            <div class="meta">Catch up any time — 40+ on-demand lectures and earn CME at your own pace.</div>
+            <span class="go">Browse library</span>
+          </div>
+        </a>`;
+    }
+  })();
+
+  const icons = {
+    net:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/></svg>',
+    ref:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h2"/><path d="M14 14h6"/><path d="m17 11 3 3-3 3"/></svg>',
+    cert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/><polyline points="9 12 11.5 14.5 15.5 9.5"/></svg>'
+  };
+  const feed = [
+    { i:'net', t:'Dr. Kavya Reddy sent a request', s:'Endocrinologist · Apollo', w:'2h',
+      status:'Pending', stype:'pending', todo:'Review this connection request and choose whether to accept it.',
+      pri:'Accept request', sec:'Ignore', href:'network.html', secDismiss:true, secToast:'Request ignored',
+      person:{ name:'Dr. Kavya Reddy', role:'Endocrinologist', hospital:'Apollo Hospitals', city:'Chennai',
+        img:'https://randomuser.me/api/portraits/women/65.jpg', exp:'14 yrs', connections:'980', mutual:'12',
+        bio:'Endocrinologist focused on diabetes, thyroid and metabolic disorders. Special interest in obesity, insulin resistance and PCOS management.',
+        tags:['Type 2 Diabetes','Thyroid','Obesity','PCOS'],
+        edu:[{t:'DM Endocrinology',s:'PGIMER, Chandigarh · 2012'},{t:'MD General Medicine',s:'AIIMS, New Delhi · 2008'}] } },
+    { i:'ref', t:'Referral accepted — Cardiology', s:'Patient RK · Dr. Sameer Shah', w:'5h',
+      status:'Accepted', stype:'done', todo:'Dr. Shah accepted your referral. Share the patient records to move it forward.',
+      pri:'Share records', sec:'View', href:'referral.html' },
+    { i:'cert', t:'Certificate ready — Lipid Update', s:'+1.5 CME credits earned', w:'1d',
+      status:'Ready', stype:'ready', todo:'Your certificate is ready. Download it or add the 1.5 credits to your CME record.',
+      pri:'Add to CME', sec:'Download', href:'mylearning.html' }
+  ];
+  // Randomly show the activity list, else fall back to Continue learning
+  // (a course in progress) or Recommended for you.
+  const feedEl = document.getElementById('feed');
+  const feedHead = document.querySelector('.sh.rise h2');
+  const seeAll = document.getElementById('feedSeeAll');
+  const hasActivity = Math.random() < 0.6;
+
+  // In-progress course + recommendations (from the API in production).
+  // Randomized here so both fallbacks can be previewed; use your real value live.
+  const inProgress = Math.random() < 0.5
+    ? { title:'Lipid Management 2025', done:3, total:5, pct:60, href:'mylearning.html' }
+    : null;
+  const recs = [
+    { i:'cert', t:'Heart Failure Update', s:'12 speakers · Cardiology', c:'1.5 cr', href:'cme.html' },
+    { i:'cert', t:'ECG Masterclass',      s:'Self-paced · 6 modules',  c:'2 cr',   href:'cme.html' },
+    { i:'cert', t:'Hypertension 2025',    s:'New · Guidelines review',  c:'1 cr',   href:'cme.html' }
+  ];
+
+  if(hasActivity){
+    feedEl.innerHTML = feed.map((f,i)=>`
+      <div class="fitem" data-i="${i}">
+        <span class="fi">${icons[f.i]}</span>
+        <div class="m"><div class="ft">${f.t}</div><div class="fs">${f.s}</div></div>
+        <span class="fw">${f.w}</span>
+      </div>`).join('');
+  } else if(inProgress){
+    feedHead.textContent = 'Pick up where you left off';
+    if(seeAll){ seeAll.textContent = 'My learning'; seeAll.href = 'mylearning.html'; }
+    feedEl.innerHTML = `
+      <a class="cont" href="${inProgress.href}">
+        <div class="k">CONTINUE LEARNING</div>
+        <h3>${inProgress.title}</h3>
+        <div class="bar"><i style="width:${inProgress.pct}%"></i></div>
+        <div class="foot"><span class="prog">${inProgress.done} of ${inProgress.total} modules · ${inProgress.pct}%</span><span class="go">Resume</span></div>
+      </a>`;
+  } else {
+    feedHead.textContent = 'Recommended for you';
+    if(seeAll){ seeAll.textContent = 'Browse all'; seeAll.href = 'cme.html'; }
+    feedEl.innerHTML = `<div class="recs">${recs.map(r=>`
+      <a class="rec" href="${r.href}">
+        <span class="ri">${icons[r.i]}</span>
+        <div class="m"><div class="rt">${r.t}</div><div class="rs">${r.s}</div></div>
+        <span class="rc">${r.c}</span>
+      </a>`).join('')}</div>`;
+  }
+
+  // ---- Popular doctors + "See all" searchable directory ----
+  (function(){
+    const people = [
+      { name:'Dr. Arjun Mehta', role:'Cardiologist', hospital:'Fortis', city:'Mumbai',
+        img:'https://randomuser.me/api/portraits/men/32.jpg', exp:'18 yrs', connections:'8.2k', mutual:'34',
+        bio:'Interventional cardiologist focused on complex coronary intervention, structural heart disease and preventive cardiology.',
+        tags:['Interventional','Heart Failure','TAVR','Preventive'],
+        edu:[{t:'DM Cardiology',s:'AIIMS, New Delhi · 2009'},{t:'MD General Medicine',s:'KEM Hospital, Mumbai · 2005'}] },
+      { name:'Dr. Sara Iyer', role:'Neurologist', hospital:'NIMHANS', city:'Bengaluru',
+        img:'https://randomuser.me/api/portraits/women/44.jpg', exp:'12 yrs', connections:'6.7k', mutual:'21',
+        bio:'Neurologist specialising in epilepsy, movement disorders and stroke care, with active research in neuro-rehabilitation.',
+        tags:['Epilepsy','Stroke','Parkinson’s','EEG'],
+        edu:[{t:'DM Neurology',s:'NIMHANS, Bengaluru · 2013'},{t:'MD General Medicine',s:'CMC, Vellore · 2009'}] },
+      { name:'Dr. Rohan Verma', role:'Oncologist', hospital:'Tata Memorial', city:'Mumbai',
+        img:'https://randomuser.me/api/portraits/men/45.jpg', exp:'15 yrs', connections:'5.9k', mutual:'18',
+        bio:'Medical oncologist focused on thoracic and GI cancers, immunotherapy and precision oncology.',
+        tags:['Immunotherapy','Lung Cancer','GI Oncology','Targeted Rx'],
+        edu:[{t:'DM Medical Oncology',s:'Tata Memorial, Mumbai · 2011'},{t:'MD General Medicine',s:'MAMC, New Delhi · 2007'}] },
+      { name:'Dr. Meera Nair', role:'Endocrinologist', hospital:'Apollo', city:'Chennai',
+        img:'https://randomuser.me/api/portraits/women/68.jpg', exp:'11 yrs', connections:'5.1k', mutual:'27',
+        bio:'Endocrinologist managing diabetes, thyroid and metabolic bone disease, with special interest in PCOS and obesity.',
+        tags:['Diabetes','Thyroid','PCOS','Obesity'],
+        edu:[{t:'DM Endocrinology',s:'PGIMER, Chandigarh · 2014'},{t:'MD General Medicine',s:'AIIMS, New Delhi · 2010'}] },
+      { name:'Dr. Kabir Singh', role:'Pulmonologist', hospital:'AIIMS', city:'Delhi',
+        img:'https://randomuser.me/api/portraits/men/54.jpg', exp:'14 yrs', connections:'4.6k', mutual:'15',
+        bio:'Pulmonologist treating obstructive airway disease, ILD and sleep disorders; leads interventional bronchoscopy.',
+        tags:['Asthma','COPD','ILD','Sleep Medicine'],
+        edu:[{t:'DM Pulmonary Medicine',s:'AIIMS, New Delhi · 2012'},{t:'MD TB & Chest',s:'PGIMER, Chandigarh · 2008'}] },
+      { name:'Dr. Neha Kapoor', role:'Dermatologist', hospital:'Manipal', city:'Bengaluru',
+        img:'https://randomuser.me/api/portraits/women/32.jpg', exp:'10 yrs', connections:'4.2k', mutual:'19',
+        bio:'Dermatologist with expertise in medical dermatology, acne, pigmentation and lasers.',
+        tags:['Acne','Pigmentation','Lasers','Cosmetology'],
+        edu:[{t:'MD Dermatology',s:'AFMC, Pune · 2015'},{t:'MBBS',s:'Manipal, Karnataka · 2010'}] },
+      { name:'Dr. Vikram Rao', role:'Orthopaedic Surgeon', hospital:'Medanta', city:'Gurugram',
+        img:'https://randomuser.me/api/portraits/men/76.jpg', exp:'16 yrs', connections:'3.8k', mutual:'12',
+        bio:'Orthopaedic surgeon specialising in joint replacement, sports injuries and arthroscopy.',
+        tags:['Joint Replacement','Arthroscopy','Sports Injury','Trauma'],
+        edu:[{t:'MS Orthopaedics',s:'PGIMER, Chandigarh · 2010'},{t:'MBBS',s:'MAMC, New Delhi · 2005'}] },
+      { name:'Dr. Ananya Ghosh', role:'Paediatrician', hospital:'AMRI', city:'Kolkata',
+        img:'https://randomuser.me/api/portraits/women/12.jpg', exp:'9 yrs', connections:'3.5k', mutual:'23',
+        bio:'Paediatrician and neonatologist focused on newborn care, immunisation and childhood nutrition.',
+        tags:['Neonatology','Vaccination','Nutrition','Growth'],
+        edu:[{t:'MD Paediatrics',s:'IPGMER, Kolkata · 2016'},{t:'MBBS',s:'Calcutta Medical College · 2011'}] },
+      { name:'Dr. Imran Shaikh', role:'Gastroenterologist', hospital:'Lilavati', city:'Mumbai',
+        img:'https://randomuser.me/api/portraits/men/64.jpg', exp:'13 yrs', connections:'3.1k', mutual:'9',
+        bio:'Gastroenterologist with interest in therapeutic endoscopy, IBD and liver disease.',
+        tags:['Endoscopy','IBD','Liver','Pancreas'],
+        edu:[{t:'DM Gastroenterology',s:'KEM, Mumbai · 2013'},{t:'MD Medicine',s:'Grant Medical College · 2009'}] },
+      { name:'Dr. Priya Menon', role:'Nephrologist', hospital:'Amrita', city:'Kochi',
+        img:'https://randomuser.me/api/portraits/women/90.jpg', exp:'12 yrs', connections:'2.9k', mutual:'14',
+        bio:'Nephrologist managing chronic kidney disease, dialysis and transplant care.',
+        tags:['CKD','Dialysis','Transplant','Hypertension'],
+        edu:[{t:'DM Nephrology',s:'SGPGI, Lucknow · 2014'},{t:'MD Medicine',s:'Amrita, Kochi · 2010'}] }
+    ];
+
+    // Shared connect state so a card and its list row stay in sync.
+    const status = people.map(()=>'none');   // 'none' | 'pending' | 'done'
+    const timers = {};
+    const label = s => s==='done' ? '✓ Connected' : s==='pending' ? 'Requested' : '+ Connect';
+    function refresh(i){
+      document.querySelectorAll('.pc[data-i="'+i+'"]').forEach(b=>{
+        b.classList.toggle('pending', status[i]==='pending');
+        b.classList.toggle('done', status[i]==='done');
+        b.textContent = label(status[i]);
+      });
+    }
+    function toggleConnect(i){
+      if(status[i]==='done') return;                                 // connected — locked
+      if(status[i]==='pending'){                                     // withdraw pending request
+        clearTimeout(timers[i]); status[i]='none'; refresh(i); toast('Request withdrawn'); return;
+      }
+      status[i]='pending'; refresh(i); toast('Connection request sent');
+      timers[i]=setTimeout(()=>{ status[i]='done'; refresh(i); toast(people[i].name + ' accepted your request'); }, 3200);
+    }
+    function openDoc(i){ openProfile({ ...people[i], ctaLabel:'Connect', ctaDone:'Requested', ctaToast:'Connection request sent', connectFlow:true }); }
+
+    // Delegated click: Connect button toggles state; the rest of the row opens the profile.
+    function rowClick(e){
+      const btn = e.target.closest('.pc');
+      if(btn){ e.stopPropagation(); toggleConnect(+btn.dataset.i); return; }
+      const holder = e.target.closest('[data-i]');
+      if(holder) openDoc(+holder.dataset.i);
+    }
+
+    // Horizontal "Popular" row
+    const el = document.getElementById('people');
+    el.innerHTML = people.map((p,i)=>`
+      <div class="pcard" data-i="${i}">
+        <img src="${p.img}" alt="">
+        <div class="pn">${p.name}</div>
+        <div class="pr">${p.role}</div>
+        <div class="pf">${p.connections} connections</div>
+        <button class="pc" type="button" data-i="${i}">+ Connect</button>
+      </div>`).join('');
+    el.addEventListener('click', rowClick);
+
+    // "See all" → full searchable doctors sheet
+    const docsBackdrop = document.getElementById('docsBackdrop');
+    const docsSheet = document.getElementById('docsSheet');
+    const docsList = document.getElementById('docsList');
+    const docsSearch = document.getElementById('docsSearch');
+    const docsCount = document.getElementById('docsCount');
+
+    function renderList(q){
+      q = (q||'').trim().toLowerCase();
+      const rows = people.map((p,i)=>({p,i})).filter(({p})=>
+        !q || (p.name+' '+p.role+' '+p.hospital+' '+p.city+' '+p.tags.join(' ')).toLowerCase().includes(q));
+      docsCount.textContent = rows.length + (rows.length===1 ? ' doctor' : ' doctors');
+      docsList.innerHTML = rows.length ? rows.map(({p,i})=>`
+        <div class="drow" data-i="${i}">
+          <img src="${p.img}" alt="">
+          <div class="m"><div class="dn">${p.name}</div><div class="dsub">${p.role} · ${p.hospital}, ${p.city}</div></div>
+          <button class="pc ${status[i]}" type="button" data-i="${i}">${label(status[i])}</button>
+        </div>`).join('') : `<div class="docs-empty">No doctors match “${q}”.</div>`;
+    }
+    docsList.addEventListener('click', rowClick);
+    docsSearch.addEventListener('input', ()=>renderList(docsSearch.value));
+
+    function openDocs(){ docsSearch.value=''; renderList(''); docsBackdrop.classList.add('open'); docsSheet.classList.add('open'); docsList.scrollTop=0; }
+    function closeDocs(){ docsBackdrop.classList.remove('open'); docsSheet.classList.remove('open'); }
+    docsBackdrop.addEventListener('click', closeDocs);
+    const seeAll = document.getElementById('popSeeAll');
+    if(seeAll) seeAll.addEventListener('click', e=>{ e.preventDefault(); openDocs(); });
+  })();
+
+  // ---- Notifications bell (no dedicated page yet → acknowledge with a toast) ----
+  document.getElementById('bellBtn').addEventListener('click', ()=>toast('3 new notifications'));
+
+  // ---- Activity detail sheet ----
+  const actBackdrop = document.getElementById('actBackdrop');
+  const actSheet = document.getElementById('actSheet');
+  const actIc = document.getElementById('actIc');
+  const actViewP = document.getElementById('actViewP');
+  function openAct(f){
+    if(f.person){
+      actIc.className = 'act-ic person';
+      actIc.innerHTML = `<img src="${f.person.img}" alt="">`;
+      actIc.onclick = ()=>openProfile(f.person);
+      actViewP.hidden = false; actViewP.onclick = ()=>openProfile(f.person);
+    } else {
+      actIc.className = 'act-ic'; actIc.innerHTML = icons[f.i]; actIc.onclick = null; actViewP.hidden = true;
+    }
+    document.getElementById('actT').textContent = f.t;
+    document.getElementById('actS').textContent = f.s;
+    const st = document.getElementById('actStatus');
+    st.className = 'act-status st-' + f.stype;
+    document.getElementById('actStatusTxt').textContent = f.status;
+    document.getElementById('actTodo').textContent = f.todo;
+    document.getElementById('actPri').textContent = f.pri;
+    document.getElementById('actSec').textContent = f.sec;
+    document.getElementById('actPri').onclick = ()=>{ location.href = f.href; };
+    document.getElementById('actSec').onclick = f.secDismiss
+      ? ()=>{ closeAct(); if(f.secToast) toast(f.secToast); }
+      : ()=>{ location.href = f.href; };
+    actBackdrop.classList.add('open'); actSheet.classList.add('open');
+  }
+  function closeAct(){ actBackdrop.classList.remove('open'); actSheet.classList.remove('open'); }
+  document.getElementById('feed').addEventListener('click', e=>{
+    const it = e.target.closest('.fitem'); if(it) openAct(feed[+it.dataset.i]);
+  });
+  actBackdrop.addEventListener('click', closeAct);
+
+  // ---- Full profile sheet ----
+  const profBackdrop = document.getElementById('profBackdrop');
+  const profSheet = document.getElementById('profSheet');
+  const profBody = document.getElementById('profBody');
+  const pinIco = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+  const chatIco = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
+  const capIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>';
+  function openProfile(p){
+    profBody.innerHTML = `
+      <div class="p-hero"><img class="p-av" src="${p.img}" alt=""></div>
+      <div class="p-top">
+        <div class="p-name">${p.name}</div>
+        <div class="p-role">${p.role}</div>
+        <div class="p-loc">${pinIco}${p.hospital}, ${p.city}</div>
+      </div>
+      <div class="p-stats">
+        <div><b>${p.connections}</b><span>Connections</span></div>
+        <div><b>${p.mutual}</b><span>Mutual</span></div>
+        <div><b>${p.exp}</b><span>Experience</span></div>
+      </div>
+      <div class="p-actions"><button class="p-pri" id="pPri">${p.ctaLabel || 'Accept request'}</button><button class="p-sec">${chatIco}Message</button></div>
+      <div class="p-h">About</div><p class="p-bio">${p.bio}</p>
+      <div class="p-h">Specialties</div><div class="p-tags">${p.tags.map(t=>`<span class="p-tag">${t}</span>`).join('')}</div>
+      <div class="p-h">Education</div><div class="p-list">${p.edu.map(e=>`<div class="p-li"><span class="pi">${capIco}</span><div><div class="pt">${e.t}</div><div class="psub">${e.s}</div></div></div>`).join('')}</div>
+    `;
+    document.getElementById('pPri').onclick = ()=>{
+      const b=document.getElementById('pPri');
+      if(b.classList.contains('done')) return;                   // already connected
+      if(p.connectFlow && b.classList.contains('pending')){      // withdraw pending request
+        clearTimeout(b._t);
+        b.classList.remove('pending'); b.textContent = p.ctaLabel || 'Connect';
+        toast('Request withdrawn');
+        return;
+      }
+      if(p.connectFlow){
+        b.classList.add('pending'); b.textContent = p.ctaDone || 'Requested';
+        if(p.ctaToast) toast(p.ctaToast);
+        b._t = setTimeout(()=>{
+          if(!b.isConnected) return;
+          b.classList.remove('pending'); b.classList.add('done'); b.textContent = '✓ Connected';
+          toast((p.name || 'Request') + ' accepted your request');
+        }, 3200);
+      } else {
+        b.classList.add('done'); b.textContent = p.ctaDone || '✓ Connected';
+        if(p.ctaToast) toast(p.ctaToast);
+      }
+    };
+    profBackdrop.classList.add('open'); profSheet.classList.add('open'); profSheet.scrollTop=0;
+  }
+  function closeProfile(){ profBackdrop.classList.remove('open'); profSheet.classList.remove('open'); }
+  profBackdrop.addEventListener('click', closeProfile);
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ if(profSheet.classList.contains('open')) closeProfile(); else closeAct(); } });
+
+  (function(){
+    var p=document.querySelector('.phone'), BASE=390;
+    function fit(){ if(window.innerWidth<=600){ var s=window.innerWidth/BASE; p.style.width=BASE+'px'; p.style.height=(window.innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } }
+    fit(); window.addEventListener('resize',fit); window.addEventListener('orientationchange',fit);
+  })();
+</script>
+</body>
+</html>

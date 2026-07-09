@@ -1,0 +1,7 @@
+[build]
+  publish = "/"
+
+[dev]
+  port = 8888
+
+# No build command since site is static; Netlify will serve the repo root.

@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(python \"C:\\\\Users\\\\shiv\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-shiv-docsy\\\\92d4eccb-c8ea-487c-bfa0-3f62b29bd071\\\\scratchpad\\\\deguard.py\")"
+    ]
+  }
+}

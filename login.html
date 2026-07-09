@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign in — DocSynapse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif;
+    --ui:'Inter', sans-serif;
+  }
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}} .rise{animation:rise .5s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} }
+
+  .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:14px 24px 24px;display:flex;flex-direction:column;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .brand{text-align:center;margin:18px 0 22px;}
+  .logo{width:64px;height:64px;border-radius:19px;margin:0 auto 14px;display:grid;place-items:center;color:#fff;background:linear-gradient(135deg,var(--g1),var(--g2));box-shadow:0 14px 30px -12px var(--brand);}
+  .logo svg{width:32px;height:32px;}
+  .brand h1{font-size:26px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .brand .tag{font-size:11px;color:var(--muted);font-weight:600;margin-top:4px;}
+
+  .segment{display:flex;background:var(--chip);border-radius:13px;padding:4px;margin-bottom:20px;}
+  .segment button{flex:1;border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:800;color:var(--muted);padding:11px;min-height:44px;border-radius:10px;cursor:pointer;transition:background .18s, color .18s;}
+  .segment button.active{background:var(--card);color:var(--brand);box-shadow:0 4px 12px -6px rgba(0,0,0,.25);}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:10.5px;font-weight:800;color:var(--slate-700);margin:0 2px 7px;}
+  .field .inp{position:relative;}
+  .field input{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 14px;font-size:12.5px;font-family:inherit;color:var(--ink);}
+  .field input.haspw{padding-right:44px;}
+  .field input::placeholder{color:var(--muted);}
+  .field input:focus{outline:none;border-color:var(--brand);}
+  .pw-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:36px;height:36px;border:none;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:8px;}
+  .pw-eye:active{transform:translateY(-50%) scale(.9);}
+  .pw-eye svg{width:18px;height:18px;}
+  .forgot{text-align:right;margin:-4px 2px 4px;}
+  .forgot button{background:none;border:none;font-family:inherit;font-size:11px;font-weight:700;color:var(--brand);cursor:pointer;padding:4px;}
+
+  .btn{width:100%;min-height:50px;border:none;border-radius:13px;font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;transition:transform .16s cubic-bezier(.22,1,.36,1), background .18s;}
+  .btn:active{transform:scale(.98);}
+  .btn-primary{background:var(--brand);color:#fff;margin-top:6px;}
+  .btn-primary:hover{background:var(--brand-dark);}
+  .btn-primary:disabled{background:var(--chip);color:var(--muted);cursor:default;}
+  .divider{display:flex;align-items:center;gap:12px;margin:18px 0;color:var(--muted);font-size:10px;font-weight:700;}
+  .divider::before,.divider::after{content:"";flex:1;height:1px;background:var(--line);}
+  .btn-alt{background:var(--card);border:1px solid var(--line);color:var(--ink);}
+  .btn-alt svg{width:16px;height:16px;color:var(--brand);}
+
+  .hint{font-size:10.5px;color:var(--muted);text-align:center;margin-top:16px;}
+  .hint b{color:var(--brand);font-weight:800;cursor:pointer;}
+  .foot{margin-top:auto;padding-top:22px;text-align:center;font-size:9.5px;line-height:1.6;color:var(--muted);}
+  .foot a{color:var(--slate-700);font-weight:700;text-decoration:none;}
+
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+  .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;font-family:inherit;padding:10px 18px;border-radius:22px;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="scroll">
+    <div class="brand rise">
+      <div class="logo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a2 2 0 1 1 2-2 3 3 0 0 0 3 3 3 3 0 0 0 3-3V6a2 2 0 1 1 2 0"/><path d="M12 12a3 3 0 0 0 3 3 3 3 0 0 0 3-3 2 2 0 1 1 2 2"/><circle cx="4" cy="12" r="0"/></svg></div>
+      <h1>DocSynapse</h1>
+      <div class="tag">Mysaa Life Health Care · for verified physicians</div>
+    </div>
+
+    <div class="segment rise">
+      <button id="tabLogin" class="active">Login</button>
+      <button id="tabReg">Register</button>
+    </div>
+
+    <form id="form" class="rise" autocomplete="off" onsubmit="return false">
+      <div class="field" id="fName" hidden>
+        <label for="name">Full name</label>
+        <div class="inp"><input id="name" placeholder="Dr. Full name"></div>
+      </div>
+      <div class="field">
+        <label for="acct">Email or mobile</label>
+        <div class="inp"><input id="acct" placeholder="you@hospital.org or +91…" inputmode="email"></div>
+      </div>
+      <div class="field" id="fReg" hidden>
+        <label for="nmc">Medical registration no.</label>
+        <div class="inp"><input id="nmc" placeholder="NMC / state council reg. no."></div>
+      </div>
+      <div class="field">
+        <label for="pw">Password</label>
+        <div class="inp">
+          <input id="pw" class="haspw" type="password" placeholder="Enter password">
+          <button class="pw-eye" id="pwEye" type="button" aria-label="Show password"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg></button>
+        </div>
+      </div>
+      <div class="forgot" id="forgot"><button type="button">Forgot password?</button></div>
+
+      <button class="btn btn-primary" id="submit" type="button" disabled>Sign in</button>
+
+      <div class="divider">or</div>
+      <button class="btn btn-alt" id="otp" type="button"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="3"/><line x1="10" y1="18" x2="14" y2="18"/></svg>Continue with OTP</button>
+
+      <div class="hint" id="switchHint"></div>
+    </form>
+
+    <div class="foot rise">By continuing you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.<br>DocSynapse · Mysaa Life Health Care © 2026</div>
+  </div>
+
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  function applyTheme(t){ if(!t||t==='classical') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',t); }
+  try{ applyTheme(localStorage.getItem('cmeTheme')||'blue'); }catch(e){}
+  // already signed in → skip login, go straight to the app
+  try{ if(localStorage.getItem('docAuth')==='1') location.replace('home.html'); }catch(e){}
+  function toast(msg){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; (document.querySelector('.phone')||document.body).appendChild(t); } t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
+
+  const tabLogin=document.getElementById('tabLogin'), tabReg=document.getElementById('tabReg');
+  const fName=document.getElementById('fName'), fReg=document.getElementById('fReg'), forgot=document.getElementById('forgot');
+  const name=document.getElementById('name'), acct=document.getElementById('acct'), nmc=document.getElementById('nmc'), pw=document.getElementById('pw');
+  const submit=document.getElementById('submit'), switchHint=document.getElementById('switchHint');
+  let mode='login';
+
+  function setMode(m){
+    mode=m;
+    tabLogin.classList.toggle('active', m==='login');
+    tabReg.classList.toggle('active', m==='register');
+    fName.hidden = m!=='register';
+    fReg.hidden  = m!=='register';
+    forgot.hidden = m!=='login';
+    submit.textContent = m==='login' ? 'Sign in' : 'Create account';
+    switchHint.innerHTML = m==='login'
+      ? `New to DocSynapse? <b id="goReg">Create an account</b>`
+      : `Already registered? <b id="goLogin">Sign in</b>`;
+    const gr=document.getElementById('goReg'); if(gr) gr.onclick=()=>setMode('register');
+    const gl=document.getElementById('goLogin'); if(gl) gl.onclick=()=>setMode('login');
+    validate();
+  }
+  function validate(){
+    let ok = acct.value.trim() && pw.value.trim().length>=4;
+    if(mode==='register') ok = ok && name.value.trim() && nmc.value.trim();
+    submit.disabled = !ok;
+  }
+  [name,acct,nmc,pw].forEach(el=>el.addEventListener('input', validate));
+  tabLogin.addEventListener('click', ()=>setMode('login'));
+  tabReg.addEventListener('click', ()=>setMode('register'));
+
+  document.getElementById('pwEye').addEventListener('click', ()=>{ pw.type = pw.type==='password' ? 'text' : 'password'; });
+  document.querySelector('#forgot button').addEventListener('click', ()=>toast('Password reset link sent'));
+  document.getElementById('otp').addEventListener('click', ()=>toast('OTP sent to your mobile'));
+
+  submit.addEventListener('click', ()=>{
+    if(submit.disabled) return;
+    try{
+      let nm='';
+      if(mode==='register'){ nm=name.value.trim(); }
+      else { nm=localStorage.getItem('docName')||''; if(!nm){ const a=acct.value.trim().split('@')[0].replace(/[._]+/g,' ').trim(); nm = a ? a.replace(/\b\w/g,c=>c.toUpperCase()) : 'Doctor'; } }
+      if(nm && !/^dr\.?\s/i.test(nm)) nm = 'Dr. ' + nm;
+      localStorage.setItem('docAuth','1');
+      localStorage.setItem('docName', nm);
+      localStorage.setItem('docUser', acct.value.trim());
+    }catch(e){}
+    toast(mode==='login' ? 'Welcome back' : 'Account created · welcome');
+    setTimeout(()=>location.replace('home.html'), 850);
+  });
+
+  setMode('login');
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

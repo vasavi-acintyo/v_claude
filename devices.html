@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Device Preview — CME App</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Inter',system-ui,sans-serif;
+    background:radial-gradient(120% 120% at 50% 0%, #1b1f2a, #0c0e14 70%);
+    color:#e7e9ef;min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden;
+  }
+  header{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:14px 20px;border-bottom:1px solid rgba(255,255,255,.08);
+    background:rgba(255,255,255,.02);backdrop-filter:blur(8px);position:sticky;top:0;z-index:5;
+  }
+  header h1{font-size:16px;font-weight:800;letter-spacing:-.02em;margin-right:6px;}
+  header h1 span{color:#8b7bff;}
+  .ctrl{display:flex;align-items:center;gap:7px;}
+  .ctrl label{font-size:11px;font-weight:600;color:#9aa0b0;}
+  select{
+    font-family:inherit;font-size:12.5px;font-weight:600;color:#e7e9ef;background:#20232e;
+    border:1px solid rgba(255,255,255,.12);border-radius:10px;padding:9px 12px;cursor:pointer;outline:none;max-width:230px;
+  }
+  select:hover{border-color:#8b7bff;}
+  .spec{margin-left:auto;font-size:11.5px;color:#9aa0b0;font-weight:600;white-space:nowrap;}
+  .spec b{color:#e7e9ef;}
+
+  .stage{flex:1;display:grid;place-items:center;padding:30px 20px;overflow:auto;}
+  .device-wrap{transform-origin:top center;transition:transform .25s ease;}
+  .device{
+    position:relative;background:#0a0a0c;border-radius:var(--r,52px);padding:var(--bez,13px);
+    box-shadow:0 40px 90px -30px rgba(0,0,0,.85), 0 0 0 2px rgba(255,255,255,.06), inset 0 0 0 2px #1c1c22;
+  }
+  .device .screen{position:relative;border-radius:calc(var(--r,52px) - var(--bez,13px));overflow:hidden;background:#000;line-height:0;}
+  .device iframe{display:block;border:none;background:#fff;}
+  /* dynamic island / punch-hole */
+  .device .notch{
+    position:absolute;top:9px;left:50%;transform:translateX(-50%);
+    width:118px;height:26px;background:#0a0a0c;border-radius:16px;z-index:3;pointer-events:none;
+  }
+  .device.android .notch{width:9px;height:9px;top:11px;border-radius:50%;background:#16161a;}
+  .device.flat{--r:22px;--bez:11px;}
+  .device.flat .notch{display:none;}
+  .caption{text-align:center;margin-top:15px;font-size:12px;color:#9aa0b0;font-weight:600;}
+  .caption b{color:#e7e9ef;}
+  .hint{font-size:10.5px;color:#6b7180;margin-top:5px;max-width:340px;margin-left:auto;margin-right:auto;line-height:1.5;}
+</style>
+</head>
+<body>
+  <header>
+    <h1>Device <span>Preview</span></h1>
+    <div class="ctrl">
+      <label>Screen</label>
+      <select id="page">
+        <option value="login.html">Login / Register</option>
+        <option value="home.html" selected>Home (dashboard)</option>
+        <option value="presentations.html">Presentations</option>
+        <option value="files.html">My Files</option>
+        <option value="cme.html">CME — home</option>
+        <option value="create-cme.html">CME — Create Program</option>
+        <option value="my-programs.html">CME — Host CME (organizer)</option>
+        <option value="accreditation-requests.html">CME — Accreditation requests</option>
+        <option value="speakers.html">CME — Speakers / About</option>
+        <option value="explore.html">CME — Explore</option>
+        <option value="mylearning.html">CME — My Learning</option>
+        <option value="calendar.html">CME — Calendar</option>
+        <option value="network.html">Network</option>
+        <option value="post.html">Post — Feed</option>
+        <option value="profile.html">Network — Profile</option>
+        <option value="clinical-profile.html">Profile — Clinical profile</option>
+        <option value="hospital-affiliations.html">Profile — Hospital affiliations</option>
+        <option value="credentials.html">Profile — Credentials</option>
+        <option value="credential-add.html">Profile — Add credential</option>
+        <option value="settings.html">Profile — Settings</option>
+        <option value="medicolegal.html">Medico-Legal</option>
+        <option value="referral.html">Referral</option>
+      </select>
+    </div>
+    <div class="ctrl">
+      <label>Device</label>
+      <select id="device"></select>
+    </div>
+    <div class="spec" id="spec"></div>
+  </header>
+
+  <div class="stage">
+    <div>
+      <div class="device-wrap" id="wrap">
+        <div class="device" id="frame">
+          <div class="notch"></div>
+          <div class="screen"><iframe id="frameIf" title="preview"></iframe></div>
+        </div>
+      </div>
+      <div class="caption" id="cap"></div>
+      <div class="caption hint">All devices are portrait phones (≤430&nbsp;px wide) so the app renders in its full-screen mobile mode. Pick a device to compare layouts.</div>
+    </div>
+  </div>
+
+<script>
+  // logical (CSS px) portrait sizes — all ≤ 600 so the app's mobile mode engages
+  const devices = [
+    {n:'iPhone SE (2/3rd gen)', w:375, h:667, os:'ios', flat:true},
+    {n:'iPhone 13 mini',        w:375, h:812, os:'ios'},
+    {n:'iPhone 12 / 13 / 14',   w:390, h:844, os:'ios'},
+    {n:'iPhone 15 / 16 Pro',    w:393, h:852, os:'ios'},
+    {n:'iPhone 11 / XR',        w:414, h:896, os:'ios'},
+    {n:'iPhone 15 Pro Max',     w:430, h:932, os:'ios'},
+    {n:'Galaxy S8+ / S9+',      w:360, h:740, os:'android'},
+    {n:'Galaxy S20 / S21',      w:360, h:800, os:'android'},
+    {n:'Galaxy S23 Ultra',      w:384, h:824, os:'android'},
+    {n:'Google Pixel 5',        w:393, h:851, os:'android'},
+    {n:'Google Pixel 7 / 8',    w:412, h:915, os:'android'},
+    {n:'Small Android',         w:360, h:640, os:'android', flat:true}
+  ];
+
+  const sel = document.getElementById('device');
+  devices.forEach((d,i)=> sel.add(new Option(`${d.n}  —  ${d.w}×${d.h}`, i, i===2, i===2)));
+
+  const page   = document.getElementById('page');
+  const frame  = document.getElementById('frame');
+  const wrap   = document.getElementById('wrap');
+  const iframe = document.getElementById('frameIf');
+  const specEl = document.getElementById('spec');
+  const capEl  = document.getElementById('cap');
+
+  function apply(){
+    const d = devices[+sel.value];
+    iframe.style.width  = d.w+'px';
+    iframe.style.height = d.h+'px';
+    frame.classList.toggle('android', d.os==='android');
+    frame.classList.toggle('flat', !!d.flat);
+    // scale the whole device down to fit the visible stage height
+    const bez = d.flat ? 11 : 13;
+    const totalH = d.h + bez*2 + 60;
+    const avail = window.innerHeight - 150;
+    const scale = Math.min(1, avail/totalH);
+    wrap.style.transform = `scale(${scale.toFixed(3)})`;
+    specEl.innerHTML = `<b>${d.w}×${d.h}</b> CSS px · ${Math.round(scale*100)}% shown`;
+    capEl.innerHTML  = `<b>${d.n}</b>`;
+  }
+
+  sel.addEventListener('change', apply);
+  page.addEventListener('change', ()=>{ iframe.src = page.value; });
+  window.addEventListener('resize', apply);
+
+  iframe.src = page.value;
+  apply();
+</script>
+</body>
+</html>

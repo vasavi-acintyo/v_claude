@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e ' *)",
+      "Bash(node -e \"try{require.resolve\\('puppeteer'\\);console.log\\('puppeteer'\\)}catch\\(e\\){try{require.resolve\\('playwright'\\);console.log\\('playwright'\\)}catch\\(e2\\){console.log\\('none'\\)}}\")",
+      "Bash(npm ls *)",
+      "Bash(npm i *)",
+      "Bash(node test.js)",
+      "Bash(node -e \"const fs=require\\('fs'\\);const s=fs.readFileSync\\('profile.html','utf8'\\);const need=['getElementById\\(\\\\'back\\\\'\\)','getElementById\\(\\\\'prof\\\\'\\)','getElementById\\(\\\\'topName\\\\'\\)','idbGet','openProfile'!=null?'idbOpen':'','connect','message','data-os','applyTheme'];['back','prof','topName','idbOpen','idbGet','mediaInPost','vfIco','chatIco','docIco','paPosts','paComments','data-os'].forEach\\(k=>{if\\(!s.includes\\(k\\)\\)console.log\\('MISSING',k\\)}\\);console.log\\('open tags style:',\\(s.match\\(/<style>/g\\)||[]\\).length,'script:',\\(s.match\\(/<script>/g\\)||[]\\).length\\);console.log\\('OK length',s.length\\);\")",
+      "Bash(python \"C:\\\\Users\\\\shiv\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-shiv-docsy\\\\92d4eccb-c8ea-487c-bfa0-3f62b29bd071\\\\scratchpad\\\\navfix.py\")",
+      "Bash(py \"C:\\\\Users\\\\shiv\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-shiv-docsy\\\\92d4eccb-c8ea-487c-bfa0-3f62b29bd071\\\\scratchpad\\\\navfix.py\")",
+      "Bash(python \"C:\\\\Users\\\\shiv\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users-shiv-docsy\\\\92d4eccb-c8ea-487c-bfa0-3f62b29bd071\\\\scratchpad\\\\navguard.py\")"
+    ]
+  }
+}

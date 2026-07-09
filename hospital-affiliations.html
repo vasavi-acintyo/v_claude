@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hospital affiliations — DocSynapse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif;
+    --ui:'Inter', sans-serif;
+  }
+
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}} .rise{animation:rise .5s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} .topbar{padding-top:max(6px,env(safe-area-inset-top));} }
+
+  .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1);}
+  .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;flex:1;min-width:0;}
+  .topbar .plus{width:40px;height:40px;border-radius:11px;background:var(--brand);border:none;display:grid;place-items:center;cursor:pointer;color:#fff;flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s;}
+  .topbar .plus:hover{background:var(--brand-dark);} .topbar .plus:active{transform:scale(.92);}
+  .topbar .plus svg{width:20px;height:20px;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:18px 18px 24px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .aff-list{display:flex;flex-direction:column;gap:12px;}
+  .aff{display:flex;align-items:flex-start;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;transition:border-color .18s;}
+  .aff.primary{border-color:var(--brand);border-width:1.5px;}
+  .aff .ai{width:42px;height:42px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;}
+  .aff .ai svg{width:22px;height:22px;}
+  .aff .info{flex:1;min-width:0;}
+  .aff .nm{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:13.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .aff .pri{font-size:8px;font-weight:800;letter-spacing:.06em;color:var(--brand);background:var(--brand-soft);padding:3px 7px;border-radius:20px;text-transform:uppercase;}
+  .aff .rl{font-size:10.5px;color:var(--muted);margin-top:4px;}
+  .aff .sc{font-size:10.5px;color:var(--slate-700);font-weight:600;margin-top:7px;display:flex;align-items:center;gap:6px;}
+  .aff .sc svg{width:13px;height:13px;color:var(--muted);flex:0 0 auto;}
+  .aff .more{width:34px;height:34px;flex:0 0 auto;border:none;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:9px;margin:-4px -6px 0 0;transition:transform .16s cubic-bezier(.22,1,.36,1), color .16s;}
+  .aff .more:hover{color:var(--brand);} .aff .more:active{transform:scale(.9);}
+  .aff .more svg{width:20px;height:20px;}
+
+  .aff-note{margin-top:16px;background:var(--soft1);border-radius:14px;padding:13px 15px;font-size:10.5px;line-height:1.6;color:var(--muted);}
+
+  /* add-affiliation inline form */
+  .addform{background:var(--card);border:1.5px solid var(--brand);border-radius:16px;padding:15px;margin-bottom:14px;}
+  .addform h3{font-size:14.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin-bottom:13px;}
+  .af-field{margin-top:12px;}
+  .af-field label{display:block;font-size:10.5px;font-weight:800;color:var(--slate-700);margin:0 2px 6px;}
+  .af-field input{width:100%;background:var(--chip);border:1px solid transparent;border-radius:10px;padding:12px 12px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .af-field input::placeholder{color:var(--muted);}
+  .af-field input:focus{outline:none;border-color:var(--brand);background:var(--card);}
+  .af-row{display:flex;gap:10px;margin-top:12px;}
+  .af-row .af-field{flex:1;min-width:0;margin-top:0;}
+  .af-check{display:flex;align-items:center;gap:9px;margin-top:15px;cursor:pointer;font-size:11.5px;font-weight:600;color:var(--slate-700);}
+  .af-check input{position:absolute;opacity:0;width:0;height:0;pointer-events:none;}
+  .af-check .box{width:20px;height:20px;border-radius:6px;border:2px solid var(--line);display:grid;place-items:center;color:#fff;flex:0 0 auto;transition:background .15s, border-color .15s;}
+  .af-check .box svg{width:12px;height:12px;opacity:0;transition:opacity .15s;}
+  .af-check input:checked + .box{background:var(--brand);border-color:var(--brand);}
+  .af-check input:checked + .box svg{opacity:1;}
+  .af-actions{display:flex;gap:10px;margin-top:17px;}
+  .af-actions button{flex:1;min-height:46px;border-radius:12px;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1), background .16s;}
+  .af-actions button:active{transform:scale(.96);}
+  .af-cancel{background:var(--card);border:1px solid var(--line);color:var(--ink);}
+  .af-add{background:var(--brand);color:#fff;border:none;}
+  .af-add:disabled{background:var(--chip);color:var(--muted);cursor:default;}
+
+  /* action sheet */
+  .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;z-index:30;}
+  .backdrop.open{opacity:1;visibility:visible;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--card);border-radius:22px 22px 0 0;padding:8px 14px calc(16px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .45s cubic-bezier(.34,1.3,.5,1);box-shadow:0 -12px 40px -12px rgba(0,0,0,.4);}
+  .sheet.open{transform:translateY(0);}
+  .sheet .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:6px auto 10px;}
+  .menu-title{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;padding:4px 8px 10px;border-bottom:1px solid var(--line);}
+  .act-row{display:flex;align-items:center;gap:12px;width:100%;background:none;border:none;padding:14px 8px;font-family:inherit;font-size:13px;font-weight:700;color:var(--ink);cursor:pointer;text-align:left;transition:opacity .15s;}
+  .act-row:active{opacity:.6;}
+  .act-row .ri{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;}
+  .act-row .ri svg{width:17px;height:17px;}
+  .act-row.danger{color:#c0464a;} .act-row.danger .ri{background:rgba(224,106,106,.14);color:#c0464a;}
+
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+  .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;font-family:inherit;padding:10px 18px;border-radius:22px;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="tt">Hospital affiliations</span>
+    <button class="plus" id="add" aria-label="Add affiliation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+  </div>
+
+  <div class="scroll">
+    <div class="addform" id="addForm" hidden>
+      <h3>Add affiliation</h3>
+      <div class="af-field"><label for="afName">Hospital / clinic</label><input id="afName" placeholder="e.g. Yashoda Hospitals"></div>
+      <div class="af-field"><label for="afRole">Role / designation</label><input id="afRole" placeholder="e.g. Consultant physician"></div>
+      <div class="af-row">
+        <div class="af-field"><label for="afSince">Associated since</label><input id="afSince" placeholder="2024" inputmode="numeric"></div>
+        <div class="af-field"><label for="afSched">Availability</label><input id="afSched" placeholder="e.g. Tue, Thu"></div>
+      </div>
+      <label class="af-check"><input type="checkbox" id="afPrimary"><span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>Set as primary affiliation</label>
+      <div class="af-actions">
+        <button class="af-cancel" id="afCancel" type="button">Cancel</button>
+        <button class="af-add" id="afAdd" type="button" disabled>Add affiliation</button>
+      </div>
+    </div>
+    <div class="aff-list" id="list"></div>
+    <div class="aff-note rise">Affiliations are shown on your public profile to verified physicians. Patients never see this list.</div>
+  </div>
+
+  <div class="home-ind"></div>
+
+  <!-- action menu sheet -->
+  <div class="backdrop" id="menuBackdrop"></div>
+  <div class="sheet" id="menuSheet">
+    <div class="grab"></div>
+    <div class="menu-title" id="menuTitle"></div>
+    <button class="act-row" id="actPrimary"><span class="ri"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 2.9 6.1 6.6.6-5 4.4 1.5 6.5L12 16.9 5.9 20l1.5-6.5-5-4.4 6.6-.6z"/></svg></span>Set as primary</button>
+    <button class="act-row" id="actEdit"><span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg></span>Edit details</button>
+    <button class="act-row danger" id="actRemove"><span class="ri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m2 0v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg></span>Remove</button>
+  </div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  function applyTheme(t){ if(!t||t==='classical') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme',t); }
+  try{ applyTheme(localStorage.getItem('cmeTheme')||'blue'); }catch(e){}
+  function toast(msg){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; (document.querySelector('.phone')||document.body).appendChild(t); } t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const calIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2.5" x2="8" y2="6"/><line x1="16" y1="2.5" x2="16" y2="6"/></svg>';
+  const hospIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V8a1 1 0 0 1 1-1h4V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v3h4a1 1 0 0 1 1 1v13"/><path d="M12 6v4M10 8h4"/><path d="M9 21v-4h6v4"/></svg>';
+  const moreIco='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
+
+  const DEFAULT=[
+    {name:'Apollo Hyderabad', role:'Senior consultant', since:'2018', sched:'Mon–Fri', primary:true},
+    {name:'KIMS Secunderabad', role:'Visiting consultant', since:'2020', sched:'Sat', primary:false},
+    {name:'Tele-clinic — Practo', role:'Online consultations', since:'2022', sched:'Daily evenings', primary:false}
+  ];
+  let items;
+  try{ const s=JSON.parse(localStorage.getItem('hospitalAffiliations')||'null'); items = Array.isArray(s)&&s.length ? s : DEFAULT.slice(); }catch(e){ items = DEFAULT.slice(); }
+  function save(){ try{ localStorage.setItem('hospitalAffiliations', JSON.stringify(items)); }catch(e){} }
+
+  const listEl=document.getElementById('list');
+  function render(){
+    listEl.innerHTML = items.map((a,i)=>`
+      <div class="aff${a.primary?' primary':''}" data-i="${i}">
+        <span class="ai">${hospIco}</span>
+        <div class="info">
+          <div class="nm">${esc(a.name)}${a.primary?'<span class="pri">Primary</span>':''}</div>
+          <div class="rl">${esc(a.role)} · since ${esc(a.since)}</div>
+          <div class="sc">${calIco}${esc(a.sched)}</div>
+        </div>
+        <button class="more" data-i="${i}" aria-label="Options">${moreIco}</button>
+      </div>`).join('');
+  }
+  render();
+
+  // ---- action menu ----
+  const menuSheet=document.getElementById('menuSheet'), menuBackdrop=document.getElementById('menuBackdrop');
+  let curIdx=-1;
+  function openMenu(i){ curIdx=i; document.getElementById('menuTitle').textContent=items[i].name; document.getElementById('actPrimary').style.display = items[i].primary ? 'none' : 'flex'; menuBackdrop.classList.add('open'); menuSheet.classList.add('open'); }
+  function closeMenu(){ menuBackdrop.classList.remove('open'); menuSheet.classList.remove('open'); }
+  listEl.addEventListener('click', e=>{ const m=e.target.closest('.more'); if(m) openMenu(+m.dataset.i); });
+  menuBackdrop.addEventListener('click', closeMenu);
+
+  document.getElementById('actPrimary').addEventListener('click', ()=>{ items.forEach((a,j)=>a.primary=j===curIdx); save(); render(); closeMenu(); toast(items[curIdx].name+' set as primary'); });
+  document.getElementById('actEdit').addEventListener('click', ()=>{
+    const a=items[curIdx];
+    const role=(prompt('Role at '+a.name, a.role)||'').trim(); if(role) a.role=role;
+    const sched=(prompt('Schedule', a.sched)||'').trim(); if(sched) a.sched=sched;
+    save(); render(); closeMenu(); toast('Affiliation updated');
+  });
+  document.getElementById('actRemove').addEventListener('click', ()=>{
+    const wasPrimary=items[curIdx].primary; const nm=items[curIdx].name;
+    items.splice(curIdx,1);
+    if(wasPrimary && items.length) items[0].primary=true;
+    save(); render(); closeMenu(); toast(nm+' removed');
+  });
+
+  // ---- add (inline form) ----
+  const addBtn=document.getElementById('add'), addForm=document.getElementById('addForm');
+  const plusSvg=addBtn.innerHTML;
+  const xSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
+  const afName=document.getElementById('afName'), afRole=document.getElementById('afRole'), afSince=document.getElementById('afSince'), afSched=document.getElementById('afSched'), afPrimary=document.getElementById('afPrimary'), afAdd=document.getElementById('afAdd');
+  function validate(){ afAdd.disabled = !(afName.value.trim() && afRole.value.trim()); }
+  [afName,afRole].forEach(el=>el.addEventListener('input', validate));
+  function resetForm(){ afName.value=''; afRole.value=''; afSince.value=''; afSched.value=''; afPrimary.checked=false; validate(); }
+  function openForm(){ addForm.hidden=false; addBtn.innerHTML=xSvg; addBtn.setAttribute('aria-label','Close'); document.querySelector('.scroll').scrollTop=0; afName.focus(); }
+  function closeForm(){ addForm.hidden=true; addBtn.innerHTML=plusSvg; addBtn.setAttribute('aria-label','Add affiliation'); resetForm(); }
+  addBtn.addEventListener('click', ()=>{ if(addForm.hidden) openForm(); else closeForm(); });
+  document.getElementById('afCancel').addEventListener('click', closeForm);
+  afAdd.addEventListener('click', ()=>{
+    const name=afName.value.trim(), role=afRole.value.trim(); if(!name||!role) return;
+    const since=afSince.value.trim()||String(new Date().getFullYear());
+    const sched=afSched.value.trim()||'Flexible';
+    const primary=afPrimary.checked;
+    if(primary) items.forEach(a=>a.primary=false);
+    items.push({name, role, since, sched, primary: primary || items.length===0});
+    save(); render(); closeForm(); toast('Affiliation added');
+  });
+
+  document.getElementById('back').addEventListener('click', ()=>{ if(history.length>1) history.back(); else location.href='profile.html'; });
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

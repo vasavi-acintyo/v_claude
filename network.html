@@ -1,0 +1,1141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Network — MedHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif;
+    --ui:'Inter', sans-serif;
+  }
+  /* native device font — chosen at startup by platform (APK / TestFlight) */
+
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#38bdf8;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#c9a227;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#f59e0b;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .rise{animation:rise .55s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} .scroll{padding-top:max(10px,env(safe-area-inset-top));} }
+
+  .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:6px 18px 20px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .ptop{display:flex;align-items:center;justify-content:space-between;padding:8px 0 2px;}
+  .ptop h1{font-size:24px;font-weight:800;font-family:var(--display);letter-spacing:-.03em;}
+  .ptop .sub{font-size:10.5px;color:var(--muted);margin-top:2px;}
+  .icon-btn{width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);}
+
+  .search{position:relative;margin-top:14px;}
+  .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);}
+  .search input{width:100%;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 14px 12px 38px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .search input::placeholder{color:var(--muted);}
+  .search input:focus{outline:none;border-color:var(--brand);}
+
+  .stats{display:flex;gap:9px;margin-top:14px;}
+  .stat{flex:1;background:var(--soft1);border:1px solid transparent;border-radius:14px;padding:11px 6px;text-align:center;display:flex;flex-direction:column;gap:2px;transition:border-color .18s;}
+  .stat:nth-child(2n){background:var(--soft2);}
+  .stat:hover{border-color:var(--brand);}
+  .stat b{font-size:17px;font-weight:800;font-family:var(--display);color:var(--brand);}
+  .stat span{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+
+  .sec{display:flex;align-items:baseline;justify-content:space-between;margin:24px 0 12px;}
+  .sec h2{font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .sec .cnt{font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:3px 8px;border-radius:20px;}
+  .sec a{font-size:10px;font-weight:700;color:var(--brand);cursor:pointer;text-decoration:none;}
+
+  /* request cards */
+  .reqs{display:flex;flex-direction:column;gap:8px;}
+  .req{display:flex;align-items:center;gap:10px;background:var(--soft1);border:1px solid transparent;border-radius:14px;padding:9px 10px;animation:fadeIn .4s ease both;transition:border-color .18s, transform .18s cubic-bezier(.22,1,.36,1);}
+  .req:hover{border-color:var(--brand);}
+  .req img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:0 0 auto;background:var(--chip);border:2px solid rgba(255,255,255,.6);}
+  .req .m{flex:1;min-width:0;}
+  .req .nm{font-size:11.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .req .sp{font-size:9px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .req .sp .dot{margin:0 4px;opacity:.6;}
+  .req .sp .mut{color:var(--brand);font-weight:700;}
+  .req .acts{display:flex;align-items:center;gap:6px;flex:0 0 auto;}
+  .req .acc,.req .ign{border:none;cursor:pointer;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;}
+  .req .acc svg,.req .ign svg{width:15px;height:15px;}
+  .req .acc{background:var(--brand);color:#fff;}
+  .req .acc:hover{background:var(--brand-dark);}
+  .req .ign{background:var(--chip);color:var(--muted);}
+  .req .ign:hover{color:var(--ink);background:var(--line);}
+  .req.gone{opacity:0;transform:translateX(30px);transition:all .3s ease;}
+
+  /* suggested horizontal */
+  .sugg{display:flex;gap:11px;overflow-x:auto;scrollbar-width:none;padding:2px 2px 6px;margin:0 -2px;}
+  .sugg::-webkit-scrollbar{display:none;}
+  .scard{flex:0 0 132px;background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:14px 12px;text-align:center;transition:border-color .18s, transform .18s cubic-bezier(.22,1,.36,1);}
+  .scard:hover{border-color:var(--brand);}
+  .scard img{width:56px;height:56px;border-radius:50%;object-fit:cover;margin:0 auto 9px;background:var(--chip);display:block;border:2px solid rgba(255,255,255,.6);}
+  .scard .nm{font-size:11px;font-weight:800;font-family:var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .scard .sp{font-size:9px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .scard .mut{font-size:9px;color:var(--muted);margin-top:4px;}
+  .scard button{margin-top:9px;width:100%;background:var(--brand);color:#fff;border:none;font-family:inherit;font-size:9.5px;font-weight:800;padding:6px;min-height:30px;border-radius:20px;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1), background .16s;}
+  .scard button:hover{background:var(--brand-dark);}
+  .scard button.done{background:var(--gold);color:#fff;}
+
+  /* groups */
+  .groups{display:flex;flex-direction:column;gap:10px;}
+  .grp{display:flex;align-items:center;gap:11px;background:var(--soft1);border:1px solid transparent;border-radius:15px;padding:11px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s, opacity .15s;}
+  .grp:hover{transform:translateY(-2px);border-color:var(--brand);}
+  .grp .go.joined{background:var(--green);color:#fff;}
+  .grp .gi{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;color:var(--brand);flex:0 0 auto;background:var(--brand-soft);}
+  .grp .gi svg{width:22px;height:22px;stroke:var(--brand);}
+  .grp .m{flex:1;min-width:0;}
+  .grp .nm{font-size:12px;font-weight:800;font-family:var(--display);}
+  .grp .sp{font-size:9.5px;color:var(--muted);margin-top:2px;}
+  .grp .go{font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:5px 11px;border-radius:20px;flex:0 0 auto;}
+
+  /* feed */
+  .feed{display:flex;flex-direction:column;gap:12px;}
+  .post{background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px;transition:border-color .18s;}
+  .post:hover{border-color:var(--brand);}
+  .post-h{display:flex;align-items:center;gap:10px;}
+  .post-h img{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .post-h .nm{font-size:11.5px;font-weight:800;}
+  .post-h .sp{font-size:9px;color:var(--muted);margin-top:1px;}
+  .post-h .t{margin-left:auto;font-size:8.5px;color:var(--muted);font-weight:600;}
+  .post-b{font-size:11px;line-height:1.6;color:var(--slate-700);margin-top:10px;}
+  .post-tag{display:inline-block;font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:20px;margin-top:8px;}
+  .post-f{display:flex;justify-content:space-between;gap:4px;margin-top:11px;padding-top:10px;border-top:1px solid var(--line);}
+  .post-f button{display:inline-flex;align-items:center;justify-content:center;gap:5px;background:none;border:none;font-family:inherit;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;padding:5px 6px;min-height:44px;border-radius:8px;}
+  .post-f button:hover{background:var(--chip);}
+  .post-f>button svg,.reactbtn svg{width:15px;height:15px;flex:0 0 auto;}
+  .post-f button:hover{color:var(--brand);}
+  .post-f button.liked{color:var(--brand);}
+  .post-f svg{width:14px;height:14px;}
+
+  .req img,.scard img{cursor:pointer;}
+
+  /* ---- LinkedIn-style top bar + start-a-post ---- */
+  .topbar{display:flex;align-items:center;gap:10px;padding:4px 0 2px;}
+  .tb-av{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .tb-search{flex:1;position:relative;}
+  .tb-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .tb-search input{width:100%;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 12px 10px 34px;font-size:11.5px;font-family:inherit;color:var(--ink);}
+  .tb-search input::placeholder{color:var(--muted);} .tb-search input:focus{outline:none;border-color:var(--brand);}
+  .tb-ic{width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;}
+  .tb-ic svg{width:19px;height:19px;}
+  .startpost{margin-top:14px;background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px 14px;transition:border-color .18s;}
+  .startpost:hover{border-color:var(--brand);}
+  .sp-top{display:flex;align-items:center;gap:11px;}
+  .sp-top img{width:40px;height:40px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .sp-box{flex:1;text-align:left;background:none;border:1px solid var(--line);border-radius:22px;padding:11px 16px;min-height:44px;color:var(--muted);font-family:inherit;font-size:11.5px;cursor:pointer;transition:background .15s, transform .13s, opacity .13s;}
+  .sp-box:hover{background:var(--chip);}
+  .sp-acts{display:flex;justify-content:space-around;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);}
+  .sp-act{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:none;border:none;font-family:inherit;font-size:10.5px;font-weight:700;color:var(--slate-700);cursor:pointer;padding:5px 9px;min-height:44px;border-radius:9px;transition:background .15s, transform .13s, opacity .13s;}
+  .sp-act:hover{background:var(--chip);} .sp-act svg{width:17px;height:17px;color:var(--brand);}
+  .sec2{font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin:22px 0 12px;display:flex;align-items:center;gap:8px;}
+  .sec2 b{font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:20px;}
+
+  /* ---- sub-tabs ---- */
+  .ntabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-top:14px;border-bottom:1px solid var(--line);}
+  .ntabs::-webkit-scrollbar{display:none;}
+  .ntab{flex:0 0 auto;background:none;border:none;font-family:inherit;font-size:12px;font-weight:700;color:var(--muted);padding:11px 10px;min-height:44px;position:relative;cursor:pointer;white-space:nowrap;}
+  .ntab.active{color:var(--brand);}
+  .ntab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;background:var(--brand);border-radius:3px;}
+
+  /* ---- messages ---- */
+  .mrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer;}
+  .mrow img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;border:2px solid rgba(255,255,255,.5);}
+  .mrow .m{flex:1;min-width:0;}
+  .mrow .nm{font-size:12px;font-weight:700;}
+  .mrow .lm{font-size:10px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mrow.unread .lm{color:var(--ink);font-weight:600;}
+  .mrow .rt{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:0 0 auto;}
+  .mrow .tm{font-size:8.5px;color:var(--muted);}
+  .mrow .ud{width:8px;height:8px;border-radius:50%;background:var(--brand);}
+
+  /* ---- alerts ---- */
+  .arow{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);}
+  .arow .ai{width:40px;height:40px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;}
+  .arow .ai svg{width:19px;height:19px;}
+  .arow .m{flex:1;min-width:0;}
+  .arow .at{font-size:11px;line-height:1.45;color:var(--slate-700);}
+  .arow .at b{color:var(--ink);font-weight:800;}
+  .arow .aw{font-size:8.5px;color:var(--muted);margin-top:3px;}
+
+  /* ---- Feed composer + posts ---- */
+  .composer{display:flex;align-items:center;gap:11px;background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:11px 13px;cursor:pointer;transition:border-color .18s, transform .13s, opacity .13s;}
+  .composer:hover{border-color:var(--brand);}
+  .composer .cav{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .composer .cbox{flex:1;font-size:11px;color:var(--muted);}
+  .composer .cico{color:var(--brand);flex:0 0 auto;} .composer .cico svg{width:20px;height:20px;}
+  .post-tag{cursor:default;}
+  .post-f button{transition:color .15s,transform .12s;}
+  .post-f button:active{transform:scale(.92);}
+  .post-f button.liked svg{fill:var(--brand);}
+  .post-h .nm{display:inline-flex;align-items:center;gap:4px;}
+  .vchk{width:12px;height:12px;color:var(--brand);flex:0 0 auto;}
+  .pmore{background:none;border:none;color:var(--muted);cursor:pointer;width:44px;height:44px;display:grid;place-items:center;flex:0 0 auto;align-self:flex-start;border-radius:10px;}
+  .pmore svg{width:18px;height:18px;} .pmore:hover{background:var(--chip);}
+  /* post options sheet */
+  .opt-item{width:100%;display:flex;align-items:center;gap:12px;background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);padding:14px 4px;cursor:pointer;border-bottom:1px solid var(--line);text-align:left;}
+  .opt-item:last-child{border-bottom:none;}
+  .opt-item svg{width:19px;height:19px;color:var(--muted);flex:0 0 auto;}
+  .opt-item.danger{color:#ef4444;} .opt-item.danger svg{color:#ef4444;}
+  .opt-done{text-align:center;padding:22px 10px;}
+  .opt-done .ok{width:52px;height:52px;border-radius:50%;background:rgba(63,125,78,.15);color:var(--green);display:grid;place-items:center;margin:0 auto 12px;}
+  .opt-done .ok svg{width:26px;height:26px;} .opt-done b{font-size:14px;font-family:var(--display);} .opt-done p{font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.5;}
+  /* reactions */
+  .react-sum{display:flex;align-items:center;gap:6px;font-size:9.5px;color:var(--muted);margin-top:11px;}
+  .react-sum .emos{display:inline-flex;}
+  .react-sum .emos span{width:16px;height:16px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;font-size:9px;margin-left:-4px;}
+  .react-sum .emos span:first-child{margin-left:0;}
+  .react-sum .dot{margin:0 3px;}
+  .react-wrap{position:relative;flex:0 0 auto;}
+  .react-pop{position:absolute;bottom:36px;left:-4px;display:flex;gap:3px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:5px 8px;box-shadow:0 12px 26px -8px rgba(0,0,0,.4);opacity:0;visibility:hidden;transform:translateY(8px) scale(.9);transform-origin:bottom left;transition:.18s;z-index:6;}
+  .react-pop.open,.react-wrap:hover .react-pop{opacity:1;visibility:visible;transform:none;}
+  .react-pop button{font-size:21px;line-height:1;background:none;border:none;cursor:pointer;padding:2px;transition:transform .12s;}
+  .react-pop button:hover{transform:scale(1.4) translateY(-4px);}
+  .reactbtn.reacted{font-weight:800;}
+  /* inline comments */
+  .cmts{margin-top:12px;padding-top:12px;border-top:1px solid var(--line);}
+  .cmt-add-inline{display:flex;align-items:center;gap:8px;}
+  .cmt-add-inline img{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .cmt-add-inline input{flex:1;background:var(--chip);border:none;border-radius:20px;padding:9px 13px;font-family:inherit;font-size:10.5px;color:var(--ink);outline:none;}
+  .cmt-add-inline button{background:var(--brand);color:#fff;border:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
+  .cmt-add-inline button svg{width:14px;height:14px;}
+  .cmt-list-inline{display:flex;flex-direction:column;gap:12px;margin-top:14px;}
+  .ci{display:flex;gap:9px;}
+  .ci img{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .ci .cbx{flex:1;min-width:0;}
+  .ci .bub{background:var(--chip);border-radius:12px;padding:8px 11px;}
+  .ci .nm{font-size:10.5px;font-weight:800;}
+  .ci .tx{font-size:10px;color:var(--slate-700);margin-top:2px;line-height:1.45;}
+  .ci .cact{display:flex;align-items:center;gap:14px;margin:5px 0 0 4px;}
+  .ci .cact button{background:none;border:none;font-family:inherit;font-size:8.5px;font-weight:700;color:var(--muted);cursor:pointer;padding:0;}
+  .ci .cact button.liked{color:var(--brand);}
+  .ci .cact span{font-size:8.5px;color:var(--muted);}
+  .ci.me .bub{background:var(--brand-soft);}
+  .youtag{font-size:9px;font-weight:800;color:#fff;background:var(--brand);padding:1px 6px;border-radius:20px;vertical-align:middle;}
+  /* collapsed comment preview */
+  .cmt-peek{margin-top:11px;cursor:pointer;}
+  .cmt-peek .pk{display:flex;gap:8px;align-items:flex-start;}
+  .cmt-peek img{width:28px;height:28px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .cmt-peek .pkb{flex:1;min-width:0;background:var(--chip);border-radius:12px;padding:7px 11px;}
+  .cmt-peek .nm{font-size:10px;font-weight:800;}
+  .cmt-peek .tx{font-size:9.5px;color:var(--slate-700);margin-top:2px;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .cmt-peek .viewall{font-size:9px;font-weight:700;color:var(--muted);margin-top:8px;}
+  .post-h [data-author]{cursor:pointer;}
+  /* author profile activity */
+  .pa-tabs{display:flex;gap:18px;border-bottom:1px solid var(--line);margin:16px 0 12px;}
+  .pa-tabs button{background:none;border:none;font-family:inherit;font-size:12px;font-weight:700;color:var(--muted);padding:9px 8px;min-height:44px;position:relative;cursor:pointer;}
+  .pa-tabs button.active{color:var(--brand);}
+  .pa-tabs button.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;background:var(--brand);border-radius:3px;}
+  .pa-post{border:1px solid var(--line);border-radius:14px;padding:12px;margin-bottom:10px;}
+  .pa-post .pb{font-size:11px;line-height:1.55;color:var(--slate-700);}
+  .pa-post .pa-media{font-size:9.5px;color:var(--brand);margin-top:8px;font-weight:600;text-transform:capitalize;}
+  .pa-post .pm{font-size:9px;color:var(--muted);margin-top:9px;display:flex;gap:12px;}
+  .pa-cmt{border-left:2px solid var(--line);padding:2px 0 2px 12px;margin-bottom:13px;}
+  .pa-cmt .ct{font-size:11px;color:var(--ink);line-height:1.5;}
+  .pa-cmt .cm{font-size:9px;color:var(--muted);margin-top:4px;}
+  .pa-empty{text-align:center;font-size:10.5px;color:var(--muted);padding:24px;}
+  /* post media (image / video / pdf) */
+  .pm-img{width:100%;border-radius:12px;margin-top:11px;display:block;max-height:280px;object-fit:cover;cursor:zoom-in;background:var(--chip);}
+  .pm-video{width:100%;border-radius:12px;margin-top:11px;display:block;background:#000;max-height:300px;}
+  .pm-audio{width:100%;margin-top:11px;display:block;}
+  .pm-pdf{display:flex;align-items:center;gap:11px;margin-top:11px;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:12px;cursor:pointer;}
+  .pm-pdf .pdi{width:38px;height:38px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;}
+  .pm-pdf .pdi svg{width:20px;height:20px;}
+  .pm-pdf .pn{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pm-pdf .ps{font-size:9px;color:var(--muted);margin-top:2px;}
+  .pm-pdf .pv{margin-left:auto;font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:5px 11px;border-radius:20px;flex:0 0 auto;}
+  /* composer media preview */
+  .cm-prev{position:relative;margin-top:10px;border-radius:12px;overflow:hidden;border:1px solid var(--line);}
+  .cm-prev img,.cm-prev video{width:100%;max-height:180px;object-fit:cover;display:block;background:#000;}
+  .cm-prev .pdfp{display:flex;align-items:center;gap:10px;padding:12px;background:var(--chip);}
+  .cm-prev .pdfp svg{width:22px;height:22px;color:var(--brand);flex:0 0 auto;}
+  .cm-prev .pdfp span{font-size:10.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cm-prev .rm{position:absolute;top:8px;right:8px;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:none;font-size:16px;cursor:pointer;}
+  .comp-foot .tool{background:none;border:none;cursor:pointer;padding:4px;border-radius:8px;}
+  .comp-foot .tool:hover{background:var(--chip);}
+  /* media viewer modal */
+  .media-modal{position:absolute;inset:0;background:rgba(0,0,0,.9);z-index:45;display:none;flex-direction:column;padding:16px;}
+  .media-modal.open{display:flex;}
+  .mm-bar{display:flex;align-items:center;gap:10px;color:#fff;margin-bottom:12px;}
+  .mm-bar .t{flex:1;font-size:12px;font-weight:700;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mm-bar button{width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.16);color:#fff;font-size:16px;cursor:pointer;flex:0 0 auto;}
+  .mm-body{flex:1;display:grid;place-items:center;overflow:auto;}
+  .mm-body img{max-width:100%;max-height:100%;border-radius:8px;}
+  .mm-body iframe{width:100%;height:100%;border:none;background:#fff;border-radius:8px;}
+  .mm-body video{max-width:100%;max-height:100%;border-radius:8px;}
+
+  /* composer sheet */
+  .comp-head{display:flex;align-items:center;gap:11px;margin-bottom:12px;}
+  .comp-head img{width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--chip);}
+  .comp-head b{font-size:12.5px;font-weight:800;font-family:var(--display);}
+  .comp-head span{font-size:9.5px;color:var(--muted);display:block;margin-top:1px;}
+  .comp-head .x{margin-left:auto;width:44px;height:44px;border-radius:50%;border:none;background:var(--chip);color:var(--ink);font-size:15px;cursor:pointer;}
+  .comp-text{width:100%;min-height:110px;border:none;background:none;font-family:inherit;font-size:13px;color:var(--ink);resize:none;outline:none;line-height:1.6;}
+  .comp-text::placeholder{color:var(--muted);}
+  .comp-tags{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px;}
+  .ctag{display:inline-flex;align-items:center;font-size:9.5px;font-weight:700;color:var(--brand);background:var(--brand-soft);padding:6px 13px;min-height:44px;border-radius:22px;cursor:pointer;border:1px solid transparent;}
+  .ctag.on{background:var(--brand);color:#fff;}
+  .comp-foot{display:flex;align-items:center;flex-wrap:wrap;gap:6px;margin-top:16px;padding-top:13px;border-top:1px solid var(--line);}
+  .comp-foot .tool{color:var(--muted);cursor:pointer;width:44px;height:44px;display:grid;place-items:center;} .comp-foot .tool svg{width:20px;height:20px;}
+  .comp-post{margin-left:auto;background:var(--brand);color:#fff;border:none;font-family:inherit;font-size:12.5px;font-weight:700;padding:11px 22px;min-height:44px;border-radius:12px;cursor:pointer;}
+  .comp-post:disabled{opacity:.45;cursor:default;}
+
+  /* comment sheet */
+  .cmt-h{font-size:15px;font-weight:800;font-family:var(--display);margin-bottom:4px;}
+  .cmt-list{display:flex;flex-direction:column;}
+  .cmt{display:flex;gap:10px;padding:11px 0;}
+  .cmt img{width:34px;height:34px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .cmt .cb{flex:1;background:var(--chip);border-radius:13px;padding:9px 12px;}
+  .cmt .nm{font-size:11px;font-weight:800;}
+  .cmt .tx{font-size:10.5px;color:var(--slate-700);margin-top:3px;line-height:1.5;}
+  .cmt .tm{font-size:8.5px;color:var(--muted);margin-top:4px;}
+  .cmt-empty{text-align:center;font-size:10.5px;color:var(--muted);padding:20px;}
+  .cmt-add{display:flex;align-items:center;gap:9px;margin-top:8px;padding-top:12px;border-top:1px solid var(--line);position:sticky;bottom:0;background:var(--card);}
+  .cmt-add img{width:32px;height:32px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .cmt-add input{flex:1;background:var(--chip);border:none;border-radius:20px;padding:10px 14px;font-family:inherit;font-size:11px;color:var(--ink);outline:none;}
+  .cmt-add button{background:var(--brand);color:#fff;border:none;width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
+  .cmt-add button svg{width:16px;height:16px;}
+
+  /* ---- Profile bottom-sheet ---- */
+  .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;z-index:30;}
+  .backdrop.open{opacity:1;visibility:visible;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--card);border-radius:22px 22px 0 0;
+    transform:translateY(100%);transition:transform .5s cubic-bezier(.34,1.3,.5,1);box-shadow:0 -12px 40px -12px rgba(0,0,0,.4);max-height:90%;overflow-y:auto;}
+  .sheet::-webkit-scrollbar{width:0;}
+  .sheet.open{transform:translateY(0);}
+  .ps-body{padding:0 18px calc(20px + env(safe-area-inset-bottom));}
+  .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:8px auto 4px;position:sticky;top:0;}
+  .p-hero{height:84px;border-radius:16px;margin-top:6px;position:relative;background:linear-gradient(120deg,var(--d1),var(--d2) 58%,var(--d3));overflow:hidden;}
+  .p-hero::after{content:"";position:absolute;right:-24px;top:-24px;width:90px;height:90px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);}
+  .p-av{width:74px;height:74px;border-radius:50%;border:3px solid var(--card);object-fit:cover;position:absolute;left:4px;top:48px;background:var(--chip);z-index:2;}
+  .p-top{margin:40px 0 0 86px;}
+  .p-name{font-size:18px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;display:flex;align-items:center;gap:6px;}
+  .p-name .vf{color:var(--brand);}
+  .p-role{font-size:11px;color:var(--slate-700);font-weight:600;margin-top:2px;}
+  .p-loc{font-size:9.5px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:4px;}
+  .p-stats{display:flex;margin:16px 0;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  .p-stats div{flex:1;text-align:center;padding:11px 4px;border-right:1px solid var(--line);}
+  .p-stats div:last-child{border-right:none;}
+  .p-stats b{font-size:15px;font-weight:800;font-family:var(--display);color:var(--brand);display:block;}
+  .p-stats span{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+  .p-actions{display:flex;gap:10px;}
+  .p-actions button{border:none;font-family:inherit;font-size:12.5px;font-weight:700;padding:12px;border-radius:12px;cursor:pointer;}
+  .p-pri{flex:1;background:var(--brand);color:#fff;box-shadow:0 10px 22px -8px var(--brand);}
+  .p-pri:hover{background:var(--brand-dark);}
+  .p-pri.done{background:var(--green);box-shadow:none;}
+  .p-sec{flex:0 0 auto;background:var(--chip);color:var(--ink);padding-left:18px;padding-right:18px;display:inline-flex;align-items:center;gap:6px;}
+  .p-sec svg{width:15px;height:15px;}
+  .p-h{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:20px 0 8px;}
+  .p-bio{font-size:11.5px;line-height:1.65;color:var(--slate-700);}
+  .p-tags{display:flex;flex-wrap:wrap;gap:7px;}
+  .p-tag{font-size:9.5px;font-weight:700;color:var(--brand);background:var(--brand-soft);padding:6px 11px;border-radius:20px;}
+  .p-list{display:flex;flex-direction:column;gap:12px;}
+  .p-li{display:flex;gap:11px;}
+  .p-li .pi{width:36px;height:36px;border-radius:11px;background:var(--chip);display:grid;place-items:center;color:var(--brand);flex:0 0 auto;}
+  .p-li .pi svg{width:18px;height:18px;}
+  .p-li .pt{font-size:11.5px;font-weight:700;}
+  .p-li .psub{font-size:9.5px;color:var(--muted);margin-top:2px;}
+
+  .nav{flex:0 0 auto;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:9px 0 22px;}
+  .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;}
+  .navitem.active{color:var(--brand);font-weight:600;}
+  @media (max-width:600px){ .nav{padding-bottom:max(22px,env(safe-area-inset-bottom));} }
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+
+  /* ===== PASS-A: touch feedback + press states ===== */
+  .icon-btn,.tb-ic,.tb-av,.pmore,.cmt-add-inline button,.cmt-add button,.comp-head .x,.cm-prev .rm,.mm-bar button,
+  .req .acc,.req .ign,.ntab,.ctag,.comp-post,.comp-foot .tool,.opt-item,.pa-tabs button,.p-actions button,
+  .react-pop button,.ci .cact button,.sec a,.grp .go,.req,.scard,.mrow,.pm-pdf,.cmt-peek,.navitem
+  { transition:transform .13s ease, opacity .13s ease; }
+  /* buttons / chips / tabs / icon-buttons */
+  .icon-btn:active,.tb-ic:active,.pmore:active,.cmt-add-inline button:active,.cmt-add button:active,.comp-head .x:active,
+  .cm-prev .rm:active,.mm-bar button:active,.req .acc:active,.req .ign:active,.scard button:active,.sp-act:active,
+  .ntab:active,.ctag:active,.comp-post:active,.comp-foot .tool:active,.opt-item:active,.pa-tabs button:active,
+  .p-actions button:active,.react-pop button:active,.ci .cact button:active,.sec a:active,.grp .go:active
+  { transform:scale(.94); }
+  /* large cards / rows */
+  .req:active,.grp:active,.scard:active,.mrow:active,.composer:active,.sp-box:active,.pm-pdf:active,.cmt-peek:active
+  { transform:scale(.985); }
+  /* nav */
+  .navitem:active{ transform:scale(.9); opacity:.7; }
+
+  /* toast pill */
+  .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(12px);background:var(--ink);color:var(--surface);font-family:inherit;font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);z-index:60;opacity:0;pointer-events:none;transition:opacity .25s ease, transform .25s ease;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="scroll">
+    <!-- top bar -->
+    <div class="topbar rise">
+      <img class="tb-av" src="https://randomuser.me/api/portraits/women/79.jpg" alt="">
+      <div class="tb-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg><input placeholder="Search doctors, groups, posts…"></div>
+      <button class="tb-ic" aria-label="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg></button>
+    </div>
+
+    <!-- sub-tabs -->
+    <div class="ntabs rise" id="ntabs">
+      <button class="ntab active" data-p="net">My Network</button>
+      <button class="ntab" data-p="groups">Groups</button>
+      <button class="ntab" data-p="msgs">Messages</button>
+      <button class="ntab" data-p="alerts">Alerts</button>
+    </div>
+
+    <!-- FEED (moved to post.html) -->
+    <div class="panel" data-panel="feed" hidden>
+      <div class="startpost rise">
+        <div class="sp-top">
+          <img src="https://randomuser.me/api/portraits/women/79.jpg" alt="">
+          <button class="sp-box" id="composer">Start a post</button>
+        </div>
+        <div class="sp-acts">
+          <button class="sp-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg>Photo</button>
+          <button class="sp-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="3"/><path d="m16 10 6-3v10l-6-3z"/></svg>Video</button>
+          <button class="sp-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg>Article</button>
+        </div>
+      </div>
+      <div class="feed" id="feed" style="margin-top:12px"></div>
+    </div>
+
+    <!-- MY NETWORK -->
+    <div class="panel" data-panel="net">
+      <div class="stats" style="margin-top:14px">
+        <div class="stat"><b>1,240</b><span>Connections</span></div>
+        <div class="stat"><b id="invStat">3</b><span>Invitations</span></div>
+      </div>
+      <div class="sec2">Invitations <b id="invCount">3</b></div>
+      <div class="reqs" id="reqs"></div>
+      <div class="sec2">People you may know</div>
+      <div class="sugg" id="sugg"></div>
+    </div>
+
+    <!-- GROUPS -->
+    <div class="panel" data-panel="groups" hidden>
+      <div class="sec2" style="margin-top:16px">Your groups</div>
+      <div class="groups" id="groups"></div>
+      <div class="sec2">Discover groups</div>
+      <div class="groups" id="discoverGroups"></div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div class="panel" data-panel="msgs" hidden>
+      <div class="msg-list" id="msgs" style="margin-top:8px"></div>
+    </div>
+
+    <!-- ALERTS -->
+    <div class="panel" data-panel="alerts" hidden>
+      <div class="alert-list" id="alerts" style="margin-top:8px"></div>
+    </div>
+  </div>
+
+  <!-- Bottom nav (modules) -->
+  <div class="nav">
+    <a class="navitem" href="home.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg>Home</a>
+    <a class="navitem" href="cme.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>CME</a>
+    <a class="navitem active" href="network.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg>Network</a>
+    <a class="navitem" href="post.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>Post</a>
+    <a class="navitem" href="referral.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h2"/><path d="M14 14h6"/><path d="m17 11 3 3-3 3"/></svg>Referral</a>
+  </div>
+  <div class="home-ind"></div>
+
+  <!-- Profile sheet -->
+  <div class="backdrop" id="profBackdrop"></div>
+  <div class="sheet" id="profSheet">
+    <div class="grab"></div>
+    <div class="ps-body" id="profBody"></div>
+  </div>
+
+  <!-- Composer sheet -->
+  <div class="backdrop" id="compBackdrop"></div>
+  <div class="sheet" id="compSheet">
+    <div class="ps-body">
+      <div class="grab"></div>
+      <div class="comp-head">
+        <img src="https://randomuser.me/api/portraits/women/79.jpg" alt="">
+        <div><b>Dr. Ananya Rao</b><span>Posting to your network</span></div>
+        <button class="x" id="compClose">✕</button>
+      </div>
+      <textarea class="comp-text" id="compText" placeholder="Share knowledge, a case, an article or a question…"></textarea>
+      <div id="compPrev"></div>
+      <div class="comp-tags" id="compTags"></div>
+      <input type="file" id="compFile" hidden>
+      <div class="comp-foot">
+        <button class="tool" data-media="image" title="Add photo"><svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg></button>
+        <button class="tool" data-media="video" title="Add video"><svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="3"/><path d="m16 10 6-3v10l-6-3z"/></svg></button>
+        <button class="tool" data-media="pdf" title="Add PDF"><svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg></button>
+        <button class="tool" data-media="audio" title="Add audio"><svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="16" cy="16" r="3"/></svg></button>
+        <button class="tool" data-media="doc" title="Add document"><svg viewBox="0 0 24 24" fill="none" stroke="var(--brand)" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg></button>
+        <button class="comp-post" id="compPost" disabled>Post</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Post options sheet -->
+  <div class="backdrop" id="optBackdrop"></div>
+  <div class="sheet" id="optSheet">
+    <div class="ps-body" id="optBody"></div>
+  </div>
+
+  <!-- Media viewer -->
+  <div class="media-modal" id="mediaModal">
+    <div class="mm-bar"><span class="t" id="mmTitle">Attachment</span><button id="mmClose" aria-label="Close">✕</button></div>
+    <div class="mm-body" id="mmBody"></div>
+  </div>
+
+  <!-- Comment sheet -->
+  <div class="backdrop" id="cmtBackdrop"></div>
+  <div class="sheet" id="cmtSheet">
+    <div class="ps-body">
+      <div class="grab"></div>
+      <div class="cmt-h">Comments</div>
+      <div class="cmt-list" id="cmtList"></div>
+      <div class="cmt-add">
+        <img src="https://randomuser.me/api/portraits/women/79.jpg" alt="">
+        <input id="cmtInput" placeholder="Add a comment…">
+        <button id="cmtSend"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ---- Native device font: pick platform font at startup (APK / TestFlight webview) ----
+  (function(){
+    const ua = navigator.userAgent || '';
+    const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isAndroid = /Android/.test(ua);
+    document.documentElement.setAttribute('data-os', isIOS ? 'ios' : isAndroid ? 'android' : 'other');
+  })();
+
+  // ---- Theme: apply saved choice on load ----
+  function applyTheme(t){
+    if(!t || t==='classical') document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme', t);
+  }
+  try{ applyTheme(localStorage.getItem('cmeTheme') || 'blue'); }catch(e){}
+
+  // ---- Toast (bottom-center pill) ----
+  let toastT=null;
+  function toast(msg){
+    let el=document.getElementById('toast');
+    if(!el){ el=document.createElement('div'); el.id='toast'; el.className='toast'; (document.querySelector('.phone')||document.body).appendChild(el); }
+    el.textContent=msg; void el.offsetWidth; el.classList.add('show');
+    clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'), 1400);
+  }
+  const grpIco = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg>';
+
+  // ---- Requests ----
+  let requests = [
+    { name:'Dr. Kavya Reddy', spec:'Endocrinologist · Apollo', mutual:'12 mutual', img:'https://randomuser.me/api/portraits/women/65.jpg',
+      role:'Endocrinologist', hospital:'Apollo Hospitals', city:'Chennai', exp:'14 yrs', connections:'980',
+      bio:'Endocrinologist focused on diabetes, thyroid and metabolic disorders. Special interest in obesity, insulin resistance and PCOS management.',
+      tags:['Type 2 Diabetes','Thyroid','Obesity','PCOS'],
+      edu:[{t:'DM Endocrinology',s:'PGIMER, Chandigarh · 2012'},{t:'MD General Medicine',s:'AIIMS, New Delhi · 2008'}] },
+    { name:'Dr. Sameer Shah', spec:'Cardiologist · Fortis', mutual:'8 mutual', img:'https://randomuser.me/api/portraits/men/52.jpg',
+      role:'Interventional Cardiologist', hospital:'Fortis Hospital', city:'Mumbai', exp:'18 yrs', connections:'2.1k',
+      bio:'Interventional cardiologist with 18 years in angioplasty and structural heart disease. Passionate about preventive cardiology.',
+      tags:['Angioplasty','Heart Failure','Preventive Cardiology'],
+      edu:[{t:'DM Cardiology',s:'KEM Hospital, Mumbai · 2009'},{t:'MD Medicine',s:'Grant Medical College · 2005'}] },
+    { name:'Dr. Imran Khan', spec:'Physician · Max', mutual:'5 mutual', img:'https://randomuser.me/api/portraits/men/61.jpg',
+      role:'Consultant Physician', hospital:'Max Healthcare', city:'New Delhi', exp:'9 yrs', connections:'640',
+      bio:'Consultant physician managing complex internal medicine, hypertension and cardiometabolic cases.',
+      tags:['Internal Medicine','Hypertension','Diabetes'],
+      edu:[{t:'MD General Medicine',s:'MAMC, New Delhi · 2015'},{t:'MBBS',s:'JN Medical College · 2011'}] }
+  ];
+  function renderReqs(){
+    document.getElementById('reqs').innerHTML = requests.map((r,i)=>`
+      <div class="req" data-i="${i}">
+        <img src="${r.img}" alt="">
+        <div class="m"><div class="nm">${r.name}</div><div class="sp">${r.spec}<span class="dot">·</span><span class="mut">${r.mutual}</span></div></div>
+        <div class="acts">
+          <button class="acc" data-acc="${i}" aria-label="Accept"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
+          <button class="ign" data-ign="${i}" aria-label="Ignore"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+        </div>
+      </div>`).join('') || `<div style="color:var(--muted);font-size:11px;padding:8px 2px">No pending invitations.</div>`;
+    const ic=document.getElementById('invCount'); if(ic) ic.textContent = requests.length;
+  }
+  function acceptRequest(idx){
+    const card = document.querySelector(`.req[data-i="${idx}"]`);
+    if(card){ card.classList.add('gone'); setTimeout(()=>{ requests.splice(idx,1); renderReqs(); }, 280); }
+    else { requests.splice(idx,1); renderReqs(); }
+  }
+  document.getElementById('reqs').addEventListener('click', e=>{
+    const acc=e.target.closest('[data-acc]'), ign=e.target.closest('[data-ign]');
+    if(acc){ const i=+acc.dataset.acc; toast('Connected with '+requests[i].name.replace('Dr. ','')); acceptRequest(i); return; }
+    if(ign){ const i=+ign.dataset.ign; toast('Invitation ignored'); const c=document.querySelector(`.req[data-i="${i}"]`); c.classList.add('gone'); setTimeout(()=>{requests.splice(i,1);renderReqs();},280); return; }
+    // avatar or row → open full profile
+    const row=e.target.closest('.req'); if(row) openProfile(requests[+row.dataset.i], 'request', +row.dataset.i);
+  });
+
+  // ---- Suggested ----
+  const suggested = [
+    { name:'Dr. Neha Gupta', spec:'Nephrologist', mutual:'9 mutual', img:'https://randomuser.me/api/portraits/women/12.jpg',
+      role:'Nephrologist', hospital:'Medanta', city:'Gurugram', exp:'11 yrs', connections:'1.3k',
+      bio:'Nephrologist managing CKD, dialysis and transplant care with a focus on cardio-renal syndrome.',
+      tags:['CKD','Dialysis','Transplant','Cardio-Renal'], edu:[{t:'DM Nephrology',s:'SGPGI, Lucknow · 2013'},{t:'MD Medicine',s:'KGMU · 2009'}] },
+    { name:'Dr. Rahul Verma', spec:'Diabetologist', mutual:'6 mutual', img:'https://randomuser.me/api/portraits/men/22.jpg',
+      role:'Diabetologist', hospital:'Manipal Hospitals', city:'Bengaluru', exp:'8 yrs', connections:'720',
+      bio:'Diabetologist specialising in technology-driven diabetes care, CGM and insulin pump therapy.',
+      tags:['Type 1 & 2 Diabetes','CGM','Insulin Pumps'], edu:[{t:'DNB Endocrinology',s:'Manipal · 2016'},{t:'MBBS',s:'BMCRI · 2011'}] },
+    { name:'Dr. Anjali Desai', spec:'Endocrinology', mutual:'4 mutual', img:'https://randomuser.me/api/portraits/women/32.jpg',
+      role:'Endocrinologist', hospital:'Sterling Hospital', city:'Ahmedabad', exp:'10 yrs', connections:'890',
+      bio:'Endocrinologist with interest in reproductive endocrinology, thyroid and bone metabolism.',
+      tags:['Thyroid','Reproductive Endo','Osteoporosis'], edu:[{t:'DM Endocrinology',s:'PGIMER · 2014'}] },
+    { name:'Dr. Arjun Rao', spec:'Cardiology', mutual:'3 mutual', img:'https://randomuser.me/api/portraits/men/41.jpg',
+      role:'Cardiologist', hospital:'Narayana Health', city:'Bengaluru', exp:'13 yrs', connections:'1.6k',
+      bio:'Clinical cardiologist focused on heart failure, arrhythmia and preventive cardiology.',
+      tags:['Heart Failure','Arrhythmia','Echocardiography'], edu:[{t:'DM Cardiology',s:'JIPMER · 2011'}] }
+  ];
+  document.getElementById('sugg').innerHTML = suggested.map((s,i)=>`
+    <div class="scard" data-si="${i}">
+      <img src="${s.img}" alt="">
+      <div class="nm">${s.name}</div><div class="sp">${s.role}</div><div class="mut">${s.mutual}</div>
+      <button data-connect="${i}">+ Connect</button>
+    </div>`).join('');
+  document.getElementById('sugg').addEventListener('click', e=>{
+    const b=e.target.closest('[data-connect]');
+    if(b){ if(b.classList.contains('done')){ b.textContent='+ Connect'; b.classList.remove('done'); toast('Request withdrawn'); } else { b.textContent='Requested'; b.classList.add('done'); toast('Connection requested'); } return; }
+    const card=e.target.closest('.scard');
+    if(card) openProfile(suggested[+card.dataset.si], 'suggest', +card.dataset.si);
+  });
+
+  // ---- Groups ----
+  const groups = [
+    { name:'Indian Diabetes Forum',   members:'12.4k members', ico:grpIco },
+    { name:'City Cardiology Society', members:'3.2k members',  ico:grpIco },
+    { name:'Young Physicians Network', members:'8.7k members', ico:grpIco }
+  ];
+  document.getElementById('groups').innerHTML = groups.map(g=>`
+    <div class="grp"><span class="gi">${g.ico}</span><div class="m"><div class="nm">${g.name}</div><div class="sp">${g.members}</div></div><span class="go">Open</span></div>`).join('');
+
+  // discover groups
+  const discover = [
+    { name:'Endocrine Society of India', members:'22.1k members' },
+    { name:'Clinical Cardiology Hub',    members:'15.8k members' },
+    { name:'Nephrology Connect',         members:'6.4k members' }
+  ];
+  document.getElementById('discoverGroups').innerHTML = discover.map(g=>`
+    <div class="grp"><span class="gi">${grpIco}</span><div class="m"><div class="nm">${g.name}</div><div class="sp">${g.members}</div></div><span class="go">Join</span></div>`).join('');
+
+  // your groups → open (toast); discover groups → toggle Join/Joined
+  document.getElementById('groups').addEventListener('click', e=>{
+    const row=e.target.closest('.grp'); if(!row) return;
+    toast('Opening '+row.querySelector('.nm').textContent+'…');
+  });
+  document.getElementById('discoverGroups').addEventListener('click', e=>{
+    const row=e.target.closest('.grp'); if(!row) return;
+    const go=row.querySelector('.go'), name=row.querySelector('.nm').textContent;
+    const joined=go.classList.toggle('joined');
+    go.textContent = joined ? 'Joined' : 'Join';
+    toast(joined ? 'Joined '+name : 'Left '+name);
+  });
+
+  // ---- Messages ----
+  const messages = [
+    { name:'Dr. Meera Iyer', img:'https://randomuser.me/api/portraits/women/68.jpg', last:'Sure, I’ll send the CGM deck over.', tm:'2m', unread:true },
+    { name:'Dr. Sameer Shah', img:'https://randomuser.me/api/portraits/men/52.jpg', last:'Thanks for accepting the referral 🙏', tm:'1h', unread:true },
+    { name:'City Cardiology Society', img:'https://randomuser.me/api/portraits/men/32.jpg', last:'New advisory is now live in files.', tm:'3h' },
+    { name:'Dr. Neha Gupta', img:'https://randomuser.me/api/portraits/women/12.jpg', last:'You: Let’s discuss the CKD case.', tm:'1d' }
+  ];
+  document.getElementById('msgs').innerHTML = messages.map(m=>`
+    <div class="mrow ${m.unread?'unread':''}">
+      <img src="${m.img}" alt="">
+      <div class="m"><div class="nm">${m.name}</div><div class="lm">${m.last}</div></div>
+      <div class="rt"><span class="tm">${m.tm}</span>${m.unread?'<span class="ud"></span>':''}</div>
+    </div>`).join('');
+  document.getElementById('msgs').addEventListener('click', e=>{ if(e.target.closest('.mrow')) toast('Messaging coming soon'); });
+
+  // ---- Alerts / notifications ----
+  const alerts = [
+    { i:'net', t:'<b>Dr. Kavya Reddy</b> wants to connect with you.', w:'2h' },
+    { i:'like', t:'<b>Dr. Rohan Sinha</b> and 11 others liked your post.', w:'5h' },
+    { i:'chat', t:'<b>Dr. Sameer Shah</b> commented on your post.', w:'8h' },
+    { i:'cal', t:'Reminder: <b>Cardiometabolic Update 2025</b> starts in 3 days.', w:'1d' },
+    { i:'grp', t:'New advisory posted in <b>City Cardiology Society</b>.', w:'2d' }
+  ];
+  const aIco = {
+    net:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/></svg>',
+    like:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 21C5 15 2 12 2 8.5A4.5 4.5 0 0 1 12 5 4.5 4.5 0 0 1 22 8.5C22 12 19 15 12 21Z"/></svg>',
+    chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>',
+    cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>',
+    grp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/></svg>'
+  };
+  document.getElementById('alerts').innerHTML = alerts.map(a=>`
+    <div class="arow"><span class="ai">${aIco[a.i]}</span><div class="m"><div class="at">${a.t}</div><div class="aw">${a.w}</div></div></div>`).join('');
+
+  // ---- Sub-tab switching ----
+  const panels = document.querySelectorAll('.panel');
+  document.querySelectorAll('.ntab').forEach(t=>{
+    t.addEventListener('click', ()=>{
+      document.querySelectorAll('.ntab').forEach(x=>x.classList.remove('active'));
+      t.classList.add('active');
+      panels.forEach(p=>{ p.hidden = p.dataset.panel !== t.dataset.p; });
+      document.querySelector('.scroll').scrollTop = 0;
+    });
+  });
+  // top-bar Messages icon → jump to Messages tab
+  document.querySelector('.tb-ic').addEventListener('click', ()=>{ const t=document.querySelector('.ntab[data-p="msgs"]'); if(t) t.click(); });
+
+  // ---- Feed (LinkedIn-style: reactions · inline comments · repost) ----
+  const ME = { name:(function(){try{return localStorage.getItem('docName')||'Dr. Ananya Rao';}catch(e){return 'Dr. Ananya Rao';}})(), spec:'Endocrinologist · MedHub', img:'https://randomuser.me/api/portraits/women/79.jpg' };
+  try{ const cn=document.querySelector('.comp-head b'); if(cn) cn.textContent=ME.name; }catch(e){}
+  const FEED_KEY = 'feedPosts_v2';
+  const REACT = {
+    like:{e:'👍',l:'Like',c:'#2f7bd6'}, celebrate:{e:'👏',l:'Celebrate',c:'#0f9d58'},
+    support:{e:'🤝',l:'Support',c:'#7c6cf5'}, love:{e:'❤️',l:'Love',c:'#ef4444'},
+    insightful:{e:'💡',l:'Insightful',c:'#f59e0b'}, funny:{e:'😄',l:'Funny',c:'#0ea5e9'}
+  };
+  const thumbUp='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v9H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1z"/><path d="M7 11l4-8a2 2 0 0 1 3 1.8V9h4.5a2 2 0 0 1 2 2.3l-1.2 7a2 2 0 0 1-2 1.7H7"/></svg>';
+  const chatI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
+  const repeatI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>';
+  const sendI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>';
+  const sendSm='<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>';
+
+  const slideImg = 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="440" height="248"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e293b"/><stop offset="1" stop-color="#0f172a"/></linearGradient></defs><rect width="440" height="248" fill="url(#g)"/><text x="22" y="42" fill="#fff" font-family="Georgia,serif" font-size="19" font-weight="bold">Insulin Resistance in T2DM</text><text x="22" y="64" fill="#94a3b8" font-family="sans-serif" font-size="11">HbA1c response · 12-week cohort</text><polyline points="30,205 100,160 170,175 240,120 310,135 400,80" fill="none" stroke="#38bdf8" stroke-width="4"/><line x1="30" y1="215" x2="410" y2="215" stroke="#334155" stroke-width="2"/><circle cx="240" cy="120" r="5" fill="#38bdf8"/><circle cx="400" cy="80" r="5" fill="#38bdf8"/></svg>');
+  const seed = [
+    { id:1, name:'Dr. Meera Iyer', spec:'Endocrinologist · Apollo', img:'https://randomuser.me/api/portraits/women/68.jpg', time:'2h',
+      body:'Sharing my slides from today’s session on insulin resistance in T2DM. Happy to discuss the CGM data — DM me for the full deck.', tag:'CME · Diabetes',
+      media:{type:'image', data:slideImg, name:'Session slide'},
+      rc:{like:38,insightful:5}, my:null, shares:6,
+      comments:[{name:'Dr. Rohan Sinha',img:'https://randomuser.me/api/portraits/men/45.jpg',text:'Great session — the CGM segment was excellent.',time:'1h',likes:3,liked:false},{name:'Dr. Ananya Rao',img:'https://randomuser.me/api/portraits/women/79.jpg',text:'Thanks Meera — could you share the CGM interpretation slide?',time:'40m',likes:1,liked:false,me:true}] },
+    { id:2, name:'Dr. Arvind Kumar', spec:'Cardiologist · Fortis', img:'https://randomuser.me/api/portraits/men/32.jpg', time:'4h',
+      body:'Quick demo clip of the bedside focused-echo technique we discussed. Tap to play.', tag:'Case · Cardiology',
+      media:{type:'video', data:'https://www.w3schools.com/html/mov_bbb.mp4', name:'Bedside echo demo'},
+      rc:{like:56,insightful:9}, my:null, shares:11,
+      comments:[{name:'Dr. Priya Nair',img:'https://randomuser.me/api/portraits/women/44.jpg',text:'Very useful, thanks for sharing!',time:'2h',likes:2,liked:false}] },
+    { id:3, name:'City Cardiology Society', spec:'Group', img:'https://randomuser.me/api/portraits/men/76.jpg', time:'6h',
+      body:'New advisory on managing resistant hypertension — full guideline document attached. Tap to read.', tag:'Advisory',
+      media:{type:'pdf', data:'https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf', name:'Resistant HTN advisory.pdf'},
+      rc:{like:70,support:12,celebrate:6}, my:null, shares:24, comments:[] },
+    { id:4, name:'Dr. Priya Nair', spec:'Lipidologist · Narayana', img:'https://randomuser.me/api/portraits/women/44.jpg', time:'8h',
+      body:'5-minute audio summary of the new lipid guidelines for busy clinicians. 🎧', tag:'CME · Lipids',
+      media:{type:'audio', data:'https://www.w3schools.com/html/horse.mp3', name:'Lipid guidelines in 5 min'},
+      rc:{like:33,love:4}, my:null, shares:7, comments:[] },
+    { id:5, name:'Dr. Rohan Sinha', spec:'Hypertension · AIIMS', img:'https://randomuser.me/api/portraits/men/45.jpg', time:'1d',
+      body:'Looking for a nephrology referral in Bengaluru for a complex CKD case with resistant HTN. Please DM.', tag:'Referral',
+      rc:{like:12,love:3}, my:null, shares:2,
+      comments:[{name:'Dr. Neha Gupta',img:'https://randomuser.me/api/portraits/women/12.jpg',text:'Happy to help — sending you a message.',time:'20h',likes:1,liked:false}] }
+  ];
+
+  // ---- generate ~95 more sample posts (total ~100) ----
+  (function(){
+    const A=[
+      {n:'Dr. Meera Iyer',s:'Endocrinologist · Apollo',g:'women/68'},{n:'Dr. Arvind Kumar',s:'Cardiologist · Fortis',g:'men/32'},
+      {n:'Dr. Rohan Sinha',s:'Hypertension · AIIMS',g:'men/45'},{n:'Dr. Priya Nair',s:'Lipidologist · Narayana',g:'women/44'},
+      {n:'Dr. Vijay Menon',s:'Diabetologist · Cleveland',g:'men/76'},{n:'Dr. Kavya Reddy',s:'Endocrinologist · Apollo',g:'women/65'},
+      {n:'Dr. Sameer Shah',s:'Cardiologist · Fortis',g:'men/52'},{n:'Dr. Neha Gupta',s:'Nephrologist · Medanta',g:'women/12'},
+      {n:'Dr. Imran Khan',s:'Physician · Max',g:'men/61'},{n:'Dr. Anjali Desai',s:'Endocrinologist · Sterling',g:'women/32'},
+      {n:'Dr. Rahul Verma',s:'Diabetologist · Manipal',g:'men/22'},{n:'Dr. Arjun Rao',s:'Cardiologist · Narayana',g:'men/41'},
+      {n:'City Cardiology Society',s:'Group',g:'men/3'},{n:'Indian Diabetes Forum',s:'Group',g:'women/90'}
+    ];
+    const B=[
+      'Interesting case today: young T2DM with recurrent hypoglycaemia on basal-bolus. Reviewing the regimen — thoughts welcome.',
+      'Reminder: guideline-directed medical therapy in HFrEF should be titrated to target doses within 4–6 weeks where tolerated.',
+      'Great turnout at today’s CME on cardiometabolic risk. Key takeaway — treat the patient, not just the number.',
+      'When do you start SGLT2i in CKD without diabetes? Sharing a quick summary of the latest evidence.',
+      'Case discussion: resistant hypertension — always rule out secondary causes before adding a 4th agent.',
+      'CGM is changing how we individualise diabetes care. Time-in-range > isolated HbA1c in many patients.',
+      'Lipid pearl: in very-high-risk patients, aim LDL < 55 mg/dL and ≥50% reduction from baseline.',
+      'Grateful to the panel for a rich discussion on obesity pharmacotherapy. GLP-1s are reshaping practice.',
+      'Question for the group: preferred first-line in a 62F with T2DM, CKD stage 3 and HFpEF?',
+      'Published our audit on statin adherence — adherence at 12 months was only 61%. We can do better.',
+      'Bedside tip: a focused echo takes 3 minutes and changes management in acute breathlessness.',
+      'Thyroid nodules — when to FNA? Sharing the TIRADS quick-reference I use in clinic.',
+      'Attended a superb workshop on insulin pump initiation. Happy to mentor colleagues starting out.',
+      'Reflecting on shared decision-making — our best outcomes come from patients who understand the “why”.',
+      'New meta-analysis supports early combination therapy in T2DM over sequential add-on. Practice-changing?',
+      'Reminder to screen for depression in chronic cardiometabolic disease — it strongly affects adherence.',
+      'Case: 48M, incidental adrenal mass. Walking through the work-up for functionality and malignancy risk.',
+      'Hypertension in pregnancy — labetalol vs nifedipine: sharing our unit protocol.',
+      'Proud of our residents presenting at the state conference this week. The future is bright. 👏',
+      'What’s your approach to statin-associated muscle symptoms before labelling true intolerance?'
+    ];
+    const C=[
+      'Excellent point — thanks for sharing.','Completely agree with this approach.','Very useful in daily practice.',
+      'Could you share the reference?','We follow a similar protocol at our centre.','Great case, learned something new.',
+      'This matches the latest guidelines.','Bookmarking this for my residents.','Well summarised 👏',
+      'Interested — will DM you.','Timely reminder, thank you.','Would love the full slides if possible.'
+    ];
+    const TAGS=['CME · Diabetes','Case','Advisory','Article','Question','CME · Cardiology','Case · Nephrology','CME · Lipids','Case · Endocrine'];
+    const MEDIA=[
+      null,null,{type:'image',data:slideImg,name:'Slide'},null,
+      {type:'video',data:'https://www.w3schools.com/html/mov_bbb.mp4',name:'Clip'},null,
+      {type:'pdf',data:'https://mozilla.github.io/pdf.js/web/compressed.tracemonkey-pldi-09.pdf',name:'Guideline.pdf'},null,
+      {type:'audio',data:'https://www.w3schools.com/html/horse.mp3',name:'Audio summary'},null,null
+    ];
+    const TIMES=['1h','2h','3h','5h','7h','9h','12h','14h','18h','1d','2d','3d','4d','5d','1w','2w'];
+    const RK=['like','insightful','love','support','celebrate'];
+    for(let i=0;i<95;i++){
+      const a=A[i%A.length];
+      const rc={ like: (i*17%120)+8 };
+      if(i%2===0) rc.insightful=(i%15)+2;
+      if(i%3===0) rc.support=(i%9)+1;
+      if(i%4===0) rc.love=(i%6)+1;
+      if(i%6===0) rc.celebrate=(i%5)+1;
+      const MYC=['Thanks for sharing — very relevant to a case I saw last week.','Great point, saving this for my clinic.','Agree — we’ve seen similar outcomes.','Bookmarked. Would love the reference too.'];
+      const nc=i%4, comments=[];
+      for(let c=0;c<nc;c++){ const ca=A[(i+c+3)%A.length]; comments.push({ name:ca.n, img:`https://randomuser.me/api/portraits/${ca.g}.jpg`, text:C[(i+c)%C.length], time:TIMES[(i+c)%TIMES.length], likes:(i+c)%4, liked:false }); }
+      if(i%3===1) comments.push({ name:ME.name, img:ME.img, text:MYC[i%MYC.length], time:'30m', likes:i%3, liked:false, me:true });
+      seed.push({
+        id:1000+i, name:a.n, spec:a.s, img:`https://randomuser.me/api/portraits/${a.g}.jpg`, verified: a.s!=='Group', time:TIMES[i%TIMES.length],
+        body:B[i%B.length], tag:TAGS[i%TAGS.length], media:MEDIA[i%MEDIA.length],
+        rc, my:null, shares:(i*7%40), comments, _open:false
+      });
+    }
+  })();
+  // large-capacity storage via IndexedDB (localStorage is capped ~5MB)
+  const IDB_KEY='posts3';
+  function idbOpen(){ return new Promise((res,rej)=>{ const r=indexedDB.open('medhubFeed',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+  async function idbSet(k,v){ try{ const db=await idbOpen(); await new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }catch(e){} }
+  async function idbGet(k){ try{ const db=await idbOpen(); return await new Promise(res=>{ const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(undefined); }); }catch(e){ return undefined; } }
+  let posts = [];
+  const SEED_V = 4;                       // bump to force a reseed
+  function saveFeed(){ idbSet(IDB_KEY, {v:SEED_V, posts}); }
+
+  const feedEl = document.getElementById('feed');
+  let focusId = null;
+  const postFromEl = el => posts.find(p=>p.id == el.closest('.post').dataset.id);
+
+  function summary(p){
+    const ent = Object.entries(p.rc||{}).filter(([,v])=>v>0).sort((a,b)=>b[1]-a[1]);
+    const total = ent.reduce((s,[,v])=>s+v,0), cc = p.comments.length;
+    if(!total && !cc) return '';
+    const emos = ent.slice(0,3).map(([k])=>`<span>${REACT[k].e}</span>`).join('');
+    const left = total ? `<span class="emos">${emos}</span>${p.my?('You'+(total>1?` and ${total-1} others`:'')):total}` : '';
+    const right = cc ? `${total?'<span class="dot">·</span>':''}${cc} comment${cc>1?'s':''}` : '';
+    return `<div class="react-sum">${left}${right}</div>`;
+  }
+  function commentHTML(c,ci){
+    return `<div class="ci${c.me?' me':''}"><img src="${c.img}" alt=""><div class="cbx"><div class="bub"><div class="nm">${c.name}${c.me?' <span class="youtag">You</span>':''}</div><div class="tx">${c.text}</div></div>
+      <div class="cact"><button data-clike="${ci}" class="${c.liked?'liked':''}">Like${c.likes?` · ${c.likes}`:''}</button><button data-creply="${ci}">Reply</button><span>${c.time}</span></div></div></div>`;
+  }
+  const pdfIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  const vchk = '<svg class="vchk" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 2.4 1.8 3 .1 1 2.8 2.4 1.8-1 2.8 1 2.8-2.4 1.8-1 2.8-3 .1L12 22l-2.4-1.8-3-.1-1-2.8L3.2 15.4l1-2.8-1-2.8 2.4-1.8 1-2.8 3-.1z"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="var(--card)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const dots = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
+  const isVerified = p => p.verified!==false && p.spec!=='Group';
+  const docIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>';
+  function mediaHTML(m){
+    if(!m) return '';
+    if(m.type==='image') return `<img class="pm-img" src="${m.data}" data-view alt="${m.name||''}">`;
+    if(m.type==='video') return `<video class="pm-video" src="${m.data}" controls preload="metadata"></video>`;
+    if(m.type==='audio') return `<audio class="pm-audio" src="${m.data}" controls preload="metadata"></audio>`;
+    if(m.type==='pdf')   return `<div class="pm-pdf" data-view><span class="pdi">${pdfIco}</span><div style="flex:1;min-width:0"><div class="pn">${m.name||'Document.pdf'}</div><div class="ps">PDF · tap to view</div></div><span class="pv">View</span></div>`;
+    return `<div class="pm-pdf" data-doc><span class="pdi">${docIco}</span><div style="flex:1;min-width:0"><div class="pn">${m.name||'Document'}</div><div class="ps">Document · tap to open</div></div><span class="pv">Open</span></div>`;
+  }
+  function renderFeed(){
+    feedEl.innerHTML = posts.map(p=>{
+      const my=p.my;
+      const likeInner = my ? `<span style="color:${REACT[my].c}">${REACT[my].e} ${REACT[my].l}</span>` : `${thumbUp}Like`;
+      const pops = Object.keys(REACT).map(k=>`<button data-react="${k}" title="${REACT[k].l}">${REACT[k].e}</button>`).join('');
+      return `<div class="post" data-id="${p.id}">
+        <div class="post-h"><img src="${p.img}" data-author alt=""><div class="pauthor" data-author style="flex:1;min-width:0"><div class="nm">${p.name}${isVerified(p)?vchk:''}</div><div class="sp">${p.spec}</div></div><span class="t">${p.time}</span><button class="pmore" data-more aria-label="More">${dots}</button></div>
+        <div class="post-b">${p.body}</div>
+        ${p.tag?`<span class="post-tag">${p.tag}</span>`:''}
+        ${mediaHTML(p.media)}
+        ${summary(p)}
+        <div class="post-f">
+          <div class="react-wrap"><button class="reactbtn ${my?'reacted':''}" data-act="like">${likeInner}</button><div class="react-pop">${pops}</div></div>
+          <button data-act="comment">${chatI}Comment</button>
+          <button data-act="repost">${repeatI}${p.shares?`<span>${p.shares}</span>`:'Repost'}</button>
+          <button data-act="send">${sendI}Send</button>
+        </div>
+        ${(!p._open && p.comments.length) ? (()=>{ const last=p.comments[p.comments.length-1]; return `<div class="cmt-peek" data-act="comment"><div class="pk"><img src="${last.img}" alt=""><div class="pkb"><div class="nm">${last.name}${last.me?' <span class="youtag">You</span>':''}</div><div class="tx">${last.text}</div></div></div>${p.comments.length>1?`<div class="viewall">View all ${p.comments.length} comments</div>`:''}</div>`; })() : ''}
+        <div class="cmts" ${p._open?'':'hidden'}>
+          <div class="cmt-add-inline"><img src="${ME.img}" alt=""><input placeholder="Add a comment…" data-cin><button data-csend>${sendSm}</button></div>
+          <div class="cmt-list-inline">${p.comments.map((c,ci)=>commentHTML(c,ci)).join('')}</div>
+        </div>
+      </div>`;
+    }).join('');
+    if(focusId){ const inp=feedEl.querySelector(`.post[data-id="${focusId}"] [data-cin]`); if(inp) inp.focus(); focusId=null; }
+  }
+  (async ()=>{
+    const s = await idbGet(IDB_KEY);
+    if(s && s.v===SEED_V && Array.isArray(s.posts) && s.posts.length){ posts = s.posts; }
+    else { posts = seed; saveFeed(); }        // fresh or outdated store → reseed with all ~100
+    renderFeed();
+  })();
+
+  function react(p,key){
+    if(p.my===key){ p.rc[key]=Math.max(0,(p.rc[key]||0)-1); p.my=null; }
+    else { if(p.my){ p.rc[p.my]=Math.max(0,(p.rc[p.my]||0)-1); } p.rc[key]=(p.rc[key]||0)+1; p.my=key; }
+    saveFeed(); renderFeed();
+  }
+  function closePops(){ feedEl.querySelectorAll('.react-pop.open').forEach(x=>x.classList.remove('open')); }
+  function addInline(input){ const text=input.value.trim(); if(!text) return; const p=postFromEl(input); p.comments.push({name:ME.name,img:ME.img,text,time:'now',likes:0,liked:false,me:true}); p._open=true; focusId=p.id; saveFeed(); renderFeed(); }
+
+  // long-press → reaction picker (tap = quick Like)
+  let lpT=null, lpFired=false;
+  feedEl.addEventListener('pointerdown', e=>{
+    const b=e.target.closest('.reactbtn'); if(!b) return;
+    lpFired=false; lpT=setTimeout(()=>{ lpFired=true; closePops(); b.parentElement.querySelector('.react-pop').classList.add('open'); }, 400);
+  });
+  ['pointerup','pointercancel','pointerleave'].forEach(ev=>feedEl.addEventListener(ev, ()=>{ if(lpT){clearTimeout(lpT);lpT=null;} }));
+
+  feedEl.addEventListener('click', e=>{
+    const mo=e.target.closest('[data-more]'); if(mo){ openOpts(postFromEl(mo)); return; }
+    const au=e.target.closest('[data-author]'); if(au){ location.href='profile.html?name='+encodeURIComponent(postFromEl(au).name); return; }
+    const mv=e.target.closest('[data-view]'); if(mv){ openMedia(postFromEl(mv).media); return; }
+    const dv=e.target.closest('[data-doc]'); if(dv){ const m=postFromEl(dv).media; const w=window.open(); if(w) w.location=m.data; return; }
+    const rx=e.target.closest('[data-react]'); if(rx){ react(postFromEl(rx), rx.dataset.react); closePops(); return; }
+    const lb=e.target.closest('.reactbtn'); if(lb){ if(lpFired){ lpFired=false; return; } react(postFromEl(lb),'like'); return; }
+    const clk=e.target.closest('[data-clike]'); if(clk){ const p=postFromEl(clk); const c=p.comments[+clk.dataset.clike]; c.liked=!c.liked; c.likes=(c.likes||0)+(c.liked?1:-1); saveFeed(); renderFeed(); return; }
+    const rpl=e.target.closest('[data-creply]'); if(rpl){ const p=postFromEl(rpl); p._open=true; focusId=p.id; renderFeed(); const inp=feedEl.querySelector(`.post[data-id="${p.id}"] [data-cin]`); if(inp){ inp.value='@'+p.comments[+rpl.dataset.creply].name.replace('Dr. ','')+' '; inp.focus(); } return; }
+    const cs=e.target.closest('[data-csend]'); if(cs){ addInline(cs.parentElement.querySelector('[data-cin]')); return; }
+    const btn=e.target.closest('[data-act]'); if(!btn) return;
+    const p=postFromEl(btn), act=btn.dataset.act;
+    if(act==='comment'){ p._open=!p._open; if(p._open) focusId=p.id; renderFeed(); }
+    else if(act==='repost'){ p.shares++; saveFeed(); renderFeed(); }
+    else if(act==='send'){ btn.innerHTML = sendI+'Sent'; }
+  });
+  feedEl.addEventListener('keydown', e=>{ if(e.key==='Enter' && e.target.matches('[data-cin]')){ e.preventDefault(); addInline(e.target); } });
+  document.addEventListener('click', e=>{ if(!e.target.closest('.react-wrap')) closePops(); });
+
+  // ---- Post options (⋯) with Report ----
+  const optBackdrop=document.getElementById('optBackdrop'), optSheet=document.getElementById('optSheet'), optBody=document.getElementById('optBody');
+  let optPost=null;
+  const menuIco={
+    save:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17l-6-4-6 4z"/></svg>',
+    link:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7 0l2-2a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-2 2a5 5 0 0 0 7 7l1-1"/></svg>',
+    mute:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12h8"/></svg>',
+    report:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>'
+  };
+  const okIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>';
+  function optMenu(){
+    optBody.innerHTML = `<div class="grab"></div>
+      <button class="opt-item" data-opt="save">${menuIco.save}Save post</button>
+      <button class="opt-item" data-opt="link">${menuIco.link}Copy link</button>
+      <button class="opt-item" data-opt="mute">${menuIco.mute}Not interested</button>
+      <button class="opt-item danger" data-opt="report">${menuIco.report}Report post</button>`;
+  }
+  function openOpts(p){ optPost=p; optMenu(); optBackdrop.classList.add('open'); optSheet.classList.add('open'); }
+  function closeOpts(){ optBackdrop.classList.remove('open'); optSheet.classList.remove('open'); }
+  optBackdrop.addEventListener('click', closeOpts);
+  optBody.addEventListener('click', e=>{
+    const b=e.target.closest('[data-opt]'); if(!b) return;
+    const opt=b.dataset.opt;
+    if(opt==='report'){
+      optBody.innerHTML = `<div class="grab"></div><div class="opt-done"><div class="ok">${okIco}</div><b>Thanks for reporting</b><p>Our team will review this post against community &amp; medical-content guidelines.</p></div>`;
+      setTimeout(closeOpts, 1600);
+    } else {
+      const msg = opt==='save'?'Post saved':opt==='link'?'Link copied':'You’ll see fewer posts like this';
+      optBody.innerHTML = `<div class="grab"></div><div class="opt-done"><div class="ok">${okIco}</div><b>${msg}</b></div>`;
+      setTimeout(closeOpts, 1100);
+    }
+  });
+
+  // ---- Media viewer (image lightbox / video / pdf) ----
+  const mediaModal=document.getElementById('mediaModal'), mmBody=document.getElementById('mmBody');
+  function openMedia(m){
+    if(!m) return;
+    document.getElementById('mmTitle').textContent = m.name || m.type.toUpperCase();
+    mmBody.innerHTML = m.type==='image' ? `<img src="${m.data}" alt="">`
+      : m.type==='video' ? `<video src="${m.data}" controls autoplay></video>`
+      : `<iframe src="${m.data}" title="${m.name||'PDF'}"></iframe>`;
+    mediaModal.classList.add('open');
+  }
+  function closeMedia(){ mediaModal.classList.remove('open'); mmBody.innerHTML=''; }
+  document.getElementById('mmClose').addEventListener('click', closeMedia);
+  mediaModal.addEventListener('click', e=>{ if(e.target===mediaModal) closeMedia(); });
+
+  // ---- Composer attachments (image / video / pdf) ----
+  let pendingMedia=null;
+  const compFile=document.getElementById('compFile'), compPrev=document.getElementById('compPrev');
+  const ACCEPT = { image:'image/*', video:'video/*', audio:'audio/*', pdf:'application/pdf', doc:'.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt,.csv' };
+  document.querySelectorAll('#compSheet .tool[data-media]').forEach(b=>b.addEventListener('click',()=>{
+    const t=b.dataset.media;
+    compFile.accept = ACCEPT[t] || '*/*';
+    compFile.dataset.type=t; compFile.value=''; compFile.click();
+  }));
+  compFile.addEventListener('change', e=>{
+    const f=e.target.files[0]; if(!f) return;
+    const t=compFile.dataset.type, r=new FileReader();
+    r.onload=()=>{ pendingMedia={type:t, data:r.result, name:f.name}; renderPrev(); compPost.disabled=!(compText.value.trim()||pendingMedia); };
+    r.readAsDataURL(f);
+  });
+  function renderPrev(){
+    if(!pendingMedia){ compPrev.innerHTML=''; return; }
+    const m=pendingMedia;
+    const inner = m.type==='image'?`<img src="${m.data}" alt="">`
+      : m.type==='video'?`<video src="${m.data}" controls></video>`
+      : m.type==='audio'?`<div class="pdfp"><audio src="${m.data}" controls style="width:100%"></audio></div>`
+      : `<div class="pdfp">${m.type==='pdf'?pdfIco:docIco}<span>${m.name}</span></div>`;
+    compPrev.innerHTML = `<div class="cm-prev">${inner}<button class="rm" id="rmMedia">✕</button></div>`;
+    document.getElementById('rmMedia').onclick=()=>{ pendingMedia=null; renderPrev(); compPost.disabled=!compText.value.trim(); };
+  }
+
+  // ---- Composer ----
+  const compBackdrop=document.getElementById('compBackdrop'), compSheet=document.getElementById('compSheet');
+  const compText=document.getElementById('compText'), compPost=document.getElementById('compPost');
+  const compTagList=['Case','Article','Question','Advisory','CME'];
+  let compTag=null;
+  document.getElementById('compTags').innerHTML = compTagList.map(t=>`<span class="ctag" data-t="${t}">${t}</span>`).join('');
+  function openComp(){ compText.value=''; compTag=null; pendingMedia=null; compPrev.innerHTML=''; compPost.disabled=true; document.querySelectorAll('.ctag').forEach(x=>x.classList.remove('on')); compBackdrop.classList.add('open'); compSheet.classList.add('open'); setTimeout(()=>compText.focus(),300); }
+  function closeComp(){ compBackdrop.classList.remove('open'); compSheet.classList.remove('open'); }
+  document.getElementById('composer').addEventListener('click', openComp);
+  document.querySelectorAll('.sp-act').forEach(b=>b.addEventListener('click', openComp));
+  document.getElementById('compClose').addEventListener('click', closeComp);
+  compBackdrop.addEventListener('click', closeComp);
+  compText.addEventListener('input', ()=>{ compPost.disabled = !(compText.value.trim()||pendingMedia); });
+  document.getElementById('compTags').addEventListener('click', e=>{
+    const t=e.target.closest('.ctag'); if(!t) return;
+    if(t.classList.contains('on')){ t.classList.remove('on'); compTag=null; }
+    else { document.querySelectorAll('.ctag').forEach(x=>x.classList.remove('on')); t.classList.add('on'); compTag=t.dataset.t; }
+  });
+  compPost.addEventListener('click', ()=>{
+    const body=compText.value.trim(); if(!body && !pendingMedia) return;
+    posts.unshift({ id:Date.now(), name:ME.name, spec:ME.spec, img:ME.img, time:'now', body, tag:compTag||'', media:pendingMedia||null, rc:{}, my:null, shares:0, comments:[], _open:false });
+    pendingMedia=null;
+    saveFeed(); renderFeed(); closeComp();
+  });
+
+  // ---- Comments ----
+  const cmtBackdrop=document.getElementById('cmtBackdrop'), cmtSheet=document.getElementById('cmtSheet');
+  const cmtList=document.getElementById('cmtList'), cmtInput=document.getElementById('cmtInput');
+  let activePost=null;
+  function renderComments(){
+    cmtList.innerHTML = activePost.comments.length
+      ? activePost.comments.map(c=>`<div class="cmt"><img src="${c.img}" alt=""><div class="cb"><div class="nm">${c.name}</div><div class="tx">${c.text}</div><div class="tm">${c.time}</div></div></div>`).join('')
+      : `<div class="cmt-empty">No comments yet — be the first to reply.</div>`;
+  }
+  function openComments(post){ activePost=post; renderComments(); cmtInput.value=''; cmtBackdrop.classList.add('open'); cmtSheet.classList.add('open'); }
+  function closeComments(){ cmtBackdrop.classList.remove('open'); cmtSheet.classList.remove('open'); }
+  cmtBackdrop.addEventListener('click', closeComments);
+  function sendComment(){
+    const text=cmtInput.value.trim(); if(!text||!activePost) return;
+    activePost.comments.push({ name:ME.name, img:ME.img, text, time:'now' });
+    saveFeed(); renderComments(); renderFeed(); cmtInput.value='';
+  }
+  document.getElementById('cmtSend').addEventListener('click', sendComment);
+  cmtInput.addEventListener('keydown', e=>{ if(e.key==='Enter') sendComment(); });
+
+  // ---- Profile sheet ----
+  const profBackdrop = document.getElementById('profBackdrop');
+  const profSheet = document.getElementById('profSheet');
+  const profBody = document.getElementById('profBody');
+  const vfIco = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 2.4 1.8 3 .1 1 2.8 2.4 1.8-1 2.8 1 2.8-2.4 1.8-1 2.8-3 .1L12 22l-2.4-1.8-3-.1-1-2.8L3.2 15.4l1-2.8-1-2.8 2.4-1.8 1-2.8 3-.1z"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const pinIco = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>';
+  const chatIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
+  const capIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>';
+
+  function openProfile(p, ctx, idx){
+    const primary = ctx==='request' ? 'Accept request' : 'Connect';
+    profBody.innerHTML = `
+      <div class="p-hero"><img class="p-av" src="${p.img}" alt=""></div>
+      <div class="p-top">
+        <div class="p-name">${p.name} <span class="vf">${vfIco}</span></div>
+        <div class="p-role">${p.role}</div>
+        <div class="p-loc">${pinIco}${p.hospital}, ${p.city}</div>
+      </div>
+      <div class="p-stats">
+        <div><b>${p.connections}</b><span>Connections</span></div>
+        <div><b>${p.mutual.replace(' mutual','')}</b><span>Mutual</span></div>
+        <div><b>${p.exp}</b><span>Experience</span></div>
+      </div>
+      <div class="p-actions">
+        <button class="p-pri" id="pPri">${primary}</button>
+        <button class="p-sec">${chatIco}Message</button>
+      </div>
+      <div class="p-h">About</div>
+      <p class="p-bio">${p.bio}</p>
+      <div class="p-h">Specialties</div>
+      <div class="p-tags">${p.tags.map(t=>`<span class="p-tag">${t}</span>`).join('')}</div>
+      <div class="p-h">Education</div>
+      <div class="p-list">${p.edu.map(e=>`<div class="p-li"><span class="pi">${capIco}</span><div><div class="pt">${e.t}</div><div class="psub">${e.s}</div></div></div>`).join('')}</div>
+    `;
+    document.getElementById('pPri').onclick = ()=>{
+      const b=document.getElementById('pPri');
+      if(b.classList.contains('done')) return;
+      b.textContent = ctx==='request' ? '✓ Connected' : '✓ Requested'; b.classList.add('done');
+      if(ctx==='request') setTimeout(()=>{ closeProfile(); acceptRequest(idx); }, 700);
+    };
+    profBackdrop.classList.add('open'); profSheet.classList.add('open');
+    profSheet.scrollTop = 0;
+  }
+  function closeProfile(){ profBackdrop.classList.remove('open'); profSheet.classList.remove('open'); }
+  profBackdrop.addEventListener('click', closeProfile);
+
+  // profile of a post author — shows their posts & comments
+  function openAuthor(name){
+    const src = posts.find(p=>p.name===name);
+    const img = src?src.img:'', spec = src?src.spec:'', ver = spec!=='Group';
+    const myPosts = posts.filter(p=>p.name===name);
+    const myComments = []; posts.forEach(p=>p.comments.forEach(c=>{ if(c.name===name) myComments.push({c,p}); }));
+    const reactSum = p => Object.values(p.rc||{}).reduce((s,v)=>s+v,0);
+    const postsHTML = myPosts.length ? myPosts.map(p=>`
+      <div class="pa-post">${p.tag?`<span class="post-tag">${p.tag}</span>`:''}
+        <div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body}</div>
+        ${p.media?`<div class="pa-media">📎 ${p.media.type} attachment</div>`:''}
+        <div class="pm"><span>${reactSum(p)} reactions</span><span>${p.comments.length} comments</span><span>${p.time}</span></div>
+      </div>`).join('') : `<div class="pa-empty">No posts yet.</div>`;
+    const cmtsHTML = myComments.length ? myComments.map(({c,p})=>`
+      <div class="pa-cmt"><div class="ct">${c.text}</div><div class="cm">on ${p.name}’s post · ${c.time}</div></div>`).join('') : `<div class="pa-empty">No comments yet.</div>`;
+    profBody.innerHTML = `
+      <div class="p-hero"><img class="p-av" src="${img}" alt=""></div>
+      <div class="p-top"><div class="p-name">${name}${ver?' '+vfIco:''}</div><div class="p-role">${spec}</div></div>
+      <div class="p-stats">
+        <div><b>${myPosts.length}</b><span>Posts</span></div>
+        <div><b>${myComments.length}</b><span>Comments</span></div>
+        <div><b>${((name.length*137)%1900)+300}</b><span>Connections</span></div>
+      </div>
+      <div class="p-actions"><button class="p-pri" id="paConnect">Connect</button><button class="p-sec">${chatIco}Message</button></div>
+      <div class="pa-tabs"><button data-pt="posts" class="active">Posts</button><button data-pt="comments">Comments</button></div>
+      <div id="paPosts">${postsHTML}</div>
+      <div id="paComments" hidden>${cmtsHTML}</div>`;
+    profBody.querySelectorAll('.pa-tabs button').forEach(b=>b.addEventListener('click',()=>{
+      profBody.querySelectorAll('.pa-tabs button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
+      document.getElementById('paPosts').hidden = b.dataset.pt!=='posts';
+      document.getElementById('paComments').hidden = b.dataset.pt!=='comments';
+    }));
+    document.getElementById('paConnect').onclick = e=>{ e.target.textContent='✓ Requested'; e.target.classList.add('done'); };
+    profBackdrop.classList.add('open'); profSheet.classList.add('open'); profSheet.scrollTop=0;
+  }
+  document.addEventListener('keydown', e=>{
+    if(e.key!=='Escape') return;
+    if(optSheet.classList.contains('open')){ closeOpts(); return; }
+    if(document.getElementById('mediaModal').classList.contains('open')){ closeMedia(); return; }
+    if(document.getElementById('cmtSheet').classList.contains('open')){ document.getElementById('cmtSheet').classList.remove('open'); document.getElementById('cmtBackdrop').classList.remove('open'); return; }
+    if(document.getElementById('compSheet').classList.contains('open')){ document.getElementById('compSheet').classList.remove('open'); document.getElementById('compBackdrop').classList.remove('open'); return; }
+    closeProfile();
+  });
+
+  renderReqs();
+
+  (function(){
+    var p=document.querySelector('.phone'), BASE=390;
+    function fit(){ if(window.innerWidth<=600){ var s=window.innerWidth/BASE; p.style.width=BASE+'px'; p.style.height=(window.innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } }
+    fit(); window.addEventListener('resize',fit); window.addEventListener('orientationchange',fit);
+  })();
+</script>
+</body>
+</html>

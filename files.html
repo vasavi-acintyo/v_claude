@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Files</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif;
+    --ui:'Inter', sans-serif;
+  }
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}} .rise{animation:rise .5s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} }
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;}
+  .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{flex:1;min-width:0;font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .topbar .plus{width:40px;height:40px;border-radius:11px;background:var(--brand);border:none;display:grid;place-items:center;cursor:pointer;color:#fff;flex:0 0 auto;}
+  .topbar .plus:active{transform:scale(.92);} .topbar .plus svg{width:20px;height:20px;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:16px 18px 22px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .search{position:relative;margin-bottom:14px;}
+  .search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);}
+  .search input{width:100%;min-height:44px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px 12px 40px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .search input::placeholder{color:var(--muted);} .search input:focus{outline:none;border-color:var(--brand);}
+
+  .folders{display:flex;gap:10px;overflow-x:auto;scrollbar-width:none;margin:0 -2px 4px;padding:2px;}
+  .folders::-webkit-scrollbar{display:none;}
+  .folder{flex:0 0 auto;display:flex;flex-direction:column;gap:9px;width:120px;background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:14px;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
+  .folder:nth-child(2n){background:var(--soft2);}
+  .folder:hover{border-color:var(--brand);} .folder:active{transform:scale(.97);}
+  .folder .fi{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.55);color:var(--brand);display:grid;place-items:center;}
+  [data-theme="dark"] .folder .fi{background:rgba(255,255,255,.08);}
+  .folder .fi svg{width:19px;height:19px;}
+  .folder b{font-size:12px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .folder span{font-size:9px;color:var(--muted);margin-top:1px;display:block;}
+
+  .lbl{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:22px 2px 11px;}
+  .file{display:flex;align-items:center;gap:12px;padding:11px 2px;border-bottom:1px solid var(--line);cursor:pointer;}
+  .file:last-child{border-bottom:none;}
+  .file:active{opacity:.7;}
+  .file .fic{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;}
+  .file .fic svg{width:18px;height:18px;}
+  .file.pdf .fic{background:rgba(224,106,106,.14);color:#c0464a;}
+  .file.img .fic{background:var(--brand-soft);color:var(--brand);}
+  .file.doc .fic{background:rgba(56,120,220,.14);color:#2f78dc;}
+  .file .m{flex:1;min-width:0;} .file .m b{font-size:12px;font-weight:700;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .file .m span{font-size:9.5px;color:var(--muted);}
+  .file .dl{color:var(--muted);flex:0 0 auto;} .file .dl svg{width:17px;height:17px;}
+
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+  .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="tt">My Files</span>
+    <button class="plus" id="upload" aria-label="Upload"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></button>
+  </div>
+
+  <div class="scroll">
+    <div class="search rise">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+      <input placeholder="Search files…">
+    </div>
+
+    <div class="folders rise" id="folders"></div>
+
+    <div class="lbl rise">Recent files</div>
+    <div class="rise" id="fileList"></div>
+  </div>
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='home.html'; });
+  document.getElementById('upload').addEventListener('click', ()=>toast('Upload — coming soon'));
+
+  const fold='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>';
+  document.getElementById('folders').innerHTML = [
+    {n:'Certificates', c:'12 files'},{n:'Case files', c:'28 files'},{n:'Guidelines', c:'19 files'},{n:'Referrals', c:'9 files'}
+  ].map(f=>`<div class="folder"><span class="fi">${fold}</span><div><b>${esc(f.n)}</b><span>${esc(f.c)}</span></div></div>`).join('');
+  document.querySelectorAll('.folder').forEach(el=>el.addEventListener('click',()=>toast('Opening folder…')));
+
+  const pdf='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  const img='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 16-5-5L5 20"/></svg>';
+  const doc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>';
+  const dl='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 4 5-4"/><path d="M5 21h14"/></svg>';
+  const files=[
+    {t:'MMC CME Certificate 2025.pdf', m:'PDF · 240 KB · 2d ago', k:'pdf'},
+    {t:'CGM interpretation slide.png', m:'Image · 1.1 MB · 5d ago', k:'img'},
+    {t:'Hypertension guidelines 2025.pdf', m:'PDF · 3.4 MB · 1w ago', k:'pdf'},
+    {t:'Referral letter — RK.docx', m:'Doc · 88 KB · 2w ago', k:'doc'},
+    {t:'Case notes — resistant HTN.pdf', m:'PDF · 512 KB · 3w ago', k:'pdf'}
+  ];
+  const ic={pdf,img,doc};
+  document.getElementById('fileList').innerHTML = files.map(f=>`
+    <div class="file ${f.k}"><span class="fic">${ic[f.k]}</span><div class="m"><b>${esc(f.t)}</b><span>${esc(f.m)}</span></div><span class="dl">${dl}</span></div>`).join('');
+  document.querySelectorAll('.file').forEach(el=>el.addEventListener('click',()=>toast('Downloading…')));
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

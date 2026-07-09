@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Host CME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif;
+    --ui:'Inter', sans-serif;
+  }
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}} .rise{animation:rise .5s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} }
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;}
+  .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{flex:1;min-width:0;font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .topbar .plus{width:34px;height:34px;border-radius:50%;background:var(--brand);border:none;display:grid;place-items:center;cursor:pointer;color:#fff;flex:0 0 auto;}
+  .topbar .plus:active{transform:scale(.9);} .topbar .plus svg{width:16px;height:16px;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:16px 18px 22px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+  .tile{background:var(--soft1);border:1px solid transparent;border-radius:14px;padding:13px 6px;text-align:center;}
+  .tile:nth-child(2){background:var(--soft2);}
+  .tile b{display:block;font-size:19px;font-weight:800;font-family:var(--display);color:var(--ink);letter-spacing:-.02em;}
+  .tile span{font-size:8.5px;font-weight:700;color:var(--muted);margin-top:2px;display:block;text-transform:uppercase;letter-spacing:.03em;}
+
+  .acc-link{display:flex;align-items:center;gap:12px;margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 13px;text-decoration:none;color:inherit;transition:border-color .16s, transform .16s cubic-bezier(.22,1,.36,1);}
+  .acc-link:hover{border-color:var(--brand);} .acc-link:active{transform:scale(.99);}
+  .acc-link .ai{width:36px;height:36px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;}
+  .acc-link .ai svg{width:18px;height:18px;}
+  .acc-link .at{flex:1;min-width:0;} .acc-link .at b{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;display:block;} .acc-link .at span{font-size:9.5px;color:var(--muted);}
+  .acc-link .abadge{font-size:9px;font-weight:800;color:var(--gold);background:rgba(176,137,79,.16);padding:3px 8px;border-radius:20px;flex:0 0 auto;}
+  .acc-link .chev{color:var(--muted);flex:0 0 auto;}
+
+  .seg{display:flex;background:var(--chip);border-radius:12px;padding:4px;margin-top:16px;}
+  .seg button{flex:1;border:none;background:none;font-family:inherit;font-size:12px;font-weight:800;color:var(--muted);padding:9px;min-height:40px;border-radius:9px;cursor:pointer;transition:background .16s,color .16s;}
+  .seg button.on{background:var(--card);color:var(--brand);box-shadow:0 4px 12px -6px rgba(0,0,0,.2);}
+  .seg-count{display:inline-flex;align-items:center;justify-content:center;min-width:16px;height:16px;padding:0 4px;margin-left:4px;border-radius:20px;background:var(--brand);color:#fff;font-size:9px;font-weight:800;vertical-align:middle;}
+  .seg button:not(.on) .seg-count{background:var(--muted);}
+
+  .prog-search{position:relative;margin-top:14px;}
+  .prog-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);}
+  .prog-search input{width:100%;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 14px 12px 38px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .prog-search input::placeholder{color:var(--muted);}
+  .prog-search input:focus{outline:none;border-color:var(--brand);}
+  .search-empty{text-align:center;color:var(--muted);font-size:11px;padding:30px;}
+
+  .list{margin-top:14px;display:flex;flex-direction:column;gap:12px;}
+  .prog{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
+  .prog:hover{border-color:var(--brand);} .prog:active{transform:scale(.99);}
+  .prog .ptop{display:flex;align-items:center;gap:8px;}
+  .tag{font-size:8.5px;font-weight:800;letter-spacing:.03em;padding:3px 8px;border-radius:20px;text-transform:uppercase;}
+  .tag.live{color:#c0464a;background:rgba(224,106,106,.14);display:inline-flex;align-items:center;gap:5px;}
+  .tag.live .d{width:5px;height:5px;border-radius:50%;background:#e06a6a;animation:pulse 1.4s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .tag.up{color:var(--brand);background:var(--brand-soft);}
+  .tag.ended{color:var(--muted);background:var(--chip);}
+  .tag.fmt{color:var(--slate-700);background:var(--chip);margin-left:auto;}
+  .prog .pt{font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin-top:9px;line-height:1.25;}
+  .prog .pm{font-size:10px;color:var(--muted);margin-top:6px;display:flex;gap:14px;flex-wrap:wrap;}
+  .prog .pm span{display:inline-flex;align-items:center;gap:5px;} .prog .pm svg{width:12px;height:12px;flex:0 0 auto;}
+  .reg{margin-top:12px;}
+  .reg .rn{display:flex;align-items:baseline;justify-content:space-between;font-size:10.5px;}
+  .reg .rn b{font-size:13px;font-weight:800;font-family:var(--display);color:var(--brand);}
+  .reg .rn b small{font-size:10px;color:var(--muted);font-weight:600;font-family:var(--ui);}
+  .reg .rn .ra{color:var(--brand);font-weight:800;display:inline-flex;align-items:center;gap:3px;}
+  .reg .bar{height:6px;border-radius:4px;background:var(--chip);overflow:hidden;margin-top:6px;}
+  .reg .bar i{display:block;height:100%;border-radius:4px;background:var(--brand);}
+  .prog.past .pastm{display:flex;gap:16px;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);}
+  .prog.past .pastm div{text-align:center;} .prog.past .pastm b{font-size:15px;font-weight:800;font-family:var(--display);display:block;}
+  .prog.past .pastm span{font-size:8.5px;color:var(--muted);font-weight:700;text-transform:uppercase;letter-spacing:.03em;}
+  .prog.draft{border-style:dashed;}
+  .draft-cont{font-size:11px;font-weight:800;color:var(--brand);}
+  .draft-del{background:none;border:none;color:var(--muted);cursor:pointer;width:32px;height:32px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto;}
+  .draft-del:hover{color:var(--brand);background:var(--chip);}
+  .draft-del svg{width:15px;height:15px;}
+
+  /* registrations sheet */
+  .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;z-index:30;}
+  .backdrop.open{opacity:1;visibility:visible;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--card);border-radius:22px 22px 0 0;padding:8px 18px calc(18px + env(safe-area-inset-bottom));max-height:84%;display:flex;flex-direction:column;transform:translateY(100%);transition:transform .45s cubic-bezier(.34,1.3,.5,1);box-shadow:0 -12px 40px -12px rgba(0,0,0,.4);}
+  .sheet.open{transform:translateY(0);}
+  .sheet .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:6px auto 12px;flex:0 0 auto;}
+  .rs-head{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:0 2px 2px;flex:0 0 auto;}
+  .rs-head h2{font-size:17px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .rs-head p{font-size:10px;color:var(--muted);margin-top:3px;}
+  .rs-total{flex:0 0 auto;text-align:center;background:var(--brand-soft);border-radius:12px;padding:7px 13px;}
+  .rs-total b{display:block;font-size:17px;font-weight:800;font-family:var(--display);color:var(--brand);line-height:1;}
+  .rs-total span{font-size:7.5px;font-weight:800;letter-spacing:.06em;color:var(--brand);}
+  .rs-list{flex:1;overflow-y:auto;margin:12px -2px 0;padding:0 2px;scrollbar-width:none;}
+  .rs-list::-webkit-scrollbar{display:none;}
+  .rrow{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);}
+  .rrow:last-child{border-bottom:none;}
+  .rrow img{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .rrow .ri{flex:1;min-width:0;} .rrow .ri b{font-size:12px;font-weight:800;font-family:var(--display);display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .rrow .ri span{font-size:9.5px;color:var(--muted);}
+  .rpill{font-size:8.5px;font-weight:800;padding:4px 9px;border-radius:20px;flex:0 0 auto;text-transform:uppercase;}
+  .rpill.ok{color:var(--green);background:rgba(34,197,94,.14);}
+  .rappr{border:none;background:var(--brand);color:#fff;font-family:inherit;font-size:10px;font-weight:800;padding:7px 12px;border-radius:20px;cursor:pointer;flex:0 0 auto;}
+  .rappr:active{transform:scale(.94);}
+
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+  .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="tt">Host CME</span>
+    <button class="plus" onclick="location.href='create-cme.html'" aria-label="Create program"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+  </div>
+
+  <div class="scroll">
+    <div class="tiles rise">
+      <div class="tile"><b id="tPrograms">6</b><span>Programs</span></div>
+      <div class="tile"><b id="tReg">4,930</b><span>Registered</span></div>
+      <div class="tile"><b id="tCred">2,840</b><span>CME issued</span></div>
+    </div>
+
+    <a class="acc-link rise" href="accreditation-requests.html">
+      <span class="ai"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/><polyline points="9 12 11.5 14.5 15.5 9.5"/></svg></span>
+      <div class="at"><b>Accreditation requests</b><span>Track CME-credit approvals from the board</span></div>
+      <span class="abadge" id="accBadge" hidden></span>
+      <span class="chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+    </a>
+
+    <div class="seg rise" id="seg">
+      <button class="on" data-t="active">Live &amp; upcoming</button>
+      <button data-t="past">CME History</button>
+      <button data-t="drafts">Drafts <span class="seg-count" id="draftsCount" hidden>0</span></button>
+    </div>
+
+    <div class="prog-search rise">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+      <input id="progSearch" placeholder="Search your programs…" autocomplete="off">
+    </div>
+
+    <div class="list rise" id="list"></div>
+  </div>
+
+  <div class="home-ind"></div>
+
+  <!-- registrations sheet -->
+  <div class="backdrop" id="rsBackdrop"></div>
+  <div class="sheet" id="rsSheet">
+    <div class="grab"></div>
+    <div class="rs-head"><div><h2 id="rsTitle">Registrations</h2><p id="rsSub"></p></div><div class="rs-total"><b id="rsCount">0</b><span>TOTAL</span></div></div>
+    <div class="rs-list" id="rsList"></div>
+  </div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='cme.html'; });
+  // pending accreditation badge (localStorage submissions + 2 seeded pending)
+  try{ var ar=JSON.parse(localStorage.getItem('accreditationRequests')||'[]'); var pend=ar.filter(r=>r.status==='pending'||r.status==='changes').length + 2; var ab=document.getElementById('accBadge'); if(pend>0){ ab.textContent=pend+' pending'; ab.hidden=false; } }catch(e){}
+
+  const calIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>';
+  const crIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>';
+  const usrIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/></svg>';
+  function ppl(n){ return Array.from({length:n},(_,i)=>({ name:['Dr. Kavya Reddy','Dr. Arjun Mehta','Dr. Sara Iyer','Dr. Rohan Sinha','Dr. Neha Gupta','Dr. Vikram Rao','Dr. Anjali Nair','Dr. Sameer Shah'][i%8], spec:['Cardiology','Endocrinology','Neurology','Diabetology','Nephrology','Pulmonology'][i%6], img:'https://randomuser.me/api/portraits/'+((i%2)?'women':'men')+'/'+(20+i*7%70)+'.jpg', status: i%5===0?'pending':'approved' })); }
+
+  const PROGRAMS=[
+    {t:'Cardiometabolic Update 2025', fmt:'Online', status:'live', date:'24 May 2025', cr:'2 CME', reg:2480, seats:3000, reglist:ppl(9)},
+    {t:'Diabetes & Kidney Summit', fmt:'Offline', status:'up', date:'02 Jun 2025', cr:'2 CME', reg:340, seats:500, reglist:ppl(7)},
+    {t:'GLP-1 Agonists — Recorded Series', fmt:'Recorded', status:'up', date:'On-demand', cr:'1.5 CME', reg:1120, seats:0, reglist:ppl(8)},
+    {t:'Hypertension Masterclass', fmt:'Online', status:'past', date:'14 Jan 2025', cr:'1.5 CME', attended:890, score:88, reglist:ppl(6)},
+    {t:'Lipid Management Update 2024', fmt:'Online', status:'past', date:'15 Dec 2024', cr:'2 CME', attended:620, score:85, reglist:ppl(6)},
+    {t:'Thyroid Disorders Update', fmt:'Offline', status:'past', date:'09 Nov 2024', cr:'1 CME', attended:410, score:90, reglist:ppl(5)}
+  ];
+
+  const trashIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+  function relTime(ts){
+    if(!ts) return 'recently';
+    const m=Math.max(0,Math.round((Date.now()-ts)/60000));
+    if(m<1) return 'just now';
+    if(m<60) return m+'m ago';
+    const h=Math.round(m/60);
+    if(h<24) return h+'h ago';
+    return Math.round(h/24)+'d ago';
+  }
+  function loadDrafts(){ try{ return JSON.parse(localStorage.getItem('cmeDrafts')||'[]'); }catch(e){ return []; } }
+  function updateDraftsCount(){
+    const n=loadDrafts().length;
+    const el=document.getElementById('draftsCount');
+    el.textContent=n; el.hidden=n===0;
+  }
+  function deleteDraft(id){
+    const drafts=loadDrafts().filter(d=>d.id!==id);
+    try{ localStorage.setItem('cmeDrafts', JSON.stringify(drafts)); }catch(e){}
+    toast('Draft deleted');
+    updateDraftsCount();
+    render();
+  }
+  updateDraftsCount();
+
+  let tab='active';
+  let query='';
+  const listEl=document.getElementById('list');
+  function statusTag(p){
+    if(p.status==='live') return '<span class="tag live"><span class="d"></span>Live</span>';
+    if(p.status==='past') return '<span class="tag ended">Ended</span>';
+    return '<span class="tag up">Upcoming</span>';
+  }
+  function loadPublished(){ try{ return JSON.parse(localStorage.getItem('cmePrograms')||'[]'); }catch(e){ return []; } }
+  function fmtDateShort(s){
+    const d=new Date(s+'T00:00:00'); if(isNaN(d)) return s;
+    return d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+  }
+  function render(){
+    if(tab==='drafts'){
+      const drafts=loadDrafts().filter(d=>!query || (d.title||'').toLowerCase().includes(query));
+      listEl.innerHTML = drafts.length ? drafts.map(d=>`
+        <div class="prog draft" data-did="${esc(d.id)}">
+          <div class="ptop"><span class="tag ended">Draft</span><span class="tag fmt">${esc(d.format||'Online')}</span></div>
+          <div class="pt">${esc(d.title||'Untitled program')}</div>
+          <div class="pm"><span>${calIco}Saved ${relTime(d.savedAt)}</span></div>
+          <div class="reg">
+            <div class="rn"><b class="draft-cont">Continue editing</b><button class="draft-del" data-did="${esc(d.id)}" aria-label="Delete draft">${trashIco}</button></div>
+          </div>
+        </div>`).join('') : `<div class="search-empty">${query?'No drafts match “'+esc(query)+'”.':'No saved drafts.'}</div>`;
+      return;
+    }
+    if(tab==='past'){
+      const items=PROGRAMS.filter(p=>p.status==='past' && (!query || p.t.toLowerCase().includes(query)));
+      listEl.innerHTML = items.map((p)=>{
+        const idx=PROGRAMS.indexOf(p);
+        return `<div class="prog past" data-i="${idx}">
+          <div class="ptop">${statusTag(p)}<span class="tag fmt">${p.fmt}</span></div>
+          <div class="pt">${esc(p.t)}</div>
+          <div class="pm"><span>${calIco}${p.date}</span><span>${crIco}${p.cr}</span></div>
+          <div class="pastm"><div><b>${p.attended.toLocaleString()}</b><span>Attended</span></div><div><b>${p.reglist.length? p.attended.toLocaleString():'—'}</b><span>Certified</span></div><div><b>${p.score}%</b><span>Avg score</span></div></div>
+        </div>`;
+      }).join('') || `<div class="search-empty">${query?'No programs match “'+esc(query)+'”.':'No programs here yet.'}</div>`;
+      return;
+    }
+    // active tab — merge real published programs with the mock upcoming/live ones
+    const real=loadPublished().filter(p=>!query || (p.title||'').toLowerCase().includes(query));
+    const mock=PROGRAMS.filter(p=>p.status!=='past' && (!query || p.t.toLowerCase().includes(query)));
+    const realHtml=real.map(p=>`
+      <div class="prog" data-real="${esc(p.id)}">
+        <div class="ptop"><span class="tag up">Upcoming</span><span class="tag fmt">${esc(p.format||'Online')}</span></div>
+        <div class="pt">${esc(p.title||'Untitled program')}</div>
+        <div class="pm"><span>${calIco}${p.eventStartDate?fmtDateShort(p.eventStartDate):'Date TBD'}</span></div>
+        <div class="reg"><div class="rn"><b>0<small> registered</small></b><span class="ra">${usrIco}View details</span></div></div>
+      </div>`).join('');
+    const mockHtml=mock.map((p)=>{
+      const idx=PROGRAMS.indexOf(p);
+      const pct = p.seats? Math.min(100,Math.round(p.reg/p.seats*100)) : 100;
+      const cap = p.seats? `<small> / ${p.seats.toLocaleString()} seats</small>` : '<small> enrolled</small>';
+      return `<div class="prog" data-i="${idx}">
+        <div class="ptop">${statusTag(p)}<span class="tag fmt">${p.fmt}</span></div>
+        <div class="pt">${esc(p.t)}</div>
+        <div class="pm"><span>${calIco}${p.date}</span><span>${crIco}${p.cr}</span></div>
+        <div class="reg">
+          <div class="rn"><b>${p.reg.toLocaleString()}${cap}</b><span class="ra">${usrIco}View registrations</span></div>
+          ${p.seats?`<div class="bar"><i style="width:${pct}%"></i></div>`:''}
+        </div>
+      </div>`;
+    }).join('');
+    listEl.innerHTML = (realHtml+mockHtml) || `<div class="search-empty">${query?'No programs match “'+esc(query)+'”.':'No programs here yet.'}</div>`;
+  }
+  render();
+
+  document.getElementById('seg').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; tab=b.dataset.t; document.querySelectorAll('#seg button').forEach(x=>x.classList.toggle('on',x===b)); render(); });
+  document.getElementById('progSearch').addEventListener('input', e=>{ query=e.target.value.trim().toLowerCase(); render(); });
+
+  // ---- registrations sheet ----
+  const rsSheet=document.getElementById('rsSheet'), rsBackdrop=document.getElementById('rsBackdrop');
+  function openReg(idx){
+    const p=PROGRAMS[idx]; const list=p.reglist||[];
+    const approved=list.filter(r=>r.status==='approved').length, pending=list.length-approved;
+    document.getElementById('rsTitle').textContent=p.t;
+    document.getElementById('rsCount').textContent=(p.reg||p.attended||list.length).toLocaleString();
+    document.getElementById('rsSub').textContent = p.status==='past' ? `${(p.attended||0).toLocaleString()} attended · closed` : `${approved} approved · ${pending} pending`;
+    document.getElementById('rsList').innerHTML = list.map((r,i)=>`
+      <div class="rrow" data-ri="${i}">
+        <img src="${r.img}" alt="" onerror="this.style.background='var(--brand)'">
+        <div class="ri"><b>${esc(r.name)}</b><span>${esc(r.spec)}</span></div>
+        ${r.status==='approved' ? '<span class="rpill ok">Approved</span>' : (p.status==='past'?'<span class="rpill ok">Attended</span>':`<button class="rappr" data-appr="${i}">Approve</button>`)}
+      </div>`).join('');
+    rsBackdrop.classList.add('open'); rsSheet.classList.add('open');
+    rsSheet._p=p;
+  }
+  function closeReg(){ rsBackdrop.classList.remove('open'); rsSheet.classList.remove('open'); }
+  listEl.addEventListener('click', e=>{
+    if(tab==='drafts'){
+      const del=e.target.closest('.draft-del');
+      if(del){ e.stopPropagation(); deleteDraft(del.dataset.did); return; }
+      const card=e.target.closest('.draft');
+      if(card) location.href='create-cme.html?draft='+encodeURIComponent(card.dataset.did);
+      return;
+    }
+    const real=e.target.closest('[data-real]');
+    if(real){ location.href='cme-details.html?id='+encodeURIComponent(real.dataset.real); return; }
+    const c=e.target.closest('.prog'); if(c) openReg(+c.dataset.i);
+  });
+  rsBackdrop.addEventListener('click', closeReg);
+  document.getElementById('rsList').addEventListener('click', e=>{
+    const b=e.target.closest('[data-appr]'); if(!b) return;
+    const p=rsSheet._p; const r=p.reglist[+b.dataset.appr]; r.status='approved';
+    b.outerHTML='<span class="rpill ok">Approved</span>';
+    const approved=p.reglist.filter(x=>x.status==='approved').length, pending=p.reglist.length-approved;
+    document.getElementById('rsSub').textContent=`${approved} approved · ${pending} pending`;
+    toast(r.name+' approved');
+  });
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

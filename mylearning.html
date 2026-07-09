@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Learning — CME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  /* touch feedback: interactive elements transition transform+opacity */
+  .filt,.ml-act,.up-btn,.navitem,.cw,.ml,.cert,.cert-add,.cert .del,.cm-bar button{transition:transform .16s cubic-bezier(.22,1,.36,1), opacity .16s;}
+  .filt:active,.ml-act:active,.up-btn:active,.cm-bar button:active{transform:scale(.94);}
+  .cert .del:active{transform:scale(.94);opacity:.7;}
+  .cw:active,.ml:active,.cert:active,.cert-add:active{transform:scale(.985);}
+  .navitem:active{transform:scale(.9);opacity:.7;}
+  /* toast */
+  .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;font-family:inherit;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;z-index:60;transition:opacity .22s, transform .22s;white-space:nowrap;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif;
+    --ui:'Inter', sans-serif;
+  }
+  /* native device font — chosen at startup by platform (APK / TestFlight) */
+
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#38bdf8;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#c9a227;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#f59e0b;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .rise{animation:rise .55s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} .scroll{padding-top:max(10px,env(safe-area-inset-top));} }
+
+  .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:6px 18px 20px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .ptop{display:flex;align-items:center;justify-content:space-between;padding:8px 0 2px;}
+  .ptop h1{font-size:24px;font-weight:800;font-family:var(--display);letter-spacing:-.03em;}
+  .ptop .sub{font-size:10.5px;color:var(--muted);margin-top:2px;}
+  .ptop img{width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--chip);border:1px solid var(--line);}
+
+  /* summary stat chips */
+  .stats{display:flex;gap:9px;margin-top:14px;}
+  .stat{flex:1;background:var(--soft1);border:1px solid transparent;border-radius:14px;padding:11px 8px;text-align:center;display:flex;flex-direction:column;gap:2px;}
+  .stat:nth-child(2n){background:var(--soft2);}
+  .stat b{font-size:18px;font-weight:800;font-family:var(--display);color:var(--brand);}
+  .stat span{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+
+  /* continue watching hero */
+  .cw{margin-top:16px;border-radius:18px;overflow:hidden;background:var(--soft1);border:1px solid transparent;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .cw:hover{border-color:var(--brand);}
+  .cw-top{height:96px;position:relative;background:var(--brand-soft);display:flex;align-items:center;justify-content:center;}
+  .cw-play{width:46px;height:46px;border-radius:50%;background:var(--card);display:grid;place-items:center;color:var(--brand);position:relative;}
+  .cw-play svg{width:20px;height:20px;margin-left:2px;}
+  .cw-tag{position:absolute;top:10px;left:12px;font-size:9px;font-weight:800;letter-spacing:.05em;color:var(--brand);background:var(--card);border:1px solid var(--line);padding:3px 8px;border-radius:20px;}
+  .cw-b{padding:12px 14px 14px;}
+  .cw-t{font-size:13.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .cw-m{font-size:9.5px;color:var(--muted);margin-top:4px;}
+  .cw-bar{height:6px;border-radius:20px;background:rgba(0,0,0,.06);margin-top:10px;overflow:hidden;}
+  [data-theme="dark"] .cw-bar{background:rgba(255,255,255,.12);}
+  .cw-fill{height:100%;border-radius:20px;background:var(--brand);width:0;transition:width 1s cubic-bezier(.22,1,.36,1);}
+  .cw-pct{font-size:9px;font-weight:700;color:var(--brand);margin-top:6px;}
+
+  /* filter tabs */
+  .filters{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:18px -2px 0;padding:0 2px;}
+  .filters::-webkit-scrollbar{display:none;}
+  .filt{flex:0 0 auto;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:8px 14px;min-height:44px;font-size:10.5px;font-weight:700;font-family:inherit;color:var(--slate-700);cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s, color .18s, background .18s;}
+  .filt:hover{border-color:var(--brand);}
+  .filt.active{background:var(--brand-soft);color:var(--brand);border-color:var(--brand);}
+
+  /* learning list */
+  .list{display:flex;flex-direction:column;gap:11px;margin-top:14px;}
+  .ml{background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:12px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;animation:fadeIn .4s ease both;}
+  .ml:nth-child(2n){background:var(--soft2);}
+  .ml:hover{transform:translateY(-2px);border-color:var(--brand);}
+  .ml-row{display:flex;gap:11px;align-items:flex-start;}
+  .ml-thumb{width:48px;height:48px;border-radius:13px;flex:0 0 auto;display:grid;place-items:center;color:var(--brand);background:rgba(255,255,255,.55);position:relative;}
+  [data-theme="dark"] .ml-thumb{background:rgba(255,255,255,.08);}
+  .ml-thumb svg{width:22px;height:22px;}
+  .ml-info{flex:1;min-width:0;}
+  .ml-title{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.25;}
+  .ml-meta{font-size:9.5px;color:var(--muted);margin-top:5px;display:flex;gap:10px;flex-wrap:wrap;}
+  .ml-meta span{display:inline-flex;align-items:center;gap:4px;}
+  .ml-badge{font-size:9px;font-weight:800;letter-spacing:.05em;padding:3px 8px;border-radius:20px;white-space:nowrap;flex:0 0 auto;}
+  .b-live{color:#c0464a;background:rgba(224,106,106,.12);border:1px solid rgba(224,106,106,.28);display:inline-flex;align-items:center;gap:4px;}
+  .b-live .d{width:4px;height:4px;border-radius:50%;background:#e06a6a;animation:pulse 1.4s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  .b-up{background:var(--brand-soft);color:var(--brand);}
+  .b-vid{background:var(--chip);color:var(--slate-700);}
+  .b-done{background:rgba(63,125,78,.15);color:var(--green);}
+
+  .ml-bar{height:5px;border-radius:20px;background:rgba(0,0,0,.06);margin-top:11px;overflow:hidden;}
+  [data-theme="dark"] .ml-bar{background:rgba(255,255,255,.12);}
+  .ml-bar i{display:block;height:100%;border-radius:20px;background:var(--brand);}
+  .ml-foot{display:flex;align-items:center;gap:9px;margin-top:11px;}
+  .ml-note{font-size:9.5px;color:var(--muted);font-weight:600;display:inline-flex;align-items:center;gap:5px;}
+  .ml-act{margin-left:auto;border:none;font-family:inherit;font-size:10.5px;font-weight:700;padding:8px 15px;min-height:44px;border-radius:11px;cursor:pointer;white-space:nowrap;transition:transform .16s cubic-bezier(.22,1,.36,1), background .16s;}
+  .ml-act.a-reminded{background:rgba(63,125,78,.15);color:var(--green);}
+  .a-primary{background:var(--brand);color:#fff;}
+  .a-primary:hover{background:var(--brand-dark);}
+  .a-ghost{background:var(--chip);color:var(--ink);}
+  .a-ghost:hover{background:var(--line);}
+
+  /* ---- Certificates ---- */
+  .cert-head{display:flex;align-items:baseline;justify-content:space-between;margin:24px 0 12px;}
+  .cert-head h2{font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .up-btn{display:inline-flex;align-items:center;gap:6px;min-height:44px;font-size:10.5px;font-weight:700;color:#fff;background:var(--brand);padding:8px 13px;border-radius:11px;cursor:pointer;transition:background .15s, transform .16s cubic-bezier(.22,1,.36,1);}
+  .up-btn:hover{background:var(--brand-dark);}
+  .up-btn svg{width:14px;height:14px;}
+  .cert-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+  .cert{position:relative;background:var(--soft1);border:1px solid transparent;border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;animation:fadeIn .35s ease both;}
+  .cert:nth-child(2n){background:var(--soft2);}
+  .cert:hover{transform:translateY(-3px);border-color:var(--brand);}
+  .cert .thumb{height:94px;background:rgba(255,255,255,.55);display:grid;place-items:center;overflow:hidden;}
+  [data-theme="dark"] .cert .thumb{background:rgba(255,255,255,.08);}
+  .cert .thumb img{width:100%;height:100%;object-fit:cover;}
+  .cert .thumb .pdf{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--brand);font-size:9px;font-weight:800;letter-spacing:.05em;}
+  .cert .thumb .pdf svg{width:26px;height:26px;}
+  .cert .meta{padding:9px 10px 11px;}
+  .cert .nm{font-size:10.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cert .dt{font-size:9px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px;}
+  .cert .cr{color:var(--brand);font-weight:800;}
+  .cert .del{position:absolute;top:0;right:0;width:44px;height:44px;padding:7px 7px 0 0;border:none;background:none;color:transparent;font-size:0;line-height:1;display:flex;align-items:flex-start;justify-content:flex-end;cursor:pointer;opacity:1;}
+  .cert .del::before{content:"✕";width:24px;height:24px;border-radius:8px;background:rgba(0,0,0,.5);color:#fff;font-size:13px;display:grid;place-items:center;}
+  .cert-add{border:1.5px dashed var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:139px;cursor:pointer;color:var(--brand);font-size:10px;font-weight:700;transition:border-color .15s, background .15s;}
+  .cert-add:hover{border-color:var(--brand);background:var(--brand-soft);}
+  .cert-add svg{width:24px;height:24px;}
+  /* full-screen certificate viewer */
+  .cert-modal{position:absolute;inset:0;background:rgba(0,0,0,.88);z-index:40;display:none;flex-direction:column;padding:16px;}
+  .cert-modal.open{display:flex;animation:fadeIn .2s ease;}
+  .cm-bar{display:flex;align-items:center;gap:10px;color:#fff;margin-bottom:12px;}
+  .cm-bar .t{font-size:12px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cm-bar button{width:44px;height:44px;border-radius:50%;border:none;background:rgba(255,255,255,.16);color:#fff;font-size:15px;cursor:pointer;flex:0 0 auto;display:grid;place-items:center;}
+  .cm-body{flex:1;display:grid;place-items:center;overflow:auto;}
+  .cm-body img{max-width:100%;max-height:100%;border-radius:10px;box-shadow:0 20px 50px -20px rgba(0,0,0,.6);}
+  .cm-body iframe{width:100%;height:100%;border:none;background:#fff;border-radius:10px;}
+
+  .nav{flex:0 0 auto;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:9px 0 22px;}
+  .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:10.5px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;}
+  .navitem.active{color:var(--brand);font-weight:600;}
+  @media (max-width:600px){ .nav{padding-bottom:max(22px,env(safe-area-inset-bottom));} }
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="scroll">
+    <div class="ptop rise">
+      <div><h1>My Learning</h1><div class="sub">Your registered CMEs & sessions</div></div>
+      <img src="https://randomuser.me/api/portraits/women/79.jpg" alt="Me">
+    </div>
+
+    <!-- summary -->
+    <div class="stats rise">
+      <div class="stat"><b>2</b><span>In progress</span></div>
+      <div class="stat"><b>1</b><span>Upcoming</span></div>
+      <div class="stat"><b>8</b><span>Completed</span></div>
+    </div>
+
+    <!-- continue watching -->
+    <div class="cw rise" onclick="location.href='speakers.html?type=course&title=GLP-1%20Agonists%20Deep%20Dive&sub=Resume'">
+      <div class="cw-top">
+        <span class="cw-tag">CONTINUE WATCHING</span>
+        <span class="cw-play"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="7 5 19 12 7 19"/></svg></span>
+      </div>
+      <div class="cw-b">
+        <div class="cw-t">GLP-1 Agonists Deep Dive</div>
+        <div class="cw-m">On-demand video · 40 min · Dr. Meera Iyer</div>
+        <div class="cw-bar"><div class="cw-fill" id="cwFill"></div></div>
+        <div class="cw-pct" id="cwPct">45% watched · 22 min left</div>
+      </div>
+    </div>
+
+    <!-- filters -->
+    <div class="filters rise" id="filters"></div>
+
+    <!-- list -->
+    <div class="list" id="list"></div>
+
+    <!-- Certificates -->
+    <div class="cert-head">
+      <h2>My Certificates</h2>
+      <label class="up-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+        Upload
+        <input type="file" id="certFile" accept="image/*,application/pdf" multiple hidden>
+      </label>
+    </div>
+    <div class="cert-grid" id="certGrid"></div>
+  </div>
+
+  <!-- Certificate viewer -->
+  <div class="cert-modal" id="certModal">
+    <div class="cm-bar">
+      <span class="t" id="cmTitle">Certificate</span>
+      <button id="cmClose" aria-label="Close">✕</button>
+    </div>
+    <div class="cm-body" id="cmBody"></div>
+  </div>
+
+  <div class="nav">
+    <a class="navitem" href="home.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg>Home</a>
+    <a class="navitem active" href="cme.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>CME</a>
+    <a class="navitem" href="network.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg>Network</a>
+    <a class="navitem" href="post.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>Post</a>
+    <a class="navitem" href="referral.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h2"/><path d="M14 14h6"/><path d="m17 11 3 3-3 3"/></svg>Referral</a>
+  </div>
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  // ---- Native device font: pick platform font at startup (APK / TestFlight webview) ----
+  (function(){
+    const ua = navigator.userAgent || '';
+    const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+    const isAndroid = /Android/.test(ua);
+    document.documentElement.setAttribute('data-os', isIOS ? 'ios' : isAndroid ? 'android' : 'other');
+  })();
+
+  // ---- Theme: apply saved choice on load (shared across pages) ----
+  try{ const t = localStorage.getItem('cmeTheme') || 'blue'; if(t!=='classical') document.documentElement.setAttribute('data-theme', t); }catch(e){}
+
+  const ic = {
+    radio:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4.9 4.9a10 10 0 0 0 0 14.2M19.1 4.9a10 10 0 0 1 0 14.2M7.8 7.8a6 6 0 0 0 0 8.4M16.2 7.8a6 6 0 0 1 0 8.4"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/></svg>',
+    play:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><polygon points="7 5 19 12 7 19"/></svg>',
+    cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>',
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>',
+    clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>',
+    pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+    wifi:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M5 12.5a10 10 0 0 1 14 0"/><path d="M8.5 16a5 5 0 0 1 7 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg>',
+    award:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5 7 21l5-2.5L17 21l-1.5-8.5"/></svg>'
+  };
+
+  // status: live | upcoming | video | completed ; mode: online | offline
+  const items = [
+    { title:'Cardiometabolic Update 2025', status:'live', mode:'online', meta:'Now · 1,240 watching', credits:'2 CME', thumb:'radio' },
+    { title:'Diabetes & Kidney Summit', status:'upcoming', mode:'offline', venue:'Taj Lands End, Mumbai', meta:'Starts in 3 days · 02 Jun', credits:'2 CME', thumb:'cal' },
+    { title:'GLP-1 Agonists Deep Dive', status:'video', meta:'On-demand · 40 min', credits:'1.5 CME', progress:45, thumb:'play' },
+    { title:'CGM in Clinical Practice', status:'video', meta:'On-demand · 30 min', credits:'1 CME', progress:20, thumb:'play' },
+    { title:'Hypertension Masterclass', status:'upcoming', mode:'online', meta:'Starts in 6 days · 14 Jun', credits:'1.5 CME', thumb:'cal' },
+    { title:'Lipid Management Update', status:'completed', meta:'Completed 15 Dec 2024', credits:'1.5 CME', score:92, thumb:'award' },
+    { title:'Obesity & Metabolic Health', status:'completed', meta:'Completed 22 Nov 2024', credits:'2 CME', score:78, thumb:'award' }
+  ];
+
+  const filters = [
+    {k:'all', n:'All'},{k:'live', n:'Live'},{k:'upcoming', n:'Upcoming'},{k:'video', n:'Videos'},{k:'completed', n:'Completed'}
+  ];
+  let active = 'all';
+  document.getElementById('filters').innerHTML = filters.map(f=>`<button class="filt${f.k==='all'?' active':''}" data-k="${f.k}">${f.n}</button>`).join('');
+
+  function badge(it){
+    if(it.status==='live') return '<span class="ml-badge b-live"><span class="d"></span>LIVE</span>';
+    if(it.status==='upcoming') return '<span class="ml-badge b-up">UPCOMING</span>';
+    if(it.status==='video') return '<span class="ml-badge b-vid">VIDEO</span>';
+    return '<span class="ml-badge b-done">COMPLETED</span>';
+  }
+  function footer(it){
+    if(it.status==='live'){
+      const note = it.mode==='online'
+        ? `<span class="ml-note">${ic.wifi} Online session</span>`
+        : `<span class="ml-note">${ic.pin} ${it.venue||'In-person'}</span>`;
+      return `${note}<button class="ml-act a-primary" onclick="event.stopPropagation();location.href='speakers.html?type=course&title=${encodeURIComponent(it.title)}&sub=${encodeURIComponent(it.mode==='online'?'Join':'View venue')}'">${it.mode==='online'?'Join online':'View venue'}</button>`;
+    }
+    if(it.status==='upcoming'){
+      const note = it.mode==='offline'
+        ? `<span class="ml-note">${ic.pin} ${it.venue}</span>`
+        : `<span class="ml-note">${ic.wifi} Online</span>`;
+      return `${note}<button class="ml-act a-ghost" onclick="event.stopPropagation();toggleReminder(this)">Set reminder</button>`;
+    }
+    if(it.status==='video'){
+      return `<span class="ml-note">${it.progress}% watched</span><button class="ml-act a-primary" onclick="event.stopPropagation();location.href='speakers.html?type=course&title=${encodeURIComponent(it.title)}&sub=${encodeURIComponent(it.progress?'Resume':'Start')}'">${it.progress?'Resume':'Start'}</button>`;
+    }
+    return `<span class="ml-note">${ic.award} Score ${it.score}%</span><button class="ml-act a-ghost" onclick="event.stopPropagation();viewCmeCertificate('${it.title.replace(/'/g,"\\'")}',${it.score})">Certificate</button>`;
+  }
+
+  /* lightweight bottom-center toast (~1.4s) */
+  function toast(msg){
+    let t = document.getElementById('toast');
+    if(!t){ t = document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); }
+    t.textContent = msg; t.classList.add('show');
+    clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 1400);
+  }
+
+  /* "Set reminder" — toggle a persistent set/unset state + toast */
+  function toggleReminder(btn){
+    const on = btn.classList.toggle('a-reminded');
+    btn.classList.toggle('a-ghost', !on);
+    btn.textContent = on ? 'Reminder set ✓' : 'Set reminder';
+    toast(on ? 'Reminder set ✓' : 'Reminder removed');
+  }
+
+  /* "Certificate" — reuse the certificate viewer modal with a generated certificate */
+  function viewCmeCertificate(title, score){
+    document.getElementById('cmTitle').textContent = title + ' — Certificate';
+    document.getElementById('cmBody').innerHTML =
+      `<div style="background:#fff;color:#2a2320;max-width:300px;width:100%;padding:28px 22px;border-radius:12px;text-align:center;font-family:Georgia,serif;border:2px solid #b0894f;box-shadow:0 20px 50px -20px rgba(0,0,0,.6)">
+         <div style="font-size:9px;letter-spacing:.18em;color:#b0894f;font-weight:700">CERTIFICATE OF COMPLETION</div>
+         <div style="font-family:var(--display);font-size:18px;font-weight:800;margin:16px 0 8px;line-height:1.25">${title}</div>
+         <div style="font-size:10px;color:#8a7f77">Awarded to Dr. Priya Sharma</div>
+         <div style="font-size:10px;color:#8a7f77;margin-top:4px">Assessment score: ${score}%</div>
+         <div style="margin-top:18px;font-size:8px;letter-spacing:.12em;color:#b0894f;font-weight:700">CME ACCREDITED</div>
+       </div>`;
+    document.getElementById('certModal').classList.add('open');
+  }
+
+  function render(){
+    const list = items.filter(i=> active==='all' || i.status===active);
+    const el = document.getElementById('list');
+    if(!list.length){ el.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:11px;padding:30px 10px">Nothing here yet.</div>`; return; }
+    el.innerHTML = list.map((it,idx)=>`
+      <div class="ml" style="animation-delay:${idx*60}ms" onclick="location.href='speakers.html?type=course&title=${encodeURIComponent(it.title)}'">
+        <div class="ml-row">
+          <div class="ml-thumb">${ic[it.thumb]}</div>
+          <div class="ml-info">
+            <div class="ml-title">${it.title}</div>
+            <div class="ml-meta"><span>${ic.clock}${it.meta}</span><span>${ic.award}${it.credits}</span></div>
+          </div>
+          ${badge(it)}
+        </div>
+        ${it.status==='video' ? `<div class="ml-bar"><i style="width:${it.progress}%"></i></div>` : ''}
+        <div class="ml-foot">${footer(it)}</div>
+      </div>`).join('');
+  }
+
+  document.querySelectorAll('.filt').forEach(b=>b.addEventListener('click',()=>{
+    document.querySelectorAll('.filt').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active'); active=b.dataset.k; render();
+  }));
+
+  render();
+  requestAnimationFrame(()=>{ document.getElementById('cwFill').style.width='45%'; });
+
+  /* ---- Certificates: upload, store (localStorage), view, delete ---- */
+  const CERT_KEY = 'cmeCerts';
+  const grid = document.getElementById('certGrid');
+  const fileInput = document.getElementById('certFile');
+  const modal = document.getElementById('certModal');
+  const pdfIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  const plusIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>';
+
+  let certs = [];
+  try{ certs = JSON.parse(localStorage.getItem(CERT_KEY) || '[]'); }catch(e){ certs = []; }
+
+  function saveCerts(){
+    try{ localStorage.setItem(CERT_KEY, JSON.stringify(certs)); }
+    catch(e){ alert('Local storage is full — try a smaller file or remove an older certificate.'); }
+  }
+  function today(){
+    const d = new Date();
+    return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  }
+  function renderCerts(){
+    const cards = certs.map((c,i)=>`
+      <div class="cert" data-i="${i}">
+        <div class="thumb">${c.type && c.type.indexOf('image')===0 ? `<img src="${c.data}" alt="">` : `<div class="pdf">${pdfIco}PDF</div>`}</div>
+        <button class="del" data-del="${i}" aria-label="Delete">✕</button>
+        <div class="meta"><div class="nm">${c.name}</div><div class="dt">${c.date}${c.cr?` · <span class="cr">${c.cr}</span>`:''}</div></div>
+      </div>`).join('');
+    grid.innerHTML = cards + `<label class="cert-add" for="certFile">${plusIco}<span>Upload certificate</span></label>`;
+  }
+
+  fileInput.addEventListener('change', e=>{
+    const files = [...e.target.files];
+    files.forEach(f=>{
+      const r = new FileReader();
+      r.onload = ()=>{
+        certs.unshift({ name:f.name.replace(/\.[^.]+$/,''), type:f.type||'application/pdf', date:today(), data:r.result });
+        saveCerts(); renderCerts();
+      };
+      r.readAsDataURL(f);
+    });
+    e.target.value = '';
+  });
+
+  grid.addEventListener('click', e=>{
+    const del = e.target.closest('[data-del]');
+    if(del){ e.stopPropagation(); if(confirm('Remove this certificate?')){ certs.splice(+del.dataset.del,1); saveCerts(); renderCerts(); } return; }
+    const card = e.target.closest('.cert');
+    if(card){ openCert(certs[+card.dataset.i]); }
+  });
+
+  function openCert(c){
+    document.getElementById('cmTitle').textContent = c.name;
+    document.getElementById('cmBody').innerHTML = c.type && c.type.indexOf('image')===0
+      ? `<img src="${c.data}" alt="${c.name}">`
+      : `<iframe src="${c.data}" title="${c.name}"></iframe>`;
+    modal.classList.add('open');
+  }
+  document.getElementById('cmClose').addEventListener('click', ()=>modal.classList.remove('open'));
+  modal.addEventListener('click', e=>{ if(e.target===modal) modal.classList.remove('open'); });
+  document.addEventListener('keydown', e=>{ if(e.key==='Escape') modal.classList.remove('open'); });
+
+  renderCerts();
+</script>
+<script>
+  (function(){
+    var p=document.querySelector('.phone'), BASE=390;
+    function fit(){
+      if(window.innerWidth<=600){
+        var s=window.innerWidth/BASE;
+        p.style.width=BASE+'px'; p.style.height=(window.innerHeight/s)+'px'; p.style.transform='scale('+s+')';
+      } else { p.style.transform=''; p.style.width=''; p.style.height=''; }
+    }
+    fit(); window.addEventListener('resize',fit); window.addEventListener('orientationchange',fit);
+  })();
+</script>
+</body>
+</html>

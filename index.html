@@ -1,0 +1,16 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DocSynapse</title>
+  <script>
+    // App entry: signed-in users go to the app, everyone else signs in first.
+    try{ location.replace(localStorage.getItem('docAuth')==='1' ? 'home.html' : 'login.html'); }
+    catch(e){ location.replace('login.html'); }
+  </script>
+</head>
+<body>
+  <p>Loading… <a href="devices.html">Continue</a></p>
+</body>
+</html>
