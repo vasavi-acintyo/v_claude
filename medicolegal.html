@@ -3,46 +3,241 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Medico-Legal — MedHub</title>
+<title>Medico-Legal</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  :root{--brand:#7d2c3b;--brand-dark:#5e2029;--brand-soft:#f4e7e9;--gold:#b0894f;--ink:#2a2320;--slate-700:#514842;--muted:#8a7f77;--line:#e7e0d4;--chip:#f4f0e8;--green:#3f7d4e;--surface:#faf6ee;--card:#fff;--page:#d8d0c2;--g1:#9c4453;--g2:#7d2c3b;--d1:#2b191c;--d2:#5e2029;--d3:#7d2c3b;--glow:rgba(176,137,79,.45);--soft1:#f7ede1;--soft2:#f4e7e9;--onGold:#e6cd93;--display:'Poppins', sans-serif; --ui:'Inter', sans-serif;}
-  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#38bdf8;--ink:#0f2438;--slate-700:#31465e;--muted:#6b8199;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#fff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
-  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#c9a227;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#fff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
-  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#f59e0b;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#fff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
-  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b;--brand-dark:#5e2029;--brand-soft:#f4e7e9;--gold:#b0894f;
+    --ink:#2a2320;--slate-700:#514842;--muted:#71665d;
+    --line:#e7e0d4;--chip:#f4f0e8;--green:#3f7d4e;
+    --surface:#faf6ee;--card:#ffffff;--page:#d8d0c2;
+    --g1:#9c4453;--g2:#7d2c3b;--d1:#2b191c;--d2:#5e2029;--d3:#7d2c3b;--glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1;--soft2:#f4e7e9;--onGold:#e6cd93;
+    --red:#c0403a;--red-soft:rgba(200,64,58,.13);--amber:#b26a00;--amber-soft:rgba(212,138,20,.15);
+    --display:'Playfair Display',Georgia,serif;
+    --ui:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,sans-serif;
+  }
+  html[data-os="ios"]{--ui:-apple-system,'SF Pro Text','SF Pro Display',system-ui,sans-serif;}
+  html[data-os="android"]{--ui:'Roboto','Noto Sans',system-ui,sans-serif;}
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;--red-soft:rgba(248,113,113,.16);--amber-soft:rgba(251,191,36,.16);}
   :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
   html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
   body{display:flex;justify-content:center;padding:18px;}
   svg{display:block;}
-  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}} .rise{animation:rise .55s cubic-bezier(.22,1,.36,1) both;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}} .rise{animation:rise .5s cubic-bezier(.22,1,.36,1) both;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  @keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+
   .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
-  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} .scroll{padding-top:max(10px,env(safe-area-inset-top));} }
-  .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} }
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
   .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
   .scroll{flex:1 1 auto;overflow-y:auto;padding:6px 18px 20px;} .scroll::-webkit-scrollbar{width:0;}
-  .ptop{padding:8px 0 2px;} .ptop h1{font-size:24px;font-weight:800;font-family:var(--display);letter-spacing:-.03em;} .ptop .sub{font-size:10.5px;color:var(--muted);margin-top:2px;}
-  .hero{margin-top:16px;border-radius:20px;padding:22px 18px;color:#fff;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--d1),var(--d2) 55%,var(--d3));box-shadow:0 18px 34px -18px rgba(0,0,0,.5);text-align:center;}
-  .hero::after{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);}
-  .hero .ic{width:60px;height:60px;border-radius:18px;background:rgba(255,255,255,.16);display:grid;place-items:center;margin:0 auto 14px;position:relative;}
-  .hero .ic svg{width:30px;height:30px;}
-  .hero .soon{display:inline-block;font-size:8.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;background:var(--gold);color:#2a1a0f;padding:4px 11px;border-radius:20px;position:relative;}
-  .hero h2{font-size:21px;font-weight:800;font-family:var(--display);margin:12px 0 7px;position:relative;}
-  .hero p{font-size:11px;line-height:1.6;opacity:.9;position:relative;max-width:270px;margin:0 auto;}
-  .feat{display:flex;flex-direction:column;gap:11px;margin-top:20px;}
-  .fc{display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:13px;}
-  .fc .fi{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;color:#fff;flex:0 0 auto;background:linear-gradient(135deg,var(--g1),var(--g2));}
-  .fc .fi svg{width:20px;height:20px;}
-  .fc .m{flex:1;min-width:0;} .fc .t{font-size:12.5px;font-weight:800;font-family:var(--display);} .fc .s{font-size:9.5px;color:var(--muted);margin-top:3px;line-height:1.4;}
-  .notify{width:100%;margin-top:20px;padding:14px;min-height:44px;border:none;border-radius:14px;background:var(--brand);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 12px 24px -8px var(--brand);transition:transform .12s ease,opacity .12s ease,background .15s ease;}
-  .notify:hover{background:var(--brand-dark);} .notify.done{background:var(--green);} .notify:active{transform:scale(.94);}
+
+  /* header */
+  .ptop{display:flex;align-items:flex-start;gap:9px;padding:6px 0 2px;}
+  .ptop .htxt{flex:1;min-width:0;}
+  .ptop h1{font-size:22px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;line-height:1.1;}
+  .ptop .sub{font-size:10.5px;color:var(--muted);margin-top:3px;}
+  .create-btn{width:40px;height:40px;min-width:40px;border-radius:12px;background:var(--brand);border:none;display:grid;place-items:center;cursor:pointer;color:#fff;flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s;}
+  .create-btn:hover{background:var(--brand-dark);} .create-btn:active{transform:scale(.92);}
+
+  /* protection score */
+  .shield{position:relative;display:flex;align-items:center;gap:15px;margin-top:14px;background:var(--soft1);border:1px solid transparent;border-radius:18px;padding:15px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .shield:hover{border-color:var(--brand);} .shield:active{transform:scale(.99);}
+  .sh-ring{position:relative;width:78px;height:78px;flex:0 0 auto;}
+  .sh-ring svg{width:78px;height:78px;transform:rotate(-90deg);}
+  .srt{fill:none;stroke:rgba(0,0,0,.08);stroke-width:8;} [data-theme="dark"] .srt{stroke:rgba(255,255,255,.13);}
+  .srp{fill:none;stroke:var(--green);stroke-width:8;stroke-linecap:round;stroke-dasharray:263.9;stroke-dashoffset:263.9;transition:stroke-dashoffset 1.1s cubic-bezier(.22,1,.36,1);}
+  .sh-rc{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;}
+  .sh-rc b{font-size:22px;font-weight:800;font-family:var(--display);color:var(--green);letter-spacing:-.02em;}
+  .sh-rc span{font-size:7px;font-weight:800;letter-spacing:.1em;color:var(--muted);margin-top:3px;}
+  .sh-info{flex:1;min-width:0;}
+  .sh-t{font-size:9.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);}
+  .sh-lvl{font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin-top:3px;display:flex;align-items:center;gap:7px;}
+  .sh-lvl .pill{font-size:8.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--green);background:rgba(63,125,78,.14);padding:3px 8px;border-radius:20px;}
+  .sh-fac{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+  .fac{display:flex;align-items:center;gap:8px;} .fac .fn{font-size:9px;color:var(--muted);width:82px;flex:0 0 auto;} .fac .fb{flex:1;height:5px;border-radius:5px;background:var(--chip);overflow:hidden;} .fac .fb i{display:block;height:100%;border-radius:5px;background:var(--brand);}
+  .fac .fv{font-size:9px;font-weight:800;color:var(--slate-700);width:26px;text-align:right;flex:0 0 auto;}
+
+  /* section header */
+  .sec{display:flex;align-items:baseline;justify-content:space-between;margin:22px 0 11px;}
+  .sec h2{font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .sec .cnt{font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:3px 8px;border-radius:20px;}
+  .sec a{font-size:10px;font-weight:700;color:var(--brand);cursor:pointer;text-decoration:none;}
+
+  /* proactive alerts */
+  .alerts{display:flex;flex-direction:column;gap:9px;}
+  .alert{display:flex;gap:11px;align-items:center;background:var(--soft1);border:1px solid transparent;border-left:3px solid var(--brand);border-radius:12px;padding:11px 12px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .alert:hover{border-color:var(--brand);} .alert:active{transform:scale(.99);}
+  .alert.high{border-left-color:var(--red);} .alert.med{border-left-color:var(--amber);} .alert.info{border-left-color:var(--brand);}
+  .alert .ai2{width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:0 0 auto;}
+  .alert.high .ai2{background:var(--red-soft);color:var(--red);} .alert.med .ai2{background:var(--amber-soft);color:var(--amber);} .alert.info .ai2{background:var(--brand-soft);color:var(--brand);}
+  .alert .ai2 svg{width:17px;height:17px;}
+  .alert .am{flex:1;min-width:0;} .alert .at{font-size:12px;font-weight:800;letter-spacing:-.01em;} .alert .as{font-size:9.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .alert .ax{font-size:9.5px;font-weight:800;color:var(--brand);flex:0 0 auto;white-space:nowrap;}
+  .alert.high .ax{color:var(--red);}
+
+  /* AI legal guidance — light assistant card */
+  .aicard{position:relative;overflow:hidden;margin-top:14px;border-radius:18px;padding:15px;background:var(--brand-soft);border:1px solid transparent;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .aicard:hover{border-color:var(--brand);} .aicard:active{transform:scale(.99);}
+  .aicard::after{content:"";position:absolute;right:-34px;top:-34px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,rgba(125,44,59,.10),transparent 70%);}
+  .aicard .ah{display:flex;align-items:center;gap:11px;position:relative;}
+  .aicard .aic{width:42px;height:42px;border-radius:13px;background:linear-gradient(140deg,var(--g1),var(--g2));color:#fff;display:grid;place-items:center;flex:0 0 auto;box-shadow:0 10px 20px -8px var(--brand);} .aicard .aic svg{width:23px;height:23px;}
+  .aicard .atx{flex:1;min-width:0;}
+  .aicard .an{font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;color:var(--ink);}
+  .aicard .asub{font-size:9.5px;color:var(--muted);margin-top:2px;}
+  .aicard .abadge{font-size:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--brand);color:#fff;padding:3px 8px;border-radius:20px;flex:0 0 auto;}
+  .aicard .achips{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;position:relative;}
+  .aicard .achip{font-size:10px;font-weight:700;color:var(--brand);background:var(--card);border:1px solid var(--line);padding:6px 11px;border-radius:20px;cursor:pointer;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;} .aicard .achip:hover{border-color:var(--brand);} .aicard .achip:active{transform:scale(.95);}
+  .aicard .aask{display:flex;align-items:center;gap:9px;margin-top:11px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:11px 13px;position:relative;transition:border-color .16s;}
+  .aicard:hover .aask{border-color:var(--brand);}
+  .aicard .aask .sp{color:var(--brand);flex:0 0 auto;display:grid;place-items:center;} .aicard .aask .sp svg{width:16px;height:16px;}
+  .aicard .aask .ph{flex:1;font-size:11px;color:var(--muted);} .aicard .aask .go{width:26px;height:26px;border-radius:8px;background:var(--brand);color:#fff;display:grid;place-items:center;flex:0 0 auto;} .aicard .aask .go svg{width:13px;height:13px;}
+
+  /* tools grid */
+  .tools{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:12px;}
+  .tool{background:var(--soft1);border:1px solid transparent;border-radius:15px;padding:13px 7px;display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .tool:hover{border-color:var(--brand);transform:translateY(-2px);} .tool:active{transform:scale(.97);}
+  .tool .ti{width:38px;height:38px;border-radius:11px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;} .tool .ti svg{width:19px;height:19px;}
+  .tool .tl{font-size:9.5px;font-weight:700;color:var(--slate-700);line-height:1.2;}
+  .tool.emerg .ti{background:var(--red-soft);color:var(--red);} .tool.emerg .tl{color:var(--red);}
+
+  /* cases */
+  .cases{display:flex;flex-direction:column;gap:10px;}
+  .case{display:flex;gap:12px;align-items:flex-start;background:var(--soft1);border:1px solid transparent;border-radius:15px;padding:13px;cursor:pointer;text-align:left;width:100%;font-family:inherit;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .case:hover{border-color:var(--brand);transform:translateY(-2px);} .case:active{transform:scale(.99);}
+  .case .cic{width:40px;height:40px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;} .case .cic svg{width:19px;height:19px;}
+  .case .cm{flex:1;min-width:0;}
+  .case .ct{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .case .cs{font-size:9.5px;color:var(--muted);margin-top:3px;}
+  .case .crow{display:flex;align-items:center;gap:7px;margin-top:7px;}
+  .stpill{font-size:8px;font-weight:800;letter-spacing:.03em;padding:3px 8px;border-radius:20px;text-transform:uppercase;white-space:nowrap;}
+  .stpill.active{color:var(--brand);background:var(--brand-soft);}
+  .stpill.review{color:var(--amber);background:var(--amber-soft);}
+  .stpill.advisory{color:#6d4bd8;background:rgba(124,108,245,.16);}
+  .stpill.closed{color:var(--green);background:rgba(63,125,78,.14);}
+  .risk{font-size:8px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;padding:3px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:4px;}
+  .risk .d{width:5px;height:5px;border-radius:50%;background:currentColor;}
+  .risk.high{color:var(--red);background:var(--red-soft);} .risk.med{color:var(--amber);background:var(--amber-soft);} .risk.low{color:var(--green);background:rgba(63,125,78,.14);}
+  .case .cdate{font-size:9px;color:var(--muted);font-weight:600;flex:0 0 auto;}
+
+  /* advisors */
+  .advs{display:flex;gap:11px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;margin:0 -2px;} .advs::-webkit-scrollbar{display:none;}
+  .adv{flex:0 0 158px;background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:14px;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;cursor:pointer;}
+  .adv:hover{border-color:var(--brand);transform:translateY(-2px);} .adv:active{transform:scale(.98);}
+  .adv img{width:46px;height:46px;border-radius:50%;object-fit:cover;background:var(--chip);}
+  .adv .an2{font-size:12px;font-weight:800;font-family:var(--display);margin-top:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .adv .asp{font-size:9px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .adv .ameta{font-size:9px;color:var(--slate-700);margin-top:7px;display:flex;align-items:center;gap:5px;} .adv .ameta svg{width:11px;height:11px;color:var(--gold);}
+  .adv .abtn{width:100%;margin-top:10px;background:var(--brand);color:#fff;border:none;font-family:inherit;font-size:10px;font-weight:800;padding:8px;min-height:36px;border-radius:10px;cursor:pointer;transition:background .16s;} .adv .abtn:hover{background:var(--brand-dark);}
+
+  /* dashboard stat row */
+  .mstats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:12px;}
+  .mstat{background:var(--soft1);border:1px solid transparent;border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;font-family:inherit;transition:transform .18s cubic-bezier(.22,1,.36,1),border-color .18s;} .mstat:hover{border-color:var(--brand);} .mstat:active{transform:scale(.97);}
+  .mstat b{display:block;font-size:20px;font-weight:800;font-family:var(--display);line-height:1;color:var(--ink);} .mstat.warn b{color:var(--amber);} .mstat span{font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:5px;display:block;}
+  /* AI recommendations */
+  .recs{display:flex;flex-direction:column;gap:9px;}
+  .rec{display:flex;gap:11px;align-items:center;background:var(--soft1);border:1px solid transparent;border-radius:12px;padding:11px 12px;cursor:pointer;font-family:inherit;text-align:left;width:100%;transition:transform .18s cubic-bezier(.22,1,.36,1),border-color .18s;} .rec:hover{border-color:var(--brand);} .rec:active{transform:scale(.99);}
+  .rec .ric{width:32px;height:32px;border-radius:9px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;} .rec .ric svg{width:16px;height:16px;}
+  .rec .rm{flex:1;min-width:0;} .rec .rt{font-size:11.5px;font-weight:800;letter-spacing:-.01em;} .rec .rs{font-size:9.5px;color:var(--muted);margin-top:2px;}
+  .rec .rch{color:var(--muted);opacity:.5;flex:0 0 auto;} .rec .rch svg{width:15px;height:15px;}
+  /* hearings */
+  .hearings{display:flex;flex-direction:column;gap:9px;}
+  .hearing{display:flex;gap:12px;align-items:center;background:var(--soft1);border:1px solid transparent;border-radius:13px;padding:11px 12px;cursor:pointer;font-family:inherit;text-align:left;width:100%;transition:transform .18s cubic-bezier(.22,1,.36,1),border-color .18s;} .hearing:hover{border-color:var(--brand);} .hearing:active{transform:scale(.99);}
+  .hearing .hd{width:46px;height:46px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto;line-height:1;} .hearing .hd b{font-size:16px;font-weight:800;font-family:var(--display);} .hearing .hd span{font-size:7px;font-weight:800;letter-spacing:.08em;margin-top:2px;}
+  .hearing .hm{flex:1;min-width:0;} .hearing .ht{font-size:11.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .hearing .hw{font-size:9.5px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .hearing .htag{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--brand);background:var(--brand-soft);padding:3px 8px;border-radius:20px;flex:0 0 auto;}
+  /* lawyer messages */
+  .msgs{display:flex;flex-direction:column;}
+  .msgr{display:flex;gap:11px;align-items:center;padding:11px 2px;border-bottom:1px solid var(--line);cursor:pointer;} .msgr:last-child{border-bottom:none;} .msgr:active{opacity:.7;}
+  .msgr img{width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .msgr .mm{flex:1;min-width:0;} .msgr .mn{font-size:12px;font-weight:800;} .msgr .msnip{font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .msgr.unread .msnip{color:var(--ink);font-weight:600;}
+  .msgr .mr{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex:0 0 auto;} .msgr .mt{font-size:8.5px;color:var(--muted);} .msgr .mu{width:8px;height:8px;border-radius:50%;background:var(--brand);}
+  /* recent activity */
+  .acts{display:flex;flex-direction:column;}
+  .actr{display:flex;gap:11px;align-items:center;padding:11px 2px;border-bottom:1px solid var(--line);} .actr:last-child{border-bottom:none;}
+  .actr .aic3{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;} .actr .aic3 svg{width:16px;height:16px;}
+  .actr .am3{flex:1;min-width:0;} .actr .at3{font-size:11.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .actr .ad3{font-size:9px;color:var(--muted);margin-top:2px;}
+
+  /* bottom nav */
   .nav{flex:0 0 auto;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:9px 0 22px;}
-  .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;transition:transform .12s ease,opacity .12s ease;} .navitem.active{color:var(--brand);font-weight:600;} .navitem:active{transform:scale(.9);opacity:.7;}
+  .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1), color .18s;}
+  .navitem.active{color:var(--brand);font-weight:600;} .navitem:active{transform:scale(.9);}
   @media (max-width:600px){ .nav{padding-bottom:max(22px,env(safe-area-inset-bottom));} }
   .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+
+  /* sheet */
+  .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;z-index:30;}
+  .backdrop.open{opacity:1;visibility:visible;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--card);border-radius:22px 22px 0 0;display:flex;flex-direction:column;max-height:92%;
+    transform:translateY(100%);transition:transform .5s cubic-bezier(.34,1.3,.5,1);box-shadow:0 -12px 40px -12px rgba(0,0,0,.4);}
+  .sheet.open{transform:translateY(0);}
+  .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:8px auto 4px;flex:0 0 auto;}
+  .sh-body{overflow-y:auto;padding:6px 18px calc(16px + env(safe-area-inset-bottom));scrollbar-width:none;} .sh-body::-webkit-scrollbar{display:none;}
+  .sh-head{margin:2px 2px 6px;} .sh-head h2{font-size:18px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;} .sh-head p{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5;}
+  .lbl{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:16px 2px 9px;}
+  .btn{width:100%;min-height:48px;border:none;border-radius:13px;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s;} .btn svg{width:16px;height:16px;} .btn:active{transform:scale(.98);}
+  .btn.primary{background:var(--brand);color:#fff;} .btn.primary:hover{background:var(--brand-dark);}
+  .btn.ghost{background:var(--chip);color:var(--ink);} .btn.danger{background:var(--red);color:#fff;}
+  .btn.row{margin-top:10px;}
+  .field{margin-bottom:11px;} .field label{display:block;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 2px 6px;}
+  .field input,.field select,.field textarea{width:100%;min-height:46px;background:var(--soft1);border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:12.5px;font-family:inherit;color:var(--ink);} .field textarea{min-height:80px;resize:none;line-height:1.5;} .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--brand);}
+
+  /* do/dont lists */
+  .dd{display:flex;flex-direction:column;gap:8px;}
+  .dd .it{display:flex;gap:10px;align-items:flex-start;background:var(--soft1);border-radius:11px;padding:11px 12px;font-size:11px;line-height:1.45;color:var(--slate-700);}
+  .dd .it .ic{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;flex:0 0 auto;margin-top:1px;} .dd .it .ic svg{width:13px;height:13px;}
+  .dd.do .it .ic{background:rgba(63,125,78,.14);color:var(--green);} .dd.dont .it .ic{background:var(--red-soft);color:var(--red);}
+
+  /* checklist */
+  .chk{display:flex;align-items:center;gap:11px;padding:11px 0;border-bottom:1px solid var(--line);} .chk:last-child{border-bottom:none;}
+  .chk .cb{width:22px;height:22px;border-radius:7px;border:2px solid var(--line);flex:0 0 auto;display:grid;place-items:center;} .chk.done .cb{background:var(--green);border-color:var(--green);color:#fff;} .chk .cb svg{width:13px;height:13px;opacity:0;} .chk.done .cb svg{opacity:1;}
+  .chk .ct2{flex:1;min-width:0;font-size:11.5px;font-weight:600;} .chk.done .ct2{color:var(--muted);} .chk .cw{font-size:9px;font-weight:800;color:var(--muted);flex:0 0 auto;} .chk.fail .cw{color:var(--red);}
+
+  /* vault */
+  .vitem{display:flex;align-items:center;gap:11px;padding:11px 12px;background:var(--soft1);border-radius:12px;margin-bottom:8px;} .vitem .vic{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;} .vitem .vic svg{width:16px;height:16px;} .vitem .vm{flex:1;min-width:0;} .vitem .vt{font-size:11.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .vitem .vs{font-size:9px;color:var(--muted);margin-top:1px;} .vitem .vlock{color:var(--green);} .vitem .vlock svg{width:15px;height:15px;}
+
+  /* template rows */
+  .tpl{display:flex;align-items:center;gap:11px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer;} .tpl:last-child{border-bottom:none;} .tpl:active{opacity:.7;}
+  .tpl .tic{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;} .tpl .tic svg{width:16px;height:16px;}
+  .tpl .tt{flex:1;min-width:0;font-size:12px;font-weight:700;} .tpl .tch{color:var(--muted);opacity:.5;} .tpl .tch svg{width:15px;height:15px;}
+
+  /* AI chat (in sheet) */
+  .lchat{display:flex;flex-direction:column;gap:12px;padding:4px 0 6px;}
+  .lmsg{display:flex;gap:9px;max-width:90%;} .lmsg.me{align-self:flex-end;flex-direction:row-reverse;} .lmsg.bot{align-self:flex-start;}
+  .lmsg .lav{width:26px;height:26px;border-radius:8px;background:linear-gradient(140deg,var(--g1),var(--g2));color:#fff;display:grid;place-items:center;flex:0 0 auto;} .lmsg .lav svg{width:14px;height:14px;}
+  .lbub{border-radius:13px;padding:10px 12px;font-size:11.5px;line-height:1.55;}
+  .lmsg.bot .lbub{background:var(--soft1);color:var(--ink);border-top-left-radius:4px;} .lmsg.me .lbub{background:var(--brand);color:#fff;border-top-right-radius:4px;}
+  .lbub .h{font-weight:800;font-family:var(--display);display:block;margin-bottom:3px;} .lbub ul{margin:5px 0 0;padding-left:16px;} .lbub li{margin-top:3px;}
+  .ltyping{display:flex;gap:4px;padding:11px 12px;} .ltyping i{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite;} .ltyping i:nth-child(2){animation-delay:.2s;} .ltyping i:nth-child(3){animation-delay:.4s;}
+  .lchips{display:flex;gap:7px;flex-wrap:wrap;margin-top:4px;} .lchip{font-size:10px;font-weight:700;color:var(--brand);background:var(--brand-soft);border:none;padding:7px 12px;border-radius:20px;cursor:pointer;font-family:inherit;} .lchip:active{transform:scale(.95);}
+  .lcompose{display:flex;align-items:flex-end;gap:8px;margin-top:12px;position:sticky;bottom:0;background:var(--card);padding-top:8px;}
+  .lcompose input{flex:1;background:var(--soft1);border:1px solid var(--line);border-radius:20px;padding:11px 14px;font-family:inherit;font-size:12px;color:var(--ink);outline:none;} .lcompose input:focus{border-color:var(--brand);}
+  .lcompose button{width:40px;height:40px;border-radius:50%;border:none;background:var(--brand);color:#fff;display:grid;place-items:center;cursor:pointer;flex:0 0 auto;} .lcompose button svg{width:16px;height:16px;}
+  .ldisc{font-size:8.5px;color:var(--muted);text-align:center;margin-top:8px;line-height:1.4;}
+
+  /* detail timeline */
+  .tl{position:relative;padding-left:6px;margin-top:4px;}
+  .tl-item{position:relative;padding:0 0 15px 22px;} .tl-item::before{content:"";position:absolute;left:4px;top:13px;bottom:-2px;width:2px;background:var(--line);} .tl-item:last-child::before{display:none;}
+  .tl-dot{position:absolute;left:0;top:2px;width:10px;height:10px;border-radius:50%;background:var(--brand);box-shadow:0 0 0 4px var(--brand-soft);} .tl-item.now .tl-dot{background:var(--gold);box-shadow:0 0 0 4px rgba(176,137,79,.2);animation:pulse 1.6s infinite;}
+  .tl-t{font-size:11.5px;font-weight:800;font-family:var(--display);} .tl-d{font-size:9px;color:var(--muted);margin-top:2px;} .tl-n{font-size:10.5px;color:var(--slate-700);margin-top:4px;line-height:1.5;}
+  .kv2{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:4px;} .kv2 .k{background:var(--soft1);border-radius:11px;padding:10px 12px;} .kv2 .k .kk{font-size:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);} .kv2 .k .kv{font-size:12px;font-weight:700;margin-top:3px;}
+
+  .note{display:flex;align-items:center;justify-content:center;gap:6px;font-size:10px;color:var(--muted);margin-top:14px;line-height:1.5;text-align:center;} .note svg{width:13px;height:13px;flex:0 0 auto;}
+
+  /* toast */
+  .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);z-index:60;background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;max-width:82%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
@@ -55,38 +250,378 @@
       <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
     </div>
   </div>
+
   <div class="scroll">
-    <div class="ptop rise"><h1>Medico-Legal</h1><div class="sub">Protection & guidance for your practice</div></div>
-
-    <div class="hero rise">
-      <div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="M7 20h10"/><path d="M5 8h14"/><path d="M5 8l-2.5 5.5a2.6 2.6 0 0 0 5 0Z"/><path d="M19 8l-2.5 5.5a2.6 2.6 0 0 0 5 0Z"/></svg></div>
-      <span class="soon">Coming soon</span>
-      <h2>Medico-Legal support</h2>
-      <p>Expert legal help, advisories and documentation — built for doctors, launching shortly.</p>
+    <div class="ptop rise">
+      <div class="htxt"><h1>Medico-Legal</h1><div class="sub">Protect your practice, proactively</div></div>
+      <button class="create-btn" id="newCaseBtn" aria-label="New case">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </button>
     </div>
 
-    <div class="feat rise">
-      <div class="fc"><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg></span><div class="m"><div class="t">Case documents</div><div class="s">Store & organise consent forms, notes and records securely.</div></div></div>
-      <div class="fc"><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg></span><div class="m"><div class="t">Advisories & alerts</div><div class="s">Latest regulations, MCI/NMC guidance and risk advisories.</div></div></div>
-      <div class="fc"><span class="fi"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg></span><div class="m"><div class="t">Consult a legal expert</div><div class="s">Book a confidential consult on complaints or disputes.</div></div></div>
+    <!-- Protection score -->
+    <div class="shield rise" id="shieldCard" role="button" tabindex="0">
+      <div class="sh-ring">
+        <svg viewBox="0 0 100 100"><circle class="srt" cx="50" cy="50" r="42"/><circle class="srp" id="shRing" cx="50" cy="50" r="42"/></svg>
+        <div class="sh-rc"><b id="shScore">82</b><span>/100</span></div>
+      </div>
+      <div class="sh-info">
+        <div class="sh-t">Legal protection</div>
+        <div class="sh-lvl">Well protected <span class="pill">Low risk</span></div>
+        <div class="sh-fac">
+          <div class="fac"><span class="fn">Documentation</span><span class="fb"><i style="width:90%"></i></span><span class="fv">90</span></div>
+          <div class="fac"><span class="fn">Consent</span><span class="fb"><i style="width:74%"></i></span><span class="fv">74</span></div>
+          <div class="fac"><span class="fn">Compliance</span><span class="fb"><i style="width:86%"></i></span><span class="fv">86</span></div>
+        </div>
+      </div>
     </div>
 
-    <button class="notify" id="notify">Notify me when it launches</button>
+    <!-- Dashboard stats -->
+    <div class="mstats rise">
+      <button class="mstat" id="stCases"><b id="nCases">3</b><span>Active cases</span></button>
+      <button class="mstat warn" id="stPend"><b id="nPend">3</b><span>Pending</span></button>
+      <button class="mstat" id="stHear"><b id="nHear">2</b><span>Hearings</span></button>
+    </div>
+
+    <!-- Risk alerts -->
+    <div class="sec"><h2>Risk alerts</h2><span class="cnt" id="alertCnt">3</span></div>
+    <div class="alerts rise" id="alerts"></div>
+
+    <!-- AI legal guidance -->
+    <div class="aicard rise" id="aiCard">
+      <div class="ah">
+        <span class="aic"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3" r="1.2"/><circle cx="9" cy="13.5" r="1.1"/><circle cx="15" cy="13.5" r="1.1"/><path d="M2 12v3M22 12v3"/></svg></span>
+        <div class="atx"><div class="an">Legal AI Assistant</div><div class="asub">Instant medico-legal guidance, private to you</div></div>
+        <span class="abadge">AI</span>
+      </div>
+      <div class="achips">
+        <button class="achip" data-q="What are the informed consent requirements?">Consent</button>
+        <button class="achip" data-q="A complaint was filed against me — what should I do?">A complaint</button>
+        <button class="achip" data-q="How should I maintain defensible medical records?">Records</button>
+        <button class="achip" data-q="What should I do during an adverse event?">Emergency</button>
+      </div>
+      <div class="aask"><span class="sp"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 3 1.6 5L19 8.5l-4.4 2.9L16 16l-4-3-4 3 1.4-4.6L5 8.5 10.4 8z"/></svg></span><span class="ph">Ask a medico-legal question…</span><span class="go"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span></div>
+    </div>
+
+    <!-- AI recommendations -->
+    <div class="sec"><h2>AI recommendations</h2></div>
+    <div class="recs rise" id="recs"></div>
+
+    <!-- Quick actions -->
+    <div class="sec"><h2>Quick actions</h2></div>
+    <div class="tools rise">
+      <button class="tool" data-tool="newcase"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M12 12v6M9 15h6"/></svg></span><span class="tl">New case</span></button>
+      <button class="tool" data-tool="templates"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg></span><span class="tl">Templates</span></button>
+      <button class="tool" data-tool="vault"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="12" cy="12" r="3"/><path d="M12 9v-.5M8 4v16M16 4v16"/></svg></span><span class="tl">Evidence vault</span></button>
+      <button class="tool" data-tool="audit"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span><span class="tl">Doc audit</span></button>
+      <button class="tool" data-tool="consult"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3"/><path d="M5 7h14l-2 5H7z"/><path d="M4 21h16"/><path d="M9 21c0-3 1.5-4 3-4s3 1 3 4"/></svg></span><span class="tl">Consult advisor</span></button>
+      <button class="tool emerg" data-tool="emergency"><span class="ti"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 4 8 9 10 5-2 9-5 9-10V6z"/><path d="M12 8v4M12 16h.01"/></svg></span><span class="tl">Emergency</span></button>
+    </div>
+
+    <!-- Upcoming hearings -->
+    <div class="sec"><h2>Upcoming hearings</h2></div>
+    <div class="hearings rise" id="hearings"></div>
+
+    <!-- Active cases -->
+    <div class="sec"><h2>Active cases</h2><a id="caseAll">See all</a></div>
+    <div class="cases rise" id="cases"></div>
+
+    <!-- Lawyer messages -->
+    <div class="sec"><h2>Lawyer messages</h2><span class="cnt" id="msgCnt">1 new</span></div>
+    <div class="msgs rise" id="msgs"></div>
+
+    <!-- Recent activity -->
+    <div class="sec"><h2>Recent activity</h2></div>
+    <div class="acts rise" id="acts"></div>
+
+    <!-- Advisors -->
+    <div class="sec"><h2>Legal advisors</h2></div>
+    <div class="advs rise" id="advisors"></div>
   </div>
 
+  <!-- Bottom nav -->
   <div class="nav">
     <a class="navitem" href="home.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg>Home</a>
     <a class="navitem" href="cme.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>CME</a>
-    <a class="navitem" href="network.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg>Network</a>
+    <a class="navitem" href="doxy.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3" r="1.2"/><circle cx="9" cy="13.5" r="1.1"/><circle cx="15" cy="13.5" r="1.1"/><path d="M2 12v3M22 12v3"/></svg>Doxy</a>
     <a class="navitem" href="post.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>Post</a>
     <a class="navitem" href="referral.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h2"/><path d="M14 14h6"/><path d="m17 11 3 3-3 3"/></svg>Referral</a>
   </div>
   <div class="home-ind"></div>
+
+  <!-- Reusable sheet -->
+  <div class="backdrop" id="bd"></div>
+  <div class="sheet" id="sheet"><div class="grab"></div><div class="sh-body" id="sheetBody"></div></div>
 </div>
+
 <script>
-  try{ const t = localStorage.getItem('cmeTheme') || 'blue'; if(t!=='classical') document.documentElement.setAttribute('data-theme', t); }catch(e){}
-  const nb=document.getElementById('notify'); nb.addEventListener('click',()=>{ nb.textContent='✓ We’ll notify you'; nb.classList.add('done'); });
-  (function(){var p=document.querySelector('.phone'),BASE=390;function fit(){if(innerWidth<=600){var s=innerWidth/BASE;p.style.width=BASE+'px';p.style.height=(innerHeight/s)+'px';p.style.transform='scale('+s+')';}else{p.style.transform='';p.style.width='';p.style.height='';}}fit();addEventListener('resize',fit);addEventListener('orientationchange',fit);})();
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const firstName=(function(){try{const f=localStorage.getItem('docName')||'Dr. Ananya Rao';return 'Dr. '+f.replace(/^Dr\.?\s*/i,'').split(' ')[0];}catch(e){return 'Doctor';}})();
+
+  const IC={
+    alert:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.3 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.3a2 2 0 0 0-3.4 0Z"/><path d="M12 9v4M12 17h.01"/></svg>',
+    doc:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
+    clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>',
+    check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>',
+    x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>',
+    scale:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3"/><path d="M5 7h14l-2 5H7z"/><path d="M4 21h16"/><path d="M9 21c0-3 1.5-4 3-4s3 1 3 4"/></svg>',
+    shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg>',
+    lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>',
+    phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6 19.8 19.8 0 0 1-3.1-8.7A2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.3 1.8.6 2.6a2 2 0 0 1-.5 2.1L8 9.6a16 16 0 0 0 6 6l1.2-1.2a2 2 0 0 1 2.1-.5c.8.3 1.7.5 2.6.6a2 2 0 0 1 1.7 2Z"/></svg>',
+    star:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 3 2.5 5.5 6 .6-4.5 4 1.3 5.9L12 17.8 6.7 21l1.3-5.9-4.5-4 6-.6z"/></svg>',
+    send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>',
+    bot:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3"/><path d="M5 7h14l-2 5H7z"/><path d="M4 21h16"/><path d="M9 21c0-3 1.5-4 3-4s3 1 3 4"/></svg>',
+    chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>'
+  };
+
+  const ALERTS=[
+    {sev:'high', ic:IC.doc, t:'Consent form missing', s:'Mr. R. Krishnan · procedure tomorrow', ax:'Add now', msg:'Informed consent is not on file for a procedure scheduled tomorrow. Complete it before the procedure to prevent a consent dispute.'},
+    {sev:'med', ic:IC.clock, t:'Discharge summaries pending', s:'2 patients · overdue > 48h', ax:'Complete', msg:'Two discharge summaries are overdue. Timely, complete summaries strengthen your record and reduce liability.'},
+    {sev:'info', ic:IC.shield, t:'High-risk procedure Thursday', s:'Pre-op checklist ready to reduce risk', ax:'Open', msg:'A high-risk procedure is scheduled. Run the pre-op medico-legal checklist (consent, imaging, marking, team brief) to protect yourself.'}
+  ];
+
+  let CASES=[
+    {id:'m1', title:'Consent dispute — Ms. S. Patel', type:'Complaint', status:'review', risk:'high', date:'2d',
+      matter:'Alleged inadequate informed consent for a laparoscopic cholecystectomy. Patient has filed a complaint with the hospital grievance cell.',
+      advisor:'Adv. Rekha Menon', docs:['Consent form.pdf','Operative notes.pdf','OT record.pdf'],
+      timeline:[{t:'Case opened', d:'12 Jun', n:'Complaint received via grievance cell.'},{t:'Advisor assigned', d:'13 Jun', n:'Adv. Rekha Menon reviewing the file.'},{t:'Under review', d:'Today', n:'Preparing a written response with documentation.', now:true}]},
+    {id:'m2', title:'Medical records request — Consumer forum', type:'Records', status:'active', risk:'med', date:'5d',
+      matter:'District consumer forum has requested certified copies of the complete medical record within 15 days.',
+      advisor:'Adv. Sanjay Rao', docs:['Case sheet.pdf','Investigations.pdf'],
+      timeline:[{t:'Notice received', d:'09 Jun', n:'Records requested by consumer forum.'},{t:'In progress', d:'Today', n:'Compiling certified copies.', now:true}]},
+    {id:'m3', title:'Advisory — Telemedicine consent', type:'Advisory', status:'advisory', risk:'low', date:'1w',
+      matter:'Guidance requested on documenting consent and identity verification for teleconsultations.',
+      advisor:'Adv. Farah Khan', docs:['Telemedicine SOP.pdf'],
+      timeline:[{t:'Advisory requested', d:'05 Jun', n:'Query on telemedicine consent.'},{t:'Guidance issued', d:'06 Jun', n:'SOP shared; add verbal consent capture to your notes.', now:true}]}
+  ];
+
+  const ADVISORS=[
+    {name:'Adv. Rekha Menon', spec:'Medical negligence', img:'https://randomuser.me/api/portraits/women/50.jpg', exp:'14 yrs', rating:'4.9'},
+    {name:'Adv. Sanjay Rao', spec:'Consumer & health law', img:'https://randomuser.me/api/portraits/men/52.jpg', exp:'11 yrs', rating:'4.8'},
+    {name:'Adv. Farah Khan', spec:'Medico-legal & POCSO', img:'https://randomuser.me/api/portraits/women/48.jpg', exp:'9 yrs', rating:'4.9'}
+  ];
+
+  const TEMPLATES=['Informed consent (surgical)','High-risk procedure consent','Discharge summary','DAMA / LAMA form','Refusal of treatment','Incident / adverse-event report','Death certificate','Telemedicine consent'];
+  const VAULT=[
+    {t:'Consent — Ms. S. Patel', s:'PDF · sealed 12 Jun · SHA-256'},
+    {t:'OT record — 11 Jun', s:'PDF · sealed 11 Jun · SHA-256'},
+    {t:'Clinical photos — wound', s:'3 images · encrypted'}
+  ];
+  const AUDIT=[
+    {t:'Informed consent on file', ok:true},
+    {t:'Legible, timed & dated entries', ok:true},
+    {t:'Allergies & drug history recorded', ok:true},
+    {t:'Discharge summary within 48h', ok:false, w:'2 pending'},
+    {t:'Adverse events documented', ok:true},
+    {t:'Records retained ≥ 3 years', ok:true}
+  ];
+
+  const HEARINGS=[
+    {d:'18',m:'JUN',ht:'Consent dispute — Ms. S. Patel',hw:'Hospital grievance cell · 11:00 AM',tag:'Internal'},
+    {d:'02',m:'JUL',ht:'Records — Consumer forum',hw:'District Consumer Forum · 10:30 AM',tag:'Forum'}
+  ];
+  const RECS=[
+    {t:'Add a witness to high-risk consents',s:'3 recent consents lack a witness signature',ic:IC.shield},
+    {t:'Clear 2 pending discharge summaries',s:'Overdue > 48h — this raises your risk',ic:IC.doc}
+  ];
+  const MESSAGES=[
+    {name:'Adv. Rekha Menon',img:'https://randomuser.me/api/portraits/women/50.jpg',snip:'Reviewed the OT notes — let’s file a written response by Friday.',time:'2h',unread:true},
+    {name:'Adv. Sanjay Rao',img:'https://randomuser.me/api/portraits/men/52.jpg',snip:'Certified copies look complete. Share them once sealed.',time:'1d',unread:false}
+  ];
+  const ACTIVITY=[
+    {t:'Advisory issued — Telemedicine consent',d:'Today · 9:10 AM',ic:IC.scale},
+    {t:'Evidence sealed — OT record (11 Jun)',d:'Yesterday · 6:20 PM',ic:IC.lock},
+    {t:'Case opened — Records request',d:'5 days ago',ic:IC.doc},
+    {t:'Consent uploaded — Ms. S. Patel',d:'6 days ago',ic:IC.check}
+  ];
+
+  // ---------- sheet ----------
+  const bd=document.getElementById('bd'), sheet=document.getElementById('sheet'), sheetBody=document.getElementById('sheetBody');
+  function openSheet(html, after){ sheetBody.innerHTML=html; bd.classList.add('open'); sheet.classList.add('open'); sheetBody.scrollTop=0; if(after) after(); }
+  function closeSheet(){ bd.classList.remove('open'); sheet.classList.remove('open'); }
+  bd.addEventListener('click', closeSheet);
+
+  let tt; function toast(m){ let el=document.getElementById('toast'); if(!el){ el=document.createElement('div'); el.id='toast'; el.className='toast'; document.querySelector('.phone').appendChild(el);} el.textContent=m; void el.offsetWidth; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),1700); }
+
+  // ---------- render hub ----------
+  function renderAlerts(){
+    document.getElementById('alertCnt').textContent=ALERTS.length;
+    document.getElementById('alerts').innerHTML=ALERTS.map((a,i)=>
+      '<div class="alert '+a.sev+'" data-al="'+i+'"><span class="ai2">'+a.ic+'</span><div class="am"><div class="at">'+esc(a.t)+'</div><div class="as">'+esc(a.s)+'</div></div><span class="ax">'+esc(a.ax)+'</span></div>').join('');
+  }
+  function riskHtml(r){ const L={high:'High risk',med:'Moderate',low:'Low risk'}; return '<span class="risk '+r+'"><span class="d"></span>'+L[r]+'</span>'; }
+  function stHtml(s){ const L={active:'Active',review:'Under review',advisory:'Advisory',closed:'Closed'}; return '<span class="stpill '+s+'">'+L[s]+'</span>'; }
+  function renderCases(){
+    document.getElementById('cases').innerHTML=CASES.map(c=>
+      '<button class="case" data-case="'+c.id+'"><span class="cic">'+IC.scale+'</span><div class="cm"><div class="ct">'+esc(c.title)+'</div><div class="cs">'+esc(c.type)+' · updated '+esc(c.date)+'</div><div class="crow">'+stHtml(c.status)+riskHtml(c.risk)+'</div></div></button>').join('');
+  }
+  function renderAdvisors(){
+    document.getElementById('advisors').innerHTML=ADVISORS.map((a,i)=>
+      '<div class="adv" data-adv="'+i+'"><img src="'+a.img+'" alt="" onerror="this.style.visibility=\'hidden\'"><div class="an2">'+esc(a.name)+'</div><div class="asp">'+esc(a.spec)+'</div><div class="ameta">'+IC.star+esc(a.rating)+' · '+esc(a.exp)+'</div><button class="abtn" data-adv="'+i+'">Consult</button></div>').join('');
+  }
+  function renderStats(){
+    document.getElementById('nCases').textContent=CASES.filter(c=>c.status!=='closed').length;
+    document.getElementById('nPend').textContent=ALERTS.length;
+    document.getElementById('nHear').textContent=HEARINGS.length;
+  }
+  function renderRecs(){
+    document.getElementById('recs').innerHTML=RECS.map((r,i)=>'<button class="rec" data-rec="'+i+'"><span class="ric">'+r.ic+'</span><div class="rm"><div class="rt">'+esc(r.t)+'</div><div class="rs">'+esc(r.s)+'</div></div><span class="rch">'+IC.chev+'</span></button>').join('');
+  }
+  function renderHearings(){
+    document.getElementById('hearings').innerHTML=HEARINGS.map((h,i)=>'<button class="hearing" data-hear="'+i+'"><span class="hd"><b>'+esc(h.d)+'</b><span>'+esc(h.m)+'</span></span><div class="hm"><div class="ht">'+esc(h.ht)+'</div><div class="hw">'+esc(h.hw)+'</div></div><span class="htag">'+esc(h.tag)+'</span></button>').join('');
+  }
+  function renderMessages(){
+    document.getElementById('msgs').innerHTML=MESSAGES.map((m,i)=>'<div class="msgr'+(m.unread?' unread':'')+'" data-msg="'+i+'"><img src="'+m.img+'" alt="" onerror="this.style.visibility=\'hidden\'"><div class="mm"><div class="mn">'+esc(m.name)+'</div><div class="msnip">'+esc(m.snip)+'</div></div><div class="mr"><span class="mt">'+esc(m.time)+'</span>'+(m.unread?'<span class="mu"></span>':'')+'</div></div>').join('');
+  }
+  function renderActivity(){
+    document.getElementById('acts').innerHTML=ACTIVITY.map(a=>'<div class="actr"><span class="aic3">'+a.ic+'</span><div class="am3"><div class="at3">'+esc(a.t)+'</div><div class="ad3">'+esc(a.d)+'</div></div></div>').join('');
+  }
+  function msgSheet(m){
+    openSheet('<div class="sh-head"><h2>'+esc(m.name)+'</h2><p>Medico-legal advisor · confidential</p></div>'+
+      '<div class="lchat" id="mthread"><div class="lmsg bot"><span class="lav">'+IC.scale+'</span><div class="lbub">'+esc(m.snip)+'</div></div></div>'+
+      '<div class="lcompose"><input id="min" placeholder="Reply…"><button id="msend">'+IC.send+'</button></div>'+
+      '<div class="ldisc">Protected by attorney–client confidentiality.</div>',
+      ()=>{ const thr=sheetBody.querySelector('#mthread'), inp=sheetBody.querySelector('#min');
+        function send(){ const t=inp.value.trim(); if(!t) return; const el=document.createElement('div'); el.className='lmsg me'; el.innerHTML='<div class="lbub">'+esc(t)+'</div>'; thr.appendChild(el); thr.scrollTop=thr.scrollHeight; inp.value=''; toast('Sent to '+m.name); }
+        sheetBody.querySelector('#msend').onclick=send; inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){e.preventDefault();send();} }); });
+  }
+
+  // ---------- sheet content builders ----------
+  function emergencySheet(){
+    const dos=['Ensure patient safety and stabilise first.','Document the facts contemporaneously — times, actions, who was informed.','Preserve every record, sample and device involved.','Inform your senior / administration promptly.','Communicate honestly and empathetically with the family.'];
+    const donts=['Never alter, backdate or destroy records.','Don\'t admit or assign fault prematurely.','Don\'t discard any material or discharge hastily.','Don\'t discuss the event on social media or messaging groups.'];
+    openSheet(
+      '<div class="sh-head"><h2>Emergency protocol</h2><p>What to do right now during an adverse event to protect the patient and yourself.</p></div>'+
+      '<div class="lbl">Do</div><div class="dd do">'+dos.map(x=>'<div class="it"><span class="ic">'+IC.check+'</span><div>'+esc(x)+'</div></div>').join('')+'</div>'+
+      '<div class="lbl">Don\'t</div><div class="dd dont">'+donts.map(x=>'<div class="it"><span class="ic">'+IC.x+'</span><div>'+esc(x)+'</div></div>').join('')+'</div>'+
+      '<button class="btn danger row" data-act="calladv">'+IC.phone+'Call a legal advisor now</button>'+
+      '<button class="btn ghost row" data-act="logincident">'+IC.doc+'Log incident report</button>'+
+      '<div class="note">'+IC.shield+'Acting calmly and documenting well is your best protection.</div>',
+      ()=>{ sheetBody.querySelector('[data-act="calladv"]').onclick=()=>{ toast('Connecting to on-call advisor…'); }; sheetBody.querySelector('[data-act="logincident"]').onclick=()=>{ closeSheet(); setTimeout(newCaseSheet,180); }; }
+    );
+  }
+
+  function templatesSheet(){
+    openSheet('<div class="sh-head"><h2>Compliant templates</h2><p>Legally-reviewed formats to keep your documentation defensible.</p></div>'+
+      TEMPLATES.map(t=>'<div class="tpl" data-tpl="'+esc(t)+'"><span class="tic">'+IC.doc+'</span><span class="tt">'+esc(t)+'</span><span class="tch">'+IC.chev+'</span></div>').join(''),
+      ()=>{ sheetBody.querySelectorAll('.tpl').forEach(el=>el.onclick=()=>toast('“'+el.dataset.tpl+'” ready to fill')); });
+  }
+
+  function vaultSheet(){
+    openSheet('<div class="sh-head"><h2>Evidence vault</h2><p>Tamper-evident, encrypted storage. Each item is hashed & time-sealed.</p></div>'+
+      VAULT.map(v=>'<div class="vitem"><span class="vic">'+IC.doc+'</span><div class="vm"><div class="vt">'+esc(v.t)+'</div><div class="vs">'+esc(v.s)+'</div></div><span class="vlock">'+IC.lock+'</span></div>').join('')+
+      '<button class="btn primary row" data-act="addv">'+IC.lock+'Add evidence securely</button>'+
+      '<div class="note">'+IC.lock+'End-to-end encrypted · access is logged.</div>',
+      ()=>{ sheetBody.querySelector('[data-act="addv"]').onclick=()=>toast('Evidence sealed & encrypted'); });
+  }
+
+  function auditSheet(){
+    const passed=AUDIT.filter(a=>a.ok).length;
+    openSheet('<div class="sh-head"><h2>Documentation audit</h2><p>'+passed+' of '+AUDIT.length+' checks passing · improve quality to raise your protection score.</p></div>'+
+      AUDIT.map(a=>'<div class="chk '+(a.ok?'done':'fail')+'"><span class="cb">'+IC.check+'</span><span class="ct2">'+esc(a.t)+'</span><span class="cw">'+(a.ok?'OK':(a.w||'Action'))+'</span></div>').join('')+
+      '<button class="btn primary row" data-act="fixaudit">Fix pending items</button>',
+      ()=>{ sheetBody.querySelector('[data-act="fixaudit"]').onclick=()=>toast('Added to your to-do list'); });
+  }
+
+  function advisorSheet(a){
+    openSheet('<div class="sh-head"><h2>'+esc(a.name)+'</h2><p>'+esc(a.spec)+' · '+esc(a.exp)+' experience · '+esc(a.rating)+'★</p></div>'+
+      '<div class="dd do" style="margin-top:6px"><div class="it"><span class="ic">'+IC.check+'</span><div>Confidential, doctor-only consultation.</div></div><div class="it"><span class="ic">'+IC.check+'</span><div>Complaints, negligence claims, consumer cases & advisories.</div></div></div>'+
+      '<div class="lbl">Available slots</div><div class="kv2"><div class="k"><div class="kk">Today</div><div class="kv">4:30 PM</div></div><div class="k"><div class="kk">Tomorrow</div><div class="kv">11:00 AM</div></div></div>'+
+      '<button class="btn primary row" data-act="req">'+IC.scale+'Request consultation</button>'+
+      '<button class="btn ghost row" data-act="msg">'+IC.send+'Send a message</button>'+
+      '<div class="note">'+IC.lock+'Protected by attorney–client confidentiality.</div>',
+      ()=>{ sheetBody.querySelector('[data-act="req"]').onclick=()=>{ closeSheet(); toast('Consultation requested with '+a.name); }; sheetBody.querySelector('[data-act="msg"]').onclick=()=>toast('Message sent'); });
+  }
+
+  function caseSheet(c){
+    openSheet('<div class="sh-head"><h2>'+esc(c.title)+'</h2><p>'+esc(c.type)+' · updated '+esc(c.date)+'</p></div>'+
+      '<div class="crow" style="display:flex;gap:7px;margin:2px 0 4px">'+stHtml(c.status)+riskHtml(c.risk)+'</div>'+
+      '<div class="lbl">Matter</div><div class="dd"><div class="it" style="color:var(--slate-700)">'+esc(c.matter)+'</div></div>'+
+      '<div class="lbl">Assigned advisor</div><div class="vitem"><span class="vic">'+IC.scale+'</span><div class="vm"><div class="vt">'+esc(c.advisor)+'</div><div class="vs">Medico-legal advisor</div></div></div>'+
+      '<div class="lbl">Documents ('+c.docs.length+')</div>'+c.docs.map(d=>'<div class="vitem"><span class="vic">'+IC.doc+'</span><div class="vm"><div class="vt">'+esc(d)+'</div><div class="vs">Sealed in evidence vault</div></div><span class="vlock">'+IC.lock+'</span></div>').join('')+
+      '<div class="lbl">Timeline</div><div class="tl">'+c.timeline.map(t=>'<div class="tl-item '+(t.now?'now':'')+'"><span class="tl-dot"></span><div class="tl-t">'+esc(t.t)+'</div><div class="tl-d">'+esc(t.d)+'</div><div class="tl-n">'+esc(t.n)+'</div></div>').join('')+'</div>'+
+      '<button class="btn primary row" data-act="ask">'+IC.bot+'Ask the Legal AI about this case</button>'+
+      '<button class="btn ghost row" data-act="consult">'+IC.scale+'Consult an advisor</button>',
+      ()=>{ sheetBody.querySelector('[data-act="ask"]').onclick=()=>{ closeSheet(); setTimeout(()=>aiSheet('About the case: '+c.title+' — what should my next step be?'),180); }; sheetBody.querySelector('[data-act="consult"]').onclick=()=>{ closeSheet(); setTimeout(()=>advisorSheet(ADVISORS[0]),180); }; });
+  }
+
+  function newCaseSheet(){
+    openSheet('<div class="sh-head"><h2>New medico-legal case</h2><p>Open a case to track it, attach evidence and get guidance.</p></div>'+
+      '<div class="field"><label>Title</label><input id="ncTitle" placeholder="e.g. Consent dispute — Mr. X"></div>'+
+      '<div class="field"><label>Type</label><select id="ncType"><option>Complaint</option><option>Records request</option><option>Negligence claim</option><option>Advisory</option><option>Incident report</option></select></div>'+
+      '<div class="field"><label>Risk level</label><select id="ncRisk"><option value="low">Low</option><option value="med">Moderate</option><option value="high">High</option></select></div>'+
+      '<div class="field"><label>Summary</label><textarea id="ncSum" placeholder="Briefly describe the matter…"></textarea></div>'+
+      '<button class="btn primary row" data-act="save">Open case</button>',
+      ()=>{ sheetBody.querySelector('[data-act="save"]').onclick=()=>{
+        const t=sheetBody.querySelector('#ncTitle').value.trim(); if(!t){ toast('Add a title'); return; }
+        CASES.unshift({id:'u'+(Date.now?Date.now():Math.floor(performance.now())),title:t,type:sheetBody.querySelector('#ncType').value,status:'active',risk:sheetBody.querySelector('#ncRisk').value,date:'now',matter:sheetBody.querySelector('#ncSum').value.trim()||'—',advisor:'Unassigned',docs:[],timeline:[{t:'Case opened',d:'Just now',n:'You opened this case.',now:true}]});
+        renderCases(); closeSheet(); toast('Case opened');
+      }; });
+  }
+
+  // ---------- Legal AI chat ----------
+  function aiReply(q){
+    const n=q.toLowerCase();
+    if(n.includes('consent')) return "<span class='h'>Informed consent</span>To keep consent defensible:<ul><li>Explain the procedure, alternatives & material risks in the patient's language.</li><li>Document what was discussed — not just a signature.</li><li>For high-risk care, use the specific consent template and a witness.</li></ul>";
+    if(n.includes('negligence')||n.includes('claim')||n.includes('sued')) return "<span class='h'>If a claim arises</span><ul><li>Do not alter records — preserve everything as-is.</li><li>Notify your indemnity insurer early.</li><li>Prepare a factual timeline from the contemporaneous notes.</li><li>Let an advisor draft the response.</li></ul>";
+    if(n.includes('record')||n.includes('document')) return "<span class='h'>Good documentation</span>Legible, timed, dated and signed entries; record history, exam, plan and what the patient was told. Never leave gaps or overwrite — add a dated addendum instead.";
+    if(n.includes('death')||n.includes('certificate')) return "<span class='h'>Death certification</span>Certify only the cause you can support. Use the correct cause-of-death sequence; refer medico-legal / unnatural deaths to the police & for post-mortem — do not certify these yourself.";
+    if(n.includes('refus')||n.includes('dama')||n.includes('lama')) return "<span class='h'>Refusal / DAMA</span>Record the refusal in the patient's own words, the risks explained, capacity assessed, and have the patient (and a witness) sign the DAMA form. Offer follow-up in writing.";
+    if(n.includes('emergency')||n.includes('adverse')) return "<span class='h'>During an emergency</span>Stabilise the patient first, document facts contemporaneously, preserve all evidence, inform seniors, and communicate honestly. Avoid admitting fault or altering records.";
+    return "<span class='h'>Here to help</span>Tell me the situation (consent, records, a complaint, an adverse event) and I'll give step-by-step medico-legal guidance and point you to the right template or advisor.";
+  }
+  function aiSheet(prefill){
+    const chips=['Consent requirements','A complaint was filed','Improve my records','Refusal / DAMA'];
+    openSheet('<div class="sh-head"><h2>Legal AI</h2><p>AI-powered medico-legal guidance. Private to you.</p></div>'+
+      '<div class="lchat" id="lchat"></div>'+
+      '<div class="lchips" id="lchips">'+chips.map(c=>'<button class="lchip">'+esc(c)+'</button>').join('')+'</div>'+
+      '<div class="lcompose"><input id="lin" placeholder="Ask a medico-legal question…"><button id="lsend">'+IC.send+'</button></div>'+
+      '<div class="ldisc">Doxy Legal offers general guidance, not formal legal advice. For a live matter, consult an advisor.</div>',
+      ()=>{
+        const chat=sheetBody.querySelector('#lchat'), input=sheetBody.querySelector('#lin');
+        function add(role,html){ const el=document.createElement('div'); el.className='lmsg '+role; el.innerHTML=(role==='bot'?'<span class="lav">'+IC.bot+'</span>':'')+'<div class="lbub">'+html+'</div>'; chat.appendChild(el); chat.scrollTop=chat.scrollHeight; return el; }
+        add('bot',"Hi "+esc(firstName)+" 👋 I'm your medico-legal assistant. Ask me anything about consent, records, complaints or emergencies.");
+        function ask(t){ t=t.trim(); if(!t) return; add('me',esc(t)); input.value='';
+          const ty=document.createElement('div'); ty.className='lmsg bot'; ty.innerHTML='<span class="lav">'+IC.bot+'</span><div class="lbub ltyping"><i></i><i></i><i></i></div>'; chat.appendChild(ty); chat.scrollTop=chat.scrollHeight;
+          setTimeout(()=>{ ty.remove(); add('bot',aiReply(t)); }, 700+Math.min(1200,t.length*16)); }
+        sheetBody.querySelector('#lchips').addEventListener('click',e=>{ const b=e.target.closest('.lchip'); if(b) ask(b.textContent); });
+        sheetBody.querySelector('#lsend').onclick=()=>ask(input.value);
+        input.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); ask(input.value); } });
+        if(prefill) ask(prefill);
+      });
+  }
+
+  // ---------- wiring ----------
+  renderAlerts(); renderCases(); renderAdvisors(); renderStats(); renderRecs(); renderHearings(); renderMessages(); renderActivity();
+  requestAnimationFrame(()=>{ document.getElementById('shRing').style.strokeDashoffset=(263.9*(1-82/100)).toFixed(1); });
+
+  document.getElementById('recs').addEventListener('click',e=>{ const b=e.target.closest('[data-rec]'); if(b) aiSheet(RECS[+b.dataset.rec].t+' — how do I address this?'); });
+  document.getElementById('msgs').addEventListener('click',e=>{ const b=e.target.closest('[data-msg]'); if(b) msgSheet(MESSAGES[+b.dataset.msg]); });
+  document.getElementById('hearings').addEventListener('click',e=>{ const b=e.target.closest('[data-hear]'); if(!b) return; const h=HEARINGS[+b.dataset.hear];
+    openSheet('<div class="sh-head"><h2>'+esc(h.ht)+'</h2><p>'+esc(h.d)+' '+esc(h.m)+' · '+esc(h.hw)+'</p></div><div class="dd"><div class="it" style="color:var(--slate-700)">Prepare your file, documents and a factual timeline in advance. The Legal AI can help you draft talking points.</div></div><button class="btn primary row" data-act="prep">'+IC.bot+'Prepare with Legal AI</button><button class="btn ghost row" data-act="cal">'+IC.clock+'Add to calendar</button>',
+      ()=>{ sheetBody.querySelector('[data-act="prep"]').onclick=()=>{ closeSheet(); setTimeout(()=>aiSheet('Help me prepare for: '+h.ht),180); }; sheetBody.querySelector('[data-act="cal"]').onclick=()=>toast('Added to calendar'); }); });
+  const scrollTo=id=>{ const el=document.getElementById(id); if(el) el.scrollIntoView({behavior:'smooth',block:'start'}); };
+  document.getElementById('stCases').onclick=()=>scrollTo('cases');
+  document.getElementById('stPend').onclick=()=>scrollTo('alerts');
+  document.getElementById('stHear').onclick=()=>scrollTo('hearings');
+
+  document.getElementById('alerts').addEventListener('click',e=>{ const el=e.target.closest('[data-al]'); if(!el) return; const a=ALERTS[+el.dataset.al];
+    openSheet('<div class="sh-head"><h2>'+esc(a.t)+'</h2><p>'+esc(a.s)+'</p></div><div class="dd"><div class="it" style="color:var(--slate-700)">'+esc(a.msg)+'</div></div>'+
+      '<button class="btn primary row" data-act="resolve">'+esc(a.ax)+'</button><button class="btn ghost row" data-act="askai">'+IC.bot+'Ask the Legal AI</button>',
+      ()=>{ sheetBody.querySelector('[data-act="resolve"]').onclick=()=>{ closeSheet(); toast('Marked for action'); }; sheetBody.querySelector('[data-act="askai"]').onclick=()=>{ closeSheet(); setTimeout(()=>aiSheet(a.t),180); }; });
+  });
+  document.getElementById('cases').addEventListener('click',e=>{ const el=e.target.closest('[data-case]'); if(el){ const c=CASES.find(x=>x.id===el.dataset.case); if(c) caseSheet(c); } });
+  document.getElementById('advisors').addEventListener('click',e=>{ const el=e.target.closest('[data-adv]'); if(el) advisorSheet(ADVISORS[+el.dataset.adv]); });
+  document.querySelector('.tools').addEventListener('click',e=>{ const b=e.target.closest('.tool'); if(!b) return; const t=b.dataset.tool;
+    if(t==='newcase') newCaseSheet(); else if(t==='templates') templatesSheet(); else if(t==='vault') vaultSheet(); else if(t==='audit') auditSheet(); else if(t==='consult') advisorSheet(ADVISORS[0]); else if(t==='emergency') emergencySheet(); });
+  document.getElementById('aiCard').addEventListener('click', e=>{ const c=e.target.closest('.achip'); if(c){ aiSheet(c.dataset.q); return; } aiSheet(); });
+  document.getElementById('newCaseBtn').addEventListener('click', newCaseSheet);
+  document.getElementById('shieldCard').addEventListener('click', auditSheet);
+  document.getElementById('caseAll').addEventListener('click', ()=>toast('Showing all cases'));
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
 </script>
 </body>
 </html>

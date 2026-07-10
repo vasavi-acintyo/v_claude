@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Post as case</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b;--brand-dark:#5e2029;--brand-soft:#f4e7e9;--gold:#b0894f;
+    --ink:#2a2320;--slate-700:#514842;--muted:#71665d;
+    --line:#e7e0d4;--chip:#f4f0e8;--green:#3f7d4e;
+    --surface:#faf6ee;--card:#ffffff;--page:#d8d0c2;
+    --g1:#9c4453;--g2:#7d2c3b;--d1:#2b191c;--d2:#5e2029;--d3:#7d2c3b;--glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1;--soft2:#f4e7e9;--onGold:#e6cd93;
+    --display:'Playfair Display',Georgia,serif;
+    --ui:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,sans-serif;
+  }
+  html[data-os="ios"]{--ui:-apple-system,'SF Pro Text','SF Pro Display',system-ui,sans-serif;}
+  html[data-os="android"]{--ui:'Roboto','Noto Sans',system-ui,sans-serif;}
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}} .rise{animation:rise .5s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} }
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px 10px;border-bottom:1px solid var(--line);}
+  .back{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1);text-decoration:none;}
+  .back:active{transform:scale(.92);} .back svg{width:19px;height:19px;}
+  .topbar h1{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;flex:1;min-width:0;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:14px 18px 20px;} .scroll::-webkit-scrollbar{width:0;}
+
+  /* privacy banner */
+  .pv-ban{display:flex;gap:12px;align-items:flex-start;background:var(--soft1);border-radius:16px;padding:14px;border:1px solid transparent;}
+  .pv-ban .pi{width:40px;height:40px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;} .pv-ban .pi svg{width:20px;height:20px;}
+  .pv-ban .t{font-size:12.5px;font-weight:800;font-family:var(--display);}
+  .pv-ban .s{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5;}
+
+  .sec-lbl{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:20px 2px 10px;}
+
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 2px 6px;}
+  .field input, .field textarea, .field select{width:100%;min-height:46px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:12.5px;font-family:inherit;color:var(--ink);}
+  .field textarea{min-height:90px;resize:none;line-height:1.5;}
+  .field input:focus, .field textarea:focus, .field select:focus{outline:none;border-color:var(--brand);}
+  .field input::placeholder, .field textarea::placeholder{color:var(--muted);}
+  .row{display:flex;gap:10px;} .row .field{flex:1;min-width:0;}
+
+  /* uploader */
+  .uploader{display:block;border:1.5px dashed var(--line);border-radius:14px;padding:16px 14px;text-align:center;cursor:pointer;background:var(--card);transition:border-color .18s;}
+  .uploader:hover{border-color:var(--brand);} .uploader input[type=file]{display:none;}
+  .uploader .ui{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);margin:0 auto 8px;} .uploader .ui svg{width:19px;height:19px;}
+  .uploader .ut{font-size:11.5px;font-weight:800;font-family:var(--display);} .uploader .us{font-size:9.5px;color:var(--muted);margin-top:3px;}
+  .att{display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--soft1);border-radius:11px;margin-top:10px;}
+  .att .ai{width:36px;height:36px;border-radius:9px;background:var(--card);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;overflow:hidden;} .att .ai svg{width:16px;height:16px;} .att .ai img{width:100%;height:100%;object-fit:cover;}
+  .att .m{flex:1;min-width:0;} .att .t{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .att .s{font-size:9px;color:var(--muted);}
+  .att .rm{width:30px;height:30px;border:none;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:8px;flex:0 0 auto;} .att .rm svg{width:15px;height:15px;}
+
+  /* excluded assurance */
+  .excl{background:var(--soft1);border-radius:14px;padding:13px;margin-top:8px;}
+  .excl .h{font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--green);display:flex;align-items:center;gap:6px;} .excl .h svg{width:14px;height:14px;}
+  .excl ul{list-style:none;margin-top:9px;display:flex;flex-wrap:wrap;gap:7px;}
+  .excl li{font-size:9.5px;font-weight:700;color:var(--muted);background:var(--card);border-radius:8px;padding:5px 9px;display:inline-flex;align-items:center;gap:5px;text-decoration:line-through;text-decoration-color:var(--muted);}
+  .excl li svg{width:11px;height:11px;flex:0 0 auto;color:var(--muted);}
+
+  /* preview */
+  .prev{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;margin-top:8px;}
+  .prev .ph{display:flex;align-items:center;gap:10px;}
+  .prev .ph .av{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .prev .ph .nm{font-size:11.5px;font-weight:800;} .prev .ph .sp{font-size:9px;color:var(--muted);margin-top:1px;}
+  .prev .tag{display:inline-block;font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:20px;margin-top:9px;}
+  .prev .bd{font-size:11px;line-height:1.6;color:var(--slate-700);margin-top:8px;white-space:pre-wrap;}
+
+  .foot{flex:0 0 auto;padding:12px 18px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface);}
+  .send{width:100%;min-height:50px;border:none;border-radius:14px;background:var(--brand);color:#fff;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s;}
+  .send:hover{background:var(--brand-dark);} .send:active{transform:scale(.98);} .send svg{width:18px;height:18px;}
+  .foot .note{font-size:9px;color:var(--muted);text-align:center;margin-top:8px;}
+
+  .done{position:absolute;inset:0;z-index:50;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:34px;opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;}
+  .done.show{opacity:1;visibility:visible;}
+  .done .circle{width:84px;height:84px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;margin-bottom:20px;transform:scale(.6);transition:transform .5s cubic-bezier(.34,1.4,.5,1);} .done.show .circle{transform:scale(1);} .done .circle svg{width:42px;height:42px;}
+  .done h2{font-size:21px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .done p{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.6;max-width:270px;}
+  .done .btns{display:flex;gap:10px;margin-top:26px;}
+  .done .btns button{min-height:48px;padding:0 22px;border:none;border-radius:13px;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1);} .done .btns button:active{transform:scale(.96);}
+  .done .pri{background:var(--brand);color:#fff;} .done .gho{background:var(--chip);color:var(--ink);}
+
+  .toast{position:absolute;left:50%;bottom:100px;transform:translateX(-50%) translateY(10px);z-index:60;background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;max-width:82%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <a class="back" id="backBtn" href="referral.html" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></a>
+    <h1>Post as case</h1>
+  </div>
+
+  <div class="scroll">
+    <div class="pv-ban rise">
+      <span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
+      <div><div class="t">Discuss this case for a second opinion</div><div class="s">Share the clinical picture with your network. <b>No patient-identifying information</b> is ever included.</div></div>
+    </div>
+
+    <!-- case -->
+    <div class="sec-lbl rise">The case</div>
+    <div class="field rise"><label for="spec">Specialty / topic</label><input id="spec" placeholder="e.g. Endocrinology"></div>
+    <div class="row rise">
+      <div class="field"><label for="age">Age</label><input id="age" inputmode="numeric" placeholder="58"></div>
+      <div class="field"><label for="sex">Sex</label><select id="sex"><option value="">—</option><option>Male</option><option>Female</option><option>Other</option></select></div>
+    </div>
+    <div class="field rise"><label for="cond">Presentation</label><input id="cond" placeholder="e.g. Uncontrolled T2DM with early CKD"></div>
+    <div class="field rise"><label for="details">Clinical details (history, findings, investigations)</label><textarea id="details" placeholder="Relevant history, examination and results — with no names, IDs or contact info…"></textarea></div>
+    <div class="field rise"><label for="question">Your question to the community</label><input id="question" placeholder="e.g. Would you escalate insulin or add an SGLT2i first?"></div>
+
+    <!-- attachment -->
+    <div class="sec-lbl rise">Attach an anonymised report (optional)</div>
+    <label class="uploader rise" for="fileIn" id="uplabel">
+      <input type="file" id="fileIn" accept="image/*,.pdf">
+      <span class="ui"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
+      <div class="ut">Add image or PDF</div>
+      <div class="us">Redact names & IDs before uploading</div>
+    </label>
+    <div id="attWrap"></div>
+
+    <!-- excluded -->
+    <div class="excl rise">
+      <div class="h"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/><polyline points="9 12 11.5 14.5 15.5 9.5"/></svg>Never shared</div>
+      <ul>
+        <li>Patient name</li><li>Contact number</li><li>Address</li><li>Any identifiers</li>
+      </ul>
+    </div>
+
+    <!-- preview -->
+    <div class="sec-lbl rise">Preview</div>
+    <div class="prev rise" id="prev"></div>
+  </div>
+
+  <div class="foot">
+    <button class="send" id="send" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>
+      Post case for opinions
+    </button>
+    <div class="note">Posts to your network feed · you can delete it anytime</div>
+  </div>
+
+  <div class="done" id="done">
+    <div class="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h2>Case posted</h2>
+    <p id="doneMsg">Your anonymised case is live in the feed. You'll be notified when colleagues weigh in.</p>
+    <div class="btns"><button class="gho" id="doneBack" type="button">Back to referrals</button><button class="pri" id="doneFeed" type="button">View in feed</button></div>
+  </div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const qp = new URLSearchParams(location.search);
+  const ME = { name:(function(){try{return localStorage.getItem('docName')||'Dr. Ananya Rao';}catch(e){return 'Dr. Ananya Rao';}})(), spec:'Endocrinologist · MedHub', img:'https://randomuser.me/api/portraits/women/79.jpg' };
+
+  // prefill from a referral (no identifying fields passed)
+  const fld = id => document.getElementById(id);
+  if(qp.get('spec')) fld('spec').value = qp.get('spec');
+  if(qp.get('age')) fld('age').value = qp.get('age');
+  if(qp.get('sex')) fld('sex').value = qp.get('sex');
+  if(qp.get('cond')) fld('cond').value = qp.get('cond');
+  if(qp.get('reason')) fld('details').value = qp.get('reason');
+  if(qp.get('from')) document.getElementById('backBtn').setAttribute('href','referral.html');
+
+  // attachment
+  const docIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  const rmIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
+  let media = null;
+  const attWrap = document.getElementById('attWrap');
+  function renderAtt(){
+    if(!media){ attWrap.innerHTML=''; document.getElementById('uplabel').style.display='block'; return; }
+    document.getElementById('uplabel').style.display='none';
+    const thumb = media.type==='image' ? '<img src="'+media.data+'" alt="">' : docIc;
+    attWrap.innerHTML = '<div class="att"><span class="ai">'+thumb+'</span><div class="m"><div class="t">'+esc(media.name)+'</div><div class="s">'+(media.type==='image'?'Image':'PDF')+' · attached</div></div><button class="rm" id="rmAtt" type="button" aria-label="Remove">'+rmIc+'</button></div>';
+    document.getElementById('rmAtt').addEventListener('click', ()=>{ media=null; document.getElementById('fileIn').value=''; renderAtt(); });
+  }
+  document.getElementById('fileIn').addEventListener('change', function(){
+    const f=this.files && this.files[0]; if(!f) return;
+    const isImg=/^image\//.test(f.type);
+    const rd=new FileReader();
+    rd.onload=()=>{ media={ type:isImg?'image':'pdf', data:rd.result, name:f.name }; renderAtt(); };
+    rd.readAsDataURL(f);
+  });
+
+  // build case body + preview
+  function buildBody(){
+    const age=fld('age').value.trim(), sex=fld('sex').value, cond=fld('cond').value.trim(),
+          det=fld('details').value.trim(), q=fld('question').value.trim();
+    let line = [age?age+' y':'', sex].filter(Boolean).join(' · ');
+    let body = 'Seeking opinions on this case 👇\n\n';
+    if(line) body += 'Patient: '+line+'\n';
+    if(cond) body += 'Presentation: '+cond+'\n';
+    if(det) body += '\n'+det+'\n';
+    if(q) body += '\nMy question: '+q;
+    body += '\n\n— No patient-identifying information shared.';
+    return body.trim();
+  }
+  const prev = document.getElementById('prev');
+  function buildPreview(){
+    const spec = fld('spec').value.trim();
+    prev.innerHTML =
+      '<div class="ph"><img class="av" src="'+ME.img+'" alt=""><div><div class="nm">'+esc(ME.name)+'</div><div class="sp">'+esc(ME.spec)+' · now</div></div></div>'+
+      '<span class="tag">Case'+(spec?' · '+esc(spec):'')+'</span>'+
+      '<div class="bd">'+esc(buildBody())+'</div>'+
+      (media?('<div class="att" style="margin-top:11px"><span class="ai">'+(media.type==='image'?'<img src="'+media.data+'" alt="">':docIc)+'</span><div class="m"><div class="t">'+esc(media.name)+'</div><div class="s">Attached</div></div></div>'):'');
+  }
+  ['spec','age','sex','cond','details','question'].forEach(id=>fld(id).addEventListener('input', buildPreview));
+  buildPreview();
+
+  // ---- IndexedDB feed store (shared with post.html: db 'medhubFeed', key 'posts3') ----
+  const IDB_KEY='posts3', SEED_V=4;
+  function idbOpen(){ return new Promise((res,rej)=>{ const r=indexedDB.open('medhubFeed',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+  function idbGet(k){ return new Promise(res=>{ idbOpen().then(db=>{ const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(undefined); }).catch(()=>res(undefined)); }); }
+  function idbSet(k,v){ return new Promise(res=>{ idbOpen().then(db=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=res; }).catch(res); }); }
+
+  async function injectToFeed(post){
+    // Only prepend if the feed store is already seeded, so we never clobber post.html's seeding.
+    try{ const s = await idbGet(IDB_KEY);
+      if(s && s.v===SEED_V && Array.isArray(s.posts) && s.posts.length){ s.posts.unshift(post); await idbSet(IDB_KEY, s); return true; }
+    }catch(e){}
+    return false;
+  }
+
+  let tt; function toast(m){ let el=document.getElementById('toast'); if(!el){ el=document.createElement('div'); el.id='toast'; el.className='toast'; document.querySelector('.phone').appendChild(el);} el.textContent=m; void el.offsetWidth; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),1700); }
+
+  document.getElementById('send').addEventListener('click', async ()=>{
+    const cond=fld('cond').value.trim(), det=fld('details').value.trim();
+    if(!cond && !det){ toast('Add the case presentation or details'); return; }
+    const spec = fld('spec').value.trim();
+    const post = {
+      id: (Date.now?Date.now():Math.floor(performance.now()*1000)),
+      name: ME.name,
+      spec: ME.spec,
+      verified: true,
+      img: ME.img,
+      time:'now',
+      body: buildBody(),
+      tag: 'Case'+(spec?' · '+spec:''),
+      media: media || null,
+      rc:{}, my:null, shares:0, comments:[], _open:false,
+      _case:true,
+      caseMeta:{ spec:spec, age:fld('age').value.trim(), sex:fld('sex').value, cond:cond, details:det, question:fld('question').value.trim() }
+    };
+    // durable handoff (in case the feed store isn't seeded yet) + best-effort live inject
+    try{ const q=JSON.parse(localStorage.getItem('casePosts')||'[]'); q.unshift(post); localStorage.setItem('casePosts', JSON.stringify(q)); }catch(e){}
+    await injectToFeed(post);
+    document.getElementById('done').classList.add('show');
+  });
+  document.getElementById('doneBack').addEventListener('click', ()=>location.href='referral.html');
+  document.getElementById('doneFeed').addEventListener('click', ()=>location.href='post.html');
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

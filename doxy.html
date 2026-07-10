@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Doxy — AI Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b;--brand-dark:#5e2029;--brand-soft:#f4e7e9;--gold:#b0894f;
+    --ink:#2a2320;--slate-700:#514842;--muted:#71665d;
+    --line:#e7e0d4;--chip:#f4f0e8;--green:#3f7d4e;
+    --surface:#faf6ee;--card:#ffffff;--page:#d8d0c2;
+    --g1:#9c4453;--g2:#7d2c3b;--d1:#2b191c;--d2:#5e2029;--d3:#7d2c3b;--glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1;--soft2:#f4e7e9;--onGold:#e6cd93;
+    --display:'Playfair Display',Georgia,serif;
+    --ui:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,sans-serif;
+  }
+  html[data-os="ios"]{--ui:-apple-system,'SF Pro Text','SF Pro Display',system-ui,sans-serif;}
+  html[data-os="android"]{--ui:'Roboto','Noto Sans',system-ui,sans-serif;}
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}} .rise{animation:rise .5s cubic-bezier(.22,1,.36,1) both;}
+  @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+  @keyframes blink{0%,80%,100%{opacity:.25;transform:translateY(0)}40%{opacity:1;transform:translateY(-3px)}}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} }
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  /* header */
+  .dhead{flex:0 0 auto;display:flex;align-items:center;gap:11px;padding:8px 16px 12px;border-bottom:1px solid var(--line);}
+  .dava{width:42px;height:42px;border-radius:13px;background:linear-gradient(140deg,var(--g1),var(--g2));color:#fff;display:grid;place-items:center;flex:0 0 auto;position:relative;box-shadow:0 8px 18px -8px var(--brand);} .dava svg{width:23px;height:23px;}
+  .dava .on{position:absolute;bottom:-2px;right:-2px;width:12px;height:12px;border-radius:50%;background:var(--green);border:2.5px solid var(--surface);}
+  .dhead .m{flex:1;min-width:0;}
+  .dhead .nm{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;display:flex;align-items:center;gap:7px;}
+  .dhead .ai{font-size:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--brand);background:var(--brand-soft);padding:2px 7px;border-radius:20px;}
+  .dhead .st{font-size:10px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:5px;} .dhead .st .d{width:5px;height:5px;border-radius:50%;background:var(--green);}
+  .dhead .nw{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;transition:transform .18s;} .dhead .nw:active{transform:scale(.92);} .dhead .nw svg{width:18px;height:18px;}
+
+  /* chat */
+  .chat{flex:1 1 auto;overflow-y:auto;padding:16px 16px 6px;display:flex;flex-direction:column;gap:14px;scrollbar-width:none;} .chat::-webkit-scrollbar{width:0;}
+  .msg{display:flex;gap:9px;max-width:88%;animation:pop .32s cubic-bezier(.22,1,.36,1) both;}
+  .msg.bot{align-self:flex-start;}
+  .msg.me{align-self:flex-end;flex-direction:row-reverse;}
+  .msg .bav{width:28px;height:28px;border-radius:9px;background:linear-gradient(140deg,var(--g1),var(--g2));color:#fff;display:grid;place-items:center;flex:0 0 auto;} .msg .bav svg{width:15px;height:15px;}
+  .bub{border-radius:15px;padding:11px 13px;font-size:12px;line-height:1.55;}
+  .msg.bot .bub{background:var(--card);border:1px solid var(--line);border-top-left-radius:5px;color:var(--ink);}
+  .msg.me .bub{background:var(--brand);color:#fff;border-top-right-radius:5px;}
+  .bub b{font-weight:800;} .bub .h{font-family:var(--display);font-weight:800;font-size:12.5px;display:block;margin-bottom:3px;}
+  .bub ul{margin:6px 0 0;padding-left:16px;} .bub li{margin-top:3px;}
+
+  /* typing */
+  .typing{display:flex;gap:4px;padding:13px 14px;}
+  .typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite;}
+  .typing i:nth-child(2){animation-delay:.2s;} .typing i:nth-child(3){animation-delay:.4s;}
+
+  /* welcome hero */
+  .hello{align-self:stretch;text-align:center;padding:14px 10px 4px;}
+  .hello .big{width:64px;height:64px;border-radius:20px;background:linear-gradient(140deg,var(--g1),var(--g2));color:#fff;display:grid;place-items:center;margin:0 auto 12px;box-shadow:0 14px 30px -12px var(--brand);} .hello .big svg{width:34px;height:34px;}
+  .hello h2{font-size:19px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .hello p{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.55;max-width:280px;margin-left:auto;margin-right:auto;}
+
+  /* suggestion chips */
+  .sugg{display:flex;flex-direction:column;gap:8px;margin-top:16px;}
+  .sc{display:flex;align-items:center;gap:11px;background:var(--soft1);border:1px solid transparent;border-radius:13px;padding:12px 13px;cursor:pointer;text-align:left;font-family:inherit;width:100%;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .sc:hover{border-color:var(--brand);} .sc:active{transform:scale(.98);}
+  .sc .si{width:32px;height:32px;border-radius:9px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;} .sc .si svg{width:16px;height:16px;}
+  .sc .sm{flex:1;min-width:0;} .sc .stt{font-size:11.5px;font-weight:800;letter-spacing:-.01em;} .sc .ss{font-size:9.5px;color:var(--muted);margin-top:1px;}
+  .sc .sch{color:var(--muted);opacity:.5;} .sc .sch svg{width:15px;height:15px;}
+
+  .disc{align-self:center;font-size:8.5px;color:var(--muted);text-align:center;padding:6px 20px 2px;line-height:1.4;display:flex;align-items:center;gap:5px;} .disc svg{width:11px;height:11px;flex:0 0 auto;}
+
+  /* input bar */
+  .composer{flex:0 0 auto;padding:10px 14px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface);}
+  .cbar{display:flex;align-items:flex-end;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:22px;padding:5px 5px 5px 15px;transition:border-color .18s;}
+  .cbar:focus-within{border-color:var(--brand);}
+  .cbar textarea{flex:1;border:none;background:none;resize:none;font-family:inherit;font-size:12.5px;color:var(--ink);outline:none;line-height:1.4;max-height:90px;padding:8px 0;}
+  .cbar textarea::placeholder{color:var(--muted);}
+  .csend{width:38px;height:38px;border-radius:50%;border:none;background:var(--brand);color:#fff;display:grid;place-items:center;cursor:pointer;flex:0 0 auto;transition:transform .16s cubic-bezier(.22,1,.36,1), opacity .16s, background .16s;} .csend svg{width:17px;height:17px;}
+  .csend:disabled{opacity:.4;cursor:default;} .csend:not(:disabled):active{transform:scale(.9);}
+
+  /* bottom nav */
+  .nav{flex:0 0 auto;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:9px 0 22px;}
+  .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1), color .18s;}
+  .navitem.active{color:var(--brand);font-weight:600;} .navitem:active{transform:scale(.9);}
+  @media (max-width:600px){ .nav{padding-bottom:max(22px,env(safe-area-inset-bottom));} }
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <!-- header -->
+  <div class="dhead">
+    <span class="dava"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3" r="1.2"/><circle cx="9" cy="13.5" r="1.1"/><circle cx="15" cy="13.5" r="1.1"/><path d="M2 12v3M22 12v3"/></svg><span class="on"></span></span>
+    <div class="m">
+      <div class="nm">Doxy <span class="ai">AI</span></div>
+      <div class="st"><span class="d"></span>Clinical assistant · online</div>
+    </div>
+    <button class="nw" id="newChat" aria-label="New chat"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></button>
+  </div>
+
+  <!-- chat -->
+  <div class="chat" id="chat"></div>
+
+  <div class="disc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8h.01M11 12h1v4h1"/></svg>Doxy can make mistakes — verify clinically before acting.</div>
+
+  <!-- composer -->
+  <div class="composer">
+    <div class="cbar">
+      <textarea id="input" rows="1" placeholder="Ask Doxy anything clinical…"></textarea>
+      <button class="csend" id="send" disabled aria-label="Send"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg></button>
+    </div>
+  </div>
+
+  <!-- bottom nav -->
+  <div class="nav">
+    <a class="navitem" href="home.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg>Home</a>
+    <a class="navitem" href="cme.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>CME</a>
+    <a class="navitem active" href="doxy.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3" r="1.2"/><circle cx="9" cy="13.5" r="1.1"/><circle cx="15" cy="13.5" r="1.1"/><path d="M2 12v3M22 12v3"/></svg>Doxy</a>
+    <a class="navitem" href="post.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>Post</a>
+    <a class="navitem" href="referral.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h2"/><path d="M14 14h6"/><path d="m17 11 3 3-3 3"/></svg>Referral</a>
+  </div>
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const firstName = (function(){ try{ const f=localStorage.getItem('docName')||'Dr. Ananya Rao'; return 'Dr. '+f.replace(/^Dr\.?\s*/i,'').split(' ')[0]; }catch(e){ return 'Doctor'; } })();
+  const botIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3" r="1.2"/><circle cx="9" cy="13.5" r="1.1"/><circle cx="15" cy="13.5" r="1.1"/><path d="M2 12v3M22 12v3"/></svg>';
+  const chevIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
+
+  const SUGG = [
+    {t:'Summarise a patient case', s:'Turn notes into a structured summary', p:'Summarise this case: 58M, T2DM (HbA1c 9.8%), rising creatinine 1.6, BP 150/92. What are the priorities?', i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h7"/></svg>'},
+    {t:'Check drug interactions', s:'e.g. metformin + an SGLT2 inhibitor', p:'Are there interactions between metformin, ramipril and an SGLT2 inhibitor?', i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 6.5 6 11a4.6 4.6 0 0 0 6.5 6.5l4.5-4.5a4.6 4.6 0 0 0-6.5-6.5Z"/><path d="m8.5 8.5 7 7"/></svg>'},
+    {t:'Latest guideline lookup', s:'Hypertension, lipids, CKD & more', p:'What does the latest guideline recommend for resistant hypertension?', i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2Z"/><path d="M14 3v5h5"/></svg>'},
+    {t:'Draft a referral note', s:'A clean note for a colleague', p:'Draft a referral note to a nephrologist for a 63M with rising creatinine over 3 months.', i:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>'}
+  ];
+
+  // canned "AI" replies (mockup — no real model call)
+  function reply(q){
+    const n=q.toLowerCase();
+    if(n.includes('interaction')||n.includes('drug')||(n.includes('metformin'))) return "<span class='h'>Interaction check</span>No major interactions among <b>metformin</b>, <b>ramipril</b> and an <b>SGLT2 inhibitor</b> — this is a common, evidence-backed combination.\n<ul><li>Watch renal function & volume status when starting the SGLT2i.</li><li>Hold metformin if eGFR < 30 or during acute illness.</li><li>Monitor potassium with the ACE inhibitor.</li></ul>";
+    if(n.includes('guideline')||n.includes('hypertension')||n.includes('resistant')) return "<span class='h'>Resistant hypertension</span>Confirm true resistance (adherence, correct technique, exclude white-coat), then:\n<ul><li>Optimise a 3-drug regimen incl. a thiazide-like diuretic at max dose.</li><li>Add <b>spironolactone</b> 25–50 mg if K⁺ allows — best 4th-line evidence.</li><li>Screen for secondary causes (primary aldosteronism, renal artery disease, OSA).</li></ul>";
+    if(n.includes('summar')||n.includes('case')||n.includes('hba1c')) return "<span class='h'>Case summary</span><b>58M · uncontrolled T2DM + early CKD</b>\n<ul><li><b>Glycaemia:</b> HbA1c 9.8% — intensify; consider basal insulin.</li><li><b>Renal:</b> creatinine 1.6 — stage CKD, start ACEi/ARB + SGLT2i, recheck K⁺/creatinine in 1–2 wks.</li><li><b>BP:</b> 150/92 — target < 130/80.</li></ul>Priorities: renoprotection, glycaemic control, BP.";
+    if(n.includes('referral')||n.includes('note')||n.includes('draft')) return "<span class='h'>Referral note — Nephrology</span>Dear colleague,\nKindly review this 63M with a progressive rise in creatinine over 3 months (latest 1.6 mg/dL, eGFR ~48). Requesting your opinion on <b>CKD staging and management</b>. Investigations and current medications are attached.\nThank you.";
+    if(n.includes('differential')||n.includes('diagnos')) return "<span class='h'>Differentials</span>Based on what you've shared, consider:\n<ul><li>Most likely — narrow with focused history & one key test.</li><li>Can't-miss — exclude the dangerous cause first.</li><li>Common mimics — revisit if the picture doesn't fit.</li></ul>Share age, key symptoms and vitals for a tailored list.";
+    return "Here's how I can help with that:\n<ul><li>Give me the key details (age, history, findings, question).</li><li>I'll structure a summary, differentials, or next steps.</li><li>Ask me to draft notes, check interactions, or look up guidance.</li></ul>What would you like to start with?";
+  }
+
+  const chatEl=document.getElementById('chat'), inputEl=document.getElementById('input'), sendEl=document.getElementById('send');
+  let started=false;
+
+  function scrollDown(){ chatEl.scrollTop=chatEl.scrollHeight; }
+  function addMsg(role, html){
+    const el=document.createElement('div'); el.className='msg '+role;
+    el.innerHTML = (role==='bot'?'<span class="bav">'+botIc+'</span>':'')+'<div class="bub">'+html+'</div>';
+    chatEl.appendChild(el); scrollDown(); return el;
+  }
+  function fmt(t){ return esc(t).replace(/\n/g,'<br>'); }
+
+  function welcome(){
+    chatEl.innerHTML='';
+    started=false;
+    const h=document.createElement('div'); h.className='hello rise';
+    h.innerHTML='<div class="big">'+botIc+'</div><h2>Hi '+esc(firstName)+' 👋</h2><p>I’m <b>Doxy</b>, your clinical AI assistant. Ask me about guidelines, drug interactions, differentials, or draft notes — right inside DocSynapse.</p>';
+    chatEl.appendChild(h);
+    const s=document.createElement('div'); s.className='sugg rise';
+    s.innerHTML=SUGG.map((x,i)=>'<button class="sc" data-i="'+i+'"><span class="si">'+x.i+'</span><span class="sm"><span class="stt">'+esc(x.t)+'</span><span class="ss">'+esc(x.s)+'</span></span><span class="sch">'+chevIc+'</span></button>').join('');
+    chatEl.appendChild(s);
+    s.addEventListener('click', e=>{ const b=e.target.closest('.sc'); if(!b) return; ask(SUGG[+b.dataset.i].p); });
+  }
+
+  function ask(text){
+    text=text.trim(); if(!text) return;
+    if(!started){ chatEl.innerHTML=''; started=true; }
+    addMsg('me', fmt(text));
+    inputEl.value=''; auto(); sendEl.disabled=true;
+    // typing indicator
+    const t=document.createElement('div'); t.className='msg bot'; t.innerHTML='<span class="bav">'+botIc+'</span><div class="bub typing"><i></i><i></i><i></i></div>';
+    chatEl.appendChild(t); scrollDown();
+    const delay=700+Math.min(1400, text.length*18);
+    setTimeout(()=>{ t.remove(); addMsg('bot', reply(text)); }, delay);
+  }
+
+  function auto(){ inputEl.style.height='auto'; inputEl.style.height=Math.min(90, inputEl.scrollHeight)+'px'; sendEl.disabled=!inputEl.value.trim(); }
+  function auto2(){ auto(); }
+  const autoRef=auto; function autoWrap(){ autoRef(); }
+  inputEl.addEventListener('input', auto);
+  inputEl.addEventListener('keydown', e=>{ if(e.key==='Enter' && !e.shiftKey){ e.preventDefault(); if(inputEl.value.trim()) ask(inputEl.value); } });
+  sendEl.addEventListener('click', ()=>{ if(inputEl.value.trim()) ask(inputEl.value); });
+  document.getElementById('newChat').addEventListener('click', welcome);
+
+  welcome();
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

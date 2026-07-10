@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>New referral</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b;--brand-dark:#5e2029;--brand-soft:#f4e7e9;--gold:#b0894f;
+    --ink:#2a2320;--slate-700:#514842;--muted:#71665d;
+    --line:#e7e0d4;--chip:#f4f0e8;--green:#3f7d4e;
+    --surface:#faf6ee;--card:#ffffff;--page:#d8d0c2;
+    --g1:#9c4453;--g2:#7d2c3b;--d1:#2b191c;--d2:#5e2029;--d3:#7d2c3b;--glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1;--soft2:#f4e7e9;--onGold:#e6cd93;
+    --display:'Playfair Display',Georgia,serif;
+    --ui:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,system-ui,sans-serif;
+  }
+  html[data-os="ios"]{--ui:-apple-system,'SF Pro Text','SF Pro Display',system-ui,sans-serif;}
+  html[data-os="android"]{--ui:'Roboto','Noto Sans',system-ui,sans-serif;}
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}} .rise{animation:rise .5s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} }
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  /* top bar */
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px 10px;border-bottom:1px solid var(--line);}
+  .back{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1);text-decoration:none;}
+  .back:active{transform:scale(.92);} .back svg{width:19px;height:19px;}
+  .topbar h1{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;flex:1;min-width:0;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:14px 18px 20px;} .scroll::-webkit-scrollbar{width:0;}
+
+  .sec-lbl{display:flex;align-items:center;gap:8px;font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:20px 2px 10px;}
+  .sec-lbl:first-child{margin-top:2px;}
+  .sec-lbl .n{width:18px;height:18px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;font-size:9px;font-family:var(--ui);letter-spacing:0;}
+
+  /* connected-doctor picker */
+  .search{position:relative;margin-bottom:10px;}
+  .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .search input{width:100%;height:40px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px 0 36px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .search input:focus{outline:none;border-color:var(--brand);}
+  .docs{display:flex;flex-direction:column;gap:8px;}
+  .doc{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;cursor:pointer;width:100%;font-family:inherit;text-align:left;transition:border-color .18s, background .18s, transform .18s cubic-bezier(.22,1,.36,1);}
+  .doc:active{transform:scale(.99);}
+  .doc.sel{border-color:var(--brand);background:var(--brand-soft);}
+  .doc img{width:42px;height:42px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .doc .m{flex:1;min-width:0;} .doc .n{font-size:12.5px;font-weight:800;font-family:var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .doc .s{font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .doc .rd{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto;display:grid;place-items:center;transition:border-color .18s, background .18s;}
+  .doc.sel .rd{border-color:var(--brand);background:var(--brand);} .doc .rd svg{width:11px;height:11px;color:#fff;opacity:0;transition:opacity .18s;} .doc.sel .rd svg{opacity:1;}
+  .doc .conn{font-size:8px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--green);background:rgba(63,125,78,.12);padding:2px 6px;border-radius:5px;margin-top:4px;display:inline-block;}
+
+  /* fields */
+  .field{margin-bottom:12px;}
+  .field label{display:block;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin:0 2px 6px;}
+  .field input, .field textarea, .field select{width:100%;min-height:46px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:12.5px;font-family:inherit;color:var(--ink);}
+  .field textarea{min-height:96px;resize:none;line-height:1.5;}
+  .field input:focus, .field textarea:focus, .field select:focus{outline:none;border-color:var(--brand);}
+  .field input::placeholder, .field textarea::placeholder{color:var(--muted);}
+  .row{display:flex;gap:10px;} .row .field{flex:1;min-width:0;}
+
+  /* priority segmented */
+  .prio-seg{display:flex;gap:8px;}
+  .prio-seg button{flex:1;min-height:44px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;font-family:inherit;font-size:11px;font-weight:800;color:var(--slate-700);cursor:pointer;transition:border-color .18s, background .18s, color .18s, transform .18s cubic-bezier(.22,1,.36,1);}
+  .prio-seg button:active{transform:scale(.96);}
+  .prio-seg button.on[data-p="routine"]{border-color:var(--brand);background:var(--brand-soft);color:var(--brand);}
+  .prio-seg button.on[data-p="urgent"]{border-color:#d48a14;background:rgba(212,138,20,.14);color:#b26a00;}
+  .prio-seg button.on[data-p="emergency"]{border-color:#c8403a;background:rgba(200,64,58,.12);color:#b3352f;}
+
+  /* uploader */
+  .uploader{display:block;border:1.5px dashed var(--line);border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;background:var(--card);transition:border-color .18s, background .18s;}
+  .uploader:hover{border-color:var(--brand);}
+  .uploader input[type=file]{display:none;}
+  .uploader .ui{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);margin:0 auto 8px;} .uploader .ui svg{width:20px;height:20px;}
+  .uploader .ut{font-size:12px;font-weight:800;font-family:var(--display);}
+  .uploader .us{font-size:9.5px;color:var(--muted);margin-top:3px;}
+  .attached{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+  .att{display:flex;align-items:center;gap:10px;padding:9px 11px;background:var(--soft1);border-radius:11px;}
+  .att .ai{width:32px;height:32px;border-radius:9px;background:var(--card);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;} .att .ai svg{width:15px;height:15px;}
+  .att .m{flex:1;min-width:0;} .att .t{font-size:11px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .att .s{font-size:9px;color:var(--muted);}
+  .att .rm{width:28px;height:28px;border:none;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;flex:0 0 auto;border-radius:8px;} .att .rm svg{width:15px;height:15px;}
+
+  /* consent */
+  .consent{display:flex;gap:11px;align-items:flex-start;background:var(--soft1);border-radius:14px;padding:13px;margin-top:8px;cursor:pointer;}
+  .consent .box{width:22px;height:22px;border-radius:7px;border:2px solid var(--line);flex:0 0 auto;display:grid;place-items:center;background:var(--card);transition:border-color .18s, background .18s;margin-top:1px;}
+  .consent.on .box{border-color:var(--brand);background:var(--brand);} .consent .box svg{width:13px;height:13px;color:#fff;opacity:0;transition:opacity .18s;} .consent.on .box svg{opacity:1;}
+  .consent .m{flex:1;min-width:0;} .consent .t{font-size:11.5px;font-weight:800;} .consent .s{font-size:9.5px;color:var(--muted);margin-top:3px;line-height:1.5;}
+
+  /* footer submit */
+  .foot{flex:0 0 auto;padding:12px 18px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface);}
+  .send{width:100%;min-height:50px;border:none;border-radius:14px;background:var(--brand);color:#fff;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s, opacity .18s;}
+  .send:hover{background:var(--brand-dark);} .send:active{transform:scale(.98);}
+  .send:disabled{opacity:.5;cursor:not-allowed;}
+  .send svg{width:18px;height:18px;}
+  .foot .note{font-size:9px;color:var(--muted);text-align:center;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:5px;} .foot .note svg{width:12px;height:12px;}
+  .case-link{display:block;width:100%;margin-top:10px;background:none;border:none;font-family:inherit;font-size:10.5px;font-weight:700;color:var(--brand);cursor:pointer;padding:6px;border-radius:8px;transition:opacity .15s;} .case-link:active{opacity:.6;}
+
+  /* success overlay */
+  .done{position:absolute;inset:0;z-index:50;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:34px;opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;}
+  .done.show{opacity:1;visibility:visible;}
+  .done .circle{width:84px;height:84px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;margin-bottom:20px;transform:scale(.6);transition:transform .5s cubic-bezier(.34,1.4,.5,1);}
+  .done.show .circle{transform:scale(1);} .done .circle svg{width:42px;height:42px;}
+  .done h2{font-size:21px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .done p{font-size:11.5px;color:var(--muted);margin-top:8px;line-height:1.6;max-width:260px;}
+  .done .ok{margin-top:26px;min-height:48px;padding:0 30px;border:none;border-radius:13px;background:var(--brand);color:#fff;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s;} .done .ok:active{transform:scale(.96);}
+
+  .toast{position:absolute;left:50%;bottom:100px;transform:translateX(-50%) translateY(10px);z-index:60;background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;max-width:82%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <a class="back" href="referral.html" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></a>
+    <h1>New referral</h1>
+  </div>
+
+  <div class="scroll">
+    <!-- 1. connected doctor -->
+    <div class="sec-lbl rise"><span class="n">1</span>Refer to a connected doctor</div>
+    <div class="search rise">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+      <input id="docSearch" placeholder="Search connected doctors…">
+    </div>
+    <div class="docs rise" id="docs"></div>
+
+    <!-- 2. patient details -->
+    <div class="sec-lbl rise"><span class="n">2</span>Patient details</div>
+    <div class="field rise"><label for="pName">Patient name</label><input id="pName" placeholder="e.g. R. Krishnan"></div>
+    <div class="row rise">
+      <div class="field"><label for="pAge">Age</label><input id="pAge" type="number" min="0" inputmode="numeric" placeholder="58"></div>
+      <div class="field"><label for="pSex">Sex</label>
+        <select id="pSex"><option value="">Select</option><option>Male</option><option>Female</option><option>Other</option></select>
+      </div>
+    </div>
+    <div class="field rise"><label for="pPhone">Contact number</label><input id="pPhone" type="tel" inputmode="tel" placeholder="+91 …"></div>
+    <div class="field rise"><label for="pCond">Condition / summary</label><input id="pCond" placeholder="e.g. Uncontrolled T2DM with early CKD"></div>
+
+    <!-- 3. clinical reason & priority -->
+    <div class="sec-lbl rise"><span class="n">3</span>Reason & priority</div>
+    <div class="field rise"><label>Priority</label>
+      <div class="prio-seg" id="prio">
+        <button type="button" data-p="routine" class="on">Routine</button>
+        <button type="button" data-p="urgent">Urgent</button>
+        <button type="button" data-p="emergency">Emergency</button>
+      </div>
+    </div>
+    <div class="field rise"><label for="reason">Clinical reason for referral</label><textarea id="reason" placeholder="Brief history, findings and what you'd like the specialist to do…"></textarea></div>
+
+    <!-- 4. documents -->
+    <div class="sec-lbl rise"><span class="n">4</span>Share documents</div>
+    <label class="uploader rise" for="fileIn">
+      <input type="file" id="fileIn" accept="image/*,.pdf" multiple>
+      <span class="ui"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
+      <div class="ut">Attach reports</div>
+      <div class="us">Labs, imaging, prescriptions · PDF or images</div>
+    </label>
+    <div class="attached" id="attached"></div>
+
+    <!-- consent -->
+    <div class="consent rise on" id="consent">
+      <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
+      <div class="m"><div class="t">Patient consent obtained</div><div class="s">I confirm the patient consents to securely share these details and documents with the selected doctor.</div></div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <button class="send" id="send" type="button">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>
+      Send referral
+    </button>
+    <div class="note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/><polyline points="9 12 11.5 14.5 15.5 9.5"/></svg>Encrypted & consent-based sharing</div>
+    <button class="case-link" id="postCase" type="button">Not sure who to refer to? Post it as a case for opinions →</button>
+  </div>
+
+  <!-- success -->
+  <div class="done" id="done">
+    <div class="circle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <h2>Referral sent</h2>
+    <p id="doneMsg">Your referral has been securely shared. You'll be notified when it's accepted.</p>
+    <button class="ok" id="doneOk" type="button">View my referrals</button>
+  </div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+  // connected doctors (would come from the network module)
+  const CONNECTED = [
+    {name:'Dr. Meera Iyer', spec:'Endocrinology', hosp:'Apollo Hospitals', img:'https://randomuser.me/api/portraits/women/68.jpg'},
+    {name:'Dr. Arvind Kumar', spec:'Cardiology', hosp:'Fortis Heart Institute', img:'https://randomuser.me/api/portraits/men/32.jpg'},
+    {name:'Dr. Rohan Sinha', spec:'Nephrology', hosp:'Manipal Hospitals', img:'https://randomuser.me/api/portraits/men/45.jpg'},
+    {name:'Dr. Priya Nair', spec:'Oncology', hosp:'Tata Memorial', img:'https://randomuser.me/api/portraits/women/44.jpg'},
+    {name:'Dr. Vijay Menon', spec:'Neurology', hosp:'NIMHANS', img:'https://randomuser.me/api/portraits/men/76.jpg'},
+    {name:'Dr. Kavya Reddy', spec:'Gastroenterology', hosp:'AIIMS', img:'https://randomuser.me/api/portraits/women/65.jpg'}
+  ];
+  const tick = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+  let selectedDoc = null;
+  const docsEl = document.getElementById('docs');
+  function renderDocs(q){
+    q = (q||'').toLowerCase();
+    const list = CONNECTED.filter(d=> !q || d.name.toLowerCase().includes(q) || d.spec.toLowerCase().includes(q));
+    if(!list.length){ docsEl.innerHTML = '<div style="font-size:11px;color:var(--muted);padding:8px 4px">No connected doctors match “'+esc(q)+'”.</div>'; return; }
+    docsEl.innerHTML = list.map(d=>{
+      const sel = selectedDoc && selectedDoc.name===d.name;
+      return '<button type="button" class="doc'+(sel?' sel':'')+'" data-n="'+esc(d.name)+'">'+
+        '<img src="'+d.img+'" alt="" onerror="this.style.visibility=\'hidden\'">'+
+        '<div class="m"><div class="n">'+esc(d.name)+'</div><div class="s">'+esc(d.spec)+' · '+esc(d.hosp)+'</div><span class="conn">Connected</span></div>'+
+        '<span class="rd">'+tick+'</span>'+
+      '</button>';
+    }).join('');
+  }
+  renderDocs();
+  docsEl.addEventListener('click', e=>{
+    const b=e.target.closest('.doc'); if(!b) return;
+    selectedDoc = CONNECTED.find(d=>d.name===b.dataset.n) || null;
+    renderDocs(document.getElementById('docSearch').value);
+  });
+  document.getElementById('docSearch').addEventListener('input', e=>renderDocs(e.target.value));
+
+  // priority
+  let priority='routine';
+  document.getElementById('prio').addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    priority=b.dataset.p;
+    document.querySelectorAll('#prio button').forEach(x=>x.classList.toggle('on', x===b));
+  });
+
+  // consent
+  const consentEl = document.getElementById('consent');
+  let consent=true;
+  consentEl.addEventListener('click', ()=>{ consent=!consent; consentEl.classList.toggle('on', consent); });
+
+  // attachments
+  const fileIn=document.getElementById('fileIn'), attachedEl=document.getElementById('attached');
+  let files=[];
+  const rmIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
+  const docIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  const imgIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.6"/><path d="m21 16-5-5L5 22"/></svg>';
+  function fmtSize(b){ if(b<1024) return b+' B'; if(b<1048576) return (b/1024).toFixed(0)+' KB'; return (b/1048576).toFixed(1)+' MB'; }
+  function renderAttached(){
+    attachedEl.innerHTML = files.map((f,i)=>{
+      const isImg=/^image\//.test(f.type);
+      return '<div class="att"><span class="ai">'+(isImg?imgIc:docIc)+'</span><div class="m"><div class="t">'+esc(f.name)+'</div><div class="s">'+(isImg?'Image':'PDF')+' · '+fmtSize(f.size)+'</div></div><button class="rm" type="button" data-i="'+i+'" aria-label="Remove">'+rmIc+'</button></div>';
+    }).join('');
+  }
+  fileIn.addEventListener('change', ()=>{
+    Array.from(fileIn.files||[]).forEach(f=>files.push(f));
+    fileIn.value='';
+    renderAttached();
+  });
+  attachedEl.addEventListener('click', e=>{ const b=e.target.closest('.rm'); if(!b) return; files.splice(+b.dataset.i,1); renderAttached(); });
+
+  // toast
+  let tt; function toast(m){ let el=document.getElementById('toast'); if(!el){ el=document.createElement('div'); el.id='toast'; el.className='toast'; document.querySelector('.phone').appendChild(el);} el.textContent=m; void el.offsetWidth; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),1700); }
+
+  // submit
+  document.getElementById('send').addEventListener('click', ()=>{
+    const name=document.getElementById('pName').value.trim();
+    const age=document.getElementById('pAge').value.trim();
+    const sex=document.getElementById('pSex').value;
+    const phone=document.getElementById('pPhone').value.trim();
+    const cond=document.getElementById('pCond').value.trim();
+    const reason=document.getElementById('reason').value.trim();
+    if(!selectedDoc){ toast('Choose a doctor to refer to'); document.getElementById('docs').scrollIntoView({behavior:'smooth'}); return; }
+    if(!name){ toast('Enter the patient name'); return; }
+    if(!cond){ toast('Add a short condition summary'); return; }
+    if(!consent){ toast('Please confirm patient consent'); consentEl.scrollIntoView({behavior:'smooth'}); return; }
+
+    const ref = {
+      id:'u'+(Date.now?Date.now():Math.floor(performance.now())),
+      dir:'sent', _new:true,
+      doctor:{name:selectedDoc.name, spec:selectedDoc.spec, hosp:selectedDoc.hosp, img:selectedDoc.img},
+      patient:{name:name, age:age||'—', sex:sex||'—', phone:phone||'—'},
+      condition:cond,
+      reason: reason || (cond+' — referred for specialist opinion.'),
+      priority:priority, date:'Just now', status:'pending',
+      docs: files.map(f=>({name:f.name, size:(/^image\//.test(f.type)?'Image':'PDF')+' · '+fmtSize(f.size), type:/^image\//.test(f.type)?'img':'doc'})),
+      timeline:[ {label:'Referral sent', d:'Just now', note:'Referred to '+selectedDoc.name+' for '+selectedDoc.spec.toLowerCase()+' opinion.', state:'now'} ]
+    };
+    try{ const cur=JSON.parse(localStorage.getItem('referrals')||'[]'); cur.unshift(ref); localStorage.setItem('referrals', JSON.stringify(cur)); }catch(e){}
+
+    document.getElementById('doneMsg').textContent = 'Sent to '+selectedDoc.name+'. You’ll be notified when it’s accepted, and earn points when treatment is completed.';
+    document.getElementById('done').classList.add('show');
+  });
+  document.getElementById('doneOk').addEventListener('click', ()=>location.href='referral.html');
+
+  // secondary: post the case anonymously for opinions (carries only non-identifying fields)
+  document.getElementById('postCase').addEventListener('click', ()=>{
+    const u = new URLSearchParams({
+      spec: selectedDoc ? selectedDoc.spec : '',
+      age: document.getElementById('pAge').value.trim(),
+      sex: document.getElementById('pSex').value,
+      cond: document.getElementById('pCond').value.trim(),
+      reason: document.getElementById('reason').value.trim()
+    });
+    location.href='post-case.html?'+u.toString();
+  });
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>
