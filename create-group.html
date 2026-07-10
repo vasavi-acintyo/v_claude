@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Create Group</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif;
+    --ui:'Inter', sans-serif;
+  }
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} }
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;}
+  .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{flex:1;min-width:0;font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:16px 18px 22px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .field{margin-top:15px;}
+  .field:first-child{margin-top:0;}
+  .field>label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--slate-700);margin-bottom:7px;}
+  .field .req{color:var(--brand);}
+  .field .hint{font-size:9.5px;color:var(--muted);font-weight:600;margin-left:auto;}
+  .inp{width:100%;min-height:46px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:12.5px;font-family:inherit;color:var(--ink);}
+  textarea.inp{min-height:88px;resize:vertical;line-height:1.55;}
+  .inp::placeholder{color:var(--muted);}
+  .inp:focus{outline:none;border-color:var(--brand);}
+  .cc{font-size:9.5px;color:var(--muted);font-weight:600;text-align:right;margin-top:5px;}
+
+  .seg{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+  .opt{display:flex;flex-direction:column;align-items:center;gap:4px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 6px;cursor:pointer;text-align:center;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s, background .16s;}
+  .opt:active{transform:scale(.96);}
+  .opt .oi{width:22px;height:22px;border-radius:7px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);}
+  .opt .oi svg{width:13px;height:13px;}
+  .opt .on{font-size:10px;font-weight:800;letter-spacing:-.01em;}
+  .opt .sub{font-size:8px;color:var(--muted);margin-top:-2px;}
+  .opt.sel{border-color:var(--brand);background:var(--brand-soft);}
+
+  .cover-up{position:relative;display:block;border:1.5px dashed var(--line);border-radius:14px;overflow:hidden;cursor:pointer;background:var(--chip);transition:border-color .16s;}
+  .cover-up:hover{border-color:var(--brand);}
+  .cover-up.has{border-style:solid;border-color:var(--brand);}
+  .cover-up input[type=file]{display:none;}
+  .cover-up img{width:100%;height:110px;object-fit:cover;display:block;}
+  .cover-empty{width:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;height:110px;color:var(--muted);text-align:center;}
+  .cover-empty .ci{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;margin:0 auto;}
+  .cover-empty .ci svg{width:17px;height:17px;}
+  .cover-empty .ct{display:block;width:100%;font-size:10.5px;font-weight:700;text-align:center;padding:0 16px;}
+  .cover-rm{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;border:none;background:rgba(0,0,0,.55);color:#fff;display:grid;place-items:center;cursor:pointer;}
+  .cover-rm svg{width:13px;height:13px;}
+
+  .avatar-row{display:flex;align-items:center;gap:14px;}
+  .avatar-up{position:relative;width:80px;height:80px;border-radius:50%;border:1.5px dashed var(--line);cursor:pointer;flex:0 0 auto;background:var(--chip);overflow:hidden;transition:border-color .16s;}
+  .avatar-up:hover{border-color:var(--brand);}
+  .avatar-up.has{border-style:solid;border-color:var(--brand);}
+  .avatar-up input[type=file]{display:none;}
+  .avatar-up img{width:100%;height:100%;object-fit:cover;display:block;}
+  .avatar-empty{width:100%;height:100%;display:grid;place-items:center;color:var(--brand);}
+  .avatar-empty svg{width:26px;height:26px;}
+  .avatar-rm{position:absolute;bottom:0;right:0;width:24px;height:24px;border-radius:50%;border:2px solid var(--card);background:rgba(0,0,0,.6);color:#fff;display:grid;place-items:center;cursor:pointer;}
+  .avatar-rm svg{width:11px;height:11px;}
+  .avatar-txt{font-size:10.5px;color:var(--muted);line-height:1.5;}
+
+  .foot{flex:0 0 auto;padding:12px 18px calc(12px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line);}
+  .btn{width:100%;min-height:50px;border-radius:13px;font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border:none;background:var(--brand);color:#fff;transition:transform .16s cubic-bezier(.22,1,.36,1), background .18s;}
+  .btn:hover{background:var(--brand-dark);} .btn:active{transform:scale(.98);}
+  .btn svg{width:18px;height:18px;}
+
+  .done{position:absolute;inset:0;z-index:80;background:var(--surface);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 34px;}
+  .done.show{display:flex;}
+  .done .check{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--brand);box-shadow:0 18px 40px -14px var(--brand);}
+  .done .check svg{width:44px;height:44px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+  .done h3{font-size:21px;font-weight:800;font-family:var(--display);margin-top:20px;letter-spacing:-.02em;}
+  .done p{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6;max-width:260px;}
+  .done .acts{margin-top:26px;width:100%;display:flex;flex-direction:column;gap:10px;}
+  .done .acts .btn{width:100%;}
+  .done .acts .ghost{background:none;color:var(--brand);border:1.5px solid var(--line);}
+
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+  .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="tt">Create group</span>
+  </div>
+
+  <div class="scroll" id="scroll">
+    <div class="field">
+      <label>Group cover image <span class="hint">optional</span></label>
+      <label class="cover-up" id="coverUp">
+        <input type="file" id="fCover" accept="image/*">
+        <img id="coverPrev" alt="" hidden>
+        <div class="cover-empty" id="coverEmpty">
+          <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9.5" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg></span>
+          <span class="ct">Upload cover · 16:9 recommended</span>
+        </div>
+        <button type="button" class="cover-rm" id="coverRm" aria-label="Remove cover image" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+      </label>
+    </div>
+
+    <div class="field">
+      <label>Group profile image <span class="hint">optional</span></label>
+      <div class="avatar-row">
+        <label class="avatar-up" id="avatarUp">
+          <input type="file" id="fAvatar" accept="image/*">
+          <img id="avatarPrev" alt="" hidden>
+          <div class="avatar-empty" id="avatarEmpty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg></div>
+          <button type="button" class="avatar-rm" id="avatarRm" aria-label="Remove profile image" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        </label>
+        <span class="avatar-txt">A square photo works best — this shows up wherever the group is listed.</span>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Group name <span class="req">*</span></label>
+      <input class="inp" id="fName" maxlength="60" placeholder="e.g. Interventional Cardiology India" oninput="cc(this,'ccName')">
+      <div class="cc"><span id="ccName">0</span>/60</div>
+    </div>
+
+    <div class="field">
+      <label>About this group <span class="req">*</span></label>
+      <textarea class="inp" id="fAbout" maxlength="300" placeholder="What is this group for? Who should join, and what will they get out of it?" oninput="cc(this,'ccAbout')"></textarea>
+      <div class="cc"><span id="ccAbout">0</span>/300</div>
+    </div>
+
+    <div class="field">
+      <label>Group type <span class="req">*</span></label>
+      <div class="seg" id="grpType">
+        <div class="opt sel" data-v="Public">
+          <span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 3.6 6 3.6 9s-1.1 6.5-3.6 9c-2.5-2.5-3.6-6-3.6-9s1.1-6.5 3.6-9Z"/></svg></span>
+          <span class="on">Public</span>
+          <span class="sub">Anyone can find & join</span>
+        </div>
+        <div class="opt" data-v="Private">
+          <span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg></span>
+          <span class="on">Private</span>
+          <span class="sub">Approval required to join</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="foot">
+    <button class="btn" id="createBtn">Create group
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+    </button>
+  </div>
+
+  <div class="done" id="done">
+    <div class="check"><svg viewBox="0 0 24 24"><polyline points="4 12.5 10 18.5 20 6.5"/></svg></div>
+    <h3>Group created</h3>
+    <p id="doneMsg">Your group is ready.</p>
+    <div class="acts">
+      <button class="btn" id="viewGroupBtn">View group</button>
+      <button class="btn ghost" onclick="location.href='network.html'">Done</button>
+    </div>
+  </div>
+
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
+  function cc(el,id){ document.getElementById(id).textContent=el.value.length; }
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='network.html'; });
+
+  // group type — single select
+  let grpType='Public';
+  document.getElementById('grpType').addEventListener('click', e=>{
+    const o=e.target.closest('.opt'); if(!o) return;
+    document.querySelectorAll('#grpType .opt').forEach(x=>x.classList.remove('sel'));
+    o.classList.add('sel'); grpType=o.dataset.v;
+  });
+
+  // cover image
+  const coverInput=document.getElementById('fCover'), coverUp=document.getElementById('coverUp'),
+    coverPrev=document.getElementById('coverPrev'), coverEmpty=document.getElementById('coverEmpty'), coverRm=document.getElementById('coverRm');
+  let coverData='';
+  coverInput.addEventListener('change', ()=>{
+    const f=coverInput.files&&coverInput.files[0]; if(!f) return;
+    const reader=new FileReader();
+    reader.onload=()=>{ coverData=reader.result; coverPrev.src=coverData; coverPrev.hidden=false; coverEmpty.hidden=true; coverRm.hidden=false; coverUp.classList.add('has'); };
+    reader.readAsDataURL(f);
+  });
+  coverRm.addEventListener('click', e=>{
+    e.preventDefault(); e.stopPropagation();
+    coverInput.value=''; coverData='';
+    coverPrev.hidden=true; coverPrev.src=''; coverEmpty.hidden=false; coverRm.hidden=true; coverUp.classList.remove('has');
+  });
+
+  // profile image
+  const avatarInput=document.getElementById('fAvatar'), avatarUp=document.getElementById('avatarUp'),
+    avatarPrev=document.getElementById('avatarPrev'), avatarEmpty=document.getElementById('avatarEmpty'), avatarRm=document.getElementById('avatarRm');
+  let avatarData='';
+  avatarInput.addEventListener('change', ()=>{
+    const f=avatarInput.files&&avatarInput.files[0]; if(!f) return;
+    const reader=new FileReader();
+    reader.onload=()=>{ avatarData=reader.result; avatarPrev.src=avatarData; avatarPrev.hidden=false; avatarEmpty.hidden=true; avatarRm.hidden=false; avatarUp.classList.add('has'); };
+    reader.readAsDataURL(f);
+  });
+  avatarRm.addEventListener('click', e=>{
+    e.preventDefault(); e.stopPropagation();
+    avatarInput.value=''; avatarData='';
+    avatarPrev.hidden=true; avatarPrev.src=''; avatarEmpty.hidden=false; avatarRm.hidden=true; avatarUp.classList.remove('has');
+  });
+
+  document.getElementById('createBtn').addEventListener('click', ()=>{
+    const name=document.getElementById('fName').value.trim();
+    const about=document.getElementById('fAbout').value.trim();
+    if(!name){ toast('Add a group name'); document.getElementById('fName').focus(); return; }
+    if(!about){ toast('Add a short description'); document.getElementById('fAbout').focus(); return; }
+
+    const group={
+      name: name,
+      bio: about,
+      type: grpType,
+      avatar: avatarData,
+      cover: coverData,
+      members: '1 member',
+      created: 'Est. '+new Date().getFullYear(),
+      admin: 'You',
+      status: 'member',
+      posts: [],
+      createdAt: Date.now()
+    };
+    let mine=[]; try{ mine=JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){}
+    mine=mine.filter(g=>g.name!==name);
+    mine.unshift(group);
+    try{ localStorage.setItem('myGroups', JSON.stringify(mine)); }
+    catch(e){ toast('Saved without images — storage limit reached'); group.avatar=''; group.cover=''; try{ mine[0]=group; localStorage.setItem('myGroups', JSON.stringify(mine)); }catch(e2){} }
+
+    document.getElementById('doneMsg').textContent = '“'+name+'” is ready — invite colleagues to join.';
+    document.getElementById('viewGroupBtn').onclick = ()=>{ location.href='group.html?name='+encodeURIComponent(name); };
+    document.getElementById('done').classList.add('show');
+  });
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

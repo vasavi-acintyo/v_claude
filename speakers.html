@@ -159,15 +159,6 @@
   }
   .search input::placeholder{color:var(--muted);}
   .search input:focus{outline:none;border-color:var(--brand);}
-  .dropdown{
-    display:inline-flex;align-items:center;gap:5px;min-height:44px;background:var(--card);border:1px solid var(--line);
-    border-radius:12px;padding:0 10px;font-size:10px;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--ink);font-family:inherit;
-    transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s, color .18s, background .18s;
-  }
-  .dropdown svg{width:13px;height:13px;}
-  .dropdown:hover{border-color:var(--brand);}
-  .dropdown:active{transform:scale(.96);}
-  .dropdown.filtered{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);}
 
   /* ---------- Speaker card ---------- */
   .cards{display:flex;flex-direction:column;gap:10px;margin:0 -4px;}  /* calm gap between cards + small side space */
@@ -678,8 +669,8 @@
     <button class="icon-btn" id="backBtn" aria-label="Back">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     </button>
-    <h1>Speakers</h1>
-    <div class="right">
+    <h1 id="pageTitle">Speakers</h1>
+    <div class="right" id="headerActions">
       <button class="icon-btn" id="searchBtn" aria-label="Search">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
       </button>
@@ -738,9 +729,6 @@
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
         <input id="searchInput" placeholder="Search speakers by name or specialty...">
       </div>
-      <button class="dropdown" id="specBtn" type="button"><span id="specLabel">All Specialties</span>
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
-      </button>
     </div>
 
     <!-- Cards -->
@@ -1193,10 +1181,8 @@
     else location.href = 'cme.html';
   });
 
-  // ---- Specialty filter (dropdown + header Filter button share one cycle) ----
+  // ---- Specialty filter (cycled via the header Filter button) ----
   const searchInput = document.getElementById('searchInput');
-  const specBtn = document.getElementById('specBtn');
-  const specLabel = document.getElementById('specLabel');
   const specialties = ['all', ...new Set(speakers.map(s=>s.spec))];
   let specIdx = 0;
   function cycleSpec(){
@@ -1204,12 +1190,9 @@
     if(cardsEl.hidden) activateTab('all');
     specIdx = (specIdx + 1) % specialties.length;
     specFilter = specialties[specIdx];
-    specLabel.textContent = specFilter === 'all' ? 'All Specialties' : specFilter;
-    specBtn.classList.toggle('filtered', specFilter !== 'all');
     renderCards(currentCat);
     toast(specFilter === 'all' ? 'Showing all specialties' : 'Filtered: ' + specFilter);
   }
-  specBtn.addEventListener('click', cycleSpec);
   document.getElementById('filterBtn').addEventListener('click', cycleSpec);
 
   // ---- Header Search button: reveal + focus the in-page search field ----
@@ -1397,8 +1380,8 @@
   // populate the single price card
   document.getElementById('ptBadge').innerHTML = T.icon + T.label;
   const ptPaid = document.getElementById('ptPaid');
-  ptPaid.className = 'ptag ' + (isFree ? 'free' : 'paid');
-  ptPaid.textContent = isFree ? 'Free' : 'Paid';
+  ptPaid.hidden = !isFree;
+  if(isFree){ ptPaid.className = 'ptag free'; ptPaid.textContent = 'Free'; }
   document.getElementById('priceDesc').textContent = T.desc;
   document.getElementById('priceInc').innerHTML = T.inc.map(x=>`<div>${CHKsm}${x}</div>`).join('');
   const offEl = document.querySelector('.price-off');
@@ -1721,6 +1704,19 @@
       const typeMap = { live:'LIVE SESSION', upcoming:'UPCOMING', course:'COURSE',
                         event:'EVENT', speaker:'SPEAKER', specialty:'SPECIALTY' };
       const type = qs.get('type');
+
+      // header title + search/filter icons only make sense on the browse/specialty
+      // list — single-item detail views (course/event/live/upcoming/speaker) get
+      // a matching header title instead, with those actions hidden.
+      const headerTitleMap = { live:'Live Session', upcoming:'Upcoming CME', course:'CME Details',
+                                event:'Event Details', speaker:'Speaker Profile' };
+      const pageTitleEl = document.getElementById('pageTitle');
+      if(type && headerTitleMap[type]){
+        if(pageTitleEl) pageTitleEl.textContent = headerTitleMap[type];
+        const actions = document.getElementById('headerActions');
+        if(actions){ actions.style.visibility='hidden'; actions.style.pointerEvents='none'; }
+      }
+
       if(type && typeMap[type] && titleEl){
         let eb = banner.querySelector('.dl-eyebrow');
         if(!eb){
@@ -1754,7 +1750,8 @@
       // specialty → apply that specialty filter IF it matches known data (reuse Pass-A)
       const specialtyParam = qs.get('specialty');
       if(specialtyParam){
-        const want = decodeURIComponent(specialtyParam).trim().toLowerCase();
+        const rawSpecialty = decodeURIComponent(specialtyParam).trim();
+        const want = rawSpecialty.toLowerCase();
         // tolerant match: incoming names are fields ("Cardiology") while our data
         // holds practitioners ("Cardiologist"), so compare on a shared alpha stem.
         const stem = s => (s||'').toLowerCase().replace(/[^a-z]/g,'').slice(0,5);
@@ -1765,9 +1762,8 @@
           if(cardsEl.hidden) activateTab('all');   // ensure the speaker list is visible
           specIdx = idx;
           specFilter = specialties[idx];
-          specLabel.textContent = specFilter;
-          specBtn.classList.add('filtered');
           renderCards(currentCat);
+          if(pageTitleEl) pageTitleEl.textContent = rawSpecialty;
         }
         // no match → ignore silently, never leave an empty list
       }

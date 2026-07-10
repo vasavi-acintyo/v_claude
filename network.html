@@ -99,7 +99,7 @@
   .scard button.done{background:var(--gold);color:#fff;}
 
   /* groups */
-  .groups{display:flex;flex-direction:column;gap:10px;}
+  .groups{display:flex;flex-direction:column;gap:10px;margin-top:14px;}
   .grp{display:flex;align-items:center;gap:11px;background:var(--soft1);border:1px solid transparent;border-radius:15px;padding:11px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s, opacity .15s;}
   .grp:hover{transform:translateY(-2px);border-color:var(--brand);}
   .grp .go.joined{background:var(--green);color:#fff;}
@@ -109,6 +109,20 @@
   .grp .nm{font-size:12px;font-weight:800;font-family:var(--display);}
   .grp .sp{font-size:9.5px;color:var(--muted);margin-top:2px;}
   .grp .go{font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:5px 11px;border-radius:20px;flex:0 0 auto;}
+  .grp .go.pending{color:var(--gold);background:rgba(176,137,79,.16);}
+  .grp .dots{width:32px;height:32px;border-radius:50%;border:none;background:none;color:var(--muted);display:grid;place-items:center;flex:0 0 auto;cursor:pointer;}
+  .grp .dots:hover{background:var(--chip);color:var(--brand);}
+  .grp .dots svg{width:17px;height:17px;}
+  .grp-empty{text-align:center;color:var(--muted);font-size:11px;padding:24px 0;}
+
+  /* groups sub-tabs */
+  .grp-top{display:flex;align-items:center;gap:8px;}
+  .grp-seg{flex:1;min-width:0;display:flex;background:var(--chip);border-radius:12px;padding:4px;}
+  .grp-seg button{flex:1;border:none;background:none;font-family:inherit;font-size:11.5px;font-weight:800;color:var(--muted);padding:9px 4px;min-height:38px;border-radius:9px;cursor:pointer;transition:background .16s,color .16s;white-space:nowrap;}
+  .grp-seg button.on{background:var(--card);color:var(--brand);box-shadow:0 4px 12px -6px rgba(0,0,0,.2);}
+  .add-circle{width:38px;height:38px;min-height:38px;flex:0 0 auto;padding:0;border:none;border-radius:50%;background:var(--brand);color:#fff;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;}
+  .add-circle svg{width:16px;height:16px;}
+  .add-circle:active{transform:scale(.9);}
 
   /* feed */
   .feed{display:flex;flex-direction:column;gap:12px;}
@@ -150,12 +164,16 @@
   .sp-act{display:inline-flex;align-items:center;justify-content:center;gap:6px;background:none;border:none;font-family:inherit;font-size:10.5px;font-weight:700;color:var(--slate-700);cursor:pointer;padding:5px 9px;min-height:44px;border-radius:9px;transition:background .15s, transform .13s, opacity .13s;}
   .sp-act:hover{background:var(--chip);} .sp-act svg{width:17px;height:17px;color:var(--brand);}
   .sec2{font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin:22px 0 12px;display:flex;align-items:center;gap:8px;}
+  .panel-head{display:flex;align-items:center;gap:10px;margin-top:16px;}
+  .panel-head h2{font-size:17px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .back-ic{width:32px;height:32px;border-radius:50%;background:var(--chip);border:none;display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;transition:transform .16s;}
+  .back-ic:active{transform:scale(.92);}
   .sec2 b{font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:20px;}
 
   /* ---- sub-tabs ---- */
   .ntabs{display:flex;gap:4px;overflow-x:auto;scrollbar-width:none;margin-top:14px;border-bottom:1px solid var(--line);}
   .ntabs::-webkit-scrollbar{display:none;}
-  .ntab{flex:0 0 auto;background:none;border:none;font-family:inherit;font-size:12px;font-weight:700;color:var(--muted);padding:11px 10px;min-height:44px;position:relative;cursor:pointer;white-space:nowrap;}
+  .ntab{flex:1;text-align:center;background:none;border:none;font-family:inherit;font-size:12px;font-weight:700;color:var(--muted);padding:11px 10px;min-height:44px;position:relative;cursor:pointer;white-space:nowrap;}
   .ntab.active{color:var(--brand);}
   .ntab.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;background:var(--brand);border-radius:3px;}
 
@@ -406,9 +424,8 @@
 
     <!-- sub-tabs -->
     <div class="ntabs rise" id="ntabs">
-      <button class="ntab active" data-p="net">My Network</button>
+      <button class="ntab active" data-p="net">Grow</button>
       <button class="ntab" data-p="groups">Groups</button>
-      <button class="ntab" data-p="msgs">Messages</button>
       <button class="ntab" data-p="alerts">Alerts</button>
     </div>
 
@@ -442,15 +459,28 @@
 
     <!-- GROUPS -->
     <div class="panel" data-panel="groups" hidden>
-      <div class="sec2" style="margin-top:16px">Your groups</div>
+      <div class="grp-top rise" style="margin-top:16px">
+        <div class="grp-seg" id="grpSeg">
+          <button class="on" data-gt="mine">Your groups</button>
+          <button data-gt="requested">Requested</button>
+          <button data-gt="discover">Discover</button>
+        </div>
+        <button type="button" class="add-circle" id="createGroupBtn" aria-label="Create group" onclick="location.href='create-group.html'">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
       <div class="groups" id="groups"></div>
-      <div class="sec2">Discover groups</div>
-      <div class="groups" id="discoverGroups"></div>
+      <div class="groups" id="requestedGroups" hidden></div>
+      <div class="groups" id="discoverGroups" hidden></div>
     </div>
 
     <!-- MESSAGES -->
     <div class="panel" data-panel="msgs" hidden>
-      <div class="msg-list" id="msgs" style="margin-top:8px"></div>
+      <div class="panel-head rise">
+        <button class="back-ic" id="msgsBack" aria-label="Back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+        <h2>Messages</h2>
+      </div>
+      <div class="msg-list" id="msgs" style="margin-top:10px"></div>
     </div>
 
     <!-- ALERTS -->
@@ -505,6 +535,12 @@
   <div class="backdrop" id="optBackdrop"></div>
   <div class="sheet" id="optSheet">
     <div class="ps-body" id="optBody"></div>
+  </div>
+
+  <!-- Group options sheet -->
+  <div class="backdrop" id="grpOptBackdrop"></div>
+  <div class="sheet" id="grpOptSheet">
+    <div class="ps-body" id="grpOptBody"></div>
   </div>
 
   <!-- Media viewer -->
@@ -631,13 +667,19 @@
   });
 
   // ---- Groups ----
-  const groups = [
+  let myCreatedGroups=[]; try{ myCreatedGroups=JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){}
+  const groups = myCreatedGroups.map(g=>({ name:g.name, members:g.members, ico:grpIco, avatar:g.avatar })).concat([
     { name:'Indian Diabetes Forum',   members:'12.4k members', ico:grpIco },
     { name:'City Cardiology Society', members:'3.2k members',  ico:grpIco },
     { name:'Young Physicians Network', members:'8.7k members', ico:grpIco }
-  ];
-  document.getElementById('groups').innerHTML = groups.map(g=>`
-    <div class="grp"><span class="gi">${g.ico}</span><div class="m"><div class="nm">${g.name}</div><div class="sp">${g.members}</div></div><span class="go">Open</span></div>`).join('');
+  ]);
+  const dotsIco='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>';
+  function renderMyGroups(){
+    document.getElementById('groups').innerHTML = groups.length ? groups.map((g,i)=>`
+      <div class="grp" data-gi="${i}"><span class="gi">${g.avatar?`<img src="${g.avatar}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:14px">`:g.ico}</span><div class="m"><div class="nm">${g.name}</div><div class="sp">${g.members}</div></div><button type="button" class="dots" data-gdots="${i}" aria-label="Group options">${dotsIco}</button></div>`).join('')
+      : `<div class="grp-empty">You haven't joined any groups yet.</div>`;
+  }
+  renderMyGroups();
 
   // discover groups
   const discover = [
@@ -648,10 +690,38 @@
   document.getElementById('discoverGroups').innerHTML = discover.map(g=>`
     <div class="grp"><span class="gi">${grpIco}</span><div class="m"><div class="nm">${g.name}</div><div class="sp">${g.members}</div></div><span class="go">Join</span></div>`).join('');
 
-  // your groups → open (toast); discover groups → toggle Join/Joined
+  // your groups → dots opens leave/share sheet, row opens the group screen
+  const grpOptBackdrop=document.getElementById('grpOptBackdrop'), grpOptSheet=document.getElementById('grpOptSheet'), grpOptBody=document.getElementById('grpOptBody');
+  let grpOptIdx=-1;
+  const leaveIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>';
+  const shareIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><line x1="8.3" y1="10.7" x2="15.7" y2="6.3"/><line x1="8.3" y1="13.3" x2="15.7" y2="17.7"/></svg>';
+  function openGroupOpts(i){
+    grpOptIdx=i;
+    grpOptBody.innerHTML = `<div class="grab"></div>
+      <button class="opt-item danger" data-gopt="leave">${leaveIco}Leave this group</button>
+      <button class="opt-item" data-gopt="share">${shareIco}Share this group</button>`;
+    grpOptBackdrop.classList.add('open'); grpOptSheet.classList.add('open');
+  }
+  function closeGroupOpts(){ grpOptBackdrop.classList.remove('open'); grpOptSheet.classList.remove('open'); }
+  grpOptBackdrop.addEventListener('click', closeGroupOpts);
+  grpOptBody.addEventListener('click', e=>{
+    const b=e.target.closest('[data-gopt]'); if(!b) return;
+    const g=groups[grpOptIdx];
+    if(b.dataset.gopt==='share'){ toast('Link copied for '+g.name); closeGroupOpts(); return; }
+    if(b.dataset.gopt==='leave'){
+      toast('Left '+g.name);
+      groups.splice(grpOptIdx,1);
+      myCreatedGroups=myCreatedGroups.filter(mg=>mg.name!==g.name);
+      try{ localStorage.setItem('myGroups', JSON.stringify(myCreatedGroups)); }catch(e){}
+      renderMyGroups();
+      closeGroupOpts();
+    }
+  });
   document.getElementById('groups').addEventListener('click', e=>{
+    const dots=e.target.closest('[data-gdots]');
+    if(dots){ openGroupOpts(+dots.dataset.gdots); return; }
     const row=e.target.closest('.grp'); if(!row) return;
-    toast('Opening '+row.querySelector('.nm').textContent+'…');
+    location.href='group.html?name='+encodeURIComponent(groups[+row.dataset.gi].name);
   });
   document.getElementById('discoverGroups').addEventListener('click', e=>{
     const row=e.target.closest('.grp'); if(!row) return;
@@ -659,6 +729,35 @@
     const joined=go.classList.toggle('joined');
     go.textContent = joined ? 'Joined' : 'Join';
     toast(joined ? 'Joined '+name : 'Left '+name);
+  });
+
+  // requested groups (pending approval)
+  const requested = [
+    { name:'Interventional Cardiology India', members:'9.1k members' },
+    { name:'Women in Medicine Network',       members:'14.3k members' }
+  ];
+  function renderRequested(){
+    document.getElementById('requestedGroups').innerHTML = requested.length ? requested.map(g=>`
+      <div class="grp"><span class="gi">${grpIco}</span><div class="m"><div class="nm">${g.name}</div><div class="sp">${g.members}</div></div><span class="go pending" data-cancel>Pending</span></div>`).join('')
+      : `<div class="grp-empty">No pending requests.</div>`;
+  }
+  renderRequested();
+  document.getElementById('requestedGroups').addEventListener('click', e=>{
+    const btn=e.target.closest('[data-cancel]'); if(!btn) return;
+    const row=btn.closest('.grp'), name=row.querySelector('.nm').textContent;
+    requested.splice(requested.findIndex(g=>g.name===name),1);
+    renderRequested();
+    toast('Request withdrawn for '+name);
+  });
+
+  // groups sub-tabs
+  document.getElementById('grpSeg').addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    document.querySelectorAll('#grpSeg button').forEach(x=>x.classList.toggle('on', x===b));
+    const gt=b.dataset.gt;
+    document.getElementById('groups').hidden = gt!=='mine';
+    document.getElementById('requestedGroups').hidden = gt!=='requested';
+    document.getElementById('discoverGroups').hidden = gt!=='discover';
   });
 
   // ---- Messages ----
@@ -696,16 +795,20 @@
 
   // ---- Sub-tab switching ----
   const panels = document.querySelectorAll('.panel');
+  const ntabsBar = document.getElementById('ntabs');
+  let lastTab = 'net';
+  function switchPanel(key){
+    document.querySelectorAll('.ntab').forEach(x=>x.classList.toggle('active', x.dataset.p===key));
+    panels.forEach(p=>{ p.hidden = p.dataset.panel !== key; });
+    ntabsBar.hidden = key === 'msgs';
+    document.querySelector('.scroll').scrollTop = 0;
+  }
   document.querySelectorAll('.ntab').forEach(t=>{
-    t.addEventListener('click', ()=>{
-      document.querySelectorAll('.ntab').forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      panels.forEach(p=>{ p.hidden = p.dataset.panel !== t.dataset.p; });
-      document.querySelector('.scroll').scrollTop = 0;
-    });
+    t.addEventListener('click', ()=>{ lastTab = t.dataset.p; switchPanel(t.dataset.p); });
   });
-  // top-bar Messages icon → jump to Messages tab
-  document.querySelector('.tb-ic').addEventListener('click', ()=>{ const t=document.querySelector('.ntab[data-p="msgs"]'); if(t) t.click(); });
+  // top-bar Messages icon → jump to the Messages panel
+  document.querySelector('.tb-ic').addEventListener('click', ()=>switchPanel('msgs'));
+  document.getElementById('msgsBack').addEventListener('click', ()=>switchPanel(lastTab));
 
   // ---- Feed (LinkedIn-style: reactions · inline comments · repost) ----
   const ME = { name:(function(){try{return localStorage.getItem('docName')||'Dr. Ananya Rao';}catch(e){return 'Dr. Ananya Rao';}})(), spec:'Endocrinologist · MedHub', img:'https://randomuser.me/api/portraits/women/79.jpg' };
@@ -1123,6 +1226,7 @@
   document.addEventListener('keydown', e=>{
     if(e.key!=='Escape') return;
     if(optSheet.classList.contains('open')){ closeOpts(); return; }
+    if(grpOptSheet.classList.contains('open')){ closeGroupOpts(); return; }
     if(document.getElementById('mediaModal').classList.contains('open')){ closeMedia(); return; }
     if(document.getElementById('cmtSheet').classList.contains('open')){ document.getElementById('cmtSheet').classList.remove('open'); document.getElementById('cmtBackdrop').classList.remove('open'); return; }
     if(document.getElementById('compSheet').classList.contains('open')){ document.getElementById('compSheet').classList.remove('open'); document.getElementById('compBackdrop').classList.remove('open'); return; }

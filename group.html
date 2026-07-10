@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Group — MedHub</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif;
+    --ui:'Inter', sans-serif;
+  }
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .rise{animation:rise .45s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} }
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px;}
+  .topbar .bk{width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;}
+  .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{flex:1;min-width:0;font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .topbar .dots{width:38px;height:38px;border-radius:50%;background:none;border:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
+  .topbar .dots:hover{background:var(--chip);color:var(--brand);}
+  .topbar .dots svg{width:18px;height:18px;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:2px 18px 22px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .hero{border-radius:18px;padding:20px 16px 16px;position:relative;overflow:hidden;background:linear-gradient(135deg,var(--d1),var(--d2) 55%,var(--d3));color:#fff;text-align:center;}
+  .hero::after{content:"";position:absolute;right:-30px;top:-30px;width:130px;height:130px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);}
+  .hero .gi{width:64px;height:64px;border-radius:18px;background:rgba(255,255,255,.16);display:grid;place-items:center;margin:0 auto;position:relative;z-index:1;}
+  .hero .gi svg{width:32px;height:32px;stroke:#fff;}
+  .hero h1{position:relative;z-index:1;font-size:17px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin-top:12px;line-height:1.25;}
+  .hero .meta{position:relative;z-index:1;font-size:10px;color:rgba(255,255,255,.75);margin-top:5px;}
+  .hero .jbtn{position:relative;z-index:1;margin-top:14px;min-height:38px;padding:9px 22px;border-radius:20px;border:none;font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;background:#fff;color:var(--brand);transition:transform .16s cubic-bezier(.22,1,.36,1);}
+  .hero .jbtn:active{transform:scale(.95);}
+  .hero .jbtn.joined{background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.5);}
+  .hero .jbtn.pending{background:rgba(255,255,255,.18);color:#fff;border:1.5px solid rgba(255,255,255,.5);}
+
+  .sec{margin:20px 0 10px;display:flex;align-items:baseline;justify-content:space-between;}
+  .sec h2{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;}
+  .about-bio{font-size:11.5px;line-height:1.65;color:var(--slate-700);}
+  .about-kv{display:flex;gap:10px;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);}
+  .about-kv:first-child{margin-top:0;padding-top:0;border-top:none;}
+  .about-kv svg{width:15px;height:15px;color:var(--brand);flex:0 0 auto;margin-top:1px;}
+  .about-kv span{font-size:10.5px;color:var(--slate-700);line-height:1.5;}
+
+  .composer{display:flex;align-items:center;gap:11px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:11px 13px;cursor:pointer;transition:border-color .16s;}
+  .composer:hover{border-color:var(--brand);}
+  .composer img{width:36px;height:36px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .composer .cbox{flex:1;font-size:11px;color:var(--muted);}
+
+  .feed{display:flex;flex-direction:column;gap:12px;margin-top:12px;}
+  .post{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:13px;}
+  .post-h{display:flex;align-items:center;gap:10px;}
+  .post-h img{width:36px;height:36px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .post-h .nm{font-size:11.5px;font-weight:800;}
+  .post-h .sp{font-size:9px;color:var(--muted);margin-top:1px;}
+  .post-h .t{margin-left:auto;font-size:8.5px;color:var(--muted);font-weight:600;}
+  .post-b{font-size:11px;line-height:1.6;color:var(--slate-700);margin-top:10px;}
+  .post-f{display:flex;gap:8px;margin-top:11px;padding-top:10px;border-top:1px solid var(--line);}
+  .post-f button{display:inline-flex;align-items:center;gap:5px;background:none;border:none;font-family:inherit;font-size:10px;font-weight:700;color:var(--muted);cursor:pointer;padding:5px 8px;border-radius:8px;}
+  .post-f button:hover{background:var(--chip);}
+  .post-f button.liked{color:var(--brand);}
+  .post-f button.liked svg{fill:var(--brand);}
+  .post-f svg{width:14px;height:14px;}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--muted);}
+  .empty svg{width:36px;height:36px;margin:0 auto 12px;opacity:.5;}
+  .empty p{font-size:12px;line-height:1.6;}
+
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+  .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
+    <div class="tt" id="topTitle">Group</div>
+    <button class="dots" id="moreBtn" aria-label="More"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+  </div>
+
+  <div class="scroll" id="scroll"></div>
+
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='network.html'; });
+  document.getElementById('moreBtn').addEventListener('click', ()=>toast('More options coming soon'));
+
+  const grpIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg>';
+  const likeIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-1 9v11h9.3a2 2 0 0 0 2-1.7l1.4-8a2 2 0 0 0-2-2.3H14Z"/><path d="M7 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h3"/></svg>';
+  const cmtIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
+  const shareIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><line x1="8.3" y1="10.7" x2="15.7" y2="6.3"/><line x1="8.3" y1="13.3" x2="15.7" y2="17.7"/></svg>';
+  const calIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>';
+  const shieldIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg>';
+  const emptyIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/></svg>';
+
+  const GROUPS = {
+    'Indian Diabetes Forum': { members:'12.4k', created:'Est. 2016', admin:'Dr. Meera Iyer', status:'member',
+      bio:'A community for endocrinologists and physicians managing diabetes across India — sharing guidelines, case discussions and the latest in CGM and insulin therapy.',
+      posts:[
+        {n:'Dr. Meera Iyer', img:'https://randomuser.me/api/portraits/women/68.jpg', t:'2h', b:'New ADA 2025 guideline summary is up in files — key changes to GLP-1 first-line recommendations for T2DM with CVD risk.', likes:34, cmts:8},
+        {n:'Dr. Vijay Menon', img:'https://randomuser.me/api/portraits/men/76.jpg', t:'1d', b:'Case: 52F with brittle T1DM on hybrid closed-loop, recurring nocturnal hypos. Anyone tried adjusting active insulin time vs target glucose first?', likes:19, cmts:12}
+      ]},
+    'City Cardiology Society': { members:'3.2k', created:'Est. 2019', admin:'Dr. Arvind Kumar', status:'member',
+      bio:'Regional cardiology society for case discussions, journal clubs and CME announcements across the city\'s hospital network.',
+      posts:[
+        {n:'Dr. Arvind Kumar', img:'https://randomuser.me/api/portraits/men/32.jpg', t:'5h', b:'Reminder: journal club this Friday covering the new resistant-hypertension trial data. Venue details pinned.', likes:22, cmts:4}
+      ]},
+    'Young Physicians Network': { members:'8.7k', created:'Est. 2021', admin:'Dr. Rohan Sinha', status:'member',
+      bio:'For residents and early-career physicians — mentorship, career advice and peer support.',
+      posts:[
+        {n:'Dr. Rohan Sinha', img:'https://randomuser.me/api/portraits/men/45.jpg', t:'3h', b:'Hot take: the hardest part of residency isn\'t the hours, it\'s learning to say "I don\'t know, let me check" out loud. Anyone else?', likes:61, cmts:23},
+        {n:'Dr. Priya Nair', img:'https://randomuser.me/api/portraits/women/44.jpg', t:'2d', b:'Sharing my note-taking system for ward rounds — happy to walk anyone through it if useful.', likes:15, cmts:6}
+      ]},
+    'Endocrine Society of India': { members:'22.1k', created:'Est. 2010', admin:'Dr. Kavya Reddy', status:'none',
+      bio:'National society for endocrinologists — accredited CME, annual conference updates and specialty guidelines.',
+      posts:[
+        {n:'Dr. Kavya Reddy', img:'https://randomuser.me/api/portraits/women/65.jpg', t:'1d', b:'Registrations for the annual conference open next week. Early bird pricing for society members.', likes:48, cmts:9}
+      ]},
+    'Clinical Cardiology Hub': { members:'15.8k', created:'Est. 2014', admin:'Dr. Sameer Shah', status:'none',
+      bio:'Clinical discussion hub for interventional and non-interventional cardiologists — case reviews and guideline updates.',
+      posts:[
+        {n:'Dr. Sameer Shah', img:'https://randomuser.me/api/portraits/men/52.jpg', t:'6h', b:'Interesting ECG from clinic today — happy to share for a group read if useful for teaching.', likes:27, cmts:11}
+      ]},
+    'Nephrology Connect': { members:'6.4k', created:'Est. 2018', admin:'Dr. Imran Khan', status:'none',
+      bio:'Connecting nephrologists for CKD management discussions, dialysis case reviews and transplant updates.',
+      posts:[
+        {n:'Dr. Imran Khan', img:'https://randomuser.me/api/portraits/men/61.jpg', t:'4h', b:'Anyone using the new eGFR calculator in practice yet? Curious how it\'s changing referral timing.', likes:14, cmts:5}
+      ]},
+    'Interventional Cardiology India': { members:'9.1k', created:'Est. 2017', admin:'Dr. Anjali Desai', status:'pending',
+      bio:'For interventional cardiologists — procedural case discussions, device updates and fellowship opportunities.',
+      posts:[]},
+    'Women in Medicine Network': { members:'14.3k', created:'Est. 2015', admin:'Dr. Ananya Ghosh', status:'pending',
+      bio:'A supportive community for women in medicine — mentorship, work-life balance and career growth.',
+      posts:[]}
+  };
+
+  function loadMyGroups(){ try{ return JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){ return []; } }
+
+  function render(name){
+    let g = GROUPS[name];
+    let custom=false;
+    if(!g){
+      const mine=loadMyGroups().find(x=>x.name===name);
+      if(mine){ g=mine; custom=true; }
+    }
+    const scroll = document.getElementById('scroll');
+    if(!g){
+      document.getElementById('topTitle').textContent = 'Group';
+      scroll.innerHTML = `<div class="empty rise">${emptyIco}<p>We couldn't find this group.<br>It may have been removed or renamed.</p></div>`;
+      return;
+    }
+    document.getElementById('topTitle').textContent = name;
+    const btnLabel = g.status==='member' ? 'Joined' : g.status==='pending' ? 'Pending' : 'Join';
+    const btnClass = g.status==='member' ? 'joined' : g.status==='pending' ? 'pending' : '';
+    const memberLine = custom ? esc(g.members) : `${g.members} members`;
+    const heroStyle = custom && g.cover ? ` style="background-image:linear-gradient(rgba(20,10,15,.45),rgba(20,10,15,.45)),url('${g.cover}');background-size:cover;background-position:center;"` : '';
+
+    scroll.innerHTML = `
+      <div class="hero rise"${heroStyle}>
+        <div class="gi">${custom && g.avatar ? `<img src="${g.avatar}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:18px">` : grpIco}</div>
+        <h1>${esc(name)}</h1>
+        <div class="meta">${memberLine} · ${esc(g.created)}</div>
+        <button type="button" class="jbtn ${btnClass}" id="joinBtn">${btnLabel}</button>
+      </div>
+
+      <div class="sec"><h2>About</h2></div>
+      <div class="card rise">
+        <p class="about-bio">${esc(g.bio)}</p>
+        <div class="about-kv"><span>${calIco}</span><span>${esc(g.created)}</span></div>
+        <div class="about-kv"><span>${shieldIco}</span><span>Admin · ${esc(g.admin)}</span></div>
+        ${g.type ? `<div class="about-kv"><span>${shieldIco}</span><span>${esc(g.type)} group</span></div>` : ''}
+      </div>
+
+      <div class="sec"><h2>Feed</h2></div>
+      ${g.status==='member' ? `
+      <div class="composer rise" id="composer">
+        <img src="https://randomuser.me/api/portraits/women/79.jpg" alt="">
+        <div class="cbox">Share something with ${esc(name)}…</div>
+      </div>` : ''}
+      <div class="feed" id="feed">
+        ${g.posts.length ? g.posts.map((p,i)=>`
+          <div class="post rise">
+            <div class="post-h"><img src="${p.img}" alt=""><div><div class="nm">${esc(p.n)}</div><div class="sp">${esc(name)}</div></div><span class="t">${esc(p.t)}</span></div>
+            <div class="post-b">${esc(p.b)}</div>
+            <div class="post-f">
+              <button type="button" class="like" data-i="${i}">${likeIco}<span class="lc">${p.likes}</span></button>
+              <button type="button">${cmtIco}${p.cmts}</button>
+              <button type="button" class="share">${shareIco}Share</button>
+            </div>
+          </div>`).join('') : `<div class="empty rise" style="padding:40px 20px">${emptyIco}<p>No posts yet in this group.</p></div>`}
+      </div>
+    `;
+
+    document.getElementById('joinBtn').addEventListener('click', ()=>{
+      if(g.status==='member') return;
+      if(g.status==='pending'){ g.status='none'; toast('Request withdrawn'); }
+      else { g.status='pending'; toast('Request sent to join '+name); }
+      render(name);
+    });
+    const composer=document.getElementById('composer');
+    if(composer) composer.addEventListener('click', ()=>toast('Post composer coming soon'));
+    document.getElementById('feed').addEventListener('click', e=>{
+      const share=e.target.closest('.share'); if(share){ toast('Link copied'); return; }
+      const like=e.target.closest('.like'); if(!like) return;
+      const p=g.posts[+like.dataset.i];
+      const liked=like.classList.toggle('liked');
+      p.likes += liked ? 1 : -1;
+      like.querySelector('.lc').textContent=p.likes;
+    });
+  }
+
+  const name = new URLSearchParams(location.search).get('name') || '';
+  render(name);
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

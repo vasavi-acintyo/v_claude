@@ -115,14 +115,6 @@
   .ptag.paid{color:var(--brand);background:var(--brand-soft);}
   [data-theme="dark"] .ptag.free{color:#86efac;background:rgba(34,197,94,.16);}
 
-  /* popular topics */
-  .topics{display:flex;flex-wrap:wrap;gap:9px;}
-  .topic{display:inline-flex;align-items:center;gap:7px;min-height:40px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:9px 13px;font-size:11px;font-weight:700;color:var(--ink);cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s, color .18s, background .18s;}
-  .topic:hover{border-color:var(--brand);}
-  .topic.active{background:var(--brand-soft);color:var(--brand);border-color:var(--brand);}
-  .topic:active{transform:scale(.96);}
-  .topic .td{width:7px;height:7px;border-radius:50%;}
-
   /* bottom nav */
   .nav{flex:0 0 auto;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:9px 0 22px;}
   .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s, color .18s;}
@@ -165,16 +157,13 @@
     <div class="formats rise" id="formats"></div>
 
     <!-- Specialties -->
-    <div class="sec rise"><h2>Specialties</h2><a href="speakers.html?type=specialty">See all<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+    <div class="sec rise"><h2>Specialties</h2><a href="specialties.html">See all<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></a></div>
     <div class="grid rise" id="grid"></div>
 
     <!-- Trending -->
     <div class="sec rise"><h2>Trending this week</h2></div>
     <div class="trow rise" id="trending"></div>
 
-    <!-- Popular topics -->
-    <div class="sec rise"><h2>Popular topics</h2></div>
-    <div class="topics rise" id="topics"></div>
   </div>
 
   <div class="nav">
@@ -241,26 +230,35 @@
   ];
   const pTag = (f,price) => f ? '<span class="ptag free">Free</span>' : '<span class="ptag paid">'+(price||'Paid')+'</span>';
   const bookmarkSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z"/></svg>';
-  document.getElementById('trending').innerHTML = trending.map(t=>`
+  function loadSaved(){ try{ return JSON.parse(localStorage.getItem('savedCMEs')||'[]'); }catch(e){ return []; } }
+  function isSaved(title){ return loadSaved().some(s=>s.title===title); }
+  document.getElementById('trending').innerHTML = trending.map(t=>{
+    const saved = isSaved(t.t);
+    return `
     <div class="tcard" onclick="location.href='speakers.html?type=course&title='+encodeURIComponent('${t.t.replace(/'/g,"\\'")}')+'&mode=${t.mode}&free=${t.free?1:0}'">
-      <button class="tsave" aria-label="Save to My Learning" aria-pressed="false">${bookmarkSvg}</button>
+      <button class="tsave${saved?' saved':''}" aria-label="Save to My Learning" aria-pressed="${saved}"
+        data-title="${t.t.replace(/"/g,'&quot;')}" data-meta="${t.org}" data-credits="${t.m}" data-mode="${t.mode}">${bookmarkSvg}</button>
       <div class="ttop"><span class="rank">🔥 ${t.rank}</span>${t.live?'<span class="live"><span class="d"></span>LIVE</span>':''}${pTag(t.free,t.price)}</div>
       <div class="tt">${t.t}</div>
       <div class="tm"><span>${ic.clock}${t.m}</span></div>
       <div class="torg">${ic.org}Organized by ${t.org}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
   document.querySelectorAll('.tsave').forEach(function(btn){
     btn.addEventListener('click', function(e){
       e.stopPropagation();
-      var on = btn.classList.toggle('saved');
+      const title = btn.dataset.title;
+      let saved = loadSaved();
+      const idx = saved.findIndex(s=>s.title===title);
+      let on;
+      if(idx>-1){ saved.splice(idx,1); on=false; }
+      else { saved.unshift({ title:title, meta:btn.dataset.meta||'', credits:btn.dataset.credits||'', mode:btn.dataset.mode||'', thumb:'award', savedAt:Date.now() }); on=true; }
+      try{ localStorage.setItem('savedCMEs', JSON.stringify(saved)); }catch(err){}
+      btn.classList.toggle('saved', on);
       btn.setAttribute('aria-pressed', on ? 'true' : 'false');
       toast(on ? 'Saved to My Learning' : 'Removed from saved');
     });
   });
-
-  const topics = ['Type 2 Diabetes','Heart Failure','Obesity','CGM','Lipids','CKD','Arrhythmia','Thyroid','Hypertension','Insulin'];
-  const dots = ['#7d2c3b','#1e5fbf','#0f7a5a','#f59e0b','#ec4899','#0ea5e9'];
-  document.getElementById('topics').innerHTML = topics.map((t,i)=>`<span class="topic"><span class="td" style="background:${dots[i%dots.length]}"></span>${t}</span>`).join('');
 
   // Toast helper (fixed bottom-center pill, ~1.4s)
   var toastEl = document.getElementById('toast'), toastTimer;
@@ -270,15 +268,6 @@
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function(){ toastEl.classList.remove('show'); }, 1400);
   }
-
-  // Wire popular topics: toggle a visible selected state
-  document.querySelectorAll('.topic').forEach(function(el){
-    el.addEventListener('click', function(){
-      var on = el.classList.toggle('active');
-      var label = el.textContent.trim();
-      toast(on ? 'Following '+label : 'Unfollowed '+label);
-    });
-  });
 
   // Wire filter icon button
   document.getElementById('filterBtn').addEventListener('click', function(){ toast('Filters coming soon'); });

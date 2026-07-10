@@ -56,7 +56,6 @@
   .icon-btn{width:44px;height:44px;min-width:44px;min-height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);position:relative;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s;}
   .icon-btn:active{transform:scale(.94);}
   .icon-btn .ndot{position:absolute;top:8px;right:9px;width:7px;height:7px;background:var(--brand);border:2px solid var(--card);border-radius:50%;}
-  .htop .me{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);border:1px solid var(--line);display:block;}
   .htop a{display:inline-flex;border-radius:50%;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s;}
   .htop a:active{transform:scale(.94);}
 
@@ -73,9 +72,7 @@
   .chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;min-height:44px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:9px 13px;font-size:11.5px;font-weight:700;cursor:pointer;color:var(--ink);text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s, color .18s, background .18s;}
   .chip:hover{border-color:var(--brand);}
   .chip:active{transform:scale(.96);}
-  .chip.active{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);}
   .chip .ci{width:24px;height:24px;border-radius:8px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);}
-  .chip.active .ci{background:var(--card);}
   .chip .ci svg{width:14px;height:14px;}
   #chips.chips{gap:7px;}
   #chips .chip{gap:6px;min-height:32px;border-radius:11px;padding:6px 10px;font-size:10.5px;}
@@ -375,7 +372,9 @@
       <button class="icon-btn" aria-label="Create CME program" onclick="location.href='create-cme.html'">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
-      <a href="profile.html" aria-label="My profile"><img class="me" src="https://randomuser.me/api/portraits/women/79.jpg" alt="Me"></a>
+      <button class="icon-btn" aria-label="Saved CMEs" onclick="location.href='saved-cmes.html'">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z"/></svg>
+      </button>
     </div>
 
     <!-- Search -->
@@ -732,11 +731,20 @@
     });
   })();
 
-  // ---- In-place bookmark/save — never triggers card navigation ----
+  // ---- In-place bookmark/save — persisted to localStorage, never triggers card navigation ----
   const bookmarkSvg = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z"/></svg>';
+  function loadSaved(){ try{ return JSON.parse(localStorage.getItem('savedCMEs')||'[]'); }catch(e){ return []; } }
+  function isSaved(title){ return loadSaved().some(s=>s.title===title); }
   function toggleSave(e, btn){
     e.preventDefault(); e.stopPropagation();
-    const on = btn.classList.toggle('saved');
+    const title = btn.dataset.title;
+    let saved = loadSaved();
+    const idx = saved.findIndex(s=>s.title===title);
+    let on;
+    if(idx>-1){ saved.splice(idx,1); on=false; }
+    else { saved.unshift({ title:title, meta:btn.dataset.meta||'', credits:btn.dataset.credits||'', mode:btn.dataset.mode||'', savedAt:Date.now() }); on=true; }
+    try{ localStorage.setItem('savedCMEs', JSON.stringify(saved)); }catch(err){}
+    btn.classList.toggle('saved', on);
     btn.setAttribute('aria-pressed', on ? 'true' : 'false');
     toast(on ? 'Saved to My Learning' : 'Removed from saved');
   }
@@ -759,15 +767,7 @@
     {n:'Neurology', i:'brain'},{n:'Nephrology', i:'drop'},{n:'Rheumatology', i:'bone'}
   ];
   document.getElementById('chips').innerHTML = specialties.map(s=>`
-    <button class="chip" type="button" onclick="selectSpecialty(this)">${'<span class="ci">'+ic[s.i]+'</span>'}${s.n}</button>`).join('');
-
-  // single-select specialty filter — taps toggle a visible selected state
-  function selectSpecialty(el){
-    const was = el.classList.contains('active');
-    document.querySelectorAll('#chips .chip').forEach(c=>c.classList.remove('active'));
-    if(!was){ el.classList.add('active'); toast(el.textContent.trim()+' selected'); }
-    else { toast('Filter cleared'); }
-  }
+    <a class="chip" href="speakers.html?type=specialty&specialty=${encodeURIComponent(s.n)}">${'<span class="ci">'+ic[s.i]+'</span>'}${s.n}</a>`).join('');
 
   const chev = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
   const pTag = (f,price) => f ? '<span class="ptag free">Free</span>' : '<span class="ptag paid">'+(price||'Paid')+'</span>';
@@ -798,6 +798,7 @@
   ];
   document.getElementById('recommended').innerHTML = recommended.map(r=>{
     const online = r.mode === 'Online';
+    const saved = isSaved(r.t);
     return `
     <div class="rcard" onclick="location.href='speakers.html?type=course&title=${encodeURIComponent(r.t)}&mode=${online?'online':'offline'}&free=${r.free?1:0}'">
       <div class="rthumb">${ic[r.i]}</div>
@@ -807,7 +808,9 @@
         <div class="rorg">${ic.org}Organized by ${r.org}</div>
       </div>
       <span class="rcr">${r.cr}</span>
-      <button class="savebtn" type="button" aria-label="Save to My Learning" aria-pressed="false" onclick="toggleSave(event,this)">${bookmarkSvg}</button>
+      <button class="savebtn${saved?' saved':''}" type="button" aria-label="Save to My Learning" aria-pressed="${saved}"
+        data-title="${r.t}" data-meta="${r.by} · ${r.dur}" data-credits="${r.cr}" data-mode="${r.mode}"
+        onclick="toggleSave(event,this)">${bookmarkSvg}</button>
     </div>`;
   }).join('');
 

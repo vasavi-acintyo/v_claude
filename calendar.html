@@ -45,62 +45,60 @@
   .ptop{display:flex;align-items:center;justify-content:space-between;padding:8px 0 2px;}
   .ptop h1{font-size:24px;font-weight:800;font-family:var(--display);letter-spacing:-.03em;}
   .ptop .sub{font-size:10.5px;color:var(--muted);margin-top:2px;}
-  .icon-btn{width:44px;height:44px;border-radius:50%;background:var(--chip);border:none;display:grid;place-items:center;cursor:pointer;color:var(--ink);transition:transform .16s, opacity .16s;}
+  .icon-btn{width:38px;height:38px;border-radius:50%;background:var(--chip);border:none;display:grid;place-items:center;cursor:pointer;color:var(--ink);transition:transform .16s, opacity .16s;}
   .icon-btn:active{transform:scale(.94);}
 
   /* segmented control */
-  .seg{display:flex;background:var(--chip);border-radius:13px;padding:3px;margin-top:14px;position:relative;}
-  .seg button{flex:1;border:none;background:none;font-family:inherit;font-size:11px;font-weight:700;color:var(--muted);padding:14px 8px;border-radius:10px;cursor:pointer;z-index:1;transition:color .2s, transform .16s, opacity .16s;}
+  .seg{display:flex;background:var(--chip);border-radius:11px;padding:3px;margin-top:12px;position:relative;}
+  .seg button{flex:1;border:none;background:none;font-family:inherit;font-size:10.5px;font-weight:700;color:var(--muted);padding:8px 8px;border-radius:8px;cursor:pointer;z-index:1;transition:color .2s, transform .16s, opacity .16s;}
   .seg button.active{color:#fff;}
   .seg button:active{transform:scale(.94);}
   .seg .pill{position:absolute;top:3px;bottom:3px;left:3px;width:calc(50% - 3px);border-radius:10px;background:var(--brand);transition:transform .3s cubic-bezier(.34,1.3,.5,1);box-shadow:0 6px 14px -6px var(--brand);}
   .seg.agenda .pill{transform:translateX(100%);}
 
-  /* Next-up hero */
-  .nextup{margin-top:16px;border-radius:20px;padding:16px;color:#fff;position:relative;overflow:hidden;
-    background:linear-gradient(120deg,var(--d1),var(--d2) 55%,var(--d3));box-shadow:0 18px 34px -18px rgba(0,0,0,.5);}
-  .nextup::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);}
-  .nu-lbl{font-size:8.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;opacity:.85;position:relative;}
-  .nu-t{font-size:17px;font-weight:800;font-family:var(--display);margin:6px 0 3px;position:relative;max-width:82%;}
-  .nu-m{font-size:10px;opacity:.9;display:flex;gap:14px;position:relative;}
-  .nu-m span{display:inline-flex;align-items:center;gap:5px;}
-  .nu-cd{display:flex;gap:8px;margin-top:13px;position:relative;}
-  .nu-cd .b{flex:1;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:9px 4px;text-align:center;}
-  .nu-cd .b b{display:block;font-size:18px;font-weight:800;font-family:var(--display);}
-  .nu-cd .b span{font-size:7.5px;font-weight:700;opacity:.8;letter-spacing:.06em;}
-  .nu-btn{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.3);color:#fff;
-    font-family:inherit;font-size:10px;font-weight:700;padding:7px 12px;border-radius:11px;cursor:pointer;min-height:44px;display:inline-flex;align-items:center;transition:transform .16s, opacity .16s, background .2s;}
-  .nu-btn:hover{background:rgba(255,255,255,.26);}
-  .nu-btn:active{transform:scale(.94);}
+  /* Next-up card — light, brand-tinted (matches the rest of the app instead of a heavy dark hero) */
+  .nextup{margin-top:12px;border-radius:15px;padding:11px 13px;position:relative;overflow:hidden;
+    background:linear-gradient(135deg,var(--brand-soft),var(--soft1) 75%);border:1px solid var(--line);}
+  .nu-badge{display:inline-flex;align-items:center;gap:5px;font-size:8px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:#fff;background:var(--brand);padding:4px 9px;border-radius:20px;}
+  .nu-badge .d{width:4px;height:4px;border-radius:50%;background:#fff;animation:pulse 1.4s infinite;}
+  .nu-t{font-size:14px;font-weight:800;font-family:var(--display);margin:8px 0 4px;line-height:1.25;color:var(--ink);letter-spacing:-.01em;}
+  .nu-m{font-size:9.5px;color:var(--slate-700);display:flex;gap:12px;flex-wrap:wrap;font-weight:600;}
+  .nu-m span{display:inline-flex;align-items:center;gap:4px;}
+  .nu-m svg{color:var(--brand);}
+  .nu-cd{display:flex;gap:5px;margin-top:9px;}
+  .nu-cd .b{flex:1;background:var(--card);border:1px solid var(--line);border-radius:9px;padding:5px 4px;text-align:center;}
+  .nu-cd .b b{display:block;font-size:13px;font-weight:800;font-family:var(--display);color:var(--brand);}
+  .nu-cd .b span{font-size:6.5px;font-weight:700;color:var(--muted);letter-spacing:.05em;}
 
   /* month card */
-  .calx{margin-top:16px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:16px 14px;box-shadow:0 12px 28px -18px rgba(0,0,0,.28);}
-  .cx-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
-  .cx-head .mo{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
-  .cx-head .mo small{font-size:11px;color:var(--muted);font-weight:600;font-family:var(--ui);}
-  .cx-nav{display:flex;gap:7px;}
-  .cx-nav button{width:44px;height:44px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:border-color .15s, color .15s, transform .16s, opacity .16s;}
-  .cx-nav button:hover{border-color:var(--brand);color:var(--brand);}
-  .cx-nav button:active{transform:scale(.94);}
-  .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:8px;}
-  .dow span{text-align:center;font-size:8.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
-  .days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;}
-  .day{min-height:44px;border:none;background:none;border-radius:12px;font-family:inherit;font-size:12px;font-weight:700;color:var(--ink);
-    cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;transition:background .18s, color .18s, transform .16s, opacity .16s;}
-  .day:not(.other):active{transform:scale(.94);}
+  .calx{margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:11px 10px;box-shadow:0 12px 28px -18px rgba(0,0,0,.22);}
+  .cx-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px;}
+  .cx-head .mo{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .cx-head .mo small{font-size:9px;color:var(--muted);font-weight:600;font-family:var(--ui);}
+  .cx-nav{display:flex;gap:5px;}
+  .cx-nav button{width:26px;height:26px;border-radius:50%;border:none;background:var(--chip);color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:background .15s, color .15s, transform .16s, opacity .16s;}
+  .cx-nav button:hover{background:var(--brand-soft);color:var(--brand);}
+  .cx-nav button:active{transform:scale(.9);}
+  .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;}
+  .dow span{text-align:center;font-size:7.5px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
+  .days{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+  .day{aspect-ratio:1;min-height:0;border:none;background:none;border-radius:50%;font-family:inherit;font-size:10px;font-weight:700;color:var(--ink);
+    cursor:pointer;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;transition:background .18s, color .18s, transform .16s, opacity .16s;}
+  .day:not(.other):active{transform:scale(.9);}
   .day.other{opacity:0;pointer-events:none;}
   .day:hover:not(.sel){background:var(--chip);}
   .day.today{color:var(--brand);box-shadow:inset 0 0 0 1.5px var(--brand);}
   .day.sel{color:#fff;background:linear-gradient(135deg,var(--g1),var(--g2));box-shadow:0 8px 18px -6px var(--brand);animation:dayPop .35s cubic-bezier(.34,1.5,.5,1);}
-  .day .dots{display:flex;gap:2px;height:4px;align-items:center;}
-  .day .dots i{width:4px;height:4px;border-radius:50%;}
+  .day .dots{display:flex;gap:2px;height:3px;align-items:center;}
+  .day .dots i{width:3px;height:3px;border-radius:50%;}
   .day.sel .dots i{background:#fff !important;}
 
-  /* month summary */
-  .cx-sum{display:flex;gap:9px;margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);}
-  .cx-sum div{flex:1;text-align:center;display:flex;flex-direction:column;gap:2px;}
-  .cx-sum b{font-size:15px;font-weight:800;font-family:var(--display);color:var(--brand);}
-  .cx-sum span{font-size:8px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;}
+  /* month stats — reuses the app's standard tile pattern */
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-top:9px;}
+  .tile{background:var(--soft1);border:1px solid transparent;border-radius:12px;padding:9px 6px;text-align:center;}
+  .tile:nth-child(2){background:var(--soft2);}
+  .tile b{display:block;font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;color:var(--brand);}
+  .tile span{font-size:7px;font-weight:700;color:var(--muted);margin-top:2px;display:block;text-transform:uppercase;letter-spacing:.03em;}
 
   /* selected-day / agenda list */
   .sel-h{display:flex;align-items:center;justify-content:space-between;margin:20px 0 12px;}
@@ -163,7 +161,7 @@
 
     <!-- next up -->
     <div class="nextup rise">
-      <div class="nu-lbl">Next session · in 3 days</div>
+      <span class="nu-badge"><span class="d"></span>Next session · in 3 days</span>
       <div class="nu-t">Cardiometabolic Update 2025</div>
       <div class="nu-m">
         <span><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>Sat, 24 May</span>
@@ -174,7 +172,6 @@
         <div class="b"><b>21</b><span>HRS</span></div>
         <div class="b"><b>45</b><span>MIN</span></div>
       </div>
-      <button class="nu-btn" onclick="location.href='speakers.html?type=event&title=Cardiometabolic%20Update%202025&sub=09%3A00%20AM%20IST'">Details ›</button>
     </div>
 
     <!-- Month view -->
@@ -189,11 +186,12 @@
         </div>
         <div class="dow"><span>S</span><span>M</span><span>T</span><span>W</span><span>T</span><span>F</span><span>S</span></div>
         <div class="days" id="days"></div>
-        <div class="cx-sum">
-          <div><b>6</b><span>Sessions</span></div>
-          <div><b>9</b><span>CME this month</span></div>
-          <div><b>4</b><span>Specialties</span></div>
-        </div>
+      </div>
+
+      <div class="tiles rise">
+        <div class="tile"><b>6</b><span>Sessions</span></div>
+        <div class="tile"><b>9</b><span>CME this month</span></div>
+        <div class="tile"><b>4</b><span>Specialties</span></div>
       </div>
 
       <div class="sel-h rise"><h2 id="selLabel">Sat, 24 May</h2><span class="cnt" id="selCnt">2 sessions</span></div>

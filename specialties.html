@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>All Specialties — CME</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  [hidden]{display:none !important;}
+  :root{
+    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
+    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
+    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
+    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
+    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
+    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
+    --display:'Poppins', sans-serif;
+    --ui:'Inter', sans-serif;
+  }
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
+  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#a97636;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
+  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
+  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
+
+  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
+  body{display:flex;justify-content:center;padding:18px;}
+  svg{display:block;}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}} .rise{animation:rise .45s cubic-bezier(.22,1,.36,1) both;}
+
+  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} }
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;}
+  .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{flex:1;min-width:0;font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:14px 18px 22px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .search{position:relative;margin-bottom:16px;}
+  .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted);}
+  .search input{width:100%;background:var(--card);border:1px solid var(--line);border-radius:13px;padding:12px 14px 12px 38px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .search input::placeholder{color:var(--muted);}
+  .search input:focus{outline:none;border-color:var(--brand);}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+  .gcard{position:relative;display:flex;flex-direction:column;gap:10px;background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px;min-height:80px;text-decoration:none;color:inherit;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .gcard:nth-child(4n+2),.gcard:nth-child(4n+3){background:var(--soft2);}
+  .gcard:hover{transform:translateY(-3px);border-color:var(--brand);}
+  .gcard:active{transform:scale(.985);}
+  .gcard .gi{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;color:var(--brand);background:rgba(255,255,255,.55);}
+  [data-theme="dark"] .gcard .gi{background:rgba(255,255,255,.08);}
+  .gcard .gi svg{width:18px;height:18px;}
+  .gcard .gn{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.2;}
+  .gcard .gc{font-size:9px;color:var(--muted);margin-top:3px;}
+
+  .empty{text-align:center;color:var(--muted);font-size:11px;padding:40px 20px;grid-column:1/-1;}
+
+  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="tt">All Specialties</span>
+  </div>
+
+  <div class="scroll">
+    <div class="search rise">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+      <input id="specSearch" placeholder="Search specialties…" autocomplete="off">
+    </div>
+    <div class="grid rise" id="grid"></div>
+  </div>
+
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='explore.html'; });
+
+  const heartIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.4 3-5.5A4.5 4.5 0 0 0 12 5 4.5 4.5 0 0 0 2 8.5C2 12 5 15 12 21c2-1.7 3.7-3.2 5-4.5"/></svg>';
+  const dropIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6 6 11a6 6 0 0 1-12 0c0-5 6-11 6-11Z"/></svg>';
+  const activityIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 12 8 12 10 6 14 18 16 12 21 12"/></svg>';
+  const brainIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3a3 3 0 0 0-3 3 3 3 0 0 0-1 5 3 3 0 0 0 2 5 3 3 0 0 0 5 1V4a3 3 0 0 0-3-1Z"/><path d="M15 3a3 3 0 0 1 3 3 3 3 0 0 1 1 5 3 3 0 0 1-2 5 3 3 0 0 1-5 1"/></svg>';
+  const lungsIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v10"/><path d="M9 13c0 4-1 7-4 7-2 0-3-2-3-5 0-4 2-7 4-8"/><path d="M15 13c0 4 1 7 4 7 2 0 3-2 3-5 0-4-2-7-4-8"/></svg>';
+  const boneIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6a2 2 0 1 0-2 2l6 6a2 2 0 1 0 2 2l6-6a2 2 0 1 0-2-2 2 2 0 1 0-2-2l-4 4-4-4a2 2 0 1 0 0 0Z"/></svg>';
+  const crossIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v8M8 12h8"/><rect x="3" y="3" width="18" height="18" rx="4"/></svg>';
+
+  const specs = [
+    {n:'Cardiology', c:128, i:heartIco},
+    {n:'Endocrinology', c:94, i:dropIco},
+    {n:'Diabetes', c:112, i:activityIco},
+    {n:'Neurology', c:76, i:brainIco},
+    {n:'Pulmonology', c:58, i:lungsIco},
+    {n:'Rheumatology', c:41, i:boneIco},
+    {n:'Gastroenterology', c:52, i:crossIco},
+    {n:'Dermatology', c:47, i:crossIco},
+    {n:'Psychiatry', c:39, i:crossIco},
+    {n:'Ophthalmology', c:33, i:crossIco},
+    {n:'Urology', c:36, i:crossIco},
+    {n:'Radiology', c:44, i:crossIco},
+    {n:'Anesthesiology', c:29, i:crossIco},
+    {n:'Orthopaedics', c:63, i:boneIco},
+    {n:'Pediatrics', c:71, i:crossIco},
+    {n:'Neonatology', c:22, i:crossIco},
+    {n:'Gynaecology', c:59, i:crossIco},
+    {n:'ENT', c:31, i:crossIco},
+    {n:'General Medicine', c:88, i:crossIco},
+    {n:'Internal Medicine', c:97, i:crossIco},
+    {n:'Infectious Diseases', c:45, i:crossIco},
+    {n:'Hematology', c:28, i:crossIco},
+    {n:'Immunology & Allergy', c:19, i:crossIco},
+    {n:'Geriatrics', c:24, i:crossIco},
+    {n:'Emergency Medicine', c:37, i:crossIco},
+    {n:'Family Medicine', c:42, i:crossIco},
+    {n:'Pathology', c:21, i:crossIco},
+    {n:'Plastic Surgery', c:18, i:crossIco},
+    {n:'Critical Care', c:34, i:crossIco},
+    {n:'Sports Medicine', c:16, i:crossIco},
+    {n:'Pain Medicine', c:14, i:crossIco},
+    {n:'Sleep Medicine', c:12, i:crossIco},
+    {n:'Palliative Care', c:15, i:crossIco}
+  ];
+
+  const grid = document.getElementById('grid');
+  function render(q){
+    q = (q||'').trim().toLowerCase();
+    const rows = specs.filter(s=>!q || s.n.toLowerCase().includes(q));
+    grid.innerHTML = rows.length ? rows.map(s=>`
+      <a class="gcard" href="speakers.html?type=specialty&specialty=${encodeURIComponent(s.n)}">
+        <span class="gi">${s.i}</span>
+        <div><div class="gn">${esc(s.n)}</div><div class="gc">${s.c} CMEs</div></div>
+      </a>`).join('') : `<div class="empty">No specialty matches "${esc(q)}".</div>`;
+  }
+  render('');
+  document.getElementById('specSearch').addEventListener('input', e=>render(e.target.value));
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>
