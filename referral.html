@@ -139,6 +139,7 @@
   .stpill.intreatment{color:#6d4bd8;background:rgba(124,108,245,.16);}
   .stpill.completed{color:#15803d;background:#dcfce7;}
   .stpill.declined{color:#b3352f;background:rgba(200,64,58,.14);}
+  .stpill.cancelled{color:var(--muted);background:var(--chip);}
   [data-theme="dark"] .stpill.completed{color:#86efac;background:rgba(34,197,94,.16);}
 
   /* priority tag */
@@ -219,6 +220,20 @@
   .up-field textarea{width:100%;min-height:90px;background:var(--soft1);border:1px solid var(--line);border-radius:13px;padding:12px;font-family:inherit;font-size:12px;color:var(--ink);resize:none;}
   .up-field textarea:focus{outline:none;border-color:var(--brand);}
   .sh-head{margin:2px 2px 2px;} .sh-head h2{font-size:18px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;} .sh-head p{font-size:10px;color:var(--muted);margin-top:3px;}
+
+  /* choose-another-doctor picker */
+  .pk-search{position:relative;margin:10px 2px 2px;}
+  .pk-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .pk-search input{width:100%;height:42px;background:var(--soft1);border:1px solid var(--line);border-radius:12px;padding:0 12px 0 34px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .pk-search input::placeholder{color:var(--muted);} .pk-search input:focus{outline:none;border-color:var(--brand);}
+  .pk-list{display:flex;flex-direction:column;gap:8px;margin-top:12px;}
+  .pk-row{display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--soft1);border:1px solid transparent;border-radius:13px;cursor:pointer;width:100%;text-align:left;font-family:inherit;transition:border-color .18s, transform .18s cubic-bezier(.22,1,.36,1);}
+  .pk-row:hover{border-color:var(--brand);} .pk-row:active{transform:scale(.99);}
+  .pk-av{position:relative;overflow:hidden;width:40px;height:40px;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;font-size:13px;font-weight:800;font-family:var(--display);flex:0 0 auto;}
+  .pk-av img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .pk-m{flex:1;min-width:0;} .pk-nm{font-size:12.5px;font-weight:800;} .pk-rl{font-size:9.5px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pk-tag{font-size:8px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--brand);background:var(--brand-soft);padding:3px 8px;border-radius:20px;flex:0 0 auto;}
+  .pk-ch{color:var(--brand);opacity:.55;flex:0 0 auto;} .pk-ch svg{width:16px;height:16px;}
 
   /* toast */
   .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);z-index:60;background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;max-width:82%;text-align:center;}
@@ -347,6 +362,7 @@
         <button class="fopt" data-g="status" data-v="intreatment">In treatment</button>
         <button class="fopt" data-g="status" data-v="completed">Completed</button>
         <button class="fopt" data-g="status" data-v="declined">Declined</button>
+        <button class="fopt" data-g="status" data-v="cancelled">Cancelled</button>
       </div></div>
       <div class="fgrp"><div class="fglbl">Specialty</div><div class="fopts" id="foSpec"></div></div>
       <div class="fgrp"><div class="fglbl">Date</div><div class="fopts" id="foDate">
@@ -362,6 +378,20 @@
         <button class="btn ghost" id="fReset" type="button">Reset</button>
         <button class="btn primary" id="fDone" type="button">Show results</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Choose another doctor sheet -->
+  <div class="backdrop" id="pkBackdrop" style="z-index:36"></div>
+  <div class="sheet" id="pkSheet" style="z-index:37">
+    <div class="grab"></div>
+    <div class="sh-body">
+      <div class="sh-head"><h2>Choose another doctor</h2><p>Send this referral to a different connected specialist.</p></div>
+      <div class="pk-search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+        <input id="pkQ" placeholder="Search connected doctors…">
+      </div>
+      <div class="pk-list" id="pkList"></div>
     </div>
   </div>
 
@@ -393,7 +423,8 @@
     accepted:{cls:'accepted', label:'Accepted'},
     intreatment:{cls:'intreatment', label:'In treatment'},
     completed:{cls:'completed', label:'Completed'},
-    declined:{cls:'declined', label:'Declined'}
+    declined:{cls:'declined', label:'Declined'},
+    cancelled:{cls:'cancelled', label:'Cancelled'}
   };
   const stpill = s => { const m=STATUS[s]||STATUS.pending; return '<span class="stpill '+m.cls+'"><span class="dt"></span>'+m.label+'</span>'; };
   const POINTS_PER = 20, BASE_POINTS = 100, GOAL = 200;
@@ -521,6 +552,9 @@
     if(r.dir==='received'){
       if(r.status==='pending') return '<div class="d-actions"><button class="btn danger" data-act="decline">'+ICON.x+'Decline</button><button class="btn good" data-act="accept">'+ICON.check+'Accept</button></div>';
       if(r.status==='accepted'||r.status==='intreatment') return '<div class="d-actions"><button class="btn ghost" data-act="update">'+ICON.plus+'Add update</button><button class="btn primary" data-act="complete">'+ICON.check+'Mark completed</button></div>';
+    } else { // sent — can only be changed while it hasn't been accepted
+      if(r.status==='pending') return '<div class="d-actions"><button class="btn danger" data-act="cancel">'+ICON.x+'Cancel</button><button class="btn primary" data-act="changedoc">'+ICON.branch+'Change doctor</button></div>';
+      if(r.status==='declined'||r.status==='cancelled') return '<div class="d-actions"><button class="btn primary" data-act="changedoc">'+ICON.branch+'Refer to another doctor</button></div>';
     }
     return '';
   }
@@ -577,6 +611,8 @@
     else if(act==='decline'){ markPrevDone(r); r.status='declined'; r.timeline.push({label:'Declined', d:'Just now', note:'You declined this referral.', state:'now'}); persist(); toast('Referral declined'); reopen(); }
     else if(act==='complete'){ markPrevDone(r); r.status='completed'; r.points=POINTS_PER; r.timeline.push({label:'Completed', d:'Just now', note:'Treatment completed. Referral closed.', state:'now'}); persist(); toast('Completed · +'+POINTS_PER+' referral points'); reopen(); }
     else if(act==='update'){ openUpdate(); }
+    else if(act==='cancel'){ markPrevDone(r); r.status='cancelled'; r.timeline.push({label:'Cancelled', d:'Just now', note:'You cancelled this referral before it was accepted.', state:'now'}); persist(); toast('Referral cancelled'); reopen(); }
+    else if(act==='changedoc'){ openPicker(); }
   });
   function markPrevDone(r){ r.timeline.forEach(t=>{ if(t.state==='now') t.state='done'; }); }
   function persist(){ save(DATA); render(); }
@@ -611,7 +647,7 @@
   // filters — compact bar + bottom sheet
   const fBackdrop=document.getElementById('fBackdrop'), fSheet=document.getElementById('fSheet');
   const xSm='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
-  const ST_LBL={pending:'Pending',accepted:'Accepted',intreatment:'In treatment',completed:'Completed',declined:'Declined'};
+  const ST_LBL={pending:'Pending',accepted:'Accepted',intreatment:'In treatment',completed:'Completed',declined:'Declined',cancelled:'Cancelled'};
   const DT_LBL={week:'This week',month:'This month'};
   function buildSpecOptions(){
     const specs = Array.from(new Set(DATA.map(r=>r.doctor && r.doctor.spec).filter(Boolean))).sort();
@@ -644,6 +680,52 @@
   fSheet.addEventListener('click', e=>{ const b=e.target.closest('.fopt'); if(!b) return; const g=b.dataset.g, v=b.dataset.v; if(g==='status')fStatus=v; else if(g==='spec')fSpec=v; else if(g==='date')fDate=v; else if(g==='sort')fSort=v; render(); updateFilterUI(); });
   document.getElementById('fReset').addEventListener('click', ()=>{ fStatus='all'; fSpec='all'; fDate='all'; fSort='newest'; render(); updateFilterUI(); });
   document.getElementById('factive').addEventListener('click', e=>{ const b=e.target.closest('.fac'); if(!b) return; const k=b.dataset.clear; if(k==='status')fStatus='all'; else if(k==='spec')fSpec='all'; else if(k==='date')fDate='all'; else if(k==='sort')fSort='newest'; render(); updateFilterUI(); });
+
+  // ---- choose-another-doctor picker ----
+  const CONNECTED = [
+    {name:'Dr. Meera Iyer', spec:'Endocrinology', hosp:'Apollo Hospitals', img:'https://randomuser.me/api/portraits/women/68.jpg'},
+    {name:'Dr. Sunita Reddy', spec:'Endocrinology', hosp:'CARE Hospitals', img:'https://randomuser.me/api/portraits/women/65.jpg'},
+    {name:'Dr. Arvind Kumar', spec:'Cardiology', hosp:'Fortis Heart Institute', img:'https://randomuser.me/api/portraits/men/32.jpg'},
+    {name:'Dr. Karan Malhotra', spec:'Cardiology', hosp:'Medanta', img:'https://randomuser.me/api/portraits/men/52.jpg'},
+    {name:'Dr. Rohan Sinha', spec:'Nephrology', hosp:'Manipal Hospitals', img:'https://randomuser.me/api/portraits/men/45.jpg'},
+    {name:'Dr. Anjali Verma', spec:'Nephrology', hosp:'Max Healthcare', img:'https://randomuser.me/api/portraits/women/33.jpg'},
+    {name:'Dr. Priya Nair', spec:'Oncology', hosp:'Tata Memorial', img:'https://randomuser.me/api/portraits/women/44.jpg'},
+    {name:'Dr. Vijay Menon', spec:'Neurology', hosp:'NIMHANS', img:'https://randomuser.me/api/portraits/men/76.jpg'}
+  ];
+  const chev = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
+  const pkBackdrop=document.getElementById('pkBackdrop'), pkSheet=document.getElementById('pkSheet'), pkQ=document.getElementById('pkQ'), pkList=document.getElementById('pkList');
+  function renderPicker(){
+    const r = DATA.find(x=>x.id===openId);
+    const curName = r ? r.doctor.name : '';
+    const curSpec = r ? r.doctor.spec : '';
+    const q = (pkQ.value||'').trim().toLowerCase();
+    let docs = CONNECTED.filter(d=>d.name!==curName);
+    if(q) docs = docs.filter(d=>(d.name+' '+d.spec+' '+d.hosp).toLowerCase().includes(q));
+    docs = docs.slice().sort((a,b)=>(b.spec===curSpec?1:0)-(a.spec===curSpec?1:0));
+    pkList.innerHTML = docs.length ? docs.map(d=>
+      '<button class="pk-row" data-name="'+esc(d.name)+'">'+
+        '<span class="pk-av">'+esc(initials(d.name))+(d.img?'<img src="'+esc(d.img)+'" alt="" onerror="this.remove()">':'')+'</span>'+
+        '<div class="pk-m"><div class="pk-nm">'+esc(d.name)+'</div><div class="pk-rl">'+esc(d.spec)+' · '+esc(d.hosp)+'</div></div>'+
+        (d.spec===curSpec?'<span class="pk-tag">Same specialty</span>':'')+
+        '<span class="pk-ch">'+chev+'</span>'+
+      '</button>'
+    ).join('') : '<div class="empty" style="padding:30px 10px">'+ICON.empty+'<b>No doctors found</b><span>Try a different search.</span></div>';
+  }
+  function openPicker(){ if(!openId) return; pkQ.value=''; renderPicker(); pkBackdrop.classList.add('open'); pkSheet.classList.add('open'); }
+  function closePicker(){ pkBackdrop.classList.remove('open'); pkSheet.classList.remove('open'); }
+  pkBackdrop.addEventListener('click', closePicker);
+  pkQ.addEventListener('input', renderPicker);
+  pkList.addEventListener('click', e=>{
+    const b=e.target.closest('.pk-row'); if(!b) return;
+    const r = DATA.find(x=>x.id===openId); if(!r) return;
+    const d = CONNECTED.find(x=>x.name===b.dataset.name); if(!d) return;
+    const prev = r.doctor.name;
+    r.doctor = { name:d.name, spec:d.spec, hosp:d.hosp, img:d.img };
+    r.status='pending'; r.date='Just now'; r.ago=0;
+    markPrevDone(r);
+    r.timeline.push({label:'Redirected', d:'Just now', note:'Withdrawn from '+prev+' and referred to '+d.name+'.', state:'now'});
+    persist(); closePicker(); reopen(); toast('Referral sent to '+d.name);
+  });
 
   // toast
   let tt; function toast(m){ let el=document.getElementById('toast'); if(!el){ el=document.createElement('div'); el.id='toast'; el.className='toast'; document.querySelector('.phone').appendChild(el);} el.textContent=m; void el.offsetWidth; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),1600); }
