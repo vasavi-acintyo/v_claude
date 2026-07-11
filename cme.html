@@ -19,7 +19,7 @@
   .scroll::-webkit-scrollbar{width:0;}
 
   /* header */
-  .htop{display:flex;align-items:flex-start;gap:8px;padding:6px 0 2px;}
+  .htop{display:flex;align-items:flex-start;gap:9px;padding:6px 0 2px;}
   .htop .greet{flex:1;min-width:0;}
   .htop .wm{font-size:9.5px;color:var(--muted);font-weight:700;letter-spacing:.16em;text-transform:uppercase;}
   .htop .dr{font-size:20px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;margin-top:2px;line-height:1.15;word-break:break-word;}
@@ -29,6 +29,8 @@
   .icon-btn .ndot{position:absolute;top:8px;right:9px;width:7px;height:7px;background:var(--brand);border:2px solid var(--card);border-radius:50%;}
   .htop a{display:inline-flex;border-radius:50%;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s;}
   .htop a:active{transform:scale(.94);}
+  .htop .mewrap{border-radius:50%;}
+  .htop .mewrap .me{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);border:1px solid var(--line);display:block;}
 
   /* search */
   .search{position:relative;margin-top:16px;}
@@ -342,6 +344,7 @@
       <button class="icon-btn" aria-label="Saved CMEs" onclick="location.href='saved-cmes.html'">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z"/></svg>
       </button>
+      <a class="mewrap" href="profile.html" aria-label="My profile"><img class="me" src="https://randomuser.me/api/portraits/women/79.jpg" alt="Me"></a>
     </div>
 
     <!-- Search -->

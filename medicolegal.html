@@ -17,8 +17,11 @@
   .ptop .htxt{flex:1;min-width:0;}
   .ptop h1{font-size:var(--font-size-3xl);font-weight:var(--font-weight-bold);font-family:var(--display);letter-spacing:-.02em;line-height:1.1;}
   .ptop .sub{font-size:var(--font-size-xs);color:var(--muted);margin-top:3px;}
-  .create-btn{width:40px;height:40px;min-width:40px;border-radius:12px;background:var(--brand);border:none;display:grid;place-items:center;cursor:pointer;color:#fff;flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s;}
+  .create-btn{width:44px;height:44px;min-width:44px;min-height:44px;border-radius:12px;background:var(--brand);border:none;display:grid;place-items:center;cursor:pointer;color:#fff;flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s;}
   .create-btn:hover{background:var(--brand-dark);} .create-btn:active{transform:scale(.92);}
+  .prof-ic{display:inline-flex;flex-direction:column;align-items:center;gap:4px;flex:0 0 auto;text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1);}
+  .prof-ic:active{transform:scale(.94);}
+  .prof-ic img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);border:1px solid var(--line);display:block;}
 
   /* protection score */
   .shield{position:relative;display:flex;align-items:center;gap:15px;margin-top:14px;background:var(--soft1);border:1px solid transparent;border-radius:18px;padding:15px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
@@ -226,6 +229,7 @@
       <button class="create-btn" id="newCaseBtn" aria-label="New case">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </button>
+      <a class="prof-ic" href="profile.html" aria-label="My profile"><img src="https://randomuser.me/api/portraits/women/79.jpg" alt="Me"></a>
     </div>
 
     <!-- Protection score -->

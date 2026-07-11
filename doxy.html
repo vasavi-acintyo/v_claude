@@ -20,6 +20,8 @@
   .dhead .ai{font-size:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--brand);background:var(--brand-soft);padding:2px 7px;border-radius:20px;}
   .dhead .st{font-size:10px;color:var(--muted);margin-top:2px;display:flex;align-items:center;gap:5px;} .dhead .st .d{width:5px;height:5px;border-radius:50%;background:var(--green);}
   .dhead .nw{width:40px;height:40px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;transition:transform .18s;} .dhead .nw:active{transform:scale(.92);} .dhead .nw svg{width:18px;height:18px;}
+  .dhead .prof-ic{display:inline-flex;flex-direction:column;align-items:center;gap:4px;flex:0 0 auto;text-decoration:none;transition:transform .18s;} .dhead .prof-ic:active{transform:scale(.94);}
+  .dhead .prof-ic img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);border:1px solid var(--line);display:block;}
 
   /* chat */
   .chat{flex:1 1 auto;overflow-y:auto;padding:16px 16px 6px;display:flex;flex-direction:column;gap:14px;scrollbar-width:none;} .chat::-webkit-scrollbar{width:0;}
@@ -89,6 +91,7 @@
       <div class="nm">Doxy <span class="ai">AI</span></div>
       <div class="st"><span class="d"></span>Clinical assistant · online</div>
     </div>
+    <a class="prof-ic" href="profile.html" aria-label="My profile"><img src="https://randomuser.me/api/portraits/women/79.jpg" alt="Me"></a>
   </div>
 
   <!-- chat -->

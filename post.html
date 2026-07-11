@@ -101,8 +101,9 @@
 
   /* ---- LinkedIn-style top bar + start-a-post ---- */
   .feedbar{display:flex;align-items:center;gap:10px;padding:4px 0 2px;}
-  .tb-av{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
-  .tb-search{flex:1;position:relative;}
+  .tb-av{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);border:1px solid var(--line);flex:0 0 auto;}
+  .tb-prof{display:inline-flex;align-items:center;flex:0 0 auto;text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1);} .tb-prof:active{transform:scale(.94);}
+  .tb-search{flex:1;min-width:0;position:relative;}
   .tb-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
   .tb-search input{width:100%;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 12px 10px 34px;font-size:11.5px;font-family:inherit;color:var(--ink);}
   .tb-search input::placeholder{color:var(--muted);} .tb-search input:focus{outline:none;border-color:var(--brand);}
@@ -367,24 +368,14 @@
   <div class="scroll">
     <!-- top bar -->
     <div class="feedbar rise">
-      <img class="tb-av" src="https://randomuser.me/api/portraits/women/79.jpg" alt="">
-      <div class="tb-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg><input placeholder="Search doctors, groups, posts…"></div>
-      <button class="tb-ic" aria-label="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg></button>
+      <div style="flex:1"></div>
+      <button class="tb-ic" id="createPost" aria-label="Create post"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+      <a class="tb-prof" href="profile.html" aria-label="My profile"><img class="tb-av" src="https://randomuser.me/api/portraits/women/79.jpg" alt=""></a>
     </div>
 
     <!-- FEED -->
     <div class="panel" data-panel="feed">
-      <div class="startpost rise">
-        <div class="sp-top">
-          <img src="https://randomuser.me/api/portraits/women/79.jpg" alt="">
-          <button class="sp-box" id="composer">Start a post</button>
-        </div>
-        <div class="sp-acts">
-          <button class="sp-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="8.5" cy="9" r="1.6"/><path d="m4 18 5-5 4 4 3-3 4 4"/></svg>Photo</button>
-          <button class="sp-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="3"/><path d="m16 10 6-3v10l-6-3z"/></svg>Video</button>
-          <button class="sp-act"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="M8 13h8M8 17h5"/></svg>Article</button>
-        </div>
-      </div>
+      <div class="search rise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg><input placeholder="Search doctors, groups, posts…"></div>
       <div class="feed" id="feed" style="margin-top:12px"></div>
     </div>
 
@@ -662,7 +653,6 @@
     });
   });
   // top-bar Messages icon → jump to Messages tab
-  document.querySelector('.tb-ic').addEventListener('click', ()=>{ const t=document.querySelector('.ntab[data-p="msgs"]'); if(t) t.click(); });
 
   // ---- Feed (LinkedIn-style: reactions · inline comments · repost) ----
   const ME = { name:(function(){try{return localStorage.getItem('docName')||'Dr. Ananya Rao';}catch(e){return 'Dr. Ananya Rao';}})(), spec:'Endocrinologist · MedHub', img:'https://randomuser.me/api/portraits/women/79.jpg' };
@@ -968,8 +958,7 @@
   document.getElementById('compTags').innerHTML = compTagList.map(t=>`<span class="ctag" data-t="${t}">${t}</span>`).join('');
   function openComp(){ compText.value=''; compTag=null; pendingMedia=null; compPrev.innerHTML=''; compPost.disabled=true; document.querySelectorAll('.ctag').forEach(x=>x.classList.remove('on')); compBackdrop.classList.add('open'); compSheet.classList.add('open'); setTimeout(()=>compText.focus(),300); }
   function closeComp(){ compBackdrop.classList.remove('open'); compSheet.classList.remove('open'); }
-  document.getElementById('composer').addEventListener('click', openComp);
-  document.querySelectorAll('.sp-act').forEach(b=>b.addEventListener('click', openComp));
+  document.getElementById('createPost').addEventListener('click', openComp);
   document.getElementById('compClose').addEventListener('click', closeComp);
   compBackdrop.addEventListener('click', closeComp);
   compText.addEventListener('input', ()=>{ compPost.disabled = !(compText.value.trim()||pendingMedia); });

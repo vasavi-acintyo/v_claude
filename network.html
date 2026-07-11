@@ -119,8 +119,9 @@
 
   /* ---- LinkedIn-style top bar + start-a-post ---- */
   .feedbar{display:flex;align-items:center;gap:10px;padding:4px 0 2px;}
-  .tb-av{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
-  .tb-search{flex:1;position:relative;}
+  .tb-av{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);border:1px solid var(--line);flex:0 0 auto;}
+  .tb-prof{display:inline-flex;align-items:center;flex:0 0 auto;text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1);} .tb-prof:active{transform:scale(.94);}
+  .tb-search{flex:1;min-width:0;position:relative;}
   .tb-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
   .tb-search input{width:100%;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:10px 12px 10px 34px;font-size:11.5px;font-family:inherit;color:var(--ink);}
   .tb-search input::placeholder{color:var(--muted);} .tb-search input:focus{outline:none;border-color:var(--brand);}
@@ -389,7 +390,7 @@
   <div class="scroll">
     <!-- top bar -->
     <div class="feedbar rise">
-      <img class="tb-av" src="https://randomuser.me/api/portraits/women/79.jpg" alt="">
+      <a class="tb-prof" href="profile.html" aria-label="My profile"><img class="tb-av" src="https://randomuser.me/api/portraits/women/79.jpg" alt=""></a>
       <div class="tb-search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg><input placeholder="Search doctors, groups, posts…"></div>
       <button class="tb-ic" aria-label="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg></button>
     </div>
