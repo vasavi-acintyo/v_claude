@@ -77,7 +77,8 @@
   .hero-txt .s{font-size:10.5px;color:var(--muted);margin-top:4px;line-height:1.55;}
 
   /* LIVE card — calm light feature */
-  .live-card{background:var(--soft1);border:1px solid transparent;border-radius:18px;overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;display:block;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .live-card{position:relative;background:var(--soft1);border:1px solid transparent;border-radius:18px;overflow:hidden;cursor:pointer;text-decoration:none;color:inherit;display:block;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .arow .savebtn{position:static;width:36px;height:36px;padding:6px;flex:0 0 auto;}
   .live-card:hover{transform:translateY(-2px);border-color:var(--brand);}
   .live-card:active{transform:scale(.99);}
   .live-pad{padding:16px;}
@@ -379,6 +380,7 @@
     <!-- Live now -->
     <div class="sec rise"><h2>Live now</h2><a href="speakers.html?type=upcoming">See all<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></a></div>
     <a class="live-card rise" href="speakers.html?type=live&title=Cardiometabolic%20Update%202025&sub=LIVE%20%C2%B7%202%2C480%20watching&mode=online">
+      <button class="savebtn" id="liveSave" type="button" aria-label="Save CME" aria-pressed="false" data-title="Cardiometabolic Update 2025" data-meta="Cardiological Society of India · 24 May 2025" data-credits="2 CME" data-mode="Online" onclick="toggleSave(event,this)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z"/></svg></button>
       <div class="live-pad">
         <span class="live-badge"><span class="d"></span>LIVE · 2,480 watching</span>
         <span class="ptag paid" style="margin-left:6px">₹499</span>
@@ -756,8 +758,10 @@
           <div class="ameta"><b>${u.d}</b> · <span class="acr">${u.cr}</span> · ${pTag(u.free,u.price)}</div>
           <div class="aorg">${ic.org}Organized by ${u.org}</div>
         </div>
+        <button class="savebtn${isSaved(u.t)?' saved':''}" type="button" aria-label="Save CME" aria-pressed="${isSaved(u.t)}" data-title="${u.t}" data-meta="${u.org}" data-credits="${u.cr}" data-mode="${u.mode}" onclick="event.preventDefault();event.stopPropagation();toggleSave(event,this)">${bookmarkSvg}</button>
         <span class="achev">${chev}</span>
       </a>`).join('')}`).join('');
+  (function(){ const b=document.getElementById('liveSave'); if(b && isSaved(b.dataset.title)) b.classList.add('saved'); })();
 
   const recommended = [
     {t:'New Frontiers in Diabetes Care', by:'Dr. Meera Iyer', dur:'45 min', cr:'2 CME', org:'RSSDI', mode:'Online', free:false, price:'₹499', i:'drop'},
