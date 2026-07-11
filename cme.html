@@ -6,38 +6,9 @@
 <title>CME & Learning</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
-  [hidden]{display:none !important;}
-
-  /* ===== THEME: Classical (default) ===== */
-  :root{
-    --brand:#7d2c3b; --brand-dark:#5e2029; --brand-soft:#f4e7e9; --gold:#b0894f;
-    --ink:#2a2320; --slate-700:#514842; --muted:#71665d;
-    --line:#e7e0d4; --chip:#f4f0e8; --green:#3f7d4e;
-    --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
-    --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
-    --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
-    --display:'Poppins', sans-serif;
-    --ui:'Inter', sans-serif;
-  }
-  /* native device font — chosen at startup by platform (APK / TestFlight) */
-
-  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#38bdf8;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
-  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#c9a227;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
-  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#f59e0b;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;}
-  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;}
-  :root{color-scheme:light;} [data-theme="dark"]{color-scheme:dark;}
-
-  html,body{background:var(--page);font-family:var(--ui);color:var(--ink);-webkit-font-smoothing:antialiased;}
-  body{display:flex;justify-content:center;padding:18px;}
-  svg{display:block;}
   .display{font-family:var(--display);}
-  @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-  .rise{animation:rise .55s cubic-bezier(.22,1,.36,1) both;}
 
-  .phone{width:390px;height:844px;background:var(--surface);border-radius:44px;box-shadow:0 30px 70px -20px rgba(0,0,0,.45);overflow:hidden;position:relative;display:flex;flex-direction:column;}
   @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} .scroll{padding-top:max(10px,env(safe-area-inset-top));} }
 
   .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
@@ -193,12 +164,9 @@
   .spk .s .pc.done{background:var(--green);}
 
   /* bottom nav */
-  .nav{flex:0 0 auto;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:9px 0 22px;}
   .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1), opacity .18s, color .18s;}
   .navitem.active{color:var(--brand);font-weight:600;}
   .navitem:active{transform:scale(.9);opacity:.7;}
-  @media (max-width:600px){ .nav{padding-bottom:max(22px,env(safe-area-inset-bottom));} }
-  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
 
   /* theme chooser sheet */
   .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);backdrop-filter:blur(2px);opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;z-index:30;}
@@ -349,6 +317,7 @@
 
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
 </style>
+  <link rel="stylesheet" href="global.css?v=8">
 </head>
 <body>
 <div class="phone">
@@ -368,12 +337,8 @@
     <!-- Header -->
     <div class="htop rise">
       <div class="greet">
-        <div class="wm">CME &amp; Learning</div>
-        <div class="dr" id="drName">Dr. Ananya Rao</div>
+        <div class="dr">CME &amp; Learning</div>
       </div>
-      <button class="icon-btn" aria-label="Create CME program" onclick="location.href='create-cme.html'">
-        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-      </button>
       <button class="icon-btn" aria-label="Saved CMEs" onclick="location.href='saved-cmes.html'">
         <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z"/></svg>
       </button>
@@ -569,9 +534,7 @@
     const THEMES = [
       { id:'classical', name:'Classic', c:'#7d2c3b' },
       { id:'blue',      name:'Ocean',   c:'#1e5fbf' },
-      { id:'green',     name:'Forest',  c:'#0f7a5a' },
-      { id:'indigo',    name:'Indigo',  c:'#5b3df5' },
-      { id:'dark',      name:'Midnight',c:'#1b1d27' }
+      { id:'green',     name:'Forest',  c:'#0f7a5a' }
     ];
     const grid = document.getElementById('themeGrid');
     const sheet = document.getElementById('themeSheet');
@@ -878,23 +841,45 @@
   function openSpkProfile(i){
     const p = speakers[i];
     openSpkIdx = i;
+    const _people='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/></svg>';
     profBody.innerHTML = `
-      <div class="p-hero"><img class="p-av" src="${p.img}" alt=""></div>
-      <div class="p-top">
-        <div class="p-name">${p.n}</div>
-        <div class="p-role">${p.r}</div>
-        <div class="p-loc">${pinIco}${p.hospital}, ${p.city}</div>
+      <div class="pv-hero">
+        <div class="pv-bar">
+          <button class="pv-ic" id="pvBack" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+          <button class="pv-ic" id="pvMenu" aria-label="More"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg></button>
+        </div>
+        <div class="pv-id">
+          <div class="pv-avw"><img class="pv-av" src="${p.img}" alt=""><span class="pv-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
+          <div class="pv-idt">
+            <div class="pv-name">${p.n}<svg class="vf" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#3d8bfd"/><path d="m8 12 2.5 2.5 5.5-5.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+            <div class="pv-role">${p.r}</div>
+            <div class="pv-loc">${pinIco}${p.hospital}, ${p.city}</div>
+          </div>
+        </div>
       </div>
-      <div class="p-stats">
-        <div><b>${p.connections}</b><span>Connections</span></div>
-        <div><b>${p.mutual}</b><span>Mutual</span></div>
-        <div><b>${p.exp}</b><span>Experience</span></div>
+      <div class="pv-stats">
+        <div class="pv-stat"><span class="pv-sic b">${_people}</span><div class="pv-sm"><b>${p.connections}</b><span>Connections</span></div></div>
+        <div class="pv-vdiv"></div>
+        <div class="pv-stat"><span class="pv-sic g">${_people}</span><div class="pv-sm"><b>${p.mutual}</b><span>Mutual</span></div></div>
+        <div class="pv-vdiv"></div>
+        <div class="pv-stat"><span class="pv-sic p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="M8.5 13 7 22l5-3 5 3-1.5-9"/></svg></span><div class="pv-sm"><b>${p.exp}</b><span>Experience</span></div></div>
       </div>
-      <div class="p-actions"><button class="p-pri${spkStatus[i]==='pending'?' pending':spkStatus[i]==='done'?' done':''}" id="pPri">${spkLabel(spkStatus[i])}</button><button class="p-sec">${chatIco}Message</button></div>
-      <div class="p-h">About</div><p class="p-bio">${p.bio}</p>
-      <div class="p-h">Specialties</div><div class="p-tags">${p.tags.map(t=>`<span class="p-tag">${t}</span>`).join('')}</div>
-      <div class="p-h">Education</div><div class="p-list">${p.edu.map(e=>`<div class="p-li"><span class="pi">${capIco}</span><div><div class="pt">${e.t}</div><div class="psub">${e.s}</div></div></div>`).join('')}</div>
+      <div class="pv-card2">
+        <div class="pv-col"><span class="pv-cic b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg></span><div class="pv-ct">Specialization</div><div class="pv-cd">${p.tags.join(', ')}</div></div>
+        <div class="pv-vdiv"></div>
+        <div class="pv-col"><span class="pv-cic g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M15 21V9h3a1 1 0 0 1 1 1v11"/><path d="M9 8h2M9 12h2M9 16h2"/></svg></span><div class="pv-ct">Affiliation</div><div class="pv-cd">${p.hospital}, ${p.city}</div></div>
+      </div>
+      <div class="pv-quote"><span class="pv-q">&ldquo;</span><p>${p.bio}</p></div>
+      <div class="pv-actions">
+        <button class="pv-btn ghost" id="pvMsg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>Message</button>
+        <button class="pv-btn primary" id="pvBook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>Book</button>
+        <button class="pv-btn ghost" id="pPri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14H10"/><path d="M17 8v6M14 11h6"/></svg>Connect</button>
+      </div>
     `;
+    { const bk=document.getElementById('pvBack'); if(bk) bk.onclick=closeSpkProfile; }
+    { const mn=document.getElementById('pvMenu'); if(mn) mn.onclick=()=>toast('More options'); }
+    { const mg=document.getElementById('pvMsg'); if(mg) mg.onclick=()=>toast('Messaging coming soon'); }
+    { const bkk=document.getElementById('pvBook'); if(bkk) bkk.onclick=()=>toast('Booking — coming soon'); }
     document.getElementById('pPri').onclick = ()=>toggleSpkConnect(i);
     profBackdrop.classList.add('open'); profSheet.classList.add('open'); profSheet.scrollTop=0;
   }

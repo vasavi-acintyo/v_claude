@@ -6,7 +6,6 @@
 <title>Speakers — Cardiometabolic Update 2025</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   /* ---------- Reset & tokens ---------- */
   *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
@@ -20,17 +19,11 @@
     --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
     --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
     --heart1:#e9cf94; --heart2:#b0894f; --heart3:#6e5326; --live-tint:#fbf5f0;
-    --display:'Poppins', sans-serif;
-    --ui:'Inter', sans-serif;
   }
   /* native device font — chosen at startup by platform (APK / TestFlight) */
 
   [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#38bdf8;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;--heart1:#8fd6f7;--heart2:#38a3e0;--heart3:#1e5fbf;--live-tint:#f2f7ff;}
   [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#c9a227;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;--heart1:#e9d98a;--heart2:#c9a227;--heart3:#8a6f18;--live-tint:#f0faf5;}
-  [data-theme="indigo"]{--brand:#5b3df5;--brand-dark:#4c2fe0;--brand-soft:#efeaff;--gold:#f59e0b;--ink:#181633;--slate-700:#3a3752;--muted:#787593;--line:#e9e7f3;--chip:#f1eefb;--green:#16a34a;--surface:#faf9ff;--card:#ffffff;--page:#d5d2e6;--g1:#7c6cf5;--g2:#5b3df5;--d1:#141233;--d2:#241a54;--d3:#3a2b8f;--glow:rgba(124,108,245,.45);--soft1:#efebff;--soft2:#e7edff;--onGold:#fbbf6b;--heart1:#c7b6ff;--heart2:#7c6cf5;--heart3:#4c2fe0;--live-tint:#f7f6ff;}
-  [data-theme="dark"]{--brand:#8b7bff;--brand-dark:#a99bff;--brand-soft:#241f3d;--gold:#e0b769;--ink:#eef0f6;--slate-700:#c3c7d4;--muted:#8b8fa3;--line:#2a2c3a;--chip:#22242f;--green:#4ade80;--surface:#14151d;--card:#1b1d27;--page:#0a0b0f;--g1:#8b7bff;--g2:#6d5cf0;--d1:#1b1d27;--d2:#23263a;--d3:#2e2b52;--glow:rgba(139,123,255,.4);--soft1:#20222e;--soft2:#242233;--onGold:#e0b769;--heart1:#b3a7ff;--heart2:#8b7bff;--heart3:#5b46d6;--live-tint:#20222e;}
-  [data-theme="dark"] .learn-item{background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.08);}
-  [data-theme="dark"] .learn-lbl{color:var(--slate-700);}
 
   html,body{
     background:var(--page);
@@ -39,7 +32,6 @@
     -webkit-font-smoothing:antialiased;
   }
   :root{color-scheme:light;}
-  [data-theme="dark"]{color-scheme:dark;}
   /* theme-driven SVG gradient stops */
   .hs1{stop-color:var(--heart1);} .hs2{stop-color:var(--heart2);} .hs3{stop-color:var(--heart3);}
   .heart-stroke{stroke:var(--heart1);}
@@ -120,7 +112,6 @@
     background:rgba(224,106,106,.12);border:1px solid rgba(224,106,106,.28);
     padding:4px 10px;border-radius:20px;font-size:10px;font-weight:800;color:#c0464a;letter-spacing:.03em;
   }
-  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
   .live svg{animation:pulse 1.4s infinite;}
   .banner h2{font-size:19px;font-weight:800;line-height:1.12;margin:10px 0 9px;max-width:80%;}
   .banner .meta{display:flex;gap:14px;font-size:10px;margin-bottom:10px;flex-wrap:wrap;color:var(--muted);}
@@ -220,7 +211,6 @@
 
   /* ===== shared entrance animation ===== */
   @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-  .rise{animation:rise .5s cubic-bezier(.22,1,.36,1) both;}
   /* advanced spring reveal for sheet contents */
   @keyframes sheetRise{from{opacity:0;transform:translateY(16px) scale(.98)}to{opacity:1;transform:none}}
   .sheet{transition:transform .5s cubic-bezier(.34,1.3,.5,1);}   /* springier slide-up */
@@ -593,7 +583,6 @@
   .ac-extract{display:flex;align-items:center;gap:8px;font-size:10px;font-weight:700;color:var(--brand);margin-top:10px;}
   .ac-extract.done{color:var(--green);}
   .ac-extract .spin{width:13px;height:13px;border:2px solid var(--brand-soft);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;flex:0 0 auto;}
-  @keyframes spin{to{transform:rotate(360deg)}}
   .ac-l{display:block;font-size:9px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:13px 0 5px;}
   .ac-in{width:100%;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:11px 12px;font-family:inherit;font-size:12px;color:var(--ink);}
   .ac-in::placeholder{color:var(--muted);}
@@ -635,7 +624,6 @@
   .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:10.5px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;}
   .navitem:active{transform:scale(.94);}
   .navitem.active{color:var(--brand);font-weight:600;}
-  .home-ind{position:absolute;bottom:8px;left:50%;transform:translateX(-50%);width:130px;height:5px;background:var(--ink);opacity:.85;border-radius:3px;}
 
   /* ---------- Toast (tap acknowledgement pill) ---------- */
   .toast{
@@ -649,6 +637,7 @@
 
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
 </style>
+  <link rel="stylesheet" href="global.css?v=8">
 </head>
 <body>
 <div class="phone">
@@ -1008,16 +997,6 @@
       <button class="theme-opt" data-theme="green">
         <span class="theme-swatch" style="background:linear-gradient(135deg,#0f7a5a,#c9a227)"></span>
         <span class="tinfo"><span class="tn">Healing Green</span><span class="td2">Renewal &amp; nature</span></span>
-        <span class="chk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg></span>
-      </button>
-      <button class="theme-opt" data-theme="indigo">
-        <span class="theme-swatch" style="background:linear-gradient(135deg,#5b3df5,#f59e0b)"></span>
-        <span class="tinfo"><span class="tn">Royal Indigo</span><span class="td2">Modern &amp; innovative</span></span>
-        <span class="chk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg></span>
-      </button>
-      <button class="theme-opt" data-theme="dark">
-        <span class="theme-swatch" style="background:linear-gradient(135deg,#1b1d27,#8b7bff)"></span>
-        <span class="tinfo"><span class="tn">Midnight</span><span class="td2">Dark mode · easy on the eyes</span></span>
         <span class="chk"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg></span>
       </button>
     </div>
