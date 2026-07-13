@@ -635,6 +635,13 @@
   }
   .toast.show{opacity:.96;transform:translateX(-50%) translateY(0);}
 
+  /* Doxy mascot badge — colorful animated icon (CSS-only "gif" feel) */
+  .doxy-badge{display:inline-flex;width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 6px rgba(90,209,230,.35), 0 3px 8px -3px rgba(0,0,0,.35);animation:doxyBob 2.4s ease-in-out infinite;}
+  .doxy-badge svg{width:44px;height:44px;display:block;}
+  @keyframes doxyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+  .doxy-badge .antenna-tip{animation:doxyGlow 1.8s ease-in-out infinite;}
+  @keyframes doxyGlow{0%,100%{opacity:1}50%{opacity:.45}}
+
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
@@ -871,7 +878,7 @@
   <div class="nav">
     <a class="navitem" href="home.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg>Home</a>
     <a class="navitem active" href="cme.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>CME</a>
-    <a class="navitem" href="doxy.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3" r="1.2"/><circle cx="9" cy="13.5" r="1.1"/><circle cx="15" cy="13.5" r="1.1"/><path d="M2 12v3M22 12v3"/></svg>Doxy</a>
+    <a class="navitem doxy-tab" href="doxy.html"><span class="doxy-badge"><svg viewBox="0 0 34 34"><circle cx="17" cy="17" r="17" fill="#fff"/><rect x="8" y="13" width="18" height="14" rx="6" fill="#1b2340"/><rect x="16" y="6.5" width="2" height="6" rx="1" fill="#f4a531"/><circle class="antenna-tip" cx="17" cy="5.5" r="2.1" fill="#f4a531"/><circle cx="13.2" cy="20" r="2.6" fill="#5ad1e6"/><circle cx="20.8" cy="20" r="2.6" fill="#5ad1e6"/><circle cx="12.5" cy="19.2" r="0.7" fill="#fff"/><circle cx="20.1" cy="19.2" r="0.7" fill="#fff"/><path d="M13.5 24c1.2 1.1 5.3 1.1 6.5 0" stroke="#5ad1e6" stroke-width="1.3" stroke-linecap="round" fill="none"/></svg></span>Doxy</a>
     <a class="navitem" href="post.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>Post</a>
     <a class="navitem" href="referral.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h2"/><path d="M14 14h6"/><path d="m17 11 3 3-3 3"/></svg>Referral</a>
   </div>

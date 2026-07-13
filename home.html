@@ -12,7 +12,7 @@
 
   .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
   .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
-  .scroll{flex:1 1 auto;overflow-y:auto;padding:8px 20px 20px;}
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:6px 18px 16px;}
   .scroll::-webkit-scrollbar{width:0;}
 
   /* header */
@@ -29,14 +29,14 @@
   .htop .mewrap{border-radius:50%;}
   .htop a:active{transform:scale(.94);}
 
-  .search{position:relative;margin-top:14px;}
-  .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
-  .search input{width:100%;min-height:38px;height:38px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px 0 36px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .search{position:relative;margin-top:4px;}
+  .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--muted);}
+  .search input{width:100%;min-height:34px;height:34px;background:var(--chip);border:1px solid transparent;border-radius:17px;padding:0 12px 0 33px;font-size:11px;font-family:inherit;color:var(--ink);}
   .search input::placeholder{color:var(--muted);}
   .search input:focus{outline:none;border-color:var(--brand);}
 
   /* profile completion nudge */
-  .pcomplete{position:relative;display:flex;align-items:center;gap:13px;margin-top:16px;background:var(--soft2);border:1px solid transparent;border-radius:16px;padding:13px 40px 13px 13px;text-decoration:none;color:inherit;transition:transform .18s, border-color .18s;}
+  .pcomplete{position:relative;display:flex;align-items:center;gap:13px;margin-top:4px;background:var(--soft2);border:1px solid transparent;border-radius:16px;padding:13px 40px 13px 13px;text-decoration:none;color:inherit;transition:transform .18s, border-color .18s;}
   .pcomplete:hover{border-color:var(--brand);}
   .pcomplete:active{transform:scale(.99);}
   .pcomplete .ring{position:relative;width:46px;height:46px;flex:0 0 auto;}
@@ -51,28 +51,36 @@
   .pcomplete .pc-x{position:absolute;top:9px;right:10px;background:none;border:none;color:var(--muted);cursor:pointer;padding:4px;font-size:12px;line-height:1;border-radius:50%;}
   .pcomplete .pc-x:active{transform:scale(.9);}
 
-  .lbl{font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:24px 0 12px;}
+  .lbl{position:relative;font-size:10px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:4px 0 4px;padding-left:12px;}
+  .lbl::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--brand);}
 
-  /* modules — cohesive neutral cards, single accent */
-  .modules{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:14px;}
-  .mtile{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:flex-start;gap:9px;background:var(--soft1);border:1px solid transparent;border-radius:15px;padding:14px 7px;min-height:96px;text-decoration:none;color:inherit;
-    transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
-  .mtile:nth-child(2n){background:var(--soft2);}
-  .mtile:hover{transform:translateY(-3px);border-color:var(--brand);}
+  /* modules — trendy cards with colorful per-module icon accents */
+  .modules{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;margin-top:4px;}
+  .mtile{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;justify-content:flex-start;gap:7px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px 7px;min-height:78px;text-decoration:none;color:inherit;
+    box-shadow:0 8px 20px -16px rgba(30,20,60,.18);
+    transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s, box-shadow .18s;}
+  .mtile:hover{transform:translateY(-3px);border-color:var(--brand);box-shadow:0 14px 26px -14px rgba(30,20,60,.24);}
   .mtile:active{transform:scale(.985);}
-  .mtile .ic{width:42px;height:42px;border-radius:13px;display:grid;place-items:center;color:var(--brand);background:rgba(255,255,255,.55);}
-  .mtile .ic svg{width:21px;height:21px;}
-  .mtile .nm{font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.2;}
-  .mtile .ms{display:none;}
+  .mtile .ic{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);}
+  .mtile .ic svg{width:18px;height:18px;}
+  .mtile .nm{font-size:10px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.2;}
+  .mtile .ms{font-size:8px;font-weight:600;color:var(--muted);line-height:1.3;margin-top:2px;}
   .mtile .badge{position:absolute;top:8px;right:8px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:#ef4444;color:#fff;font-size:9px;font-weight:800;display:grid;place-items:center;line-height:1;}
   .mtile .arw{display:none;}
   .mtile:hover .arw{opacity:1;transform:translateX(2px);}
+  /* colorful icon accents — one hue per module, independent of the active brand theme */
+  .mtile.c-blue .ic{color:#2563eb;background:#dbeafe;}
+  .mtile.c-violet .ic{color:#7c3aed;background:#ede9fe;}
+  .mtile.c-amber .ic{color:#d97706;background:#fef3c7;}
+  .mtile.c-rose .ic{color:#e11d48;background:#ffe4e6;}
+  .mtile.c-teal .ic{color:#0d9488;background:#ccfbf1;}
+  .mtile.c-cyan .ic{color:#0891b2;background:#cffafe;}
 
-  /* featured (live CME) — calm light card */
-  .feature{margin-top:12px;border-radius:18px;overflow:hidden;position:relative;color:var(--ink);text-decoration:none;display:block;
-    background:var(--soft1);border:1px solid transparent;
-    transition:transform .18s, border-color .18s;}
-  .feature:hover{transform:translateY(-2px);border-color:var(--brand);}
+  /* featured (live CME) — trendy card with shadow lift */
+  .feature{margin-top:4px;border-radius:20px;overflow:hidden;position:relative;color:var(--ink);text-decoration:none;display:block;
+    background:var(--card);border:1px solid var(--line);box-shadow:0 10px 24px -18px rgba(30,20,60,.22);
+    transition:transform .18s, border-color .18s, box-shadow .18s;}
+  .feature:hover{transform:translateY(-2px);border-color:var(--brand);box-shadow:0 16px 30px -16px rgba(30,20,60,.28);}
   .feature:active{transform:scale(.985);}
   .feature .pad{padding:16px;position:relative;}
   .feature .tag{display:inline-flex;align-items:center;gap:6px;font-size:8.5px;font-weight:800;letter-spacing:.05em;color:#c0464a;background:rgba(224,106,106,.12);border:1px solid rgba(224,106,106,.28);padding:4px 10px;border-radius:20px;}
@@ -92,16 +100,19 @@
   .feature .tag.soon .d{background:var(--gold);animation:none;}
   .feature .go.ghost{background:var(--brand-soft);color:var(--brand);}
   /* empty state (nothing live, nothing scheduled) */
-  .feature.empty{text-align:center;}
-  .feature.empty .pad{padding:26px 18px;display:flex;flex-direction:column;align-items:center;gap:4px;}
-  .feature.empty .eic{width:48px;height:48px;border-radius:16px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);margin-bottom:8px;}
-  .feature.empty h3{margin:0;font-size:15px;}
-  .feature.empty .meta{max-width:230px;line-height:1.5;}
-  .feature.empty .go{margin:14px 0 2px;}
+  .feature.empty{text-align:left;}
+  .feature.empty .pad{padding:14px 16px;display:flex;flex-direction:column;gap:6px;}
+  .feature.empty .top{display:flex;align-items:center;gap:8px;}
+  .feature.empty .eic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#d97706;background:#fef3c7;flex:0 0 auto;}
+  .feature.empty .et{flex:1;min-width:0;}
+  .feature.empty h3{margin:0;font-size:13px;}
+  .feature.empty .meta{margin-top:3px;max-width:none;line-height:1.45;}
+  .feature.empty .go{margin:0;align-self:center;min-height:30px;padding:6px 14px;font-size:9.5px;}
 
   /* section head */
-  .sh{display:flex;align-items:baseline;justify-content:space-between;margin:24px 0 12px;}
-  .sh h2{font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .sh{display:flex;align-items:baseline;justify-content:space-between;margin:4px 0 4px;}
+  .sh h2{position:relative;font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;padding-left:12px;}
+  .sh h2::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--brand);}
   .sh a{font-size:10px;font-weight:700;color:var(--brand);text-decoration:none;}
 
   /* activity */
@@ -110,6 +121,10 @@
   .fitem:last-child{border-bottom:none;}
   .fitem .fi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);flex:0 0 auto;}
   .fitem .fi svg{width:19px;height:19px;}
+  /* per-type colorful accents — same palette as the module tiles (fully-qualified so they reliably beat .fitem .fi / .rec .ri regardless of source order) */
+  .fitem .fi.fi-net,.rec .ri.fi-net,.act-ic.fi-net{color:#2563eb;background:#dbeafe;}
+  .fitem .fi.fi-ref,.rec .ri.fi-ref,.act-ic.fi-ref{color:#7c3aed;background:#ede9fe;}
+  .fitem .fi.fi-cert,.rec .ri.fi-cert,.act-ic.fi-cert{color:#d97706;background:#fef3c7;}
   .fitem .m{flex:1;min-width:0;}
   .fitem .ft{font-size:12px;font-weight:700;}
   .fitem .fs{font-size:9.5px;color:var(--muted);margin-top:2px;}
@@ -130,10 +145,10 @@
   .cont{display:block;background:var(--soft1);border:1px solid transparent;border-radius:18px;padding:16px;text-decoration:none;color:inherit;transition:transform .18s, border-color .18s;}
   .cont:hover{transform:translateY(-2px);border-color:var(--brand);}
   .cont:active{transform:scale(.985);}
-  .cont .k{font-size:8.5px;font-weight:800;letter-spacing:.06em;color:var(--brand);}
+  .cont .k{font-size:8.5px;font-weight:800;letter-spacing:.06em;color:#d97706;}
   .cont h3{font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin:7px 0 10px;}
   .cont .bar{height:7px;border-radius:5px;background:rgba(0,0,0,.06);overflow:hidden;}
-  .cont .bar i{display:block;height:100%;border-radius:5px;background:var(--brand);}
+  .cont .bar i{display:block;height:100%;border-radius:5px;background:#d97706;}
   .cont .foot{display:flex;align-items:center;justify-content:space-between;margin-top:11px;}
   .cont .prog{font-size:10px;color:var(--muted);font-weight:600;}
   .cont .go{background:var(--brand);color:#fff;font-size:11px;font-weight:800;padding:8px 16px;border-radius:11px;}
@@ -148,13 +163,13 @@
   .rec .m{flex:1;min-width:0;}
   .rec .rt{font-size:12px;font-weight:700;}
   .rec .rs{font-size:9.5px;color:var(--muted);margin-top:2px;}
-  .rec .rc{font-size:9px;color:var(--brand);font-weight:800;flex:0 0 auto;background:var(--brand-soft);padding:4px 8px;border-radius:8px;}
+  .rec .rc{font-size:9px;color:#d97706;font-weight:800;flex:0 0 auto;background:#fef3c7;padding:4px 8px;border-radius:8px;}
 
-  /* popular doctors — horizontal scroll row */
+  /* popular doctors — horizontal scroll row, trendy card treatment */
   .people{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px;margin:0 -2px;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
   .people::-webkit-scrollbar{display:none;}
-  .pcard{scroll-snap-align:start;flex:0 0 auto;width:130px;display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--soft1);border:1px solid transparent;border-radius:18px;padding:16px 12px 14px;text-decoration:none;color:inherit;cursor:pointer;transition:transform .18s, border-color .18s;}
-  .pcard:hover{border-color:var(--brand);}
+  .pcard{scroll-snap-align:start;flex:0 0 auto;width:130px;display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px 12px 14px;text-decoration:none;color:inherit;cursor:pointer;box-shadow:0 8px 20px -16px rgba(30,20,60,.18);transition:transform .18s, border-color .18s, box-shadow .18s;}
+  .pcard:hover{border-color:var(--brand);box-shadow:0 14px 26px -14px rgba(30,20,60,.24);}
   .pcard:active{transform:scale(.97);}
   .pcard img{width:52px;height:52px;border-radius:50%;object-fit:cover;background:var(--chip);border:2px solid rgba(255,255,255,.6);}
   .pcard .pn{font-size:11.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin-top:8px;line-height:1.15;}
@@ -193,18 +208,6 @@
   .sheet.open{transform:translateY(0);}
   .sheet .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:6px auto 16px;}
 
-  /* theme chooser */
-  .theme-head{margin:0 2px 4px;}
-  .theme-head h2{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
-  .theme-head p{font-size:10px;color:var(--muted);margin-top:3px;}
-  .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 6px;}
-  .theme-opt{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);cursor:pointer;color:inherit;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
-  .theme-opt:active{transform:scale(.96);}
-  .theme-opt.active{border-color:var(--brand);}
-  .theme-opt .sw{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.6);box-shadow:0 2px 6px rgba(0,0,0,.15);}
-  .theme-opt .tn{font-size:10.5px;font-weight:700;letter-spacing:-.01em;}
-  .theme-opt .tick{position:absolute;top:8px;right:8px;width:15px;height:15px;color:var(--brand);opacity:0;transition:opacity .16s;}
-  .theme-opt.active .tick{opacity:1;}
   .act-head{display:flex;align-items:center;gap:13px;}
   .act-ic{width:48px;height:48px;border-radius:15px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);flex:0 0 auto;}
   .act-ic svg{width:24px;height:24px;}
@@ -278,6 +281,16 @@
     opacity:0;pointer-events:none;transition:opacity .22s, transform .22s;max-width:80%;text-align:center;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+  /* Doxy mascot badge — colorful animated icon (CSS-only "gif" feel) */
+  .navitem.doxy-tab{position:relative;overflow:visible;z-index:2;}
+  .doxy-badge{display:inline-flex;width:44px;height:44px;border-radius:50%;box-shadow:0 0 0 5px rgba(90,209,230,.6), 0 3px 8px -3px rgba(0,0,0,.35);animation:doxyBob 2.4s ease-in-out infinite;margin-top:-18px;}
+  .doxy-badge svg{width:44px;height:44px;display:block;}
+  @keyframes doxyBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-2.5px)}}
+  .doxy-badge .antenna-tip{animation:doxyGlow 1.8s ease-in-out infinite;}
+  @keyframes doxyGlow{0%,100%{opacity:1}50%{opacity:.45}}
+  .doxy-badge .eyes{animation:doxyLook 3.2s ease-in-out infinite;}
+  @keyframes doxyLook{0%,12%{transform:translateX(0)}35%,48%{transform:translateX(-1.4px)}65%,78%{transform:translateX(1.4px)}100%{transform:translateX(0)}}
+
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
@@ -329,35 +342,35 @@
 
     <!-- Modules -->
     <div class="modules rise">
-      <a class="mtile" href="network.html">
+      <a class="mtile c-blue" href="network.html">
         <span class="badge">3</span>
-        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><line x1="8.1" y1="10.8" x2="15.9" y2="6.2"/><line x1="8.1" y1="13.2" x2="15.9" y2="17.8"/></svg></span>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-1.5a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4V20"/><circle cx="8" cy="7" r="3.2"/><path d="M20 20v-1.5a4 4 0 0 0-2.6-3.75"/><path d="M15 4.2a3.2 3.2 0 0 1 0 6.1"/></svg></span>
         <div><div class="nm">Network &amp; Posts</div><div class="ms">Feeds, cases &amp; colleagues</div></div>
         <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
       </a>
-      <a class="mtile" href="referral.html">
+      <a class="mtile c-violet" href="referral.html">
         <span class="badge">3</span>
-        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg></span>
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="3.2"/><path d="M3 19v-1a5 5 0 0 1 5-5h1"/><path d="M14 14h7"/><path d="m18 10.5 3.5 3.5-3.5 3.5"/></svg></span>
         <div><div class="nm">Referrals</div><div class="ms">Send &amp; track patients</div></div>
         <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
       </a>
-      <a class="mtile" href="cme.html">
-        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 9h6M7 12.5h4"/></svg></span>
+      <a class="mtile c-amber" href="cme.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="m9 13.5-1.5 7 4.5-2.5 4.5 2.5-1.5-7"/><path d="m9.5 8 1.7 1.7L15 6.5"/></svg></span>
         <div><div class="nm">CME / Conferences</div><div class="ms">Credits, live &amp; hosted</div></div>
         <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
       </a>
-      <a class="mtile" href="medicolegal.html">
+      <a class="mtile c-rose" href="medicolegal.html">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v16"/><path d="M7 20h10"/><path d="M5 8h14"/><path d="M5 8l-2.5 5.5a2.6 2.6 0 0 0 5 0Z"/><path d="M19 8l-2.5 5.5a2.6 2.6 0 0 0 5 0Z"/></svg></span>
         <div><div class="nm">Medico Legal</div><div class="ms">Support &amp; documentation</div></div>
         <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
       </a>
-      <a class="mtile" href="presentations.html">
-        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><circle cx="8.5" cy="9" r="1.5"/><path d="m21 15-4.5-4.5L6 21"/></svg></span>
+      <a class="mtile c-teal" href="presentations.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/><path d="M7 12v-3"/><path d="M11 12V6"/><path d="M15 12V9"/></svg></span>
         <div><div class="nm">Presentations</div><div class="ms">Build &amp; share decks</div></div>
         <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
       </a>
-      <a class="mtile" href="files.html">
-        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V6a2 2 0 0 1 2-2h10"/></svg></span>
+      <a class="mtile c-cyan" href="files.html">
+        <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg></span>
         <div><div class="nm">My Files</div><div class="ms">Library &amp; documents</div></div>
         <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
       </a>
@@ -380,7 +393,7 @@
   <div class="nav">
     <a class="navitem active" href="home.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V20h14V9.5"/><path d="M9.5 20v-6h5v6"/></svg>Home</a>
     <a class="navitem" href="cme.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>CME</a>
-    <a class="navitem" href="doxy.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="8" width="16" height="11" rx="3"/><path d="M12 8V4.5"/><circle cx="12" cy="3" r="1.2"/><circle cx="9" cy="13.5" r="1.1"/><circle cx="15" cy="13.5" r="1.1"/><path d="M2 12v3M22 12v3"/></svg>Doxy</a>
+    <a class="navitem doxy-tab" href="doxy.html"><span class="doxy-badge"><svg viewBox="0 0 34 34"><defs><linearGradient id="dxHead" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#4a5580"/><stop offset="100%" stop-color="#161b32"/></linearGradient><linearGradient id="dxVisor" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#0f1428"/><stop offset="100%" stop-color="#020309"/></linearGradient><radialGradient id="dxEye" cx="35%" cy="35%" r="70%"><stop offset="0%" stop-color="#d7fbff"/><stop offset="45%" stop-color="#5ad1e6"/><stop offset="100%" stop-color="#1a90b3"/></radialGradient><linearGradient id="dxAnt" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#ffcf7a"/><stop offset="100%" stop-color="#e8860f"/></linearGradient></defs><circle cx="17" cy="17" r="17" fill="#fff"/><rect x="2.6" y="14.5" width="3.2" height="8.5" rx="1.6" fill="#9aa3c9"/><rect x="28.2" y="14.5" width="3.2" height="8.5" rx="1.6" fill="#9aa3c9"/><rect x="4.5" y="9" width="25" height="20" rx="8.5" fill="url(#dxHead)"/><rect x="7.25" y="12" width="19.5" height="14" rx="5.5" fill="url(#dxVisor)"/><rect x="16" y="3.2" width="2" height="6" rx="1" fill="url(#dxAnt)"/><circle class="antenna-tip" cx="17" cy="2.6" r="2.3" fill="url(#dxAnt)"/><g class="eyes"><circle cx="12.5" cy="19.6" r="3.2" fill="url(#dxEye)"/><circle cx="21.5" cy="19.6" r="3.2" fill="url(#dxEye)"/><circle cx="11.6" cy="18.7" r="0.7" fill="#fff"/><circle cx="20.6" cy="18.7" r="0.7" fill="#fff"/></g><path d="M13 25h8" stroke="#5ad1e6" stroke-width="1.2" stroke-linecap="round" opacity=".6"/></svg></span>Doxy</a>
     <a class="navitem" href="post.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>Post</a>
     <a class="navitem" href="referral.html"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h2"/><path d="M14 14h6"/><path d="m17 11 3 3-3 3"/></svg>Referral</a>
   </div>
@@ -395,14 +408,6 @@
     <div class="act-status" id="actStatus"><span class="dot"></span><span id="actStatusTxt"></span></div>
     <div class="act-todo"><div class="l">Action needed</div><p id="actTodo"></p></div>
     <div class="act-btns"><button class="act-secondary" id="actSec"></button><button class="act-primary" id="actPri"></button></div>
-  </div>
-
-  <!-- Theme chooser sheet -->
-  <div class="backdrop" id="themeBackdrop"></div>
-  <div class="sheet" id="themeSheet">
-    <div class="grab"></div>
-    <div class="theme-head"><h2>Appearance</h2><p>Pick a colour theme. Fonts adapt to your device automatically.</p></div>
-    <div class="theme-grid" id="themeGrid"></div>
   </div>
 
   <!-- All doctors sheet (opened from Popular doctors → See all) -->
@@ -439,7 +444,7 @@
     if(!t || t==='classical') document.documentElement.removeAttribute('data-theme');
     else document.documentElement.setAttribute('data-theme', t);
   }
-  try{ applyTheme(localStorage.getItem('cmeTheme') || 'blue'); }catch(e){}
+  try{ applyTheme(localStorage.getItem('cmeTheme') || 'vibrant'); }catch(e){}
   // greet the signed-in doctor by the name given at registration
   try{ const g=document.getElementById('drGreet'); if(g) g.textContent = localStorage.getItem('docName') || 'Dr. Ananya Rao'; }catch(e){}
 
@@ -455,39 +460,6 @@
     toastTimer = setTimeout(()=>el.classList.remove('show'), 1400);
   }
 
-  // ---- Theme chooser sheet ----
-  (function(){
-    const THEMES = [
-      { id:'classical', name:'Classic', c:'#7d2c3b' },
-      { id:'blue',      name:'Ocean',   c:'#1e5fbf' },
-      { id:'green',     name:'Forest',  c:'#0f7a5a' }
-    ];
-    const grid = document.getElementById('themeGrid');
-    const sheet = document.getElementById('themeSheet');
-    const backdrop = document.getElementById('themeBackdrop');
-    let current = 'blue';
-    try{ current = localStorage.getItem('cmeTheme') || 'blue'; }catch(e){}
-    const tick = '<svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
-    grid.innerHTML = THEMES.map(t=>`
-      <button class="theme-opt${t.id===current?' active':''}" data-t="${t.id}">
-        ${tick}
-        <span class="sw" style="background:${t.c}"></span>
-        <span class="tn">${t.name}</span>
-      </button>`).join('');
-    function open(){ backdrop.classList.add('open'); sheet.classList.add('open'); }
-    function close(){ backdrop.classList.remove('open'); sheet.classList.remove('open'); }
-    { const _tb=document.getElementById('themeBtn'); if(_tb) _tb.addEventListener('click', open); }
-    backdrop.addEventListener('click', close);
-    grid.addEventListener('click', e=>{
-      const btn = e.target.closest('.theme-opt'); if(!btn) return;
-      const t = btn.dataset.t;
-      applyTheme(t);
-      try{ localStorage.setItem('cmeTheme', t); }catch(err){}
-      grid.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active', b===btn));
-      toast(THEMES.find(x=>x.id===t).name + ' theme applied');
-      setTimeout(close, 260);
-    });
-  })();
 
   // ---- Profile completion nudge (compact ring card, dismissible, hides at 100%) ----
   (function(){
@@ -582,9 +554,10 @@
       el.innerHTML = `
         <a class="feature empty" href="cme.html">
           <div class="pad">
-            <span class="eic"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
-            <h3>No live sessions right now</h3>
-            <div class="meta">Catch up any time — 40+ on-demand lectures and earn CME at your own pace.</div>
+            <div class="top">
+              <span class="eic"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg></span>
+              <div class="et"><h3>No live sessions right now</h3><div class="meta">Catch up any time — 40+ on-demand lectures and earn CME at your own pace.</div></div>
+            </div>
             <span class="go">Browse library</span>
           </div>
         </a>`;
@@ -633,7 +606,7 @@
   if(hasActivity){
     feedEl.innerHTML = feed.map((f,i)=>`
       <div class="fitem" data-i="${i}">
-        <span class="fi">${icons[f.i]}</span>
+        <span class="fi fi-${f.i}">${icons[f.i]}</span>
         <div class="m"><div class="ft">${f.t}</div><div class="fs">${f.s}</div></div>
         <span class="fw">${f.w}</span>
       </div>`).join('');
@@ -652,7 +625,7 @@
     if(seeAll){ seeAll.textContent = 'Browse all'; seeAll.href = 'cme.html'; }
     feedEl.innerHTML = `<div class="recs">${recs.map(r=>`
       <a class="rec" href="${r.href}">
-        <span class="ri">${icons[r.i]}</span>
+        <span class="ri fi-${r.i}">${icons[r.i]}</span>
         <div class="m"><div class="rt">${r.t}</div><div class="rs">${r.s}</div></div>
         <span class="rc">${r.c}</span>
       </a>`).join('')}</div>`;
@@ -798,7 +771,7 @@
       actIc.onclick = ()=>openProfile(f.person);
       actViewP.hidden = false; actViewP.onclick = ()=>openProfile(f.person);
     } else {
-      actIc.className = 'act-ic'; actIc.innerHTML = icons[f.i]; actIc.onclick = null; actViewP.hidden = true;
+      actIc.className = 'act-ic fi-' + f.i; actIc.innerHTML = icons[f.i]; actIc.onclick = null; actViewP.hidden = true;
     }
     document.getElementById('actT').textContent = f.t;
     document.getElementById('actS').textContent = f.s;

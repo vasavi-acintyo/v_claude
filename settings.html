@@ -47,7 +47,7 @@
   .sheet .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:6px auto 14px;}
   .sheet h2{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;margin:0 2px 3px;}
   .sheet p{font-size:10px;color:var(--muted);margin:0 2px 6px;}
-  .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:12px 0 6px;}
+  .theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0 6px;}
   .theme-opt{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);cursor:pointer;color:inherit;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
   .theme-opt:active{transform:scale(.96);} .theme-opt.active{border-color:var(--brand);}
   .theme-opt .sw{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.6);box-shadow:0 2px 6px rgba(0,0,0,.15);}
@@ -144,11 +144,11 @@
   function openAppearance(){ apBackdrop.classList.add('open'); apSheet.classList.add('open'); }
   apBackdrop.addEventListener('click', ()=>{ apBackdrop.classList.remove('open'); apSheet.classList.remove('open'); });
   (function(){
-    const THEMES=[{id:'classical',name:'Classic',c:'#7d2c3b'},{id:'blue',name:'Ocean',c:'#1e5fbf'},{id:'green',name:'Forest',c:'#0f7a5a'}];
+    const THEMES=[{id:'vibrant',name:'V Theme',c:'#1e5fbf'},{id:'classical',name:'Classic',c:'#7d2c3b'},{id:'blue',name:'Ocean',c:'#1e5fbf'},{id:'green',name:'Forest',c:'#0f7a5a'}];
     const grid=document.getElementById('themeGrid'); let cur='blue'; try{ cur=localStorage.getItem('cmeTheme')||'blue'; }catch(e){}
     const tick='<svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
     grid.innerHTML=THEMES.map(t=>`<button class="theme-opt${t.id===cur?' active':''}" data-t="${t.id}">${tick}<span class="sw" style="background:${t.c}"></span><span class="tn">${t.name}</span></button>`).join('');
-    grid.addEventListener('click',e=>{ const b=e.target.closest('.theme-opt'); if(!b) return; const t=b.dataset.t; applyTheme(t); try{ localStorage.setItem('cmeTheme',t); }catch(err){} grid.querySelectorAll('.theme-opt').forEach(x=>x.classList.toggle('active',x===b)); toast(THEMES.find(x=>x.id===t).name+' theme applied'); });
+    grid.addEventListener('click',e=>{ const b=e.target.closest('.theme-opt'); if(!b) return; const t=b.dataset.t; applyTheme(t); try{ localStorage.setItem('cmeTheme',t); }catch(err){} grid.querySelectorAll('.theme-opt').forEach(x=>x.classList.toggle('active',x===b)); toast(THEMES.find(x=>x.id===t).name+' applied'); });
   })();
 
   (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
