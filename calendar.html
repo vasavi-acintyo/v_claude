@@ -149,7 +149,8 @@
 
   <div class="scroll">
     <div class="ptop rise">
-      <div><h1>Calendar</h1><div class="sub">Your CME schedule</div></div>
+      <button class="icon-btn" id="back" aria-label="Back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <div style="flex:1;min-width:0"><h1>Calendar</h1><div class="sub">Your CME schedule</div></div>
       <button class="icon-btn" id="addBtn" aria-label="Add event"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
     </div>
 
@@ -339,6 +340,7 @@
   document.getElementById('prevM').addEventListener('click',()=>gotoMonth(-1));
   document.getElementById('nextM').addEventListener('click',()=>gotoMonth(1));
   document.getElementById('addBtn').addEventListener('click',()=>toast('Add event — coming soon'));
+  document.getElementById('back').addEventListener('click',()=>{ history.length>1?history.back():location.href='cme.html'; });
 </script>
 <script>
   (function(){

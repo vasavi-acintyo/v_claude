@@ -18,6 +18,8 @@
   .ptop{display:flex;align-items:center;justify-content:space-between;padding:8px 0 2px;}
   .ptop h1{font-size:20px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
   .ptop .sub{font-size:10.5px;color:var(--muted);margin-top:2px;}
+  .feedbar .ptop{flex:1 1 auto;min-width:0;padding:0;flex-direction:column;align-items:flex-start;justify-content:center;}
+  .feedbar .ptop h1{font-size:18px;line-height:1.15;}
   .icon-btn{width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);}
 
   .search{position:relative;margin-top:14px;}
@@ -82,6 +84,7 @@
   .grp .sp{font-size:9.5px;color:var(--muted);margin-top:2px;}
   .grp .go{font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:5px 11px;border-radius:20px;flex:0 0 auto;}
   .grp .go.pending{color:var(--gold);background:rgba(176,137,79,.16);}
+  .grp .grp-req{font-size:9px;font-weight:800;color:#fff;background:var(--brand);padding:5px 10px;border-radius:20px;flex:0 0 auto;white-space:nowrap;}
   .grp .dots{width:32px;height:32px;border-radius:50%;border:none;background:none;color:var(--muted);display:grid;place-items:center;flex:0 0 auto;cursor:pointer;}
   .grp .dots:hover{background:var(--chip);color:var(--brand);}
   .grp .dots svg{width:17px;height:17px;}
@@ -403,7 +406,7 @@
   <div class="scroll">
     <!-- top bar -->
     <div class="feedbar rise">
-      <div style="flex:1"></div>
+      <div class="ptop"><h1>Network</h1><div class="sub">Connect, grow &amp; discover colleagues</div></div>
       <button class="tb-ic" aria-label="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg></button>
       <a class="tb-prof" href="profile.html" aria-label="My profile"><img class="tb-av" src="https://randomuser.me/api/portraits/women/79.jpg" alt=""></a>
     </div>
@@ -472,6 +475,7 @@
 
     <!-- ALERTS -->
     <div class="panel" data-panel="alerts" hidden>
+      <div class="sec2" style="margin-top:16px">Alerts</div>
       <div class="alert-list" id="alerts" style="margin-top:8px"></div>
     </div>
   </div>
@@ -655,7 +659,7 @@
 
   // ---- Groups ----
   let myCreatedGroups=[]; try{ myCreatedGroups=JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){}
-  const groups = myCreatedGroups.map(g=>({ name:g.name, members:g.members, ico:grpIco, avatar:g.avatar })).concat([
+  const groups = myCreatedGroups.map(g=>({ name:g.name, members:g.members, ico:grpIco, avatar:g.avatar, reqCount:(g.joinRequests||[]).length })).concat([
     { name:'Indian Diabetes Forum',   members:'12.4k members', ico:grpIco },
     { name:'City Cardiology Society', members:'3.2k members',  ico:grpIco },
     { name:'Young Physicians Network', members:'8.7k members', ico:grpIco }
@@ -663,7 +667,7 @@
   const dotsIco='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>';
   function renderMyGroups(){
     document.getElementById('groups').innerHTML = groups.length ? groups.map((g,i)=>`
-      <div class="grp" data-gi="${i}"><span class="gi">${g.avatar?`<img src="${g.avatar}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:14px">`:g.ico}</span><div class="m"><div class="nm">${g.name}</div><div class="sp">${g.members}</div></div><button type="button" class="dots" data-gdots="${i}" aria-label="Group options">${dotsIco}</button></div>`).join('')
+      <div class="grp" data-gi="${i}"><span class="gi">${g.avatar?`<img src="${g.avatar}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:14px">`:g.ico}</span><div class="m"><div class="nm">${g.name}</div><div class="sp">${g.members}</div></div>${g.reqCount?`<span class="grp-req">${g.reqCount} request${g.reqCount>1?'s':''}</span>`:''}<button type="button" class="dots" data-gdots="${i}" aria-label="Group options">${dotsIco}</button></div>`).join('')
       : `<div class="grp-empty">You haven't joined any groups yet.</div>`;
   }
   renderMyGroups();

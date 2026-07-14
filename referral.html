@@ -242,6 +242,22 @@
   .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);z-index:60;background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;max-width:82%;text-align:center;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
+  /* ===== V Theme ===== */
+  [data-theme="vibrant"] .pts{background:var(--card);border:1px solid var(--line);box-shadow:0 8px 20px -14px rgba(30,20,60,.2);}
+  [data-theme="vibrant"] .pts:hover{border-color:var(--brand);box-shadow:0 12px 26px -14px rgba(30,20,60,.26);}
+  [data-theme="vibrant"] .cases-row{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.18);}
+  [data-theme="vibrant"] .cases-row:hover{box-shadow:0 10px 22px -14px rgba(30,20,60,.24);}
+  [data-theme="vibrant"] .cases-row .ci{background:#ede9fe;color:#7c3aed;}
+  [data-theme="vibrant"] .rcard{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .rcard:hover{box-shadow:0 12px 24px -14px rgba(30,20,60,.22);}
+
+  /* specialty-colored doctor avatars/icons — same specialty, same color everywhere in the app */
+  [data-theme="vibrant"] .rav[data-spec="Cardiology"],[data-theme="vibrant"] .d-doc .di[data-spec="Cardiology"],[data-theme="vibrant"] .pk-av[data-spec="Cardiology"]{background:#ffe4e6;color:#e11d48;}
+  [data-theme="vibrant"] .rav[data-spec="Endocrinology"],[data-theme="vibrant"] .d-doc .di[data-spec="Endocrinology"],[data-theme="vibrant"] .pk-av[data-spec="Endocrinology"]{background:#dbeafe;color:#2563eb;}
+  [data-theme="vibrant"] .rav[data-spec="Neurology"],[data-theme="vibrant"] .d-doc .di[data-spec="Neurology"],[data-theme="vibrant"] .pk-av[data-spec="Neurology"]{background:#ede9fe;color:#7c3aed;}
+  [data-theme="vibrant"] .rav[data-spec="Nephrology"],[data-theme="vibrant"] .d-doc .di[data-spec="Nephrology"],[data-theme="vibrant"] .pk-av[data-spec="Nephrology"]{background:#ccfbf1;color:#0d9488;}
+  [data-theme="vibrant"] .rav[data-spec="Oncology"],[data-theme="vibrant"] .d-doc .di[data-spec="Oncology"],[data-theme="vibrant"] .pk-av[data-spec="Oncology"]{background:#fae8ff;color:#c026d3;}
+
   /* Doxy mascot badge — V Theme only; other themes keep a plain line icon like the rest of the nav */
   .doxy-classic{display:block;}
   .doxy-badge{display:none;}
@@ -531,7 +547,7 @@
     const prioTag = r.priority && r.priority!=='routine' ? '<span class="prio '+r.priority+'">'+esc(r.priority)+'</span>' : '';
     const ptsTag = (r.status==='completed' && r.points) ? '<span class="rpts">'+ICON.star+'+'+r.points+'</span>' : '';
     return '<button class="rcard" data-id="'+r.id+'">'+
-      '<span class="rav">'+esc(initials(r.doctor.name))+(r.doctor.img?'<img src="'+esc(r.doctor.img)+'" alt="" onerror="this.remove()">':'')+'</span>'+
+      '<span class="rav" data-spec="'+esc(r.doctor.spec)+'">'+esc(initials(r.doctor.name))+(r.doctor.img?'<img src="'+esc(r.doctor.img)+'" alt="" onerror="this.remove()">':'')+'</span>'+
       '<div class="rinfo">'+
         '<div class="rname"><span class="who">'+esc(r.patient.name)+'</span>'+prioTag+'</div>'+
         '<div class="rcond">'+esc(r.condition)+'</div>'+
@@ -582,7 +598,7 @@
       '<div class="m"><div class="nm">'+esc(r.patient.name)+'</div><div class="mt">'+esc(r.patient.age)+' yrs · '+esc(r.patient.sex)+' · '+esc(r.condition)+'</div></div></div>'+
       '<div class="d-status">'+stpill(r.status)+(r.priority&&r.priority!=='routine'?'<span class="prio '+r.priority+'">'+esc(r.priority)+'</span>':'')+(r.status==='completed'&&r.points?'<span class="rpts">'+ICON.star+'+'+r.points+' pts earned</span>':'')+'</div>'+
 
-      '<div class="d-doc"><span class="di" style="overflow:hidden;position:relative">'+ICON.branch+(r.doctor.img?'<img src="'+esc(r.doctor.img)+'" alt="" onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">':'')+'</span><div class="m"><div class="who">'+esc(r.doctor.name)+'</div><div class="role">'+dirTag+' · '+esc(r.doctor.spec)+' · '+esc(r.doctor.hosp||'')+'</div></div></div>'+
+      '<div class="d-doc"><span class="di" data-spec="'+esc(r.doctor.spec)+'" style="overflow:hidden;position:relative">'+ICON.branch+(r.doctor.img?'<img src="'+esc(r.doctor.img)+'" alt="" onerror="this.remove()" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">':'')+'</span><div class="m"><div class="who">'+esc(r.doctor.name)+'</div><div class="role">'+dirTag+' · '+esc(r.doctor.spec)+' · '+esc(r.doctor.hosp||'')+'</div></div></div>'+
 
       '<div class="d-sec"><div class="d-lbl">Patient details</div><div class="grid2">'+
         '<div class="kv"><div class="k">Age</div><div class="v">'+esc(r.patient.age)+' years</div></div>'+
@@ -721,7 +737,7 @@
     docs = docs.slice().sort((a,b)=>(b.spec===curSpec?1:0)-(a.spec===curSpec?1:0));
     pkList.innerHTML = docs.length ? docs.map(d=>
       '<button class="pk-row" data-name="'+esc(d.name)+'">'+
-        '<span class="pk-av">'+esc(initials(d.name))+(d.img?'<img src="'+esc(d.img)+'" alt="" onerror="this.remove()">':'')+'</span>'+
+        '<span class="pk-av" data-spec="'+esc(d.spec)+'">'+esc(initials(d.name))+(d.img?'<img src="'+esc(d.img)+'" alt="" onerror="this.remove()">':'')+'</span>'+
         '<div class="pk-m"><div class="pk-nm">'+esc(d.name)+'</div><div class="pk-rl">'+esc(d.spec)+' · '+esc(d.hosp)+'</div></div>'+
         (d.spec===curSpec?'<span class="pk-tag">Same specialty</span>':'')+
         '<span class="pk-ch">'+chev+'</span>'+
