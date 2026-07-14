@@ -12,7 +12,7 @@
   .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
   .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
 
-  .scroll{flex:1 1 auto;overflow-y:auto;padding:6px 18px 22px;}
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:6px 18px 16px;}
   .scroll::-webkit-scrollbar{width:0;}
 
   /* header */
@@ -25,7 +25,7 @@
   .htop .prof img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);border:1px solid var(--line);display:block;}
 
   /* credits hero */
-  .hero{display:flex;align-items:center;gap:16px;margin-top:16px;background:var(--soft1);border:1px solid transparent;border-radius:20px;padding:16px;}
+  .hero{display:flex;align-items:center;gap:16px;margin-top:4px;background:var(--soft1);border:1px solid transparent;border-radius:20px;padding:16px;}
   .hero-ring{position:relative;width:76px;height:76px;flex:0 0 auto;}
   .hero-ring svg{width:76px;height:76px;transform:rotate(-90deg);}
   .hr-t{fill:none;stroke:rgba(0,0,0,.08);stroke-width:8;}
@@ -44,7 +44,7 @@
   .hm-stats .sep{width:3px;height:3px;border-radius:50%;background:var(--muted);opacity:.5;}
 
   /* continue watching */
-  .cw{display:flex;gap:13px;align-items:center;margin-top:13px;background:var(--soft2);border:1px solid transparent;border-radius:18px;padding:12px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .cw{display:flex;gap:13px;align-items:center;margin-top:6px;background:var(--soft2);border:1px solid transparent;border-radius:18px;padding:12px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
   .cw:hover{transform:translateY(-2px);border-color:var(--brand);} .cw:active{transform:scale(.99);}
   .cw-thumb{position:relative;width:80px;height:66px;border-radius:13px;flex:0 0 auto;display:grid;place-items:center;color:#fff;background:linear-gradient(140deg,var(--g1),var(--g2));overflow:hidden;}
   .cw-thumb::after{content:"";position:absolute;right:-16px;top:-16px;width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.16);}
@@ -58,18 +58,18 @@
   .cw-pct{font-size:9px;font-weight:800;color:var(--brand);margin-top:6px;}
 
   /* section header */
-  .sh{display:flex;align-items:baseline;justify-content:space-between;margin:22px 2px 0;}
+  .sh{display:flex;align-items:baseline;justify-content:space-between;margin:6px 2px 0;}
   .sh h2{font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
 
   /* filter tabs — soft pills */
-  .filters{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:12px -2px 0;padding:0 2px;}
+  .filters{display:flex;gap:7px;overflow-x:auto;scrollbar-width:none;margin:6px -2px 0;padding:0 2px;}
   .filters::-webkit-scrollbar{display:none;}
   .filt{flex:0 0 auto;background:var(--soft1);border:1px solid transparent;border-radius:20px;padding:8px 15px;min-height:38px;font-size:11px;font-weight:700;font-family:inherit;color:var(--slate-700);cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s, color .18s, background .18s;}
   .filt:hover{border-color:var(--brand);} .filt:active{transform:scale(.95);}
   .filt.active{background:var(--brand);color:#fff;border-color:var(--brand);}
 
   /* learning list */
-  .list{display:flex;flex-direction:column;gap:10px;margin-top:13px;}
+  .list{display:flex;flex-direction:column;gap:6px;margin-top:6px;}
   .ml{background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;animation:fadeIn .4s ease both;}
   .ml:hover{transform:translateY(-2px);border-color:var(--brand);} .ml:active{transform:scale(.99);}
   .ml-row{display:flex;gap:12px;align-items:flex-start;}
@@ -93,32 +93,26 @@
   .ml-note{font-size:9.5px;color:var(--muted);font-weight:600;display:inline-flex;align-items:center;gap:5px;} .ml-note svg{width:12px;height:12px;}
   .ml-act{margin-left:auto;border:none;font-family:inherit;font-size:10.5px;font-weight:800;padding:8px 15px;min-height:40px;border-radius:11px;cursor:pointer;white-space:nowrap;transition:transform .16s cubic-bezier(.22,1,.36,1), background .16s;}
   .ml-act:active{transform:scale(.96);}
-  .ml-act.a-reminded{background:rgba(63,125,78,.15);color:var(--green);}
   .a-primary{background:var(--brand);color:#fff;} .a-primary:hover{background:var(--brand-dark);}
   .a-ghost{background:var(--card);color:var(--ink);} .a-ghost:hover{background:var(--chip);}
 
   /* ---- Certificates ---- */
-  .cert-head{display:flex;align-items:center;justify-content:space-between;margin:24px 0 12px;}
-  .cert-head h2{font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
-  .up-btn{display:inline-flex;align-items:center;gap:6px;min-height:38px;font-size:10.5px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:8px 13px;border-radius:11px;cursor:pointer;transition:background .15s, transform .16s cubic-bezier(.22,1,.36,1);}
-  .up-btn:active{transform:scale(.96);}
-  .up-btn svg{width:14px;height:14px;}
-  .cert-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
-  .cert{position:relative;background:var(--soft1);border:1px solid transparent;border-radius:14px;overflow:hidden;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;animation:fadeIn .35s ease both;}
-  .cert:hover{transform:translateY(-3px);border-color:var(--brand);}
-  .cert .thumb{height:94px;background:var(--brand-soft);display:grid;place-items:center;overflow:hidden;}
+  .cert-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+  .cert{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;box-shadow:0 6px 16px -14px rgba(0,0,0,.16);transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s, box-shadow .18s;animation:fadeIn .35s ease both;}
+  .cert:hover{transform:translateY(-3px);border-color:var(--brand);box-shadow:0 12px 24px -14px rgba(0,0,0,.22);}
+  .cert .thumb{height:104px;background:var(--brand-soft);display:grid;place-items:center;overflow:hidden;position:relative;}
   .cert .thumb img{width:100%;height:100%;object-fit:cover;}
-  .cert .thumb .pdf{display:flex;flex-direction:column;align-items:center;gap:5px;color:var(--brand);font-size:9px;font-weight:800;letter-spacing:.05em;}
-  .cert .thumb .pdf svg{width:26px;height:26px;}
-  .cert .meta{padding:9px 10px 11px;}
-  .cert .nm{font-size:10.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .cert .dt{font-size:9px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px;}
-  .cert .cr{color:var(--brand);font-weight:800;}
-  .cert .del{position:absolute;top:0;right:0;width:44px;height:44px;padding:7px 7px 0 0;border:none;background:none;color:transparent;font-size:0;line-height:1;display:flex;align-items:flex-start;justify-content:flex-end;cursor:pointer;}
-  .cert .del::before{content:"✕";width:24px;height:24px;border-radius:8px;background:rgba(0,0,0,.5);color:#fff;font-size:13px;display:grid;place-items:center;}
-  .cert-add{border:1.5px dashed var(--line);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:139px;cursor:pointer;color:var(--brand);font-size:10px;font-weight:800;transition:border-color .15s, background .15s;}
-  .cert-add:hover{border-color:var(--brand);background:var(--brand-soft);}
-  .cert-add svg{width:24px;height:24px;}
+  .cert .thumb .pdf{display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--brand);font-size:9px;font-weight:800;letter-spacing:.05em;}
+  .cert .thumb .pdf svg{width:28px;height:28px;}
+  .cert .seal{position:absolute;bottom:7px;left:7px;width:24px;height:24px;border-radius:50%;background:var(--card);color:var(--brand);display:grid;place-items:center;box-shadow:0 3px 8px -2px rgba(0,0,0,.3);}
+  .cert .seal svg{width:13px;height:13px;}
+  .cert .meta{padding:10px 11px 12px;}
+  .cert .nm{font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cert .row{display:flex;align-items:center;justify-content:space-between;margin-top:6px;gap:6px;}
+  .cert .dt{font-size:8.5px;color:var(--muted);display:flex;align-items:center;gap:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cert .cr{flex:0 0 auto;font-size:8px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 7px;border-radius:20px;}
+  .cert .del{position:absolute;top:0;right:0;width:40px;height:40px;padding:6px 6px 0 0;border:none;background:none;color:transparent;font-size:0;line-height:1;display:flex;align-items:flex-start;justify-content:flex-end;cursor:pointer;z-index:2;}
+  .cert .del::before{content:"✕";width:22px;height:22px;border-radius:8px;background:rgba(0,0,0,.5);color:#fff;font-size:12px;display:grid;place-items:center;}
   /* full-screen certificate viewer */
   .cert-modal{position:absolute;inset:0;background:rgba(0,0,0,.88);z-index:40;display:none;flex-direction:column;padding:16px;}
   .cert-modal.open{display:flex;animation:fadeIn .2s ease;}
@@ -149,6 +143,34 @@
   @keyframes doxyLook{0%,12%{transform:translateX(0)}35%,48%{transform:translateX(-1.4px)}65%,78%{transform:translateX(1.4px)}100%{transform:translateX(0)}}
 
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
+
+  /* =============================================================
+     V Theme — trendy card style + colorful accents, matching the
+     home-page redesign. Classic/Ocean/Forest keep the original look;
+     this only applies when [data-theme="vibrant"].
+     ============================================================= */
+  [data-theme="vibrant"] .hero{background:var(--card);border:1px solid var(--line);box-shadow:0 8px 20px -16px rgba(30,20,60,.18);}
+  [data-theme="vibrant"] .cw{background:var(--card);border:1px solid var(--line);box-shadow:0 8px 20px -16px rgba(30,20,60,.18);}
+  [data-theme="vibrant"] .cw:hover{box-shadow:0 14px 26px -14px rgba(30,20,60,.24);}
+
+  [data-theme="vibrant"] .sh h2{position:relative;padding-left:12px;}
+  [data-theme="vibrant"] .sh h2::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--brand);}
+
+  [data-theme="vibrant"] .ml{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .ml:hover{box-shadow:0 12px 22px -14px rgba(30,20,60,.22);}
+  [data-theme="vibrant"] .ml[data-thumb="radio"] .ml-thumb{color:#2563eb;background:#dbeafe;}
+  [data-theme="vibrant"] .ml[data-thumb="cal"] .ml-thumb{color:#7c3aed;background:#ede9fe;}
+  [data-theme="vibrant"] .ml[data-thumb="play"] .ml-thumb{color:#d97706;background:#fef3c7;}
+  [data-theme="vibrant"] .ml[data-thumb="award"] .ml-thumb{color:#16a34a;background:#dcfce7;}
+
+  [data-theme="vibrant"] .cert:nth-child(4n+1) .thumb{background:#dbeafe;}
+  [data-theme="vibrant"] .cert:nth-child(4n+1) .thumb .pdf{color:#2563eb;}
+  [data-theme="vibrant"] .cert:nth-child(4n+2) .thumb{background:#ede9fe;}
+  [data-theme="vibrant"] .cert:nth-child(4n+2) .thumb .pdf{color:#7c3aed;}
+  [data-theme="vibrant"] .cert:nth-child(4n+3) .thumb{background:#fef3c7;}
+  [data-theme="vibrant"] .cert:nth-child(4n+3) .thumb .pdf{color:#d97706;}
+  [data-theme="vibrant"] .cert:nth-child(4n) .thumb{background:#dcfce7;}
+  [data-theme="vibrant"] .cert:nth-child(4n) .thumb .pdf{color:#16a34a;}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
 </head>
@@ -204,14 +226,6 @@
     <div class="list" id="list"></div>
 
     <!-- Certificates -->
-    <div class="cert-head">
-      <h2>My Certificates</h2>
-      <label class="up-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-        Upload
-        <input type="file" id="certFile" accept="image/*,application/pdf" multiple hidden>
-      </label>
-    </div>
     <div class="cert-grid" id="certGrid"></div>
   </div>
 
@@ -288,7 +302,7 @@
       const note = it.mode==='offline'
         ? `<span class="ml-note">${ic.pin} ${it.venue}</span>`
         : `<span class="ml-note">${ic.wifi} Online</span>`;
-      return `${note}<button class="ml-act a-ghost" onclick="event.stopPropagation();toggleReminder(this)">Set reminder</button>`;
+      return note;
     }
     if(it.status==='video'){
       return `<span class="ml-note">${it.progress}% watched</span><button class="ml-act a-primary" onclick="event.stopPropagation();location.href='cme-sessions.html?title=${encodeURIComponent(it.title)}'">${it.progress?'Resume':'Start'}</button>`;
@@ -302,14 +316,6 @@
     if(!t){ t = document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); }
     t.textContent = msg; void t.offsetWidth; t.classList.add('show');
     clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 1400);
-  }
-
-  /* "Set reminder" — toggle a persistent set/unset state + toast */
-  function toggleReminder(btn){
-    const on = btn.classList.toggle('a-reminded');
-    btn.classList.toggle('a-ghost', !on);
-    btn.textContent = on ? 'Reminder set ✓' : 'Set reminder';
-    toast(on ? 'Reminder set ✓' : 'Reminder removed');
   }
 
   /* "Certificate" — reuse the certificate viewer modal with a generated certificate */
@@ -331,7 +337,7 @@
     const el = document.getElementById('list');
     if(!list.length){ el.innerHTML = `<div style="text-align:center;color:var(--muted);font-size:11px;padding:30px 10px">Nothing here yet.</div>`; return; }
     el.innerHTML = list.map((it,idx)=>`
-      <div class="ml" style="animation-delay:${idx*60}ms" onclick="location.href='${it.status==='video' ? 'cme-sessions.html?title='+encodeURIComponent(it.title) : 'speakers.html?type=course&title='+encodeURIComponent(it.title)}'">
+      <div class="ml" data-thumb="${it.thumb}" style="animation-delay:${idx*60}ms" onclick="location.href='${it.status==='video' ? 'cme-sessions.html?title='+encodeURIComponent(it.title) : 'speakers.html?type=course&title='+encodeURIComponent(it.title)}'">
         <div class="ml-row">
           <div class="ml-thumb">${ic[it.thumb]}</div>
           <div class="ml-info">
@@ -361,44 +367,29 @@
   /* ---- Certificates: upload, store (localStorage), view, delete ---- */
   const CERT_KEY = 'cmeCerts';
   const grid = document.getElementById('certGrid');
-  const fileInput = document.getElementById('certFile');
   const modal = document.getElementById('certModal');
   const pdfIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
-  const plusIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>';
+  const sealIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/><polyline points="9 12 11.5 14.5 15.5 9.5"/></svg>';
 
   let certs = [];
   try{ certs = JSON.parse(localStorage.getItem(CERT_KEY) || '[]'); }catch(e){ certs = []; }
 
   function saveCerts(){
     try{ localStorage.setItem(CERT_KEY, JSON.stringify(certs)); }
-    catch(e){ alert('Local storage is full — try a smaller file or remove an older certificate.'); }
-  }
-  function today(){
-    const d = new Date();
-    return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+    catch(e){ alert('Could not save — local storage is full.'); }
   }
   function renderCerts(){
     const cards = certs.map((c,i)=>`
       <div class="cert" data-i="${i}">
-        <div class="thumb">${c.type && c.type.indexOf('image')===0 ? `<img src="${c.data}" alt="">` : `<div class="pdf">${pdfIco}PDF</div>`}</div>
+        <div class="thumb">${c.type && c.type.indexOf('image')===0 ? `<img src="${c.data}" alt="">` : `<div class="pdf">${pdfIco}PDF</div>`}<span class="seal">${sealIco}</span></div>
         <button class="del" data-del="${i}" aria-label="Delete">✕</button>
-        <div class="meta"><div class="nm">${c.name}</div><div class="dt">${c.date}${c.cr?` · <span class="cr">${c.cr}</span>`:''}</div></div>
+        <div class="meta">
+          <div class="nm">${c.name}</div>
+          <div class="row"><span class="dt">${c.date}</span>${c.cr?`<span class="cr">${c.cr}</span>`:''}</div>
+        </div>
       </div>`).join('');
-    grid.innerHTML = cards + `<label class="cert-add" for="certFile">${plusIco}<span>Upload certificate</span></label>`;
+    grid.innerHTML = cards || `<div style="text-align:center;color:var(--muted);font-size:11px;padding:30px 10px;grid-column:1/-1">No certificates yet.</div>`;
   }
-
-  fileInput.addEventListener('change', e=>{
-    const files = [...e.target.files];
-    files.forEach(f=>{
-      const r = new FileReader();
-      r.onload = ()=>{
-        certs.unshift({ name:f.name.replace(/\.[^.]+$/,''), type:f.type||'application/pdf', date:today(), data:r.result });
-        saveCerts(); renderCerts();
-      };
-      r.readAsDataURL(f);
-    });
-    e.target.value = '';
-  });
 
   grid.addEventListener('click', e=>{
     const del = e.target.closest('[data-del]');
