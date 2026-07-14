@@ -122,6 +122,17 @@
   @keyframes doxyLook{0%,12%{transform:translateX(0)}35%,48%{transform:translateX(-1.4px)}65%,78%{transform:translateX(1.4px)}100%{transform:translateX(0)}}
 
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
+
+  /* =============================================================
+     V Theme — trendy card style + colorful accents, matching the
+     home-page redesign. Classic/Ocean/Forest keep the original look;
+     this only applies when [data-theme="vibrant"].
+     ============================================================= */
+  [data-theme="vibrant"] .tile{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .tile:nth-child(2){background:var(--card);}
+  [data-theme="vibrant"] .tile:nth-child(1) b{color:#2563eb;}
+  [data-theme="vibrant"] .tile:nth-child(2) b{color:#7c3aed;}
+  [data-theme="vibrant"] .tile:nth-child(3) b{color:#d97706;}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
 </head>

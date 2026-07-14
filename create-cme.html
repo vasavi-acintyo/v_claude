@@ -67,6 +67,17 @@
   .mini-search input{width:100%;background:var(--chip);border:1px solid transparent;border-radius:10px;padding:10px 12px 10px 34px;font-size:12px;font-family:inherit;color:var(--ink);}
   .mini-search input::placeholder{color:var(--muted);}
   .mini-search input:focus{outline:none;border-color:var(--brand);}
+  .mini-search.combo input{padding-right:32px;cursor:pointer;}
+  .mini-search.combo .chev{left:auto;right:12px;width:13px;height:13px;transition:transform .18s;}
+  .mini-search.combo.open .chev{transform:translateY(-50%) rotate(180deg);}
+  .invite-tags{display:flex;flex-wrap:wrap;gap:7px;}
+  .invite-tags:not(:empty){margin-bottom:10px;}
+  .inv-tag{display:inline-flex;align-items:center;gap:6px;max-width:100%;background:var(--brand-soft);border:1px solid var(--line);border-radius:20px;padding:5px 6px 5px 5px;font-size:11px;font-weight:700;color:var(--ink);animation:fadeIn .18s ease both;}
+  .inv-tag img,.inv-tag .ini{width:22px;height:22px;border-radius:50%;object-fit:cover;background:var(--chip);color:var(--brand);flex:0 0 auto;display:grid;place-items:center;font-size:9.5px;font-weight:800;font-family:var(--display);}
+  .inv-tag b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:110px;font-weight:700;}
+  .inv-tag .rm{width:18px;height:18px;border-radius:50%;border:none;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;flex:0 0 auto;padding:0;}
+  .inv-tag .rm svg{width:10px;height:10px;}
+  .inv-tag .rm:hover{color:var(--brand);}
   .spec-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;max-height:150px;overflow-y:auto;}
   .spec-list::-webkit-scrollbar{width:0;}
   .picker-empty{font-size:11px;color:var(--muted);padding:8px 2px;}
@@ -302,6 +313,38 @@
 
     <!-- 3 · SPEAKERS & ACCESS -->
     <div class="sec-h"><span class="n">3</span><h2>Speakers &amp; access</h2></div>
+    <div class="field">
+      <label>Visibility <span class="req">*</span></label>
+      <div class="seg" id="visibility">
+        <div class="opt sel" data-v="Public"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 3.6 6 3.6 9s-1.1 6.5-3.6 9c-2.5-2.5-3.6-6-3.6-9s1.1-6.5 3.6-9Z"/></svg></span><span class="on">Public</span></div>
+        <div class="opt" data-v="Group"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-1.5a3.5 3.5 0 0 0-3.5-3.5h-3A3.5 3.5 0 0 0 7 18.5V20"/><circle cx="12" cy="8" r="3.2"/><path d="M20 20v-1.2a3 3 0 0 0-2.2-2.9"/><path d="M4 20v-1.2A3 3 0 0 1 6.2 15.9"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/><path d="M8.5 5.2a3.2 3.2 0 0 0 0 5.6"/></svg></span><span class="on">Group only</span></div>
+        <div class="opt" data-v="Invite"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="10" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span><span class="on">Invite only</span></div>
+      </div>
+      <div class="sub" id="visSub">Anyone on MedHub can discover and register for this program.</div>
+    </div>
+    <div class="field" id="wVisGroup" hidden>
+      <label>Select group <span class="req">*</span></label>
+      <div class="mini-search combo" id="groupCombo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+        <input id="groupSearch" placeholder="Search or choose a group…" autocomplete="off">
+        <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="picker-panel" id="groupPicker" hidden>
+        <div class="spec-list" id="groupList"></div>
+      </div>
+    </div>
+    <div class="field" id="wVisInvite" hidden>
+      <label>Invite doctors <span class="req">*</span><span class="hint" id="inviteCount"></span></label>
+      <div class="invite-tags" id="inviteList"></div>
+      <button type="button" class="add-btn" id="addInvite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span class="lbl">Add doctor</span></button>
+      <div class="picker-panel" id="invitePicker" hidden>
+        <div class="mini-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+          <input id="inviteSearch" placeholder="Search your connections by name or specialty…" autocomplete="off">
+        </div>
+        <div class="spk-results" id="inviteResults"></div>
+      </div>
+    </div>
     <div class="field" id="spkField">
       <label>Faculty / speakers</label>
       <div class="spk-list" id="spkList"></div>
@@ -692,6 +735,116 @@
   });
   renderSpk();
 
+  // visibility — public / group only (searchable) / invite only (searchable connections)
+  const VIS_SUB={Public:'Anyone on MedHub can discover and register for this program.',
+    Group:'Only members of the selected group can see and join this program.',
+    Invite:'Only doctors you invite can see and join this program.'};
+  let myGroupsList=[]; try{ myGroupsList=JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){}
+  const groupOptions = myGroupsList.map(g=>g.name).concat(['Indian Diabetes Forum','City Cardiology Society','Young Physicians Network']);
+  let selectedGroup = (draftData && draftData.visGroup) ? draftData.visGroup : (groupOptions[0]||'');
+  let groupPickerOpen=false;
+  const groupSearchEl=document.getElementById('groupSearch');
+  function renderGroupList(){
+    const q=(groupSearchEl.value||'').trim().toLowerCase();
+    const filtered=groupOptions.filter(g=>!q || g.toLowerCase().includes(q));
+    document.getElementById('groupList').innerHTML = filtered.length
+      ? filtered.map(g=>`<button type="button" class="chip ${g===selectedGroup?'sel':''}" data-g="${esc(g)}">${esc(g)}</button>`).join('')
+      : `<div class="picker-empty">No groups match "${esc(q)}".</div>`;
+  }
+  function openGroupPicker(open){
+    groupPickerOpen=open;
+    document.getElementById('groupPicker').hidden=!open;
+    document.getElementById('groupCombo').classList.toggle('open',open);
+    if(open){ groupSearchEl.value=''; renderGroupList(); }
+    else { groupSearchEl.value=selectedGroup; }
+  }
+  groupSearchEl.addEventListener('focus', ()=>{ if(!groupPickerOpen) openGroupPicker(true); });
+  groupSearchEl.addEventListener('input', renderGroupList);
+  document.getElementById('groupList').addEventListener('click', e=>{
+    const c=e.target.closest('.chip[data-g]'); if(!c) return;
+    selectedGroup=c.dataset.g; openGroupPicker(false);
+  });
+  document.addEventListener('click', e=>{
+    if(groupPickerOpen && !e.target.closest('#wVisGroup')) openGroupPicker(false);
+  });
+  groupSearchEl.value=selectedGroup;
+
+  const CONNECTIONS=[
+    {n:'Dr. Kavya Reddy',r:'Endocrinologist',img:'https://randomuser.me/api/portraits/women/65.jpg'},
+    {n:'Dr. Sameer Shah',r:'Interventional Cardiologist',img:'https://randomuser.me/api/portraits/men/52.jpg'},
+    {n:'Dr. Imran Khan',r:'Consultant Physician',img:'https://randomuser.me/api/portraits/men/61.jpg'},
+    {n:'Dr. Neha Gupta',r:'Nephrologist',img:'https://randomuser.me/api/portraits/women/12.jpg'},
+    {n:'Dr. Rahul Verma',r:'Diabetologist',img:'https://randomuser.me/api/portraits/men/22.jpg'},
+    {n:'Dr. Anjali Desai',r:'Endocrinologist',img:'https://randomuser.me/api/portraits/women/32.jpg'},
+    {n:'Dr. Arjun Rao',r:'Cardiologist',img:'https://randomuser.me/api/portraits/men/41.jpg'}
+  ];
+  let invitees = (draftData && draftData.invitees && draftData.invitees.length) ? draftData.invitees.map(v=>({...v})) : [];
+  let invitePickerOpen=false;
+  function inviteAvatar(v){ return v.img ? `<img src="${v.img}" alt="">` : `<span class="ini">${esc((v.n||'?').replace('Dr. ','').charAt(0).toUpperCase())}</span>`; }
+  function renderInvitees(){
+    document.getElementById('inviteList').innerHTML = invitees.map((v,i)=>`
+      <span class="inv-tag" data-i="${i}" title="${esc(v.n)}${v.r?' · '+esc(v.r):''}">
+        ${inviteAvatar(v)}
+        <b>${esc(v.n.replace('Dr. ',''))}</b>
+        <button type="button" class="rm" data-i="${i}" aria-label="Remove ${esc(v.n)}">${xIco}</button>
+      </span>`).join('');
+    const cnt=document.getElementById('inviteCount');
+    cnt.textContent = invitees.length ? invitees.length+' invited' : '';
+  }
+  function renderInviteResults(){
+    const q=(document.getElementById('inviteSearch').value||'').trim();
+    const ql=q.toLowerCase();
+    const filtered=CONNECTIONS.filter(c=>!ql || (c.n+' '+c.r).toLowerCase().includes(ql));
+    const exists=!q || CONNECTIONS.some(c=>c.n.toLowerCase()===ql) || invitees.some(v=>v.n.toLowerCase()===ql);
+    let html=filtered.map(c=>{
+      const added=invitees.some(v=>v.n===c.n);
+      return `<div class="spk-row${added?' added':''}" data-n="${esc(c.n)}"><img src="${c.img}" alt=""><div class="nm"><b>${esc(c.n)}</b><span>${esc(c.r)}</span></div><button type="button" class="add" aria-label="${added?'Already invited':'Invite'}">${added?checkIco:plusIco}</button></div>`;
+    }).join('');
+    if(q && !exists){
+      html += `<div class="spk-row" data-custom-inv="${esc(q)}"><div class="spk-initial">${esc(q.charAt(0).toUpperCase())}</div><div class="nm"><b>${esc(q)}</b><span>Invite by name</span></div><button type="button" class="add" aria-label="Invite ${esc(q)}">${plusIco}</button></div>`;
+    }
+    document.getElementById('inviteResults').innerHTML = html || `<div class="picker-empty">No connections match "${esc(q)}".</div>`;
+  }
+  function addInvitee(name){
+    if(invitees.some(v=>v.n===name)) return;
+    const c=CONNECTIONS.find(c=>c.n===name);
+    invitees.push(c ? {...c} : {n:name, r:'', img:''});
+    renderInvitees(); renderInviteResults(); toast(name+' invited');
+  }
+  document.getElementById('inviteList').addEventListener('click', e=>{
+    const rm=e.target.closest('.rm'); if(!rm) return;
+    invitees.splice(+rm.dataset.i,1); renderInvitees(); if(invitePickerOpen) renderInviteResults();
+  });
+  document.getElementById('addInvite').addEventListener('click', ()=>{
+    invitePickerOpen=!invitePickerOpen;
+    document.getElementById('invitePicker').hidden=!invitePickerOpen;
+    document.getElementById('addInvite').classList.toggle('open',invitePickerOpen);
+    document.getElementById('addInvite').querySelector('.lbl').textContent = invitePickerOpen?'Close search':'Add doctor';
+    if(invitePickerOpen){ document.getElementById('inviteSearch').value=''; renderInviteResults(); document.getElementById('inviteSearch').focus(); }
+  });
+  document.getElementById('inviteResults').addEventListener('click', e=>{
+    const custom=e.target.closest('[data-custom-inv]');
+    if(custom){ addInvitee(custom.dataset.customInv); document.getElementById('inviteSearch').value=''; renderInviteResults(); return; }
+    const row=e.target.closest('.spk-row'); if(row) addInvitee(row.dataset.n);
+  });
+  document.getElementById('inviteSearch').addEventListener('input', renderInviteResults);
+  document.getElementById('inviteSearch').addEventListener('keydown', e=>{
+    if(e.key!=='Enter') return;
+    const q=e.target.value.trim(); if(!q) return;
+    const match=CONNECTIONS.find(c=>c.n.toLowerCase()===q.toLowerCase());
+    addInvitee(match?match.n:q); e.target.value=''; renderInviteResults();
+  });
+  renderInvitees();
+
+  function applyVisibility(v){
+    document.querySelectorAll('#visibility .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===v));
+    document.getElementById('visSub').textContent=VIS_SUB[v];
+    document.getElementById('wVisGroup').hidden = v!=='Group';
+    document.getElementById('wVisInvite').hidden = v!=='Invite';
+  }
+  document.getElementById('visibility').addEventListener('click', e=>{ const o=e.target.closest('.opt'); if(!o) return; applyVisibility(o.dataset.v); });
+  applyVisibility((draftData && draftData.visibility) ? draftData.visibility : 'Public');
+
   // video chapters (recorded programs)
   let chapters = (draftData && draftData.chapters && draftData.chapters.length)
     ? draftData.chapters.map(c=>({title:c.title||'', file:c.file||'', stamps:(c.stamps||[]).map(s=>({t:s.t||'', label:s.label||''}))}))
@@ -768,6 +921,9 @@
       accrBody: val('fAccr'),
       certName: certFile ? certFile.name : (draftData?draftData.certName||'':''),
       location: val('fLoc'),
+      visibility: document.querySelector('#visibility .opt.sel').dataset.v,
+      visGroup: selectedGroup,
+      invitees: invitees.map(v=>({n:v.n, r:v.r||'', img:v.img||''})),
       speakers: speakers.map(s=>({n:s.n, r:s.r||'', img:s.img||'', desc:s.desc||'', custom:!!s.custom, intl:!!s.intl})),
       seatsLimited: on('tgSeats'), seats: val('fSeats'), seatsPre: val('fSeatsPre'), seatsPost: val('fSeatsPost'),
       paid: on('tgPaid'), fee: val('fFee'),
@@ -803,6 +959,8 @@
     const title=document.getElementById('fTitle').value.trim();
     if(!title){ toast('Add a program title first'); document.getElementById('scroll').scrollTop=0; setTimeout(()=>document.getElementById('fTitle').focus(),150); return; }
     if(!materials.length){ toast('Upload a program brochure first'); document.getElementById('matUp').scrollIntoView({behavior:'smooth', block:'center'}); return; }
+    const visNow=document.querySelector('#visibility .opt.sel').dataset.v;
+    if(visNow==='Invite' && !invitees.length){ toast('Add at least one invitee first'); document.getElementById('wVisInvite').scrollIntoView({behavior:'smooth', block:'center'}); return; }
     if(!consent){ toast('Please confirm the accreditation checkbox'); document.getElementById('scroll').scrollTop=document.getElementById('scroll').scrollHeight; return; }
     document.getElementById('doneMsg').textContent='“'+title+'” is now live for doctors to discover and register.';
     const published=collectDraft();
