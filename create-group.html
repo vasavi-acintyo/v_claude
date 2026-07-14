@@ -98,7 +98,7 @@
 
   <div class="topbar">
     <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <span class="tt">Create group</span>
+    <span class="tt" id="topbarTitle">Create group</span>
   </div>
 
   <div class="scroll" id="scroll">
@@ -158,7 +158,7 @@
   </div>
 
   <div class="foot">
-    <button class="btn" id="createBtn">Create group
+    <button class="btn" id="createBtn"><span id="createBtnLabel">Create group</span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
     </button>
   </div>
@@ -223,11 +223,49 @@
     avatarPrev.hidden=true; avatarPrev.src=''; avatarEmpty.hidden=false; avatarRm.hidden=true; avatarUp.classList.remove('has');
   });
 
+  // edit an existing group — prefill from ?edit=<name>
+  const editName = new URLSearchParams(location.search).get('edit');
+  let editing = null;
+  if(editName){
+    let mine=[]; try{ mine=JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){}
+    editing = mine.find(g=>g.name===editName) || null;
+  }
+  if(editing){
+    document.getElementById('topbarTitle').textContent = 'Edit group';
+    document.getElementById('createBtnLabel').textContent = 'Save changes';
+    const fName=document.getElementById('fName'), fAbout=document.getElementById('fAbout');
+    fName.value = editing.name; cc(fName,'ccName');
+    fAbout.value = editing.bio; cc(fAbout,'ccAbout');
+    grpType = editing.type || 'Public';
+    document.querySelectorAll('#grpType .opt').forEach(x=>x.classList.toggle('sel', x.dataset.v===grpType));
+    if(editing.cover){ coverData=editing.cover; coverPrev.src=coverData; coverPrev.hidden=false; coverEmpty.hidden=true; coverRm.hidden=false; coverUp.classList.add('has'); }
+    if(editing.avatar){ avatarData=editing.avatar; avatarPrev.src=avatarData; avatarPrev.hidden=false; avatarEmpty.hidden=true; avatarRm.hidden=false; avatarUp.classList.add('has'); }
+  }
+
   document.getElementById('createBtn').addEventListener('click', ()=>{
     const name=document.getElementById('fName').value.trim();
     const about=document.getElementById('fAbout').value.trim();
     if(!name){ toast('Add a group name'); document.getElementById('fName').focus(); return; }
     if(!about){ toast('Add a short description'); document.getElementById('fAbout').focus(); return; }
+
+    let mine=[]; try{ mine=JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){}
+
+    if(editing){
+      const updated={ ...editing, name, bio:about, type:grpType, avatar:avatarData, cover:coverData };
+      const idx=mine.findIndex(g=>g.name===editing.name);
+      if(idx>-1) mine[idx]=updated; else mine.unshift(updated);
+      try{ localStorage.setItem('myGroups', JSON.stringify(mine)); }
+      catch(e){ toast('Saved without images — storage limit reached'); updated.avatar=''; updated.cover=''; try{ mine[idx]=updated; localStorage.setItem('myGroups', JSON.stringify(mine)); }catch(e2){} }
+      toast('Group updated');
+      location.href='group.html?name='+encodeURIComponent(name);
+      return;
+    }
+
+    // demo join requests, so there's something to review right after creating the group
+    const FAKE_REQUESTERS = [
+      {name:'Dr. Kavya Reddy', spec:'Endocrinologist · Apollo Hospitals', img:'https://randomuser.me/api/portraits/women/65.jpg', t:'2h'},
+      {name:'Dr. Rohan Verma', spec:'Oncologist · Tata Memorial', img:'https://randomuser.me/api/portraits/men/54.jpg', t:'1d'}
+    ];
 
     const group={
       name: name,
@@ -240,9 +278,9 @@
       admin: 'You',
       status: 'member',
       posts: [],
+      joinRequests: FAKE_REQUESTERS,
       createdAt: Date.now()
     };
-    let mine=[]; try{ mine=JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){}
     mine=mine.filter(g=>g.name!==name);
     mine.unshift(group);
     try{ localStorage.setItem('myGroups', JSON.stringify(mine)); }
