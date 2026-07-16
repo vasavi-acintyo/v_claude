@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;}
+  .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{flex:1;min-width:0;font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .topbar .dots{width:38px;height:38px;border-radius:50%;background:none;border:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
+  .topbar .dots:hover{background:var(--chip);color:var(--brand);} .topbar .dots svg{width:18px;height:18px;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:0 18px 20px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .cover{height:150px;border-radius:0 0 20px 20px;margin:0 -18px 14px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;display:grid;place-items:center;position:relative;overflow:hidden;}
+  .cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;}
+  .cover .ic{position:relative;z-index:1;} .cover .ic svg{width:34px;height:34px;}
+  .cover .stpill{position:absolute;top:12px;left:18px;z-index:1;}
+
+  .hd h1{font-size:19px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.25;}
+  .hd .sub{font-size:11px;color:var(--muted);margin-top:5px;line-height:1.5;}
+  .spec-chips{display:flex;flex-wrap:wrap;gap:7px;margin-top:11px;}
+  .spec-chip{font-size:10px;font-weight:700;color:var(--brand);background:var(--brand-soft);padding:5px 11px;border-radius:20px;}
+
+  .stats{display:flex;margin-top:16px;background:var(--soft1);border-radius:14px;padding:12px 4px;}
+  .stat{flex:1;text-align:center;position:relative;}
+  .stat+.stat::before{content:"";position:absolute;left:0;top:2px;bottom:2px;width:1px;background:var(--line);}
+  .stat b{display:block;font-size:15px;font-weight:800;font-family:var(--display);color:var(--ink);}
+  .stat span{font-size:8px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-top:3px;display:block;}
+
+  .sec{margin:20px 0 10px;} .sec h2{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;}
+  .bio{font-size:11.5px;line-height:1.65;color:var(--slate-700);}
+
+  .d-doc{display:flex;align-items:center;gap:11px;background:var(--soft1);border-radius:14px;padding:12px 13px;}
+  .d-doc .di{width:40px;height:40px;border-radius:11px;background:var(--card);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;font-size:14px;font-weight:800;font-family:var(--display);}
+  .d-doc .m{flex:1;min-width:0;} .d-doc .who{font-size:12.5px;font-weight:800;} .d-doc .role{font-size:9.5px;color:var(--muted);margin-top:2px;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .kv{background:var(--soft1);border-radius:12px;padding:10px 12px;} .kv .k{font-size:8.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);} .kv .v{font-size:12px;font-weight:700;color:var(--ink);margin-top:3px;}
+
+  .files{display:flex;flex-direction:column;gap:8px;}
+  .file{display:flex;align-items:center;gap:11px;padding:10px 12px;background:var(--soft1);border:1px solid transparent;border-radius:12px;cursor:pointer;transition:border-color .18s;}
+  .file:hover{border-color:var(--brand);}
+  .file .fi{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;} .file .fi svg{width:16px;height:16px;}
+  .file .m{flex:1;min-width:0;} .file .t{font-size:11.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;} .file .s{font-size:9px;color:var(--muted);margin-top:1px;}
+  .file .dl{color:var(--muted);flex:0 0 auto;} .file .dl svg{width:16px;height:16px;}
+
+  .tag-row{display:flex;flex-wrap:wrap;gap:7px;}
+  .tag-chip{font-size:10px;font-weight:700;color:var(--slate-700);background:var(--chip);padding:5px 11px;border-radius:20px;}
+
+  .empty2{text-align:center;color:var(--muted);font-size:11px;padding:16px;}
+
+  .actrow{display:flex;gap:8px;margin-top:16px;}
+  .ic-act{flex:0 0 auto;width:46px;height:46px;border-radius:13px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;transition:border-color .16s,transform .16s cubic-bezier(.22,1,.36,1);}
+  .ic-act:hover{border-color:var(--brand);} .ic-act:active{transform:scale(.94);} .ic-act svg{width:19px;height:19px;}
+  .ic-act.on{background:var(--brand-soft);border-color:var(--brand);color:var(--brand);}
+
+  .stpill{font-size:8px;font-weight:800;letter-spacing:.03em;padding:3px 8px;border-radius:20px;white-space:nowrap;text-transform:uppercase;}
+  .stpill.draft{color:var(--ink);background:rgba(255,255,255,.85);}
+  .stpill.published{color:#fff;background:rgba(0,0,0,.35);}
+
+  .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:60;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* hide-mock-statusbar */ .statusbar{display:none !important;}
+</style>
+  <link rel="stylesheet" href="global.css?v=10">
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
+    <div class="tt" id="topTitle">Presentation</div>
+    <button class="dots" id="moreBtn" aria-label="More"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>
+  </div>
+
+  <div class="scroll" id="scroll"></div>
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='presentations.html'; });
+
+  const monitorIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/><path d="M7 12v-3"/><path d="M11 12V6"/><path d="M15 12V9"/></svg>';
+  const clockIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>';
+  const fileIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  const imgIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.6"/><path d="m21 16-5-5L5 22"/></svg>';
+  const vidIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="3"/><path d="m16 10 6-3v10l-6-3z"/></svg>';
+  const dlIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 4 5-4"/><path d="M5 21h14"/></svg>';
+  const shareIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><line x1="8.3" y1="10.7" x2="15.7" y2="6.3"/><line x1="8.3" y1="13.3" x2="15.7" y2="17.7"/></svg>';
+  const bmIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21 12 16l-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>';
+
+  const SEED = [
+    { id:'p1', title:'Cardiometabolic Update 2025', subtitle:'New evidence for GLP-1 first-line use', description:'A review of the latest CVOT data supporting earlier GLP-1 agonist use in patients with type 2 diabetes and established cardiovascular disease, with practical prescribing guidance.',
+      specialty:'Cardiology', category:'Clinical Update', type:'CME Program', presenter:'You', coPresenter:'', organization:'Cardiological Society of India', venue:'Taj Lands End, Mumbai',
+      createdAt:'2026-05-02', updatedAt:'2026-07-10', slides:24, duration:'45 min', status:'published', visibility:'Public', eventDate:'2026-06-10',
+      views:340, downloads:52, shares:3, tags:['GLP-1','CVOT','Diabetes'],
+      files:[{name:'Cardiometabolic Update 2025.pptx', size:2400000},{name:'CVOT trial summary.pdf', size:410000}] },
+    { id:'p2', title:'GLP-1 Agonists in Clinical Practice', subtitle:'', description:'Practical guidance for initiating and titrating GLP-1 receptor agonists in routine endocrinology practice.',
+      specialty:'Endocrinology', category:'Patient Education', type:'Conference', presenter:'You', coPresenter:'Dr. Meera Iyer', organization:'', venue:'Online',
+      createdAt:'2026-04-18', updatedAt:'2026-07-08', slides:18, duration:'30 min', status:'published', visibility:'Connections Only', eventDate:'2026-05-02',
+      views:210, downloads:31, shares:0, tags:['Endocrinology'], files:[{name:'GLP-1 in practice.pdf', size:1800000}] },
+    { id:'p3', title:'Case: Resistant Hypertension', subtitle:'', description:'A case-based discussion of diagnostic workup and stepwise management for resistant hypertension.',
+      specialty:'Cardiology', category:'Case Discussion', type:'Academic Session', presenter:'You', coPresenter:'', organization:'', venue:'',
+      createdAt:'2026-06-30', updatedAt:'2026-07-13', slides:12, duration:'15 min', status:'draft', visibility:'Private', eventDate:'',
+      views:0, downloads:0, shares:0, tags:[], files:[] },
+    { id:'p4', title:'Diabetes & Kidney — Grand Rounds', subtitle:'', description:'Grand rounds session covering the intersection of diabetes management and chronic kidney disease staging.',
+      specialty:'Nephrology', category:'Clinical Update', type:'Workshop', presenter:'You', coPresenter:'', organization:'', venue:'Manipal Hospitals Auditorium',
+      createdAt:'2026-03-11', updatedAt:'2026-06-20', slides:31, duration:'50 min', status:'published', visibility:'CME Participants Only', eventDate:'2026-04-02',
+      views:520, downloads:88, shares:6, tags:['CKD','Diabetes'], files:[{name:'Grand Rounds deck.pptx', size:3100000}] },
+    { id:'p5', title:'Migraine Management Masterclass', subtitle:'', description:'An evidence-based masterclass on acute and preventive migraine management strategies.',
+      specialty:'Neurology', category:'Clinical Update', type:'Webinar', presenter:'You', coPresenter:'', organization:'', venue:'Online',
+      createdAt:'2026-07-01', updatedAt:'2026-07-12', slides:20, duration:'40 min', status:'published', visibility:'Public', eventDate:'2026-08-05',
+      views:64, downloads:9, shares:1, tags:['Migraine'], files:[{name:'Migraine masterclass.pdf', size:2200000}] },
+    { id:'p6', title:'Journal Club: SGLT2 Inhibitors', subtitle:'', description:'Journal club review of recent SGLT2 inhibitor trials and their implications for practice.',
+      specialty:'Endocrinology', category:'Research Presentation', type:'Academic Session', presenter:'You', coPresenter:'', organization:'', venue:'',
+      createdAt:'2026-07-05', updatedAt:'2026-07-05', slides:9, duration:'20 min', status:'draft', visibility:'Private', eventDate:'',
+      views:0, downloads:0, shares:0, tags:[], files:[] }
+  ];
+
+  function loadAll(){ let stored=[]; try{ stored=JSON.parse(localStorage.getItem('myPresentations')||'[]'); }catch(e){} return stored.concat(SEED); }
+  function loadFavIds(){ try{ return JSON.parse(localStorage.getItem('presentationFavorites')||'[]'); }catch(e){ return []; } }
+  function saveFavIds(ids){ try{ localStorage.setItem('presentationFavorites', JSON.stringify(ids)); }catch(e){} }
+  const id = new URLSearchParams(location.search).get('id');
+  const p = loadAll().find(x=>x.id===id);
+
+  function fmtSize(b){ if(b==null) return ''; if(b<1024) return b+' B'; if(b<1048576) return (b/1024).toFixed(0)+' KB'; return (b/1048576).toFixed(1)+' MB'; }
+  function fileIcon(name){ const n=name.toLowerCase(); if(/\.(png|jpe?g|gif|webp)$/.test(n)) return imgIco; if(/\.(mp4|mov|avi|webm)$/.test(n)) return vidIco; return fileIco; }
+  const initials = n => String(n||'').replace(/^Dr\.?\s*/i,'').split(/[\s.]+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase() || 'Y';
+
+  const scroll=document.getElementById('scroll');
+  if(!p){
+    document.getElementById('topTitle').textContent='Presentation';
+    scroll.innerHTML='<div class="empty2" style="padding:60px 16px">'+monitorIco+'<p style="margin-top:10px">We couldn\'t find this presentation.</p></div>';
+    document.querySelector('.foot').hidden=true;
+  } else {
+    document.getElementById('topTitle').textContent = p.title;
+    const specChips = p.specialty.split(',').map(s=>'<span class="spec-chip">'+esc(s.trim())+'</span>').join('');
+    const tagChips = p.tags && p.tags.length ? p.tags.map(t=>'<span class="tag-chip">'+esc(t)+'</span>').join('') : '<div class="empty2">No tags added.</div>';
+    const fileRows = p.files && p.files.length ? p.files.map(f=>'<div class="file" data-file="'+esc(f.name)+'"><span class="fi">'+fileIcon(f.name)+'</span><div class="m"><div class="t">'+esc(f.name)+'</div><div class="s">'+fmtSize(f.size)+'</div></div><span class="dl">'+dlIco+'</span></div>').join('') : '<div class="empty2">No files attached yet.</div>';
+    const presenterLine = [p.presenter, p.coPresenter].filter(Boolean).join(' · ');
+
+    scroll.innerHTML =
+      '<div class="cover">'+(p.status==='draft'?'<span class="stpill draft">Draft</span>':'<span class="stpill published">Published</span>')+'<span class="ic">'+monitorIco+'</span></div>'+
+      '<div class="hd">'+
+        '<h1>'+esc(p.title)+'</h1>'+
+        (p.subtitle?'<div class="sub">'+esc(p.subtitle)+'</div>':'')+
+        '<div class="spec-chips">'+specChips+'</div>'+
+      '</div>'+
+      '<div class="stats"><div class="stat"><b>'+p.slides+'</b><span>Slides</span></div><div class="stat"><b>'+esc(p.duration)+'</b><span>Duration</span></div><div class="stat"><b>'+p.views+'</b><span>Views</span></div><div class="stat"><b>'+p.downloads+'</b><span>Downloads</span></div></div>'+
+      '<div class="sec"><h2>Presenter</h2></div>'+
+      '<div class="d-doc"><span class="di">'+esc(initials(p.presenter))+'</span><div class="m"><div class="who">'+esc(presenterLine||p.presenter)+'</div><div class="role">'+esc(p.organization||'Independent')+'</div></div></div>'+
+      '<div class="sec"><h2>About</h2></div>'+
+      '<div class="card"><p class="bio">'+esc(p.description||'No description added.')+'</p></div>'+
+      '<div class="sec"><h2>Details</h2></div>'+
+      '<div class="grid2">'+
+        '<div class="kv"><div class="k">Category</div><div class="v">'+esc(p.category)+'</div></div>'+
+        '<div class="kv"><div class="k">Type</div><div class="v">'+esc(p.type)+'</div></div>'+
+        '<div class="kv"><div class="k">Event date</div><div class="v">'+esc(p.eventDate||'Not scheduled')+'</div></div>'+
+        '<div class="kv"><div class="k">Venue</div><div class="v">'+esc(p.venue||'—')+'</div></div>'+
+        '<div class="kv" style="grid-column:1/-1"><div class="k">Visibility</div><div class="v">'+esc(p.visibility)+'</div></div>'+
+      '</div>'+
+      '<div class="sec"><h2>Attachments ('+(p.files?p.files.length:0)+')</h2></div>'+
+      '<div class="files">'+fileRows+'</div>'+
+      '<div class="sec"><h2>Tags</h2></div>'+
+      '<div class="tag-row">'+tagChips+'</div>'+
+      '<div class="actrow">'+
+        '<button class="ic-act" id="shareBtn" aria-label="Share">'+shareIco+'</button>'+
+        '<button class="ic-act" id="dlBtn" aria-label="Download">'+dlIco+'</button>'+
+        '<button class="ic-act'+(loadFavIds().includes(p.id)?' on':'')+'" id="bmBtn" aria-label="Bookmark">'+bmIco+'</button>'+
+      '</div>';
+
+    document.getElementById('shareBtn').addEventListener('click', ()=>toast('Share presentation — coming soon'));
+    document.getElementById('dlBtn').addEventListener('click', ()=>toast('Downloading “'+p.title+'”…'));
+    document.getElementById('bmBtn').addEventListener('click', function(){
+      const on=this.classList.toggle('on');
+      const ids=loadFavIds();
+      saveFavIds(on ? Array.from(new Set([...ids, p.id])) : ids.filter(id=>id!==p.id));
+      toast(on ? 'Bookmarked' : 'Removed from bookmarks');
+    });
+    document.getElementById('scroll').addEventListener('click', e=>{ const f=e.target.closest('.file'); if(f) toast('Opening '+f.dataset.file); });
+    document.getElementById('moreBtn').addEventListener('click', ()=>toast('More options coming soon'));
+  }
+
+  (function(){ var ph=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; ph.style.width=B+'px'; ph.style.height=(innerHeight/s)+'px'; ph.style.transform='scale('+s+')'; } else { ph.style.transform=''; ph.style.width=''; ph.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

@@ -902,9 +902,13 @@
     report:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/></svg>'
   };
   const okIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>';
+  function loadSavedPosts(){ try{ return JSON.parse(localStorage.getItem('savedPosts')||'[]'); }catch(e){ return []; } }
+  function persistSavedPosts(list){ try{ localStorage.setItem('savedPosts', JSON.stringify(list)); }catch(e){} }
+  function isPostSaved(id){ return loadSavedPosts().some(s=>s.id===id); }
   function optMenu(){
+    const saved = optPost && isPostSaved(optPost.id);
     optBody.innerHTML = `<div class="grab"></div>
-      <button class="opt-item" data-opt="save">${menuIco.save}Save post</button>
+      <button class="opt-item" data-opt="save">${menuIco.save}${saved?'Remove from saved':'Save post'}</button>
       <button class="opt-item" data-opt="link">${menuIco.link}Copy link</button>
       <button class="opt-item" data-opt="mute">${menuIco.mute}Not interested</button>
       <button class="opt-item danger" data-opt="report">${menuIco.report}Report post</button>`;
@@ -918,8 +922,17 @@
     if(opt==='report'){
       optBody.innerHTML = `<div class="grab"></div><div class="opt-done"><div class="ok">${okIco}</div><b>Thanks for reporting</b><p>Our team will review this post against community &amp; medical-content guidelines.</p></div>`;
       setTimeout(closeOpts, 1600);
+    } else if(opt==='save'){
+      let saved=loadSavedPosts();
+      const already=saved.some(s=>s.id===optPost.id);
+      if(already) saved=saved.filter(s=>s.id!==optPost.id);
+      else saved.unshift({ id:optPost.id, name:optPost.name, spec:optPost.spec, img:optPost.img, time:optPost.time, body:optPost.body, tag:optPost.tag, savedAt:Date.now() });
+      persistSavedPosts(saved);
+      const msg = already ? 'Removed from saved' : 'Post saved';
+      optBody.innerHTML = `<div class="grab"></div><div class="opt-done"><div class="ok">${okIco}</div><b>${msg}</b></div>`;
+      setTimeout(closeOpts, 1100);
     } else {
-      const msg = opt==='save'?'Post saved':opt==='link'?'Link copied':'You’ll see fewer posts like this';
+      const msg = opt==='link'?'Link copied':'You’ll see fewer posts like this';
       optBody.innerHTML = `<div class="grab"></div><div class="opt-done"><div class="ok">${okIco}</div><b>${msg}</b></div>`;
       setTimeout(closeOpts, 1100);
     }

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Saved</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;}
+  .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{flex:1;min-width:0;font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+
+  .seg{display:flex;background:var(--chip);border-radius:12px;padding:4px;margin:12px 18px 0;gap:3px;overflow-x:auto;scrollbar-width:none;}
+  .seg::-webkit-scrollbar{display:none;}
+  .seg button{flex:0 0 auto;border:none;background:none;font-family:inherit;font-size:11.5px;font-weight:800;color:var(--muted);padding:9px 13px;min-height:38px;border-radius:9px;cursor:pointer;white-space:nowrap;display:inline-flex;align-items:center;gap:6px;transition:background .16s,color .16s;}
+  .seg button .cnt{font-size:9px;font-weight:800;background:var(--line);color:var(--muted);border-radius:20px;padding:1px 6px;min-width:15px;transition:background .16s,color .16s;}
+  .seg button.on{background:var(--card);color:var(--brand);box-shadow:0 2px 6px -2px rgba(0,0,0,.2);}
+  .seg button.on .cnt{background:var(--brand-soft);color:var(--brand);}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:14px 18px 20px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .list{display:flex;flex-direction:column;gap:9px;}
+  .svrow{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px;cursor:pointer;width:100%;text-align:left;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
+  .svrow:hover{border-color:var(--brand);transform:translateY(-2px);} .svrow:active{transform:scale(.99);}
+  .svrow .ic{width:40px;height:40px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;}
+  .svrow .ic svg{width:19px;height:19px;}
+  .svrow .m{flex:1;min-width:0;}
+  .svrow .t{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .svrow .s{font-size:9.5px;color:var(--muted);margin-top:4px;display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
+  .svrow .s .typ{font-weight:800;letter-spacing:.03em;text-transform:uppercase;}
+  .svrow .rm{width:32px;height:32px;border-radius:50%;border:none;background:var(--chip);color:var(--gold);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
+  .svrow .rm:hover{background:var(--line);} .svrow .rm svg{width:14px;height:14px;fill:var(--gold);}
+
+  .ic.tpost{background:#ede9fe;color:#7c3aed;}
+  .ic.tcase{background:#ffe4e6;color:#e11d48;}
+  .ic.tcme{background:#fef3c7;color:#b0894f;}
+  .ic.tlib{background:#ccfbf1;color:#0d9488;}
+  .typ.tpost{color:#7c3aed;} .typ.tcase{color:#e11d48;} .typ.tcme{color:#b0894f;} .typ.tlib{color:#0d9488;}
+
+  .empty{text-align:center;padding:70px 24px;color:var(--muted);}
+  .empty svg{width:40px;height:40px;margin:0 auto 14px;opacity:.4;}
+  .empty b{display:block;font-size:13px;font-weight:800;font-family:var(--display);color:var(--ink);}
+  .empty span{display:block;margin-top:5px;font-size:11px;line-height:1.6;}
+
+  .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* hide-mock-statusbar */ .statusbar{display:none !important;}
+</style>
+  <link rel="stylesheet" href="global.css?v=10">
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="tt">Saved</span>
+  </div>
+
+  <div class="seg" id="seg">
+    <button class="on" data-t="all">All <span class="cnt" id="cAll">0</span></button>
+    <button data-t="post">Posts <span class="cnt" id="cPost">0</span></button>
+    <button data-t="case">Cases <span class="cnt" id="cCase">0</span></button>
+    <button data-t="cme">CME <span class="cnt" id="cCme">0</span></button>
+    <button data-t="lib">Library <span class="cnt" id="cLib">0</span></button>
+  </div>
+
+  <div class="scroll">
+    <div class="list" id="list"></div>
+  </div>
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='profile.html'; });
+
+  const postIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-6"/><path d="M18.5 2.5a2.1 2.1 0 0 1 3 3L12 15l-4 1 1-4Z"/></svg>';
+  const caseIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
+  const cmeIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5 7 21l5-2.5L17 21l-1.5-8.5"/></svg>';
+  const libIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></svg>';
+  const bmFillIco='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z"/></svg>';
+  const emptyIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h12a1 1 0 0 1 1 1v17l-7-4-7 4V4a1 1 0 0 1 1-1Z"/></svg>';
+
+  /* same seed used by presentations.html / presentation-details.html, so favorited demo items resolve */
+  const PRES_SEED = [
+    { id:'p1', title:'Cardiometabolic Update 2025', specialty:'Cardiology', slides:14, duration:'45 min' },
+    { id:'p2', title:'GLP-1 Agonists in Clinical Practice', specialty:'Endocrinology', slides:10, duration:'30 min' },
+    { id:'p3', title:'Case: Resistant Hypertension', specialty:'Cardiology', slides:9, duration:'15 min' },
+    { id:'p4', title:'Diabetes & Kidney — Grand Rounds', specialty:'Nephrology', slides:18, duration:'50 min' },
+    { id:'p5', title:'Migraine Management Masterclass', specialty:'Neurology', slides:12, duration:'40 min' },
+    { id:'p6', title:'Journal Club: SGLT2 Inhibitors', specialty:'Endocrinology', slides:8, duration:'20 min' }
+  ];
+
+  function loadJSON(key){ try{ return JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){ return []; } }
+  function saveJSON(key,val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+
+  function getPosts(){ return loadJSON('savedPosts').map(p=>({ type:'post', id:p.id, title:p.name||'Post', meta:(p.spec||'')+(p.body?' · '+p.body.slice(0,60)+(p.body.length>60?'…':''):''), time:p.time||'', savedAt:p.savedAt||0 })); }
+  function getCases(){ return loadJSON('savedCases').map(c=>({ type:'case', id:c.id, title:c.cond||'Case for opinion', meta:(c.spec||'')+(c.time?' · '+c.time:''), time:c.time||'', savedAt:c.savedAt||0 })); }
+  function getCMEs(){ return loadJSON('savedCMEs').map((c,i)=>({ type:'cme', id:i, title:c.title, meta:[c.meta,c.credits].filter(Boolean).join(' · '), savedAt:c.savedAt||0, _raw:c })); }
+  function getLibrary(){
+    const favIds = loadJSON('presentationFavorites');
+    let mine=[]; try{ mine=JSON.parse(localStorage.getItem('myPresentations')||'[]'); }catch(e){}
+    const all = mine.concat(PRES_SEED);
+    return favIds.map(id=>all.find(p=>p.id===id)).filter(Boolean).map(p=>({ type:'lib', id:p.id, title:p.title, meta:(p.specialty||'')+' · '+(p.slides||0)+' slides · '+(p.duration||''), savedAt:0 }));
+  }
+
+  function counts(){
+    const n={ post:getPosts().length, case:getCases().length, cme:getCMEs().length, lib:getLibrary().length };
+    n.all = n.post+n.case+n.cme+n.lib;
+    return n;
+  }
+  function updateCounts(){
+    const n=counts();
+    document.getElementById('cAll').textContent=n.all;
+    document.getElementById('cPost').textContent=n.post;
+    document.getElementById('cCase').textContent=n.case;
+    document.getElementById('cCme').textContent=n.cme;
+    document.getElementById('cLib').textContent=n.lib;
+  }
+
+  const TYPE_ICO={post:postIco, case:caseIco, cme:cmeIco, lib:libIco};
+  const TYPE_LBL={post:'Post', case:'Case', cme:'CME', lib:'Library'};
+
+  function rowHtml(it){
+    return '<div class="svrow" role="button" tabindex="0" data-type="'+it.type+'" data-id="'+esc(it.id)+'">'+
+      '<span class="ic t'+it.type+'">'+TYPE_ICO[it.type]+'</span>'+
+      '<div class="m"><div class="t">'+esc(it.title)+'</div>'+
+        '<div class="s"><span class="typ t'+it.type+'">'+TYPE_LBL[it.type]+'</span>'+(it.meta?'<span>· '+esc(it.meta)+'</span>':'')+'</div></div>'+
+      '<button type="button" class="rm" data-rm="'+it.type+'" data-rmid="'+esc(it.id)+'" aria-label="Remove from saved" onclick="event.stopPropagation()">'+bmFillIco+'</button>'+
+    '</div>';
+  }
+
+  let active='all';
+  function render(){
+    updateCounts();
+    let items;
+    if(active==='all') items = [...getPosts(), ...getCases(), ...getCMEs(), ...getLibrary()].sort((a,b)=>(b.savedAt||0)-(a.savedAt||0));
+    else if(active==='post') items = getPosts();
+    else if(active==='case') items = getCases();
+    else if(active==='cme') items = getCMEs();
+    else items = getLibrary();
+
+    const list=document.getElementById('list');
+    if(!items.length){
+      const msg = active==='all' ? 'Bookmark posts, cases, CME sessions or presentations across the app — they’ll all show up here.'
+        : active==='post' ? 'Tap ⋯ on any post and choose Save post.'
+        : active==='case' ? 'Tap the bookmark icon on a case discussion to save it here.'
+        : active==='cme' ? 'Tap the bookmark icon on any CME to save it here.'
+        : 'Tap the bookmark on a presentation to save it here.';
+      list.innerHTML = '<div class="empty">'+emptyIco+'<b>Nothing saved yet</b><span>'+msg+'</span></div>';
+      return;
+    }
+    list.innerHTML = items.map(rowHtml).join('');
+  }
+
+  document.getElementById('seg').addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    active=b.dataset.t;
+    document.querySelectorAll('#seg button').forEach(x=>x.classList.toggle('on', x===b));
+    render();
+  });
+
+  document.getElementById('list').addEventListener('click', e=>{
+    const rm=e.target.closest('[data-rm]');
+    if(rm){
+      const type=rm.dataset.rm, id=rm.dataset.rmid;
+      if(type==='post'){ saveJSON('savedPosts', loadJSON('savedPosts').filter(x=>String(x.id)!==id)); }
+      else if(type==='case'){ saveJSON('savedCases', loadJSON('savedCases').filter(x=>String(x.id)!==id)); }
+      else if(type==='cme'){ const arr=loadJSON('savedCMEs'); arr.splice(+id,1); saveJSON('savedCMEs', arr); }
+      else if(type==='lib'){ saveJSON('presentationFavorites', loadJSON('presentationFavorites').filter(x=>String(x)!==id)); }
+      toast('Removed from saved');
+      render();
+      return;
+    }
+    const row=e.target.closest('.svrow'); if(!row) return;
+    const type=row.dataset.type, id=row.dataset.id;
+    if(type==='post') location.href='post.html';
+    else if(type==='case') location.href='case-discussions.html?open='+encodeURIComponent(id);
+    else if(type==='cme'){
+      const cmes=loadJSON('savedCMEs'), c=cmes[+id];
+      if(c) location.href='speakers.html?type=course&title='+encodeURIComponent(c.title)+(c.mode?'&mode='+encodeURIComponent(c.mode.toLowerCase()):'');
+    }
+    else if(type==='lib') location.href='presentation-details.html?id='+encodeURIComponent(id);
+  });
+
+  render();
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

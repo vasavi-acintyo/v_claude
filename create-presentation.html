@@ -1,0 +1,558 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generate Presentation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes pulse2{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .appbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:6px 18px 4px;}
+  .icon-btn{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1);}
+  .icon-btn:active{transform:scale(.92);}
+  .appbar .ttl{flex:1;min-width:0;font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .save{font-size:11px;font-weight:700;color:var(--brand);background:none;border:none;cursor:pointer;padding:10px 2px;flex:0 0 auto;}
+  .save:active{opacity:.6;}
+
+  /* stepper */
+  .stepper{display:flex;align-items:center;gap:5px;padding:10px 18px 0;}
+  .step-dot{width:25px;height:25px;border-radius:50%;background:var(--chip);color:var(--muted);display:grid;place-items:center;font-size:10.5px;font-weight:800;flex:0 0 auto;transition:background .2s,color .2s;}
+  .step-dot svg{width:12px;height:12px;display:none;}
+  .step-dot.done{background:var(--brand);color:#fff;}
+  .step-dot.done svg{display:block;} .step-dot.done .dn{display:none;}
+  .step-dot.current{background:var(--brand-soft);color:var(--brand);box-shadow:0 0 0 2px var(--brand);}
+  .step-line{flex:1;height:2px;background:var(--line);border-radius:2px;}
+  .step-line.done{background:var(--brand);}
+  .step-cap{padding:10px 18px 0;}
+  .step-cap .k{font-size:9px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+  .step-cap h2{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin-top:3px;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:4px 18px 20px;}
+  .scroll::-webkit-scrollbar{width:0;}
+  .stepbody{display:none;animation:fadeIn .28s ease both;}
+  .stepbody.on{display:block;}
+
+  .field{margin-top:14px;}
+  .scroll>.stepbody>.field:first-child{margin-top:14px;}
+  .field>label{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;color:var(--slate-700);margin-bottom:7px;}
+  .field .req{color:var(--brand);}
+  .field .hint{font-size:9.5px;color:var(--muted);font-weight:600;margin-left:auto;}
+  .inp,textarea.inp,select.inp{width:100%;min-height:46px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;font-size:12.5px;font-family:inherit;color:var(--ink);}
+  textarea.inp{min-height:66px;resize:vertical;line-height:1.5;}
+  .inp::placeholder,textarea.inp::placeholder{color:var(--muted);}
+  .inp:focus,textarea.inp:focus,select.inp:focus{outline:none;border-color:var(--brand);}
+  .row2{display:flex;gap:11px;} .row2>*{flex:1;min-width:0;}
+
+  /* chips (specialty picker) */
+  .chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+  .chip{display:inline-flex;align-items:center;gap:7px;min-height:38px;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:8px 13px;font-size:11.5px;font-weight:700;color:var(--ink);cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s, color .16s, background .16s;}
+  .chip:active{transform:scale(.95);}
+  .chip.sel{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);}
+  .add-circle{width:30px;height:30px;min-height:30px;flex:0 0 auto;padding:0;border:none;border-radius:50%;background:var(--brand-soft);color:var(--brand);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1), background .16s, color .16s;}
+  .add-circle svg{width:14px;height:14px;}
+  .add-circle:active{transform:scale(.88);}
+  .add-circle.open{background:var(--brand);color:#fff;transform:rotate(45deg);}
+  .picker-panel{margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px;animation:fadeIn .22s ease both;}
+  .mini-search{position:relative;}
+  .mini-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .mini-search input{width:100%;background:var(--chip);border:1px solid transparent;border-radius:10px;padding:10px 12px 10px 34px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .mini-search input:focus{outline:none;border-color:var(--brand);}
+  .spec-list{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px;max-height:150px;overflow-y:auto;}
+  .picker-empty{font-size:11px;color:var(--muted);padding:8px 2px;}
+
+  /* single-select pill rows */
+  .fopts{display:flex;flex-wrap:wrap;gap:8px;}
+  .fopt{border:1px solid var(--line);background:var(--card);color:var(--slate-700);font-family:inherit;font-size:11.5px;font-weight:700;padding:8px 14px;min-height:40px;border-radius:20px;cursor:pointer;transition:background .16s, border-color .16s, color .16s, transform .16s cubic-bezier(.22,1,.36,1);} .fopt:active{transform:scale(.95);}
+  .fopt.on{background:var(--brand);border-color:var(--brand);color:#fff;}
+
+  /* upload zone */
+  .upzone{display:block;border:1.5px dashed var(--line);border-radius:14px;padding:22px 14px;text-align:center;cursor:pointer;background:var(--chip);transition:border-color .16s,background .16s;}
+  .upzone:hover,.upzone.drag{border-color:var(--brand);background:var(--brand-soft);}
+  .upzone input[type=file]{display:none;}
+  .upzone .ui{width:38px;height:38px;border-radius:11px;background:var(--card);color:var(--brand);display:grid;place-items:center;margin:0 auto 9px;}
+  .upzone .ui svg{width:18px;height:18px;}
+  .upzone .ut{font-size:11.5px;font-weight:800;font-family:var(--display);}
+  .upzone .us{font-size:9px;color:var(--muted);margin-top:4px;}
+  .mat-list{display:flex;flex-direction:column;gap:8px;}
+  .mat-list:not(:empty){margin-top:12px;}
+  .mat{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 11px;}
+  .mat .mi{width:32px;height:32px;border-radius:9px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;}
+  .mat .mi svg{width:16px;height:16px;}
+  .mat .mn{flex:1;min-width:0;} .mat .mn b{font-size:11.5px;font-weight:700;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mat .mn span{font-size:9px;color:var(--muted);}
+  .mat .rm{width:30px;height:30px;border-radius:9px;border:none;background:var(--chip);color:var(--muted);cursor:pointer;display:grid;place-items:center;flex:0 0 auto;}
+  .mat .rm:hover{color:var(--brand);} .mat .rm svg{width:13px;height:13px;}
+
+  /* toggles (AI options) */
+  .tog{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:11px 13px;margin-top:8px;cursor:pointer;}
+  .tog:first-child{margin-top:0;}
+  .tog .ti{flex:1;min-width:0;} .tog .ti b{font-size:11.5px;font-weight:800;font-family:var(--display);display:block;} .tog .ti span{font-size:9px;color:var(--muted);line-height:1.4;display:block;margin-top:2px;}
+  .sw{width:40px;height:24px;border-radius:20px;background:var(--line);position:relative;flex:0 0 auto;transition:background .2s;}
+  .sw::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.25);transition:transform .2s;}
+  .tog.on .sw{background:var(--brand);} .tog.on .sw::after{transform:translateX(16px);}
+
+  /* style select (step 3) */
+  .style-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+  .style-card{background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:13px 10px;text-align:center;cursor:pointer;transition:border-color .16s,background .16s,transform .16s cubic-bezier(.22,1,.36,1);}
+  .style-card:active{transform:scale(.97);}
+  .style-card.sel{border-color:var(--brand);background:var(--brand-soft);}
+  .style-card .si{width:34px;height:34px;border-radius:10px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;margin:0 auto 8px;}
+  .style-card.sel .si{background:var(--card);}
+  .style-card .si svg{width:16px;height:16px;}
+  .style-card b{font-size:11.5px;font-weight:800;font-family:var(--display);display:block;}
+  .style-card span{font-size:8.5px;color:var(--muted);margin-top:3px;display:block;line-height:1.4;}
+
+  /* theme select (step 4) with live preview */
+  .theme-list{display:flex;flex-direction:column;gap:10px;}
+  .theme-card{display:flex;align-items:center;gap:12px;background:var(--card);border:1.5px solid var(--line);border-radius:14px;padding:10px;cursor:pointer;transition:border-color .16s,background .16s,transform .16s cubic-bezier(.22,1,.36,1);}
+  .theme-card:active{transform:scale(.99);}
+  .theme-card.sel{border-color:var(--brand);background:var(--brand-soft);}
+  .theme-preview{width:64px;height:44px;border-radius:8px;flex:0 0 auto;position:relative;overflow:hidden;box-shadow:0 3px 8px -3px rgba(0,0,0,.25);border:1px solid rgba(0,0,0,.06);}
+  .theme-preview i{position:absolute;display:block;border-radius:2px;}
+  .theme-card .tt2{flex:1;min-width:0;} .theme-card .tt2 b{font-size:12px;font-weight:800;font-family:var(--display);display:block;} .theme-card .tt2 span{font-size:9px;color:var(--muted);margin-top:2px;display:block;}
+  .theme-card .rd{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:0 0 auto;display:grid;place-items:center;transition:border-color .16s,background .16s;}
+  .theme-card.sel .rd{border-color:var(--brand);background:var(--brand);}
+  .theme-card .rd svg{width:11px;height:11px;color:#fff;opacity:0;transition:opacity .16s;}
+  .theme-card.sel .rd svg{opacity:1;}
+
+  /* AI generation (step 5) */
+  .ai-gen{display:flex;flex-direction:column;align-items:center;text-align:center;padding:20px 6px 6px;}
+  .ai-orb{position:relative;width:100px;height:100px;margin-bottom:20px;}
+  .ai-orb .ring{position:absolute;inset:0;border-radius:50%;border:3px solid var(--brand-soft);border-top-color:var(--brand);animation:spin 1s linear infinite;}
+  .ai-orb .core{position:absolute;inset:13px;border-radius:50%;background:linear-gradient(135deg,var(--g1),var(--g2));display:grid;place-items:center;color:#fff;animation:pulse2 1.6s ease-in-out infinite;}
+  .ai-orb .core svg{width:32px;height:32px;}
+  .ai-gen h2{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .ai-gen .stage{font-size:11px;color:var(--muted);margin-top:7px;min-height:15px;}
+  .ai-bar{width:100%;height:8px;border-radius:6px;background:var(--chip);margin-top:20px;overflow:hidden;}
+  .ai-bar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--g1),var(--g2));width:0%;transition:width .3s ease;}
+  .ai-pctrow{display:flex;justify-content:space-between;width:100%;margin-top:7px;}
+  .ai-pct{font-size:11px;font-weight:800;color:var(--brand);}
+  .ai-eta{font-size:9.5px;color:var(--muted);}
+  .ai-steps{display:flex;flex-direction:column;gap:9px;margin-top:22px;width:100%;text-align:left;}
+  .ai-step-row{display:flex;align-items:center;gap:10px;font-size:10.5px;color:var(--muted);transition:color .2s;}
+  .ai-step-row .sic{width:19px;height:19px;border-radius:50%;background:var(--chip);display:grid;place-items:center;flex:0 0 auto;color:var(--muted);transition:background .2s,color .2s;}
+  .ai-step-row .sic svg{width:10px;height:10px;}
+  .ai-step-row.done{color:var(--ink);} .ai-step-row.done .sic{background:var(--green);color:#fff;}
+  .ai-step-row.active{color:var(--brand);font-weight:700;} .ai-step-row.active .sic{background:var(--brand);color:#fff;animation:pulse2 1s ease-in-out infinite;}
+
+  .foot{flex:0 0 auto;display:flex;gap:11px;padding:12px 18px calc(12px + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--line);}
+  .btn{flex:1;min-height:50px;border-radius:13px;font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;border:none;transition:transform .16s cubic-bezier(.22,1,.36,1), background .18s;}
+  .btn:active{transform:scale(.98);}
+  .btn.primary{background:var(--brand);color:#fff;} .btn.primary:hover{background:var(--brand-dark);}
+  .btn.ghost{background:var(--chip);color:var(--ink);}
+  .btn svg{width:17px;height:17px;}
+
+  .toast{position:absolute;left:50%;bottom:96px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:60;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  .done{position:absolute;inset:0;z-index:80;background:var(--surface);display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 34px;}
+  .done.show{display:flex;}
+  .done .check{width:92px;height:92px;border-radius:50%;display:grid;place-items:center;color:#fff;background:var(--brand);box-shadow:0 18px 40px -14px var(--brand);}
+  .done .check svg{width:44px;height:44px;fill:none;stroke:currentColor;stroke-width:3;stroke-linecap:round;stroke-linejoin:round;}
+  .done h3{font-size:21px;font-weight:800;font-family:var(--display);margin-top:20px;letter-spacing:-.02em;}
+  .done p{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6;max-width:250px;}
+  .done .acts{margin-top:26px;width:100%;display:flex;flex-direction:column;gap:10px;}
+  .done .acts .btn{width:100%;}
+  .done .acts .ghost{background:none;color:var(--brand);border:1.5px solid var(--line);}
+
+  /* hide-mock-statusbar */ .statusbar{display:none !important;}
+</style>
+  <link rel="stylesheet" href="global.css?v=10">
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="appbar">
+    <button class="icon-btn" id="back" aria-label="Back"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 6 9 12 15 18"/></svg></button>
+    <div class="ttl">Generate Presentation</div>
+    <button class="save" id="saveDraft">Save draft</button>
+  </div>
+
+  <div class="stepper" id="stepper">
+    <div class="step-dot current" data-s="1"><span class="dn">1</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="step-line" data-l="1"></div>
+    <div class="step-dot" data-s="2"><span class="dn">2</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="step-line" data-l="2"></div>
+    <div class="step-dot" data-s="3"><span class="dn">3</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="step-line" data-l="3"></div>
+    <div class="step-dot" data-s="4"><span class="dn">4</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+    <div class="step-line" data-l="4"></div>
+    <div class="step-dot" data-s="5"><span class="dn">5</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div>
+  </div>
+  <div class="step-cap"><div class="k" id="stepK">Step 1 of 5</div><h2 id="stepH">Presentation information</h2></div>
+
+  <div class="scroll" id="scroll">
+
+    <!-- STEP 1 — Presentation Information -->
+    <div class="stepbody on" data-step="1">
+      <div class="field">
+        <label>Presentation title <span class="req">*</span></label>
+        <input class="inp" id="fTitle" maxlength="80" placeholder="e.g. Cardiometabolic Update 2025" oninput="cc(this,'ccTitle')">
+        <div class="cc" style="font-size:9.5px;color:var(--muted);text-align:right;margin-top:5px"><span id="ccTitle">0</span>/80</div>
+      </div>
+      <div class="field"><label>Topic <span class="req">*</span></label><input class="inp" id="fTopic" placeholder="e.g. GLP-1 receptor agonists in T2DM management"></div>
+      <div class="field" id="specField">
+        <label>Specialty <span class="req">*</span></label>
+        <div class="chips" id="specChips"></div>
+        <div class="picker-panel" id="specPicker" hidden>
+          <div class="mini-search">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+            <input id="specSearch" placeholder="Search specialty…" autocomplete="off">
+          </div>
+          <div class="spec-list" id="specList"></div>
+        </div>
+      </div>
+      <div class="field"><label>Sub-specialty <span class="hint">optional</span></label><input class="inp" id="fSubSpec" placeholder="e.g. Preventive Cardiology"></div>
+      <div class="field"><label>Presentation purpose <span class="req">*</span></label><div class="fopts" id="purposeOpts">
+        <button type="button" class="fopt on" data-v="CME">CME</button>
+        <button type="button" class="fopt" data-v="Conference">Conference</button>
+        <button type="button" class="fopt" data-v="Webinar">Webinar</button>
+        <button type="button" class="fopt" data-v="Workshop">Workshop</button>
+        <button type="button" class="fopt" data-v="Medical Education">Medical Education</button>
+        <button type="button" class="fopt" data-v="Academic Lecture">Academic Lecture</button>
+      </div></div>
+      <div class="field"><label>Target audience</label><select class="inp" id="fAudience">
+        <option>Medical Students</option><option>Residents</option><option selected>General Practitioners</option><option>Specialists</option><option>Nurses</option><option>Mixed Audience</option>
+      </select></div>
+      <div class="field"><label>Difficulty level</label><div class="fopts" id="diffOpts">
+        <button type="button" class="fopt" data-v="Beginner">Beginner</button>
+        <button type="button" class="fopt on" data-v="Intermediate">Intermediate</button>
+        <button type="button" class="fopt" data-v="Advanced">Advanced</button>
+      </div></div>
+      <div class="field"><label>Language</label><select class="inp" id="fLang"><option>English</option><option>Hindi</option><option>Tamil</option><option>Telugu</option><option>Other</option></select></div>
+      <div class="row2">
+        <div class="field"><label>Duration</label><input class="inp" id="fDuration" placeholder="e.g. 30 min"></div>
+        <div class="field"><label>Number of slides</label><input class="inp" id="fSlides" type="number" min="5" max="60" value="15"></div>
+      </div>
+    </div>
+
+    <!-- STEP 2 — Content Input -->
+    <div class="stepbody" data-step="2">
+      <div class="field" style="margin-top:6px"><label>Key objectives <span class="hint">optional</span></label><textarea class="inp" id="fObjectives" placeholder="What should the audience take away from this session?"></textarea></div>
+      <div class="field"><label>Learning outcomes <span class="hint">optional</span></label><textarea class="inp" id="fOutcomes" placeholder="By the end, attendees should be able to…"></textarea></div>
+      <div class="field"><label>Clinical guidelines <span class="hint">optional</span></label><textarea class="inp" id="fGuidelines" placeholder="e.g. ADA 2025, ACC/AHA hypertension guidelines…"></textarea></div>
+      <div class="field"><label>Important points <span class="hint">optional</span></label><textarea class="inp" id="fPoints" placeholder="Key points the AI should be sure to include"></textarea></div>
+      <div class="field"><label>Case studies <span class="hint">optional</span></label><textarea class="inp" id="fCases" placeholder="Briefly describe any cases to include"></textarea></div>
+      <div class="field"><label>Research papers <span class="hint">optional</span></label><textarea class="inp" id="fResearch" placeholder="Studies or trials the AI should reference"></textarea></div>
+      <div class="field"><label>References <span class="hint">optional</span></label><textarea class="inp" id="fRefs" placeholder="Citations to include in the reference slide"></textarea></div>
+      <div class="field"><label>Speaker notes <span class="hint">optional</span></label><textarea class="inp" id="fSpeakerNotes" placeholder="Any notes you'd like carried into the speaker-notes pane"></textarea></div>
+      <div class="field">
+        <label>Upload supporting files <span class="hint">optional</span></label>
+        <label class="upzone" id="upZone">
+          <input type="file" id="fFiles" accept=".pdf,.doc,.docx,.ppt,.pptx,image/*" multiple>
+          <span class="ui"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg></span>
+          <div class="ut">Drag &amp; drop files, or tap to browse</div>
+          <div class="us">PDF, Word, research papers, guidelines, images, or an existing PPT</div>
+        </label>
+        <div class="mat-list" id="matList"></div>
+      </div>
+    </div>
+
+    <!-- STEP 3 — AI Configuration -->
+    <div class="stepbody" data-step="3">
+      <div class="field" style="margin-top:6px">
+        <label>Presentation style</label>
+        <div class="style-grid" id="styleGrid">
+          <div class="style-card sel" data-v="Professional"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M7 18v2M17 18v2"/></svg></span><b>Professional</b><span>Clean, corporate-safe</span></div>
+          <div class="style-card" data-v="Academic"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 3 8l9 4 9-4-9-4Z"/><path d="M6 10.5V16c0 1.3 2.7 2.5 6 2.5s6-1.2 6-2.5v-5.5"/></svg></span><b>Academic</b><span>Journal / lecture style</span></div>
+          <div class="style-card" data-v="Minimal"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="17" x2="10" y2="17"/></svg></span><b>Minimal</b><span>Lots of whitespace</span></div>
+          <div class="style-card" data-v="Modern"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h7v7H4z"/><path d="M13 4h7v16h-7z"/><path d="M4 13h7v7H4z"/></svg></span><b>Modern</b><span>Bold shapes &amp; color</span></div>
+          <div class="style-card" data-v="Conference Style"><span class="si"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10l8-6 8 6v10"/><path d="M9 20v-6h6v6"/></svg></span><b>Conference</b><span>Stage-ready, high contrast</span></div>
+        </div>
+      </div>
+      <div class="field">
+        <label>AI options</label>
+        <div class="tog on" data-t="images"><div class="ti"><b>Include images</b><span>Relevant medical photos & illustrations</span></div><div class="sw"></div></div>
+        <div class="tog" data-t="diagrams"><div class="ti"><b>Generate medical diagrams</b><span>Anatomy, pathways, mechanisms</span></div><div class="sw"></div></div>
+        <div class="tog" data-t="charts"><div class="ti"><b>Generate charts</b><span>Trial data & statistics visualised</span></div><div class="sw"></div></div>
+        <div class="tog" data-t="flowcharts"><div class="ti"><b>Generate flowcharts</b><span>Diagnostic & treatment algorithms</span></div><div class="sw"></div></div>
+        <div class="tog" data-t="tables"><div class="ti"><b>Generate tables</b><span>Comparison & dosage tables</span></div><div class="sw"></div></div>
+        <div class="tog on" data-t="references"><div class="ti"><b>Include references</b><span>Adds a references slide</span></div><div class="sw"></div></div>
+        <div class="tog on" data-t="notes"><div class="ti"><b>Add speaker notes</b><span>Talking points under each slide</span></div><div class="sw"></div></div>
+        <div class="tog on" data-t="summary"><div class="ti"><b>Add summary slide</b><span>Key takeaways at the end</span></div><div class="sw"></div></div>
+        <div class="tog" data-t="qa"><div class="ti"><b>Add Q&amp;A slide</b><span>Prompt slide for audience questions</span></div><div class="sw"></div></div>
+        <div class="tog on" data-t="thanks"><div class="ti"><b>Add thank-you slide</b><span>Closing slide with your contact info</span></div><div class="sw"></div></div>
+      </div>
+    </div>
+
+    <!-- STEP 4 — Theme Selection -->
+    <div class="stepbody" data-step="4">
+      <div class="field" style="margin-top:6px">
+        <label>Choose a theme</label>
+        <div class="theme-list" id="themeList"></div>
+      </div>
+    </div>
+
+    <!-- STEP 5 — AI Generation -->
+    <div class="stepbody" data-step="5">
+      <div class="ai-gen">
+        <div class="ai-orb"><div class="ring"></div><div class="core"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 1.6 5L19 8.5l-4.4 2.9L16 17l-4-3.2L8 17l1.4-5.6L5 8.5 10.4 7z"/></svg></div></div>
+        <h2>Generating your presentation…</h2>
+        <div class="stage" id="genStage">Analyzing your content…</div>
+        <div class="ai-bar"><i id="genBar"></i></div>
+        <div class="ai-pctrow"><span class="ai-pct" id="genPct">0%</span><span class="ai-eta" id="genEta">Estimated 20s</span></div>
+        <div class="ai-steps" id="genSteps"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="foot" id="foot">
+    <button class="btn ghost" id="backBtn" hidden>Back</button>
+    <button class="btn primary" id="nextBtn">Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></button>
+  </div>
+
+  <div class="done" id="done">
+    <div class="check"><svg viewBox="0 0 24 24"><polyline points="4 12.5 10 18.5 20 6.5"/></svg></div>
+    <h3>Presentation generated</h3>
+    <p id="doneMsg">Your AI-generated deck is ready to preview and refine.</p>
+    <div class="acts">
+      <button class="btn primary" id="viewBtn">View presentation</button>
+      <button class="btn ghost" onclick="location.href='presentations.html'">Done</button>
+    </div>
+  </div>
+
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
+  function cc(el,id){ document.getElementById(id).textContent=el.value.length; }
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='presentations.html'; });
+
+  const plusIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>';
+  const fileIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
+  const imgIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.6"/><path d="m21 16-5-5L5 22"/></svg>';
+  const rmIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
+  const checkIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+
+  /* ---------- step control ---------- */
+  const STEP_TITLES={1:'Presentation information',2:'Content input',3:'AI configuration',4:'Theme selection',5:'AI generation'};
+  let step=1;
+  function renderStepper(){
+    document.querySelectorAll('.step-dot').forEach(d=>{
+      const n=+d.dataset.s;
+      d.classList.toggle('done', n<step);
+      d.classList.toggle('current', n===step);
+    });
+    document.querySelectorAll('.step-line').forEach(l=>{ l.classList.toggle('done', +l.dataset.l < step); });
+    document.getElementById('stepK').textContent = 'Step '+step+' of 5';
+    document.getElementById('stepH').textContent = STEP_TITLES[step];
+    document.querySelectorAll('.stepbody').forEach(s=>s.classList.toggle('on', +s.dataset.step===step));
+    document.getElementById('backBtn').hidden = step===1 || step===5;
+    document.getElementById('foot').hidden = step===5;
+    const next=document.getElementById('nextBtn');
+    next.innerHTML = step===4
+      ? 'Generate<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 1.6 5L19 8.5l-4.4 2.9L16 17l-4-3.2L8 17l1.4-5.6L5 8.5 10.4 7z"/></svg>'
+      : 'Next<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
+    document.getElementById('scroll').scrollTop=0;
+  }
+  function validateStep(){
+    if(step===1){
+      if(!document.getElementById('fTitle').value.trim()){ toast('Add a presentation title'); document.getElementById('fTitle').focus(); return false; }
+      if(!document.getElementById('fTopic').value.trim()){ toast('Add a topic'); document.getElementById('fTopic').focus(); return false; }
+      if(!selectedSpecs.size){ toast('Choose at least one specialty'); return false; }
+    }
+    return true;
+  }
+  document.getElementById('nextBtn').addEventListener('click', ()=>{
+    if(!validateStep()) return;
+    if(step<5){ step++; renderStepper(); if(step===5) startGeneration(); }
+  });
+  document.getElementById('backBtn').addEventListener('click', ()=>{ if(step>1){ step--; renderStepper(); } });
+
+  /* ---------- specialty picker (step 1) ---------- */
+  const SPECIALTIES=['Cardiology','Endocrinology','Diabetes','Neurology','Nephrology','Rheumatology','Oncology','Pulmonology',
+    'Gastroenterology','Dermatology','Psychiatry','Ophthalmology','Urology','Radiology','Anesthesiology','Orthopaedics',
+    'Pediatrics','Neonatology','Gynaecology','ENT','General Medicine','Internal Medicine','Infectious Diseases','Hematology',
+    'Immunology & Allergy','Geriatrics','Emergency Medicine','Family Medicine','Pathology','Critical Care'];
+  const selectedSpecs=new Set();
+  let specPickerOpen=false;
+  function chipHtml(s){ return '<button type="button" class="chip '+(selectedSpecs.has(s)?'sel':'')+'" data-s="'+esc(s)+'">'+esc(s)+'</button>'; }
+  function renderSpecChips(){
+    document.getElementById('specChips').innerHTML = Array.from(selectedSpecs).map(chipHtml).join('') +
+      '<button type="button" class="add-circle'+(specPickerOpen?' open':'')+'" id="specAddBtn" aria-label="Add specialty">'+plusIco+'</button>';
+  }
+  function renderSpecList(){
+    const q=(document.getElementById('specSearch').value||'').trim().toLowerCase();
+    const filtered=SPECIALTIES.filter(s=>!q || s.toLowerCase().includes(q));
+    document.getElementById('specList').innerHTML = filtered.length ? filtered.map(chipHtml).join('') : '<div class="picker-empty">No specialty matches.</div>';
+  }
+  function toggleSpec(name){ if(selectedSpecs.has(name)) selectedSpecs.delete(name); else selectedSpecs.add(name); renderSpecChips(); if(specPickerOpen) renderSpecList(); }
+  document.getElementById('specField').addEventListener('click', e=>{
+    const addBtn=e.target.closest('#specAddBtn');
+    if(addBtn){ specPickerOpen=!specPickerOpen; document.getElementById('specPicker').hidden=!specPickerOpen; renderSpecChips(); if(specPickerOpen){ document.getElementById('specSearch').value=''; renderSpecList(); document.getElementById('specSearch').focus(); } return; }
+    const chip=e.target.closest('.chip[data-s]'); if(chip) toggleSpec(chip.dataset.s);
+  });
+  document.getElementById('specSearch').addEventListener('input', renderSpecList);
+  renderSpecChips();
+
+  /* ---------- purpose / difficulty (single-select pills) ---------- */
+  let purpose='CME';
+  document.getElementById('purposeOpts').addEventListener('click', e=>{ const b=e.target.closest('.fopt'); if(!b) return; purpose=b.dataset.v; document.querySelectorAll('#purposeOpts .fopt').forEach(x=>x.classList.toggle('on', x===b)); });
+  let difficulty='Intermediate';
+  document.getElementById('diffOpts').addEventListener('click', e=>{ const b=e.target.closest('.fopt'); if(!b) return; difficulty=b.dataset.v; document.querySelectorAll('#diffOpts .fopt').forEach(x=>x.classList.toggle('on', x===b)); });
+
+  /* ---------- file upload (step 2, drag & drop) ---------- */
+  let files=[];
+  const matList=document.getElementById('matList'), upZone=document.getElementById('upZone'), fFiles=document.getElementById('fFiles');
+  function iconFor(name){ const n=name.toLowerCase(); if(/\.(png|jpe?g|gif|webp)$/.test(n)) return imgIco; return fileIco; }
+  function fmtSize(b){ if(b<1024) return b+' B'; if(b<1048576) return (b/1024).toFixed(0)+' KB'; return (b/1048576).toFixed(1)+' MB'; }
+  function renderMats(){
+    matList.innerHTML = files.map((f,i)=>'<div class="mat"><span class="mi">'+iconFor(f.name)+'</span><div class="mn"><b>'+esc(f.name)+'</b><span>'+fmtSize(f.size)+'</span></div><button type="button" class="rm" data-rmf="'+i+'" aria-label="Remove '+esc(f.name)+'">'+rmIco+'</button></div>').join('');
+  }
+  function addFiles(list){ Array.from(list).forEach(f=>files.push({name:f.name, size:f.size})); renderMats(); if(list.length) toast(list.length+' file'+(list.length>1?'s':'')+' added'); }
+  fFiles.addEventListener('change', ()=>{ addFiles(fFiles.files); fFiles.value=''; });
+  matList.addEventListener('click', e=>{ const r=e.target.closest('[data-rmf]'); if(!r) return; files.splice(+r.dataset.rmf,1); renderMats(); });
+  ['dragenter','dragover'].forEach(ev=>upZone.addEventListener(ev, e=>{ e.preventDefault(); upZone.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(ev=>upZone.addEventListener(ev, e=>{ e.preventDefault(); upZone.classList.remove('drag'); }));
+  upZone.addEventListener('drop', e=>{ if(e.dataTransfer && e.dataTransfer.files) addFiles(e.dataTransfer.files); });
+
+  /* ---------- style select (step 3) ---------- */
+  let style='Professional';
+  document.getElementById('styleGrid').addEventListener('click', e=>{
+    const c=e.target.closest('.style-card'); if(!c) return; style=c.dataset.v;
+    document.querySelectorAll('.style-card').forEach(x=>x.classList.toggle('sel', x===c));
+  });
+
+  /* ---------- AI options toggles ---------- */
+  const aiOptions={images:true, diagrams:false, charts:false, flowcharts:false, tables:false, references:true, notes:true, summary:true, qa:false, thanks:true};
+  document.querySelectorAll('.tog[data-t]').forEach(t=>{
+    t.addEventListener('click', ()=>{ const k=t.dataset.t; aiOptions[k]=!aiOptions[k]; t.classList.toggle('on', aiOptions[k]); });
+  });
+
+  /* ---------- theme select (step 4) ---------- */
+  const THEMES=[
+    {v:'Blue Medical', d:'Clinical blue, calm & trustworthy', bg:'#eaf2ff', bar1:'#1e5fbf', bar2:'#94b8e8', dot:'#1e5fbf'},
+    {v:'Minimal White', d:'Clean white, lots of whitespace', bg:'#ffffff', bar1:'#e2e2e2', bar2:'#cfcfcf', dot:'#111111'},
+    {v:'Conference Theme', d:'Warm gold, stage-ready contrast', bg:'#fff7e6', bar1:'#b0894f', bar2:'#d9c39a', dot:'#b0894f'},
+    {v:'Hospital Theme', d:'Fresh teal-green, clinical feel', bg:'#eafaf3', bar1:'#0f9d6b', bar2:'#9fd9c2', dot:'#0f9d6b'},
+    {v:'Corporate Theme', d:'Slate navy, formal & sober', bg:'#eef0f5', bar1:'#334155', bar2:'#94a3b8', dot:'#334155'}
+  ];
+  let theme = THEMES[0].v;
+  function themeCard(t,i){
+    return '<div class="theme-card'+(t.v===theme?' sel':'')+'" data-v="'+esc(t.v)+'">'+
+      '<div class="theme-preview" style="background:'+t.bg+'">'+
+        '<i style="top:0;left:0;right:0;height:9px;background:'+t.bar1+'"></i>'+
+        '<i style="top:15px;left:6px;width:34px;height:3px;background:'+t.bar2+'"></i>'+
+        '<i style="top:21px;left:6px;width:24px;height:3px;background:'+t.bar2+'"></i>'+
+        '<i style="bottom:6px;right:6px;width:9px;height:9px;border-radius:50%;background:'+t.dot+'"></i>'+
+      '</div>'+
+      '<div class="tt2"><b>'+esc(t.v)+'</b><span>'+esc(t.d)+'</span></div>'+
+      '<span class="rd">'+checkIco+'</span>'+
+    '</div>';
+  }
+  document.getElementById('themeList').innerHTML = THEMES.map(themeCard).join('');
+  document.getElementById('themeList').addEventListener('click', e=>{
+    const c=e.target.closest('.theme-card'); if(!c) return; theme=c.dataset.v;
+    document.querySelectorAll('.theme-card').forEach(x=>x.classList.toggle('sel', x===c));
+  });
+
+  /* ---------- AI generation (step 5) ---------- */
+  const GEN_STAGES=['Analyzing your content…','Structuring slide outline…','Generating diagrams & charts…','Applying theme & formatting…','Finalizing presentation…'];
+  let genTimer=null, generatedData=null;
+  function buildStepsList(){
+    document.getElementById('genSteps').innerHTML = GEN_STAGES.map((s,i)=>
+      '<div class="ai-step-row" data-i="'+i+'"><span class="sic">'+checkIco+'</span><span>'+esc(s.replace('…',''))+'</span></div>').join('');
+  }
+  function startGeneration(){
+    buildStepsList();
+    let pct=0;
+    document.getElementById('genBar').style.width='0%';
+    document.getElementById('genPct').textContent='0%';
+    document.getElementById('genEta').textContent='Estimated 20s';
+    clearInterval(genTimer);
+    genTimer=setInterval(()=>{
+      pct=Math.min(100, pct + (3+Math.random()*6));
+      document.getElementById('genBar').style.width=pct.toFixed(0)+'%';
+      document.getElementById('genPct').textContent=pct.toFixed(0)+'%';
+      document.getElementById('genEta').textContent = pct>=100 ? 'Done' : 'Estimated '+Math.max(1,Math.round((100-pct)/6))+'s';
+      const stageIdx=Math.min(GEN_STAGES.length-1, Math.floor(pct/ (100/GEN_STAGES.length)));
+      document.getElementById('genStage').textContent = GEN_STAGES[stageIdx];
+      document.querySelectorAll('.ai-step-row').forEach(row=>{
+        const i=+row.dataset.i;
+        row.classList.toggle('done', i<stageIdx);
+        row.classList.toggle('active', i===stageIdx);
+      });
+      if(pct>=100){
+        clearInterval(genTimer);
+        setTimeout(finishGeneration, 500);
+      }
+    }, 450);
+  }
+
+  /* ---------- collect + save ---------- */
+  function collect(status){
+    return {
+      id: 'pr'+Date.now().toString(36)+Math.random().toString(36).slice(2,7),
+      title: document.getElementById('fTitle').value.trim(),
+      topic: document.getElementById('fTopic').value.trim(),
+      specialty: Array.from(selectedSpecs).join(', ') || 'General Medicine',
+      subSpecialty: document.getElementById('fSubSpec').value.trim(),
+      purpose: purpose,
+      audience: document.getElementById('fAudience').value,
+      difficulty: difficulty,
+      language: document.getElementById('fLang').value,
+      duration: document.getElementById('fDuration').value.trim() || '—',
+      slides: +document.getElementById('fSlides').value || 15,
+      objectives: document.getElementById('fObjectives').value.trim(),
+      outcomes: document.getElementById('fOutcomes').value.trim(),
+      guidelines: document.getElementById('fGuidelines').value.trim(),
+      points: document.getElementById('fPoints').value.trim(),
+      cases: document.getElementById('fCases').value.trim(),
+      research: document.getElementById('fResearch').value.trim(),
+      references: document.getElementById('fRefs').value.trim(),
+      speakerNotes: document.getElementById('fSpeakerNotes').value.trim(),
+      files: files.map(f=>({name:f.name, size:f.size})),
+      style: style,
+      aiOptions: {...aiOptions},
+      theme: theme,
+      source: 'ai', aiVersion: 'v1',
+      status: status,
+      generatedAt: new Date().toISOString().slice(0,10),
+      updatedAt: new Date().toISOString().slice(0,10),
+      favorite: false, views:0, downloads:0
+    };
+  }
+  function saveTo(status){
+    const data=collect(status);
+    let mine=[]; try{ mine=JSON.parse(localStorage.getItem('myPresentations')||'[]'); }catch(e){}
+    mine.unshift(data);
+    try{ localStorage.setItem('myPresentations', JSON.stringify(mine)); }catch(e){ toast('Could not save — local storage is full.'); }
+    return data;
+  }
+  document.getElementById('saveDraft').addEventListener('click', ()=>{
+    if(!document.getElementById('fTitle').value.trim()){ toast('Add a presentation title first'); return; }
+    saveTo('draft'); toast('Saved as draft');
+  });
+  function finishGeneration(){
+    generatedData = saveTo('published');
+    document.getElementById('doneMsg').textContent = '“'+generatedData.title+'” is ready to preview and refine.';
+    document.getElementById('viewBtn').onclick=()=>{ location.href='presentation-details.html?id='+encodeURIComponent(generatedData.id); };
+    document.getElementById('done').classList.add('show');
+  }
+
+  renderStepper();
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

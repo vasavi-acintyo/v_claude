@@ -23,8 +23,14 @@
   .clist{display:flex;flex-direction:column;gap:11px;}
   .ccard{background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:14px;cursor:pointer;text-align:left;width:100%;font-family:inherit;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
   .ccard:hover{transform:translateY(-2px);border-color:var(--brand);} .ccard:active{transform:scale(.99);}
-  .ctag{display:inline-flex;align-items:center;font-size:8.5px;font-weight:800;letter-spacing:.03em;color:var(--brand);background:var(--brand-soft);padding:3px 9px;border-radius:20px;text-transform:uppercase;}
-  .ctime{font-size:9px;color:var(--muted);font-weight:600;float:right;margin-top:3px;}
+  .chead{display:flex;align-items:center;gap:8px;}
+  .ctag{display:inline-flex;align-items:center;margin-right:auto;font-size:8.5px;font-weight:800;letter-spacing:.03em;color:var(--brand);background:var(--brand-soft);padding:3px 9px;border-radius:20px;text-transform:uppercase;}
+  .ctime{font-size:9px;color:var(--muted);font-weight:600;flex:0 0 auto;}
+  .cbm{width:22px;height:22px;border-radius:50%;color:var(--muted);display:grid;place-items:center;flex:0 0 auto;cursor:pointer;margin-left:auto;}
+  .cbm:hover{color:var(--brand);background:var(--chip);}
+  .cbm.on{color:var(--gold);}
+  .cbm svg{width:13px;height:13px;}
+  .cbm.on svg{fill:var(--gold);}
   .ctitle{font-size:13.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.25;margin:9px 0 4px;}
   .cq{font-size:10.5px;color:var(--slate-700);line-height:1.45;}
   .cfoot{display:flex;align-items:center;gap:9px;margin-top:12px;padding-top:11px;border-top:1px solid var(--line);}
@@ -129,6 +135,7 @@
   try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
 
   const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
   const specOf = c => (c.caseMeta&&c.caseMeta.spec) || ((c.tag||'').split('·')[1]||'').trim() || 'General';
 
   const heartIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.4 3-5.5A4.5 4.5 0 0 0 12 5 4.5 4.5 0 0 0 2 8.5C2 12 5 15 12 21c2-1.7 3.7-3.2 5-4.5"/></svg>';
@@ -137,6 +144,21 @@
   const regenIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v5h-5"/></svg>';
   const feedIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
   const emptyIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
+  const bookmarkIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17l-6-4-6 4z"/></svg>';
+
+  function loadSavedCases(){ try{ return JSON.parse(localStorage.getItem('savedCases')||'[]'); }catch(e){ return []; } }
+  function persistSavedCases(list){ try{ localStorage.setItem('savedCases', JSON.stringify(list)); }catch(e){} }
+  function isCaseSaved(id){ return loadSavedCases().some(s=>s.id==id); }
+  function toggleSaveCase(id){
+    const c=ALL.find(x=>x.id==id); if(!c) return;
+    let saved=loadSavedCases();
+    const already=saved.some(s=>s.id==id);
+    if(already) saved=saved.filter(s=>s.id!=id);
+    else saved.unshift({ id:c.id, cond:(c.caseMeta&&c.caseMeta.cond)||'Case for opinion', spec:specOf(c), time:c.time||'now', savedAt:Date.now() });
+    persistSavedCases(saved);
+    toast(already?'Removed from saved':'Case saved');
+    document.querySelectorAll('.cbm[data-savecase="'+id+'"]').forEach(el=>el.classList.toggle('on', !already));
+  }
 
   const IMG = {
     rohan:'https://randomuser.me/api/portraits/men/45.jpg', arvind:'https://randomuser.me/api/portraits/men/32.jpg',
@@ -221,8 +243,11 @@
     const spec = specOf(c);
     const q = (c.caseMeta&&c.caseMeta.question) || (c.caseMeta&&c.caseMeta.cond) || 'Tap to view the discussion.';
     const avs = ops.slice(0,3).map(o=>'<img src="'+o.img+'" alt="" onerror="this.style.visibility=\'hidden\'">').join('');
+    const saved = isCaseSaved(c.id);
     return '<button class="ccard" data-id="'+esc(c.id)+'">'+
-      '<span class="ctag">Case · '+esc(spec)+'</span><span class="ctime">'+esc(c.time||'now')+'</span>'+
+      '<div class="chead"><span class="ctag">Case · '+esc(spec)+'</span>'+
+        '<span class="cbm'+(saved?' on':'')+'" data-savecase="'+esc(c.id)+'" role="button" aria-label="'+(saved?'Remove from saved':'Save case')+'">'+bookmarkIc+'</span>'+
+        '<span class="ctime">'+esc(c.time||'now')+'</span></div>'+
       '<div class="ctitle">'+esc((c.caseMeta&&c.caseMeta.cond)||'Case for opinion')+'</div>'+
       '<div class="cq">'+esc(q)+'</div>'+
       '<div class="cfoot"><div class="avs">'+avs+'</div><span class="cn">'+ops.length+' opinion'+(ops.length!==1?'s':'')+'</span>'+
@@ -257,7 +282,9 @@
   function detailHtml(c){
     const ops=opinionsFor(c), spec=specOf(c), m=c.caseMeta||{};
     const line=[m.age?m.age+' y':'', m.sex].filter(Boolean).join(' · ');
-    return '<span class="d-tag">Case · '+esc(spec)+'</span>'+
+    const saved = isCaseSaved(c.id);
+    return '<div class="chead"><span class="d-tag">Case · '+esc(spec)+'</span>'+
+        '<span class="cbm'+(saved?' on':'')+'" data-savecase="'+esc(c.id)+'" role="button" aria-label="'+(saved?'Remove from saved':'Save case')+'">'+bookmarkIc+'</span></div>'+
       '<div class="d-title">'+esc(m.cond||'Case for opinion')+'</div>'+
       '<div class="d-meta">'+(line?esc(line)+' · ':'')+'Posted '+esc(c.time||'now')+' · '+ops.length+' opinion'+(ops.length!==1?'s':'')+'</div>'+
       (m.question?'<div class="d-q"><b>Your question:</b> '+esc(m.question)+'</div>':'')+
@@ -285,11 +312,20 @@
   }
   function closeCase(){ dBackdrop.classList.remove('open'); dSheet.classList.remove('open'); openId=null; }
 
-  listEl.addEventListener('click', e=>{ const b=e.target.closest('.ccard'); if(b) openCase(b.dataset.id); });
+  listEl.addEventListener('click', e=>{
+    const bm=e.target.closest('.cbm'); if(bm){ toggleSaveCase(bm.dataset.savecase); return; }
+    const b=e.target.closest('.ccard'); if(b) openCase(b.dataset.id);
+  });
   dBackdrop.addEventListener('click', closeCase);
-  dBody.addEventListener('click', e=>{ if(e.target.closest('#regen')){ const c=ALL.find(x=>x.id==openId); if(c) runSummary(c); } });
+  dBody.addEventListener('click', e=>{
+    const bm=e.target.closest('.cbm'); if(bm){ toggleSaveCase(bm.dataset.savecase); return; }
+    if(e.target.closest('#regen')){ const c=ALL.find(x=>x.id==openId); if(c) runSummary(c); }
+  });
 
-  loadCases();
+  loadCases().then(()=>{
+    const openParam = new URLSearchParams(location.search).get('open');
+    if(openParam) openCase(openParam);
+  });
 
   (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
 </script>

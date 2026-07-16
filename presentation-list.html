@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Presentations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;}
+  .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{flex:1;min-width:0;font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .topbar .plus{width:38px;height:38px;border-radius:50%;background:var(--brand);border:none;display:grid;place-items:center;cursor:pointer;color:#fff;flex:0 0 auto;}
+  .topbar .plus:active{transform:scale(.9);} .topbar .plus svg{width:17px;height:17px;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:12px 18px 20px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  /* search + filter */
+  .fbar{display:flex;gap:9px;align-items:center;}
+  .fsearch{position:relative;flex:1;min-width:0;}
+  .fsearch svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .fsearch input{width:100%;min-height:34px;height:34px;background:var(--chip);border:1px solid transparent;border-radius:17px;padding:0 12px 0 34px;font-size:11px;font-family:inherit;color:var(--ink);}
+  .fsearch input::placeholder{color:var(--muted);} .fsearch input:focus{outline:none;border-color:var(--brand);}
+  .fbtn{position:relative;width:34px;height:34px;flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:11px;display:grid;place-items:center;color:var(--ink);cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .fbtn:hover{border-color:var(--brand);} .fbtn:active{transform:scale(.94);} .fbtn svg{width:16px;height:16px;}
+  .fbtn .fdot{position:absolute;top:-5px;right:-5px;min-width:15px;height:15px;padding:0 4px;border-radius:8px;background:var(--brand);color:#fff;font-size:8.5px;font-weight:800;display:grid;place-items:center;border:2px solid var(--surface);}
+  .factive{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;}
+  .factive:empty{display:none;}
+  .fac{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:var(--brand);background:var(--brand-soft);border:none;padding:6px 10px;border-radius:20px;cursor:pointer;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1);} .fac:active{transform:scale(.94);} .fac svg{width:11px;height:11px;}
+  .fgrp{margin-top:16px;} .fglbl{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 2px 9px;}
+  .fopts{display:flex;flex-wrap:wrap;gap:8px;}
+  .fopt{border:1px solid var(--line);background:var(--card);color:var(--slate-700);font-family:inherit;font-size:11.5px;font-weight:700;padding:8px 14px;min-height:40px;border-radius:20px;cursor:pointer;transition:background .16s, border-color .16s, color .16s, transform .16s cubic-bezier(.22,1,.36,1);} .fopt:active{transform:scale(.95);}
+  .fopt.on{background:var(--brand);border-color:var(--brand);color:#fff;}
+
+  /* view toggle + sort row */
+  .ctrl{display:flex;gap:9px;align-items:center;margin-top:11px;}
+  .vseg{display:flex;background:var(--chip);border-radius:11px;padding:3px;gap:3px;}
+  .vseg button{border:none;background:none;font-family:inherit;font-size:11px;font-weight:800;color:var(--muted);padding:7px 12px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+  .vseg button svg{width:14px;height:14px;}
+  .vseg button.on{background:var(--card);color:var(--brand);box-shadow:0 2px 6px -2px rgba(0,0,0,.2);}
+  .sortbtn{margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:var(--slate-700);background:var(--card);border:1px solid var(--line);border-radius:20px;padding:8px 12px;cursor:pointer;font-family:inherit;}
+  .sortbtn:hover{border-color:var(--brand);} .sortbtn svg{width:13px;height:13px;}
+  .rescount{font-size:10px;color:var(--muted);margin:10px 2px 0;}
+
+  /* ===== card view ===== */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px;}
+  .pcard{position:relative;background:var(--card);border:1px solid var(--line);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
+  .pcard:hover{transform:translateY(-2px);border-color:var(--brand);} .pcard:active{transform:scale(.99);}
+  .pcard .th{position:relative;height:78px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;display:grid;place-items:center;}
+  .pcard .th svg{width:24px;height:24px;}
+  .pcard .th .sc{position:absolute;bottom:6px;right:7px;font-size:7.5px;font-weight:800;color:#fff;background:rgba(0,0,0,.35);padding:2px 6px;border-radius:8px;}
+  .pcard .th .stpill{position:absolute;top:7px;left:7px;}
+  .pcard .more{position:absolute;top:6px;right:6px;width:24px;height:24px;border-radius:50%;background:rgba(0,0,0,.32);color:#fff;border:none;display:grid;place-items:center;cursor:pointer;}
+  .pcard .more svg{width:13px;height:13px;}
+  .pcard .body{padding:9px 10px 11px;}
+  .pcard .pt{font-size:11.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pcard .pspec{font-size:9px;color:var(--brand);font-weight:700;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pcard .pmeta{font-size:8.5px;color:var(--muted);margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;}
+  .pcard .pmeta span{display:inline-flex;align-items:center;gap:3px;} .pcard .pmeta svg{width:10px;height:10px;flex:0 0 auto;}
+
+  /* ===== list view ===== */
+  .plist{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+  .pitem{position:relative;display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:11px;cursor:pointer;width:100%;text-align:left;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
+  .pitem:hover{border-color:var(--brand);transform:translateY(-2px);} .pitem:active{transform:scale(.99);}
+  .pitem .th{position:relative;width:54px;height:54px;border-radius:12px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;display:grid;place-items:center;flex:0 0 auto;overflow:hidden;}
+  .pitem .th svg{width:21px;height:21px;}
+  .pitem .th .sc{position:absolute;bottom:3px;right:4px;font-size:7px;font-weight:800;color:#fff;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:7px;}
+  .pitem .pi{flex:1;min-width:0;}
+  .pitem .pt{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pitem .pspec{font-size:9.5px;color:var(--brand);font-weight:700;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pitem .prow2{font-size:9px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pitem .pmeta{font-size:9px;color:var(--muted);margin-top:5px;display:flex;gap:9px;flex-wrap:wrap;}
+  .pitem .pmeta span{display:inline-flex;align-items:center;gap:4px;} .pitem .pmeta svg{width:11px;height:11px;flex:0 0 auto;}
+  .pitem .pr{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:0 0 auto;}
+  .pitem .more{width:28px;height:28px;border-radius:9px;border:none;background:var(--chip);color:var(--muted);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
+  .pitem .more:hover{color:var(--brand);} .pitem .more svg{width:14px;height:14px;}
+
+  .stpill{font-size:8px;font-weight:800;letter-spacing:.03em;padding:3px 8px;border-radius:20px;white-space:nowrap;text-transform:uppercase;}
+  .stpill.draft{color:var(--muted);background:var(--chip);}
+  .stpill.published{color:var(--brand);background:var(--brand-soft);}
+  .stpill.upcoming{color:#b26a00;background:rgba(212,138,20,.16);}
+  .vispill{display:inline-flex;align-items:center;gap:4px;font-size:8.5px;color:var(--muted);}
+  .vispill svg{width:11px;height:11px;}
+
+  .empty{text-align:center;padding:40px 16px;color:var(--muted);}
+  .empty svg{width:36px;height:36px;margin:0 auto 12px;opacity:.4;}
+  .empty b{display:block;font-size:12.5px;font-weight:800;font-family:var(--display);color:var(--ink);}
+  .empty span{font-size:10px;display:block;margin-top:4px;line-height:1.5;}
+
+  /* pagination */
+  .pager{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:16px;}
+  .pgbtn{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;}
+  .pgbtn:disabled{opacity:.35;cursor:default;}
+  .pgbtn svg{width:15px;height:15px;}
+  .pginfo{font-size:10.5px;font-weight:700;color:var(--muted);}
+
+  /* sheets */
+  .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;z-index:30;}
+  .backdrop.open{opacity:1;visibility:visible;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--card);border-radius:22px 22px 0 0;display:flex;flex-direction:column;max-height:86%;transform:translateY(100%);transition:transform .45s cubic-bezier(.34,1.3,.5,1);box-shadow:0 -12px 40px -12px rgba(0,0,0,.4);}
+  .sheet.open{transform:translateY(0);}
+  .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:8px auto 4px;flex:0 0 auto;}
+  .sh-body{overflow-y:auto;padding:6px 18px calc(16px + env(safe-area-inset-bottom));scrollbar-width:none;} .sh-body::-webkit-scrollbar{display:none;}
+  .sh-head{margin:2px 2px 2px;} .sh-head h2{font-size:18px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;} .sh-head p{font-size:10px;color:var(--muted);margin-top:3px;}
+  .d-actions{display:flex;gap:10px;margin-top:20px;}
+  .btn{flex:1;min-height:48px;border:none;border-radius:13px;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s;}
+  .btn:active{transform:scale(.97);}
+  .btn.primary{background:var(--brand);color:#fff;} .btn.primary:hover{background:var(--brand-dark);}
+  .btn.ghost{background:var(--chip);color:var(--ink);}
+  .opt-item{width:100%;display:flex;align-items:center;gap:12px;background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);padding:14px 4px;cursor:pointer;border-bottom:1px solid var(--line);text-align:left;}
+  .opt-item:last-child{border-bottom:none;}
+  .opt-item svg{width:19px;height:19px;color:var(--muted);flex:0 0 auto;}
+  .opt-item.danger{color:#ef4444;} .opt-item.danger svg{color:#ef4444;}
+
+  .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* hide-mock-statusbar */ .statusbar{display:none !important;}
+</style>
+  <link rel="stylesheet" href="global.css?v=10">
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="tt">My Presentations</span>
+    <button class="plus" id="newBtn" aria-label="Create presentation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+  </div>
+
+  <div class="scroll">
+    <div class="fbar rise">
+      <div class="fsearch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+        <input id="fq" placeholder="Search presentations…">
+      </div>
+      <button class="fbtn" id="fbtn" type="button" aria-label="Filter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8Z"/></svg>
+        <span class="fdot" id="fdot" hidden>0</span>
+      </button>
+    </div>
+    <div class="factive" id="factive"></div>
+
+    <div class="ctrl rise">
+      <div class="vseg" id="vseg">
+        <button class="on" data-v="card"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1.5"/><rect x="13" y="3" width="8" height="8" rx="1.5"/><rect x="3" y="13" width="8" height="8" rx="1.5"/><rect x="13" y="13" width="8" height="8" rx="1.5"/></svg>Cards</button>
+        <button data-v="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="18" x2="20" y2="18"/></svg>List</button>
+      </div>
+      <button class="sortbtn" id="sortBtn" type="button">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8h12M8 12h8M10 16h4"/></svg>
+        <span id="sortLbl">Newest</span>
+      </button>
+    </div>
+
+    <div class="rescount" id="rescount"></div>
+    <div id="viewHost"></div>
+
+    <div class="pager" id="pager" hidden>
+      <button class="pgbtn" id="pgPrev" aria-label="Previous page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+      <span class="pginfo" id="pginfo">Page 1 of 1</span>
+      <button class="pgbtn" id="pgNext" aria-label="Next page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+    </div>
+  </div>
+  <div class="home-ind"></div>
+
+  <!-- Filter sheet -->
+  <div class="backdrop" id="fBackdrop"></div>
+  <div class="sheet" id="fSheet">
+    <div class="grab"></div>
+    <div class="sh-body">
+      <div class="sh-head"><h2>Filter</h2><p>Narrow down your presentations.</p></div>
+      <div class="fgrp"><div class="fglbl">Status</div><div class="fopts" id="foStatus">
+        <button class="fopt on" data-g="status" data-v="all">All</button>
+        <button class="fopt" data-g="status" data-v="draft">Draft</button>
+        <button class="fopt" data-g="status" data-v="published">Published</button>
+      </div></div>
+      <div class="fgrp"><div class="fglbl">Type</div><div class="fopts" id="foType">
+        <button class="fopt on" data-g="type" data-v="all">All</button>
+        <button class="fopt" data-g="type" data-v="CME Program">CME Program</button>
+        <button class="fopt" data-g="type" data-v="Conference">Conference</button>
+        <button class="fopt" data-g="type" data-v="Workshop">Workshop</button>
+        <button class="fopt" data-g="type" data-v="Webinar">Webinar</button>
+        <button class="fopt" data-g="type" data-v="Academic Session">Academic Session</button>
+      </div></div>
+      <div class="fgrp"><div class="fglbl">Specialty</div><div class="fopts" id="foSpec"></div></div>
+      <div class="fgrp"><div class="fglbl">Visibility</div><div class="fopts" id="foVis">
+        <button class="fopt on" data-g="vis" data-v="all">All</button>
+        <button class="fopt" data-g="vis" data-v="Public">Public</button>
+        <button class="fopt" data-g="vis" data-v="Private">Private</button>
+        <button class="fopt" data-g="vis" data-v="Connections Only">Connections Only</button>
+        <button class="fopt" data-g="vis" data-v="CME Participants Only">CME Participants Only</button>
+      </div></div>
+      <div class="d-actions">
+        <button class="btn ghost" id="fReset" type="button">Reset</button>
+        <button class="btn primary" id="fDone" type="button">Show results</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sort sheet -->
+  <div class="backdrop" id="sBackdrop" style="z-index:32"></div>
+  <div class="sheet" id="sSheet" style="z-index:33">
+    <div class="grab"></div>
+    <div class="sh-body">
+      <div class="sh-head"><h2>Sort by</h2></div>
+      <div class="fopts" id="sortOpts" style="flex-direction:column;align-items:stretch;">
+        <button class="fopt on" data-v="newest" style="width:100%;text-align:left;">Newest first</button>
+        <button class="fopt" data-v="oldest" style="width:100%;text-align:left;">Oldest first</button>
+        <button class="fopt" data-v="title" style="width:100%;text-align:left;">Title A–Z</button>
+        <button class="fopt" data-v="views" style="width:100%;text-align:left;">Most viewed</button>
+        <button class="fopt" data-v="downloads" style="width:100%;text-align:left;">Most downloaded</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- More-actions sheet -->
+  <div class="backdrop" id="mBackdrop" style="z-index:34"></div>
+  <div class="sheet" id="mSheet" style="z-index:35">
+    <div class="grab"></div>
+    <div class="sh-body" id="mBody"></div>
+  </div>
+
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='presentations.html'; });
+  document.getElementById('newBtn').addEventListener('click', ()=>location.href='create-presentation.html');
+
+  const monitorIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/><path d="M7 12v-3"/><path d="M11 12V6"/><path d="M15 12V9"/></svg>';
+  const eyeIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7Z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const dlIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 4 5-4"/><path d="M5 21h14"/></svg>';
+  const clockIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>';
+  const emptyIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></svg>';
+  const editIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+  const dupIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10"/></svg>';
+  const shareIco2='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><line x1="8.3" y1="10.7" x2="15.7" y2="6.3"/><line x1="8.3" y1="13.3" x2="15.7" y2="17.7"/></svg>';
+  const archIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1.5"/><path d="M5 9v9a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V9"/><line x1="10" y1="13" x2="14" y2="13"/></svg>';
+  const trashIco2='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>';
+  const lockIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10.5" width="16" height="10" rx="2.5"/><path d="M8 10.5V7a4 4 0 0 1 8 0v3.5"/></svg>';
+  const globeIco2='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 3.6 6 3.6 9s-1.1 6.5-3.6 9c-2.5-2.5-3.6-6-3.6-9s1.1-6.5 3.6-9Z"/></svg>';
+  const peopleIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M17 20v-1.5a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4V20"/><circle cx="8" cy="7" r="3.2"/><path d="M20 20v-1.2a3 3 0 0 0-2.2-2.9"/><path d="M15.5 5.2a3.2 3.2 0 0 1 0 5.6"/></svg>';
+  const shieldIco2='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg>';
+  const VIS_ICO={ 'Private':lockIco, 'Public':globeIco2, 'Connections Only':peopleIco, 'CME Participants Only':shieldIco2, 'Password Protected':lockIco };
+
+  const SEED = [
+    { id:'p1', title:'Cardiometabolic Update 2025', specialty:'Cardiology', category:'CME Program', type:'CME Program',
+      presenter:'You', createdAt:'2026-05-02', updatedAt:'2026-07-10', slides:24, duration:'45 min', status:'published',
+      visibility:'Public', eventDate:'2026-06-10', views:340, downloads:52, shares:3 },
+    { id:'p2', title:'GLP-1 Agonists in Clinical Practice', specialty:'Endocrinology', category:'Conference', type:'Conference',
+      presenter:'You', createdAt:'2026-04-18', updatedAt:'2026-07-08', slides:18, duration:'30 min', status:'published',
+      visibility:'Connections Only', eventDate:'2026-05-02', views:210, downloads:31, shares:0 },
+    { id:'p3', title:'Case: Resistant Hypertension', specialty:'Cardiology', category:'Academic Session', type:'Academic Session',
+      presenter:'You', createdAt:'2026-06-30', updatedAt:'2026-07-13', slides:12, duration:'15 min', status:'draft',
+      visibility:'Private', eventDate:'', views:0, downloads:0, shares:0 },
+    { id:'p4', title:'Diabetes & Kidney — Grand Rounds', specialty:'Nephrology', category:'Workshop', type:'Workshop',
+      presenter:'You', createdAt:'2026-03-11', updatedAt:'2026-06-20', slides:31, duration:'50 min', status:'published',
+      visibility:'CME Participants Only', eventDate:'2026-04-02', views:520, downloads:88, shares:6 },
+    { id:'p5', title:'Migraine Management Masterclass', specialty:'Neurology', category:'Webinar', type:'Webinar',
+      presenter:'You', createdAt:'2026-07-01', updatedAt:'2026-07-12', slides:20, duration:'40 min', status:'published',
+      visibility:'Public', eventDate:'2026-08-05', views:64, downloads:9, shares:1 },
+    { id:'p6', title:'Journal Club: SGLT2 Inhibitors', specialty:'Endocrinology', category:'Academic Session', type:'Academic Session',
+      presenter:'You', createdAt:'2026-07-05', updatedAt:'2026-07-05', slides:9, duration:'20 min', status:'draft',
+      visibility:'Private', eventDate:'', views:0, downloads:0, shares:0 },
+    { id:'p7', title:'Thyroid Nodules — A Practical Approach', specialty:'Endocrinology', category:'Workshop', type:'Workshop',
+      presenter:'You', createdAt:'2026-02-20', updatedAt:'2026-05-30', slides:27, duration:'35 min', status:'published',
+      visibility:'Public', eventDate:'2026-03-14', views:180, downloads:24, shares:2 },
+    { id:'p8', title:'Stroke Rehabilitation Protocols', specialty:'Neurology', category:'CME Program', type:'CME Program',
+      presenter:'You', createdAt:'2026-01-15', updatedAt:'2026-04-11', slides:33, duration:'55 min', status:'published',
+      visibility:'CME Participants Only', eventDate:'2026-02-01', views:410, downloads:67, shares:5 }
+  ];
+
+  function loadAll(){
+    let stored=[]; try{ stored=JSON.parse(localStorage.getItem('myPresentations')||'[]'); }catch(e){}
+    return stored.concat(SEED);
+  }
+  const DATA = loadAll();
+  let fq='', fStatus='all', fType='all', fSpec='all', fVis='all', sortBy='newest', view='card', page=1;
+  const PAGE_SIZE=6;
+
+  function isUpcoming(p){ if(!p.eventDate) return false; return new Date(p.eventDate+'T00:00:00').getTime() > Date.now(); }
+  function statusPill(p){ return isUpcoming(p) ? '<span class="stpill upcoming">Upcoming</span>' : '<span class="stpill '+p.status+'">'+(p.status==='draft'?'Draft':'Published')+'</span>'; }
+
+  function matches(p){
+    if(fStatus!=='all' && p.status!==fStatus) return false;
+    if(fType!=='all' && p.type!==fType) return false;
+    if(fSpec!=='all' && p.specialty!==fSpec) return false;
+    if(fVis!=='all' && p.visibility!==fVis) return false;
+    if(fq){ const q=fq.toLowerCase(); if(!((p.title+' '+p.specialty+' '+p.category+' '+p.presenter).toLowerCase().includes(q))) return false; }
+    return true;
+  }
+  function sortFn(a,b){
+    if(sortBy==='newest') return new Date(b.updatedAt)-new Date(a.updatedAt);
+    if(sortBy==='oldest') return new Date(a.updatedAt)-new Date(b.updatedAt);
+    if(sortBy==='title') return a.title.localeCompare(b.title);
+    if(sortBy==='views') return b.views-a.views;
+    if(sortBy==='downloads') return b.downloads-a.downloads;
+    return 0;
+  }
+
+  function cardHtml(p){
+    return '<div class="pcard" data-id="'+p.id+'">'+
+      '<div class="th">'+statusPill(p)+monitorIco+'<span class="sc">'+p.slides+' sl</span></div>'+
+      '<button class="more" data-more="'+p.id+'" aria-label="More actions"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button>'+
+      '<div class="body">'+
+        '<div class="pt">'+esc(p.title)+'</div>'+
+        '<div class="pspec">'+esc(p.specialty)+'</div>'+
+        '<div class="pmeta"><span>'+clockIco+esc(p.duration)+'</span><span>'+eyeIco+p.views+'</span><span>'+dlIco+p.downloads+'</span></div>'+
+      '</div>'+
+    '</div>';
+  }
+  function rowHtml(p){
+    return '<div class="pitem" role="button" tabindex="0" data-id="'+p.id+'">'+
+      '<span class="th">'+monitorIco+'<span class="sc">'+p.slides+' sl</span></span>'+
+      '<div class="pi">'+
+        '<div class="pt">'+esc(p.title)+'</div>'+
+        '<div class="pspec">'+esc(p.specialty)+' · '+esc(p.category)+' · '+esc(p.presenter)+'</div>'+
+        '<div class="prow2">Updated '+esc(p.updatedAt)+'</div>'+
+        '<div class="pmeta"><span>'+clockIco+esc(p.duration)+'</span><span>'+eyeIco+p.views+'</span><span>'+dlIco+p.downloads+'</span><span class="vispill">'+(VIS_ICO[p.visibility]||lockIco)+esc(p.visibility)+'</span></div>'+
+      '</div>'+
+      '<div class="pr">'+statusPill(p)+'<button type="button" class="more" data-more="'+p.id+'" aria-label="More actions" onclick="event.stopPropagation()"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg></button></div>'+
+    '</div>';
+  }
+
+  function render(){
+    const items = DATA.filter(matches).slice().sort(sortFn);
+    document.getElementById('rescount').textContent = items.length + ' presentation'+(items.length!==1?'s':'');
+    const totalPages = Math.max(1, Math.ceil(items.length/PAGE_SIZE));
+    if(page>totalPages) page=totalPages;
+    const pageItems = items.slice((page-1)*PAGE_SIZE, page*PAGE_SIZE);
+    const host = document.getElementById('viewHost');
+    if(!items.length){
+      host.innerHTML = '<div class="empty">'+emptyIco+'<b>No presentations found</b><span>Try a different search, or clear your filters.</span></div>';
+      document.getElementById('pager').hidden=true;
+      return;
+    }
+    if(view==='card'){ host.innerHTML = '<div class="grid">'+pageItems.map(cardHtml).join('')+'</div>'; }
+    else { host.innerHTML = '<div class="plist">'+pageItems.map(rowHtml).join('')+'</div>'; }
+    const pager=document.getElementById('pager');
+    pager.hidden = totalPages<=1;
+    document.getElementById('pginfo').textContent = 'Page '+page+' of '+totalPages;
+    document.getElementById('pgPrev').disabled = page<=1;
+    document.getElementById('pgNext').disabled = page>=totalPages;
+  }
+
+  document.getElementById('viewHost').addEventListener('click', e=>{
+    const more=e.target.closest('[data-more]');
+    if(more){ openMore(more.dataset.more); return; }
+    const card=e.target.closest('[data-id]'); if(card) location.href='presentation-details.html?id='+encodeURIComponent(card.dataset.id);
+  });
+
+  document.getElementById('fq').addEventListener('input', e=>{ fq=e.target.value.trim(); page=1; render(); });
+
+  // view toggle
+  document.getElementById('vseg').addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    view=b.dataset.v; page=1;
+    document.querySelectorAll('#vseg button').forEach(x=>x.classList.toggle('on', x===b));
+    render();
+  });
+
+  // sort sheet
+  const sBackdrop=document.getElementById('sBackdrop'), sSheet=document.getElementById('sSheet');
+  const SORT_LBL={newest:'Newest',oldest:'Oldest',title:'Title A–Z',views:'Most viewed',downloads:'Most downloaded'};
+  document.getElementById('sortBtn').addEventListener('click', ()=>{ sBackdrop.classList.add('open'); sSheet.classList.add('open'); });
+  sBackdrop.addEventListener('click', ()=>{ sBackdrop.classList.remove('open'); sSheet.classList.remove('open'); });
+  document.getElementById('sortOpts').addEventListener('click', e=>{
+    const b=e.target.closest('.fopt'); if(!b) return;
+    sortBy=b.dataset.v;
+    document.querySelectorAll('#sortOpts .fopt').forEach(x=>x.classList.toggle('on', x===b));
+    document.getElementById('sortLbl').textContent=SORT_LBL[sortBy];
+    sBackdrop.classList.remove('open'); sSheet.classList.remove('open');
+    render();
+  });
+
+  // filter sheet
+  function buildSpecOptions(){
+    const specs=Array.from(new Set(DATA.map(p=>p.specialty))).sort();
+    document.getElementById('foSpec').innerHTML = '<button class="fopt on" data-g="spec" data-v="all">All</button>'+
+      specs.map(s=>'<button class="fopt" data-g="spec" data-v="'+esc(s)+'">'+esc(s)+'</button>').join('');
+  }
+  function activeCount(){ let n=0; if(fStatus!=='all')n++; if(fType!=='all')n++; if(fSpec!=='all')n++; if(fVis!=='all')n++; return n; }
+  function syncSheet(){
+    document.querySelectorAll('#foStatus .fopt').forEach(b=>b.classList.toggle('on', b.dataset.v===fStatus));
+    document.querySelectorAll('#foType .fopt').forEach(b=>b.classList.toggle('on', b.dataset.v===fType));
+    document.querySelectorAll('#foSpec .fopt').forEach(b=>b.classList.toggle('on', b.dataset.v===fSpec));
+    document.querySelectorAll('#foVis .fopt').forEach(b=>b.classList.toggle('on', b.dataset.v===fVis));
+  }
+  function updateFilterUI(){
+    const n=activeCount(), dot=document.getElementById('fdot'); dot.textContent=n; dot.hidden=(n===0);
+    const chips=[];
+    if(fStatus!=='all') chips.push(['status', fStatus==='draft'?'Draft':'Published']);
+    if(fType!=='all') chips.push(['type', fType]);
+    if(fSpec!=='all') chips.push(['spec', fSpec]);
+    if(fVis!=='all') chips.push(['vis', fVis]);
+    const xSm='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
+    document.getElementById('factive').innerHTML = chips.map(c=>'<button class="fac" data-clear="'+c[0]+'">'+esc(c[1])+xSm+'</button>').join('');
+  }
+  const fBackdrop=document.getElementById('fBackdrop'), fSheet=document.getElementById('fSheet');
+  document.getElementById('fbtn').addEventListener('click', ()=>{ syncSheet(); fBackdrop.classList.add('open'); fSheet.classList.add('open'); });
+  function closeF(){ fBackdrop.classList.remove('open'); fSheet.classList.remove('open'); }
+  fBackdrop.addEventListener('click', closeF);
+  document.getElementById('fDone').addEventListener('click', ()=>{ closeF(); page=1; render(); updateFilterUI(); });
+  fSheet.addEventListener('click', e=>{ const b=e.target.closest('.fopt'); if(!b) return; const g=b.dataset.g,v=b.dataset.v; if(g==='status')fStatus=v; else if(g==='type')fType=v; else if(g==='spec')fSpec=v; else if(g==='vis')fVis=v; syncSheet(); });
+  document.getElementById('fReset').addEventListener('click', ()=>{ fStatus='all'; fType='all'; fSpec='all'; fVis='all'; syncSheet(); page=1; render(); updateFilterUI(); });
+  document.getElementById('factive').addEventListener('click', e=>{ const b=e.target.closest('.fac'); if(!b) return; const k=b.dataset.clear; if(k==='status')fStatus='all'; else if(k==='type')fType='all'; else if(k==='spec')fSpec='all'; else if(k==='vis')fVis='all'; page=1; render(); updateFilterUI(); });
+
+  // pagination
+  document.getElementById('pgPrev').addEventListener('click', ()=>{ if(page>1){ page--; render(); } });
+  document.getElementById('pgNext').addEventListener('click', ()=>{ page++; render(); });
+
+  // more-actions sheet
+  const mBackdrop=document.getElementById('mBackdrop'), mSheet=document.getElementById('mSheet'), mBody=document.getElementById('mBody');
+  let moreId=null;
+  function openMore(id){
+    moreId=id;
+    const p=DATA.find(x=>x.id===id); if(!p) return;
+    mBody.innerHTML = '<div class="sh-head"><h2 style="font-size:15px">'+esc(p.title)+'</h2></div>'+
+      '<button type="button" class="opt-item" data-act="edit">'+editIco+'Edit</button>'+
+      '<button type="button" class="opt-item" data-act="dup">'+dupIco+'Duplicate</button>'+
+      '<button type="button" class="opt-item" data-act="share">'+shareIco2+'Share</button>'+
+      '<button type="button" class="opt-item" data-act="download">'+dlIco+'Download</button>'+
+      '<button type="button" class="opt-item" data-act="archive">'+archIco+'Archive</button>'+
+      '<button type="button" class="opt-item danger" data-act="delete">'+trashIco2+'Delete</button>';
+    mBackdrop.classList.add('open'); mSheet.classList.add('open');
+  }
+  function closeMore(){ mBackdrop.classList.remove('open'); mSheet.classList.remove('open'); }
+  mBackdrop.addEventListener('click', closeMore);
+  mBody.addEventListener('click', e=>{
+    const b=e.target.closest('[data-act]'); if(!b) return;
+    const p=DATA.find(x=>x.id===moreId);
+    const act=b.dataset.act;
+    closeMore();
+    if(act==='edit') location.href='create-presentation.html?edit='+encodeURIComponent(moreId);
+    else if(act==='dup') toast('"'+p.title+'" duplicated as a draft');
+    else if(act==='share') toast('Share presentation — coming soon');
+    else if(act==='download') toast('Downloading "'+p.title+'"…');
+    else if(act==='archive') toast('"'+p.title+'" archived');
+    else if(act==='delete'){ if(confirm('Delete "'+p.title+'"? This can\'t be undone.')) toast('"'+p.title+'" deleted'); }
+  });
+
+  buildSpecOptions();
+  render();
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

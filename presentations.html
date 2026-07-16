@@ -15,23 +15,95 @@
   .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;}
   .topbar .bk:active{transform:scale(.94);}
   .topbar .tt{flex:1;min-width:0;font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
-  .topbar .plus{width:40px;height:40px;border-radius:50%;background:var(--brand);border:none;display:grid;place-items:center;cursor:pointer;color:#fff;flex:0 0 auto;}
-  .topbar .plus:active{transform:scale(.92);} .topbar .plus svg{width:20px;height:20px;}
+  .topbar .plus{width:38px;height:38px;border-radius:50%;background:var(--brand);border:none;display:grid;place-items:center;cursor:pointer;color:#fff;flex:0 0 auto;}
+  .topbar .plus:active{transform:scale(.9);} .topbar .plus svg{width:17px;height:17px;}
 
-  .scroll{flex:1 1 auto;overflow-y:auto;padding:16px 18px 22px;}
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:12px 18px 20px;}
   .scroll::-webkit-scrollbar{width:0;}
 
-  .lbl{font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:6px 2px 12px;}
-  .deck-list{display:flex;flex-direction:column;gap:11px;}
-  .deck{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:15px;padding:12px;cursor:pointer;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
-  .deck:hover{border-color:var(--brand);} .deck:active{transform:scale(.99);}
-  .deck .th{width:56px;height:42px;border-radius:9px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;display:grid;place-items:center;flex:0 0 auto;}
-  .deck .th svg{width:20px;height:20px;}
-  .deck .di{flex:1;min-width:0;} .deck .di b{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-  .deck .di span{font-size:9.5px;color:var(--muted);display:block;margin-top:3px;}
-  .deck .dm{font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:4px 9px;border-radius:20px;flex:0 0 auto;}
-  .newbtn{width:100%;min-height:50px;margin-top:16px;border:1.5px dashed var(--brand);border-radius:14px;background:none;color:var(--brand);font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:background .16s,transform .16s;}
-  .newbtn:hover{background:var(--brand-soft);} .newbtn:active{transform:scale(.98);} .newbtn svg{width:17px;height:17px;}
+  /* stat tiles: 3 x 2 */
+  .tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;}
+  .tiles+.tiles{margin-top:6px;}
+  .tile{background:var(--soft1);border:1px solid transparent;border-radius:14px;padding:12px 6px;text-align:center;}
+  .tile:nth-child(2){background:var(--soft2);}
+  .tile b{display:block;font-size:17px;font-weight:800;font-family:var(--display);color:var(--ink);letter-spacing:-.02em;}
+  .tile span{font-size:8px;font-weight:700;color:var(--muted);margin-top:2px;display:block;text-transform:uppercase;letter-spacing:.02em;}
+  .tile.accent b{color:var(--brand);}
+
+  /* generate CTA */
+  .cta{width:100%;display:flex;align-items:center;gap:11px;margin-top:10px;background:linear-gradient(120deg,var(--g1),var(--g2));border:none;border-radius:16px;padding:13px 15px;cursor:pointer;color:#fff;transition:transform .16s cubic-bezier(.22,1,.36,1);}
+  .cta:active{transform:scale(.99);}
+  .cta .ci{width:34px;height:34px;border-radius:10px;background:rgba(255,255,255,.2);display:grid;place-items:center;flex:0 0 auto;}
+  .cta .ci svg{width:18px;height:18px;}
+  .cta .ct{flex:1;min-width:0;text-align:left;}
+  .cta .ct b{display:block;font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .cta .ct span{font-size:9.5px;opacity:.85;display:block;margin-top:2px;}
+  .cta .cchev{flex:0 0 auto;opacity:.85;} .cta .cchev svg{width:16px;height:16px;}
+
+  /* search + filter */
+  .fbar{display:flex;gap:9px;align-items:center;margin-top:14px;}
+  .fsearch{position:relative;flex:1;min-width:0;}
+  .fsearch svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .fsearch input{width:100%;min-height:34px;height:34px;background:var(--chip);border:1px solid transparent;border-radius:17px;padding:0 12px 0 34px;font-size:11px;font-family:inherit;color:var(--ink);}
+  .fsearch input::placeholder{color:var(--muted);} .fsearch input:focus{outline:none;border-color:var(--brand);}
+  .fbtn{position:relative;width:34px;height:34px;flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:11px;display:grid;place-items:center;color:var(--ink);cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .fbtn:hover{border-color:var(--brand);} .fbtn:active{transform:scale(.94);} .fbtn svg{width:16px;height:16px;}
+  .fbtn .fdot{position:absolute;top:-5px;right:-5px;min-width:15px;height:15px;padding:0 4px;border-radius:8px;background:var(--brand);color:#fff;font-size:8.5px;font-weight:800;display:grid;place-items:center;border:2px solid var(--surface);}
+  .factive{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px;}
+  .factive:empty{display:none;}
+  .fac{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:700;color:var(--brand);background:var(--brand-soft);border:none;padding:6px 10px;border-radius:20px;cursor:pointer;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1);} .fac:active{transform:scale(.94);} .fac svg{width:11px;height:11px;}
+  .fgrp{margin-top:16px;} .fglbl{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 2px 9px;}
+  .fopts{display:flex;flex-wrap:wrap;gap:8px;}
+  .fopt{border:1px solid var(--line);background:var(--card);color:var(--slate-700);font-family:inherit;font-size:11.5px;font-weight:700;padding:8px 14px;min-height:40px;border-radius:20px;cursor:pointer;transition:background .16s, border-color .16s, color .16s, transform .16s cubic-bezier(.22,1,.36,1);} .fopt:active{transform:scale(.95);}
+  .fopt.on{background:var(--brand);border-color:var(--brand);color:#fff;}
+
+  /* section header */
+  .sh{display:flex;align-items:baseline;justify-content:space-between;margin:20px 0 10px;}
+  .sh h2{font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .sh a{font-size:10.5px;font-weight:700;color:var(--brand);text-decoration:none;}
+
+  /* presentation row card */
+  .plist{display:flex;flex-direction:column;gap:8px;}
+  .pitem{position:relative;display:flex;gap:12px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:16px;padding:11px;cursor:pointer;width:100%;text-align:left;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
+  .pitem:hover{border-color:var(--brand);transform:translateY(-2px);} .pitem:active{transform:scale(.99);}
+  .pitem .th{position:relative;width:54px;height:54px;border-radius:12px;background:linear-gradient(135deg,var(--g1),var(--g2));color:#fff;display:grid;place-items:center;flex:0 0 auto;overflow:hidden;}
+  .pitem .th svg{width:21px;height:21px;}
+  .pitem .th .sc{position:absolute;bottom:3px;right:4px;font-size:7px;font-weight:800;color:#fff;background:rgba(0,0,0,.35);padding:1px 5px;border-radius:7px;}
+  .pitem .pi{flex:1;min-width:0;}
+  .pitem .pt{font-size:12.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pitem .pspec{font-size:9.5px;color:var(--brand);font-weight:700;margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .pitem .pmeta{font-size:9px;color:var(--muted);margin-top:5px;display:flex;gap:9px;flex-wrap:wrap;}
+  .pitem .pmeta span{display:inline-flex;align-items:center;gap:4px;} .pitem .pmeta svg{width:11px;height:11px;flex:0 0 auto;}
+  .pitem .pr{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:0 0 auto;}
+  .ai-tag{display:inline-flex;align-items:center;gap:4px;font-size:8px;font-weight:800;letter-spacing:.03em;color:var(--brand);background:var(--brand-soft);padding:3px 7px;border-radius:20px;white-space:nowrap;}
+  .ai-tag svg{width:9px;height:9px;}
+  .favbtn{width:26px;height:26px;border-radius:50%;border:none;background:none;color:var(--muted);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
+  .favbtn svg{width:15px;height:15px;}
+  .favbtn.on{color:var(--gold);}
+  .favbtn.on svg{fill:var(--gold);}
+
+  .stpill{font-size:8px;font-weight:800;letter-spacing:.03em;padding:3px 8px;border-radius:20px;white-space:nowrap;text-transform:uppercase;}
+  .stpill.draft{color:var(--muted);background:var(--chip);}
+  .stpill.published{color:var(--brand);background:var(--brand-soft);}
+
+  .empty{text-align:center;padding:40px 16px;color:var(--muted);}
+  .empty svg{width:36px;height:36px;margin:0 auto 12px;opacity:.4;}
+  .empty b{display:block;font-size:12.5px;font-weight:800;font-family:var(--display);color:var(--ink);}
+  .empty span{font-size:10px;display:block;margin-top:4px;line-height:1.5;}
+
+  /* filter sheet */
+  .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;z-index:30;}
+  .backdrop.open{opacity:1;visibility:visible;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--card);border-radius:22px 22px 0 0;display:flex;flex-direction:column;max-height:86%;transform:translateY(100%);transition:transform .45s cubic-bezier(.34,1.3,.5,1);box-shadow:0 -12px 40px -12px rgba(0,0,0,.4);}
+  .sheet.open{transform:translateY(0);}
+  .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:8px auto 4px;flex:0 0 auto;}
+  .sh-body{overflow-y:auto;padding:6px 18px calc(16px + env(safe-area-inset-bottom));scrollbar-width:none;} .sh-body::-webkit-scrollbar{display:none;}
+  .sh-head{margin:2px 2px 2px;} .sh-head h2{font-size:18px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;} .sh-head p{font-size:10px;color:var(--muted);margin-top:3px;}
+  .d-actions{display:flex;gap:10px;margin-top:20px;}
+  .btn{flex:1;min-height:48px;border:none;border-radius:13px;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:7px;transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s;}
+  .btn:active{transform:scale(.97);}
+  .btn.primary{background:var(--brand);color:#fff;} .btn.primary:hover{background:var(--brand-dark);}
+  .btn.ghost{background:var(--chip);color:var(--ink);}
 
   .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:80%;text-align:center;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
@@ -54,15 +126,76 @@
   <div class="topbar">
     <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
     <span class="tt">Presentations</span>
-    <button class="plus" id="newDeck" aria-label="New deck"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
+    <button class="plus" id="newBtn" aria-label="Generate presentation"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
   </div>
 
   <div class="scroll">
-    <div class="lbl rise">Your decks</div>
-    <div class="deck-list rise" id="list"></div>
-    <button class="newbtn rise" id="newDeck2"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>New presentation</button>
+    <div class="tiles rise">
+      <div class="tile accent"><b id="stTotal">0</b><span>Total</span></div>
+      <div class="tile"><b id="stAI">0</b><span>AI Generated</span></div>
+      <div class="tile"><b id="stDraft">0</b><span>Drafts</span></div>
+    </div>
+    <div class="tiles rise">
+      <div class="tile"><b id="stPub">0</b><span>Published</span></div>
+      <div class="tile"><b id="stRecent">0</b><span>Recently Gen.</span></div>
+      <div class="tile"><b id="stFav">0</b><span>Favorites</span></div>
+    </div>
+
+    <button class="cta rise" id="createBtn">
+      <span class="ci"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 1.6 5L19 8.5l-4.4 2.9L16 17l-4-3.2L8 17l1.4-5.6L5 8.5 10.4 7z"/></svg></span>
+      <span class="ct"><b>Generate Presentation</b><span>Describe it — AI builds the full deck for you</span></span>
+      <span class="cchev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+    </button>
+
+    <div class="fbar rise">
+      <div class="fsearch">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+        <input id="fq" placeholder="Search presentations…">
+      </div>
+      <button class="fbtn" id="fbtn" type="button" aria-label="Filter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5h18l-7 8v6l-4 2v-8Z"/></svg>
+        <span class="fdot" id="fdot" hidden>0</span>
+      </button>
+    </div>
+    <div class="factive" id="factive"></div>
+
+    <div class="sh rise"><h2>Recently generated</h2><a href="presentation-list.html">See all</a></div>
+    <div class="plist rise" id="recentList"></div>
   </div>
   <div class="home-ind"></div>
+
+  <!-- Filter sheet -->
+  <div class="backdrop" id="fBackdrop"></div>
+  <div class="sheet" id="fSheet">
+    <div class="grab"></div>
+    <div class="sh-body">
+      <div class="sh-head"><h2>Filter</h2><p>Narrow down your presentations.</p></div>
+      <div class="fgrp"><div class="fglbl">Status</div><div class="fopts" id="foStatus">
+        <button class="fopt on" data-g="status" data-v="all">All</button>
+        <button class="fopt" data-g="status" data-v="draft">Draft</button>
+        <button class="fopt" data-g="status" data-v="published">Published</button>
+      </div></div>
+      <div class="fgrp"><div class="fglbl">Purpose</div><div class="fopts" id="foPurpose">
+        <button class="fopt on" data-g="purpose" data-v="all">All</button>
+        <button class="fopt" data-g="purpose" data-v="CME">CME</button>
+        <button class="fopt" data-g="purpose" data-v="Conference">Conference</button>
+        <button class="fopt" data-g="purpose" data-v="Webinar">Webinar</button>
+        <button class="fopt" data-g="purpose" data-v="Workshop">Workshop</button>
+        <button class="fopt" data-g="purpose" data-v="Medical Education">Medical Education</button>
+        <button class="fopt" data-g="purpose" data-v="Academic Lecture">Academic Lecture</button>
+      </div></div>
+      <div class="fgrp"><div class="fglbl">Specialty</div><div class="fopts" id="foSpec"></div></div>
+      <div class="fgrp"><div class="fglbl">Favorites</div><div class="fopts" id="foFav">
+        <button class="fopt on" data-g="fav" data-v="all">All</button>
+        <button class="fopt" data-g="fav" data-v="yes">Favorites only</button>
+      </div></div>
+      <div class="d-actions">
+        <button class="btn ghost" id="fReset" type="button">Reset</button>
+        <button class="btn primary" id="fDone" type="button">Show results</button>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -71,18 +204,144 @@
   function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
   const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='home.html'; });
-  const scr='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8"/><path d="M12 18v3"/></svg>';
-  const decks=[
-    {t:'Cardiometabolic Update 2025', m:'24 slides · edited 2d ago', tag:'CME'},
-    {t:'GLP-1 in Clinical Practice', m:'18 slides · edited 1w ago', tag:'Talk'},
-    {t:'Case: Resistant Hypertension', m:'12 slides · edited 3w ago', tag:'Case'},
-    {t:'Diabetes & Kidney — Grand Rounds', m:'31 slides · shared', tag:'Shared'}
+
+  const monitorIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/><path d="M7 12v-3"/><path d="M11 12V6"/><path d="M15 12V9"/></svg>';
+  const sparkIco='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 1.6 5L19 8.5l-4.4 2.9L16 17l-4-3.2L8 17l1.4-5.6L5 8.5 10.4 7z"/></svg>';
+  const starIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 2.5 5.5 6 .6-4.5 4 1.3 5.9L12 17.8 6.7 21l1.3-5.9-4.5-4 6-.6z"/></svg>';
+  const dlIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 4 5-4"/><path d="M5 21h14"/></svg>';
+  const clockIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/></svg>';
+  const emptyIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8"/><path d="M12 16v4"/></svg>';
+
+  const SEED = [
+    { id:'p1', title:'Cardiometabolic Update 2025', specialty:'Cardiology', subSpecialty:'Preventive Cardiology', purpose:'CME',
+      source:'ai', aiVersion:'v2', slides:24, duration:'45 min', status:'published', theme:'Blue Medical',
+      generatedAt:'2026-07-12', updatedAt:'2026-07-12', favorite:true, views:340, downloads:52 },
+    { id:'p2', title:'GLP-1 Agonists in Clinical Practice', specialty:'Endocrinology', subSpecialty:'Diabetology', purpose:'Conference',
+      source:'template', aiVersion:'v1', slides:18, duration:'30 min', status:'published', theme:'Corporate',
+      generatedAt:'2026-06-01', updatedAt:'2026-06-01', favorite:false, views:210, downloads:31 },
+    { id:'p3', title:'Case: Resistant Hypertension', specialty:'Cardiology', subSpecialty:'Interventional Cardiology', purpose:'Academic Lecture',
+      source:'ai', aiVersion:'v1', slides:12, duration:'15 min', status:'draft', theme:'Minimal White',
+      generatedAt:'2026-07-14', updatedAt:'2026-07-14', favorite:false, views:0, downloads:0 },
+    { id:'p4', title:'Diabetes & Kidney — Grand Rounds', specialty:'Nephrology', subSpecialty:'Chronic Kidney Disease', purpose:'Workshop',
+      source:'ai', aiVersion:'v3', slides:31, duration:'50 min', status:'published', theme:'Hospital Theme',
+      generatedAt:'2026-05-20', updatedAt:'2026-06-20', favorite:true, views:520, downloads:88 },
+    { id:'p5', title:'Migraine Management Masterclass', specialty:'Neurology', subSpecialty:'Headache Medicine', purpose:'Webinar',
+      source:'ai', aiVersion:'v1', slides:20, duration:'40 min', status:'published', theme:'Conference Theme',
+      generatedAt:'2026-07-10', updatedAt:'2026-07-10', favorite:false, views:64, downloads:9 },
+    { id:'p6', title:'Journal Club: SGLT2 Inhibitors', specialty:'Endocrinology', subSpecialty:'Diabetology', purpose:'Medical Education',
+      source:'ai', aiVersion:'v1', slides:9, duration:'20 min', status:'draft', theme:'Academic',
+      generatedAt:'2026-07-15', updatedAt:'2026-07-15', favorite:false, views:0, downloads:0 }
   ];
-  document.getElementById('list').innerHTML = decks.map(d=>`
-    <div class="deck"><span class="th">${scr}</span><div class="di"><b>${esc(d.t)}</b><span>${esc(d.m)}</span></div><span class="dm">${esc(d.tag)}</span></div>`).join('');
-  document.querySelectorAll('.deck').forEach(el=>el.addEventListener('click',()=>toast('Opening deck…')));
-  const nd=()=>toast('New presentation — coming soon');
-  document.getElementById('newDeck').onclick=nd; document.getElementById('newDeck2').onclick=nd;
+
+  function loadFavIds(){ try{ const raw=localStorage.getItem('presentationFavorites'); if(raw!=null) return JSON.parse(raw); }catch(e){} return null; }
+  function saveFavIds(ids){ try{ localStorage.setItem('presentationFavorites', JSON.stringify(ids)); }catch(e){} }
+
+  function load(){
+    let stored=[]; try{ stored=JSON.parse(localStorage.getItem('myPresentations')||'[]'); }catch(e){}
+    const all = stored.concat(SEED);
+    let favIds = loadFavIds();
+    if(favIds===null){ favIds = all.filter(p=>p.favorite).map(p=>p.id); saveFavIds(favIds); }
+    all.forEach(p=>{ p.favorite = favIds.includes(p.id); });
+    return all;
+  }
+  const DATA = load();
+  let fq='', fStatus='all', fPurpose='all', fSpec='all', fFav='all';
+
+  function isRecent(p){ return (Date.now() - new Date(p.generatedAt+'T00:00:00').getTime()) <= 7*24*60*60*1000; }
+
+  function recompute(){
+    document.getElementById('stTotal').textContent = DATA.length;
+    document.getElementById('stAI').textContent = DATA.filter(p=>p.source==='ai').length;
+    document.getElementById('stDraft').textContent = DATA.filter(p=>p.status==='draft').length;
+    document.getElementById('stPub').textContent = DATA.filter(p=>p.status==='published').length;
+    document.getElementById('stRecent').textContent = DATA.filter(isRecent).length;
+    document.getElementById('stFav').textContent = DATA.filter(p=>p.favorite).length;
+  }
+
+  function pitemHtml(p){
+    const pill = '<span class="stpill '+p.status+'">'+(p.status==='draft'?'Draft':'Published')+'</span>';
+    const aiTag = p.source==='ai' ? '<span class="ai-tag">'+sparkIco+'AI '+esc(p.aiVersion)+'</span>' : '<span class="ai-tag" style="color:var(--muted);background:var(--chip)">Template</span>';
+    return '<div class="pitem" role="button" tabindex="0" data-id="'+p.id+'">'+
+      '<span class="th">'+monitorIco+'<span class="sc">'+p.slides+' sl</span></span>'+
+      '<div class="pi">'+
+        '<div class="pt">'+esc(p.title)+'</div>'+
+        '<div class="pspec">'+esc(p.specialty)+' · '+esc(p.purpose)+'</div>'+
+        '<div class="pmeta">'+aiTag+'<span>'+clockIco+esc(p.duration)+'</span><span>'+dlIco+p.downloads+'</span></div>'+
+      '</div>'+
+      '<div class="pr">'+pill+'<button type="button" class="favbtn'+(p.favorite?' on':'')+'" data-fav="'+p.id+'" aria-label="Toggle favorite" onclick="event.stopPropagation()">'+starIco+'</button></div>'+
+    '</div>';
+  }
+
+  function matches(p){
+    if(fStatus!=='all' && p.status!==fStatus) return false;
+    if(fPurpose!=='all' && p.purpose!==fPurpose) return false;
+    if(fSpec!=='all' && p.specialty!==fSpec) return false;
+    if(fFav==='yes' && !p.favorite) return false;
+    if(fq){ const q=fq.toLowerCase(); if(!((p.title+' '+p.specialty+' '+p.purpose).toLowerCase().includes(q))) return false; }
+    return true;
+  }
+
+  function render(){
+    recompute();
+    const items = DATA.filter(matches).slice().sort((a,b)=> new Date(b.generatedAt)-new Date(a.generatedAt)).slice(0,4);
+    const list=document.getElementById('recentList');
+    list.innerHTML = items.length ? items.map(pitemHtml).join('') :
+      '<div class="empty">'+emptyIco+'<b>No presentations match</b><span>Try a different search or clear your filters.</span></div>';
+  }
+
+  document.getElementById('recentList').addEventListener('click', e=>{
+    const fav=e.target.closest('[data-fav]');
+    if(fav){
+      const p=DATA.find(x=>x.id===fav.dataset.fav);
+      if(p){
+        p.favorite=!p.favorite;
+        const ids=loadFavIds()||[];
+        saveFavIds(p.favorite ? Array.from(new Set([...ids, p.id])) : ids.filter(id=>id!==p.id));
+        fav.classList.toggle('on', p.favorite);
+        recompute();
+      }
+      return;
+    }
+    const b=e.target.closest('.pitem'); if(b) location.href='presentation-details.html?id='+encodeURIComponent(b.dataset.id);
+  });
+  document.getElementById('createBtn').addEventListener('click', ()=>location.href='create-presentation.html');
+  document.getElementById('newBtn').addEventListener('click', ()=>location.href='create-presentation.html');
+  document.getElementById('fq').addEventListener('input', e=>{ fq=e.target.value.trim(); render(); });
+
+  // filter sheet
+  function buildSpecOptions(){
+    const specs=Array.from(new Set(DATA.map(p=>p.specialty))).sort();
+    document.getElementById('foSpec').innerHTML = '<button class="fopt on" data-g="spec" data-v="all">All</button>'+
+      specs.map(s=>'<button class="fopt" data-g="spec" data-v="'+esc(s)+'">'+esc(s)+'</button>').join('');
+  }
+  function activeCount(){ let n=0; if(fStatus!=='all')n++; if(fPurpose!=='all')n++; if(fSpec!=='all')n++; if(fFav!=='all')n++; return n; }
+  function syncSheet(){
+    document.querySelectorAll('#foStatus .fopt').forEach(b=>b.classList.toggle('on', b.dataset.v===fStatus));
+    document.querySelectorAll('#foPurpose .fopt').forEach(b=>b.classList.toggle('on', b.dataset.v===fPurpose));
+    document.querySelectorAll('#foSpec .fopt').forEach(b=>b.classList.toggle('on', b.dataset.v===fSpec));
+    document.querySelectorAll('#foFav .fopt').forEach(b=>b.classList.toggle('on', b.dataset.v===fFav));
+  }
+  function updateFilterUI(){
+    const n=activeCount(), dot=document.getElementById('fdot'); dot.textContent=n; dot.hidden=(n===0);
+    const chips=[];
+    if(fStatus!=='all') chips.push(['status', fStatus==='draft'?'Draft':'Published']);
+    if(fPurpose!=='all') chips.push(['purpose', fPurpose]);
+    if(fSpec!=='all') chips.push(['spec', fSpec]);
+    if(fFav!=='all') chips.push(['fav', 'Favorites only']);
+    const xSm='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
+    document.getElementById('factive').innerHTML = chips.map(c=>'<button class="fac" data-clear="'+c[0]+'">'+esc(c[1])+xSm+'</button>').join('');
+  }
+  const fBackdrop=document.getElementById('fBackdrop'), fSheet=document.getElementById('fSheet');
+  document.getElementById('fbtn').addEventListener('click', ()=>{ syncSheet(); fBackdrop.classList.add('open'); fSheet.classList.add('open'); });
+  function closeF(){ fBackdrop.classList.remove('open'); fSheet.classList.remove('open'); }
+  fBackdrop.addEventListener('click', closeF);
+  document.getElementById('fDone').addEventListener('click', ()=>{ closeF(); render(); updateFilterUI(); });
+  fSheet.addEventListener('click', e=>{ const b=e.target.closest('.fopt'); if(!b) return; const g=b.dataset.g,v=b.dataset.v; if(g==='status')fStatus=v; else if(g==='purpose')fPurpose=v; else if(g==='spec')fSpec=v; else if(g==='fav')fFav=v; syncSheet(); });
+  document.getElementById('fReset').addEventListener('click', ()=>{ fStatus='all'; fPurpose='all'; fSpec='all'; fFav='all'; syncSheet(); render(); updateFilterUI(); });
+  document.getElementById('factive').addEventListener('click', e=>{ const b=e.target.closest('.fac'); if(!b) return; const k=b.dataset.clear; if(k==='status')fStatus='all'; else if(k==='purpose')fPurpose='all'; else if(k==='spec')fSpec='all'; else if(k==='fav')fFav='all'; render(); updateFilterUI(); });
+
+  buildSpecOptions();
+  render();
 
   (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
 </script>
