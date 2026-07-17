@@ -35,6 +35,17 @@
   .search input::placeholder{color:var(--muted);}
   .search input:focus{outline:none;border-color:var(--brand);}
 
+  /* registration reconciliation reminder */
+  .reg-remind{display:flex;align-items:center;gap:11px;margin-top:6px;margin-bottom:2px;background:color-mix(in srgb,var(--gold) 12%,var(--card));border:1px solid color-mix(in srgb,var(--gold) 42%,var(--line));border-radius:15px;padding:12px 13px;text-decoration:none;color:inherit;transition:transform .16s;}
+  .reg-remind:active{transform:scale(.99);}
+  .reg-remind .rr-ic{width:34px;height:34px;flex:0 0 auto;border-radius:10px;background:color-mix(in srgb,var(--gold) 20%,transparent);color:var(--gold);display:grid;place-items:center;}
+  .reg-remind .rr-ic svg{width:18px;height:18px;}
+  .reg-remind .rr-tx{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .reg-remind .rr-tx b{font-size:12px;font-weight:800;letter-spacing:-.01em;}
+  .reg-remind .rr-tx span{font-size:10px;color:var(--muted);line-height:1.4;}
+  .reg-remind .rr-chev{color:var(--muted);flex:0 0 auto;display:grid;place-items:center;}
+  .reg-remind .rr-chev svg{width:16px;height:16px;}
+
   /* profile completion nudge */
   .pcomplete{position:relative;display:flex;align-items:center;gap:13px;margin-top:4px;background:var(--soft2);border:1px solid transparent;border-radius:16px;padding:13px 40px 13px 13px;text-decoration:none;color:inherit;transition:transform .18s, border-color .18s;}
   .pcomplete:hover{border-color:var(--brand);}
@@ -294,6 +305,19 @@
   .doxy-badge .eyes{animation:doxyLook 3.2s ease-in-out infinite;}
   @keyframes doxyLook{0%,12%{transform:translateX(0)}35%,48%{transform:translateX(-1.4px)}65%,78%{transform:translateX(1.4px)}100%{transform:translateX(0)}}
 
+  /* theme chooser */
+  .theme-head{margin:0 2px 4px;}
+  .theme-head h2{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .theme-head p{font-size:10px;color:var(--muted);margin-top:3px;}
+  .theme-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:14px 0 6px;}
+  .theme-opt{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);cursor:pointer;color:inherit;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
+  .theme-opt:active{transform:scale(.96);}
+  .theme-opt.active{border-color:var(--brand);}
+  .theme-opt .sw{width:34px;height:34px;border-radius:50%;border:2px solid rgba(255,255,255,.6);box-shadow:0 2px 6px rgba(0,0,0,.15);}
+  .theme-opt .tn{font-size:10.5px;font-weight:700;letter-spacing:-.01em;}
+  .theme-opt .tick{position:absolute;top:8px;right:8px;width:15px;height:15px;color:var(--brand);opacity:0;transition:opacity .16s;}
+  .theme-opt.active .tick{opacity:1;}
+
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
@@ -321,6 +345,16 @@
       </button>
       <a class="mewrap" href="profile.html" aria-label="My profile"><img class="me" src="https://randomuser.me/api/portraits/women/79.jpg" alt="Me"></a>
     </div>
+
+    <!-- Registration reconciliation reminder (shows while NMC records differ) -->
+    <a class="reg-remind rise" id="regRemind" href="profile.html" hidden>
+      <span class="rr-ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg></span>
+      <div class="rr-tx">
+        <b>Reconcile your registration</b>
+        <span>Your details differ from the NMC. Get them corrected at your State Medical Council — tap to review.</span>
+      </div>
+      <span class="rr-chev"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+    </a>
 
     <!-- Profile completion nudge (auto-hides at 100% or when dismissed) -->
     <a class="pcomplete rise" id="pcomplete" href="profile.html">
@@ -374,10 +408,20 @@
       </a>
       <a class="mtile c-cyan" href="files.html">
         <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2.5h8a2 2 0 0 1 2 2V17a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg></span>
-        <div><div class="nm">My Files</div><div class="ms">Library &amp; documents</div></div>
+        <div><div class="nm">My Space</div><div class="ms">Discover &amp; share resources</div></div>
         <span class="arw"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
       </a>
     </div>
+
+    <!-- Live Medical Events module entry -->
+    <a class="rise" href="live-events.html" style="display:flex;align-items:center;gap:12px;margin-top:10px;background:var(--soft1);border:1px solid var(--line);border-radius:16px;padding:13px 14px;text-decoration:none;color:inherit;">
+      <span style="width:42px;height:42px;border-radius:12px;background:rgba(224,57,43,.12);color:#e0392b;display:grid;place-items:center;flex:0 0 auto;"><svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="13" rx="2.5"/><path d="m8 3 4 4 4-4"/></svg></span>
+      <div style="flex:1;min-width:0;">
+        <div style="display:flex;align-items:center;gap:7px;"><span style="width:7px;height:7px;border-radius:50%;background:#e0392b;box-shadow:0 0 0 3px rgba(224,57,43,.2);flex:0 0 auto;"></span><b style="font-size:13px;font-weight:800;letter-spacing:-.01em;">Live Medical Events</b></div>
+        <div style="font-size:10.5px;color:var(--muted);margin-top:3px;">Webinars, CME &amp; surgeries streaming now</div>
+      </div>
+      <span style="color:var(--muted);flex:0 0 auto;"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
+    </a>
 
     <!-- Featured / happening now (live → upcoming → empty, rendered by JS) -->
     <div class="lbl rise" id="featuredLbl">Happening now</div>
@@ -411,6 +455,14 @@
     <div class="act-status" id="actStatus"><span class="dot"></span><span id="actStatusTxt"></span></div>
     <div class="act-todo"><div class="l">Action needed</div><p id="actTodo"></p></div>
     <div class="act-btns"><button class="act-secondary" id="actSec"></button><button class="act-primary" id="actPri"></button></div>
+  </div>
+
+  <!-- Theme chooser sheet -->
+  <div class="backdrop" id="themeBackdrop"></div>
+  <div class="sheet" id="themeSheet">
+    <div class="grab"></div>
+    <div class="theme-head"><h2>Appearance</h2><p>Pick a colour theme. Fonts adapt to your device automatically.</p></div>
+    <div class="theme-grid" id="themeGrid"></div>
   </div>
 
   <!-- All doctors sheet (opened from Popular doctors → See all) -->
@@ -463,6 +515,41 @@
     toastTimer = setTimeout(()=>el.classList.remove('show'), 1400);
   }
 
+  // ---- Theme chooser sheet ----
+  (function(){
+    const THEMES = [
+      { id:'classical', name:'Classic', c:'#7d2c3b' },
+      { id:'blue',      name:'Ocean',   c:'#1e5fbf' },
+      { id:'green',     name:'Forest',  c:'#0f7a5a' },
+      { id:'white',     name:'White',   c:'#ffffff' },
+      { id:'whitec',    name:'Colour',  c:'linear-gradient(135deg,#2f6fed,#12a150 55%,#e04a8a)' }
+    ];
+    const grid = document.getElementById('themeGrid');
+    const sheet = document.getElementById('themeSheet');
+    const backdrop = document.getElementById('themeBackdrop');
+    let current = 'vibrant';
+    try{ current = localStorage.getItem('cmeTheme') || 'vibrant'; }catch(e){}
+    const tick = '<svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+    grid.innerHTML = THEMES.map(t=>`
+      <button class="theme-opt${t.id===current?' active':''}" data-t="${t.id}">
+        ${tick}
+        <span class="sw" style="background:${t.c}"></span>
+        <span class="tn">${t.name}</span>
+      </button>`).join('');
+    function open(){ backdrop.classList.add('open'); sheet.classList.add('open'); }
+    function close(){ backdrop.classList.remove('open'); sheet.classList.remove('open'); }
+    { const _tb=document.getElementById('themeBtn'); if(_tb) _tb.addEventListener('click', open); }
+    backdrop.addEventListener('click', close);
+    grid.addEventListener('click', e=>{
+      const btn = e.target.closest('.theme-opt'); if(!btn) return;
+      const t = btn.dataset.t;
+      applyTheme(t);
+      try{ localStorage.setItem('cmeTheme', t); }catch(err){}
+      grid.querySelectorAll('.theme-opt').forEach(b=>b.classList.toggle('active', b===btn));
+      toast(THEMES.find(x=>x.id===t).name + ' theme applied');
+      setTimeout(close, 260);
+    });
+  })();
 
   // ---- Profile completion nudge (compact ring card, dismissible, hides at 100%) ----
   (function(){
@@ -761,6 +848,20 @@
 
   // ---- Notifications bell (no dedicated page yet → acknowledge with a toast) ----
   document.getElementById('bellBtn').addEventListener('click', ()=>toast('3 new notifications'));
+
+  // Registration reconciliation: persistent banner + once-per-day reminder until records match
+  (function regRemind(){
+    try{
+      const el=document.getElementById('regRemind'); if(!el) return;
+      if(localStorage.getItem('docRegMismatch')!=='1'){ el.hidden=true; return; }
+      el.hidden=false;
+      const today=new Date().toDateString();
+      if(localStorage.getItem('docRegReminderDate')!==today){
+        localStorage.setItem('docRegReminderDate', today);
+        setTimeout(()=>toast('Reminder: reconcile your registration details with your State Medical Council'), 900);
+      }
+    }catch(e){}
+  })();
 
   // ---- Activity detail sheet ----
   const actBackdrop = document.getElementById('actBackdrop');

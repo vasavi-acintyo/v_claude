@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Space — Item</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;transition:transform .16s, border-color .16s;}
+  .topbar .bk:hover{border-color:var(--brand);} .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{flex:1;min-width:0;font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;text-transform:capitalize;}
+  .topbar .ic{width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;transition:transform .16s, border-color .16s;}
+  .topbar .ic:hover{border-color:var(--brand);} .topbar .ic:active{transform:scale(.92);} .topbar .ic svg{width:18px;height:18px;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:16px 18px 18px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .ptag{display:inline-flex;align-items:center;font-size:9px;font-weight:800;letter-spacing:.03em;padding:4px 9px;border-radius:20px;text-transform:uppercase;white-space:nowrap;}
+  .ptag.free{color:#15803d;background:#dcfce7;}
+  .ptag.paid{color:var(--brand);background:var(--brand-soft);}
+
+  /* media hero (video / document) */
+  .media{position:relative;height:210px;border-radius:18px;overflow:hidden;background:linear-gradient(135deg,var(--g1),var(--g2));display:grid;place-items:center;margin-bottom:16px;}
+  .media .play{width:66px;height:66px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--brand);box-shadow:0 10px 26px -8px rgba(0,0,0,.45);cursor:pointer;transition:transform .16s;}
+  .media .play:active{transform:scale(.92);} .media .play svg{width:26px;height:26px;margin-left:4px;}
+  .media .docbig{color:#fff;opacity:.95;} .media .docbig svg{width:64px;height:64px;}
+  .media .dur{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.62);color:#fff;font-size:10px;font-weight:700;padding:4px 9px;border-radius:7px;}
+  .media .htag{position:absolute;left:10px;top:10px;}
+  .media .hlock{position:absolute;inset:0;background:rgba(10,14,30,.45);display:grid;place-items:center;color:#fff;}
+  .media .hlock .lk{width:54px;height:54px;border-radius:50%;background:rgba(255,255,255,.16);display:grid;place-items:center;}
+  .media .hlock .lk svg{width:24px;height:24px;}
+  .media.yt{background:#000;}
+  .ytface{position:absolute;inset:0;background-size:cover;background-position:center;display:grid;place-items:center;cursor:pointer;}
+  .ytface::after{content:"";position:absolute;inset:0;background:rgba(0,0,0,.22);}
+  .ytface>*{position:relative;z-index:1;}
+  .media iframe{width:100%;height:100%;border:0;display:block;}
+  .media .fnote{position:relative;z-index:2;max-width:290px;margin:0 auto;text-align:center;color:#fff;padding:0 18px;display:flex;flex-direction:column;align-items:center;gap:9px;}
+  .media .fnote svg{width:32px;height:32px;opacity:.92;}
+  .media .fnote b{font-size:12.5px;font-weight:800;}
+  .media .fnote span{font-size:10px;line-height:1.55;opacity:.85;}
+  .media .fnote code{background:rgba(255,255,255,.18);padding:1px 6px;border-radius:5px;font-size:9.5px;}
+
+  .typechip{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--brand);margin-bottom:8px;}
+  .typechip svg{width:13px;height:13px;}
+  .h1{font-size:20px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;line-height:1.22;}
+
+  .author{display:flex;align-items:center;gap:11px;margin:15px 0;}
+  .author img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .author .ax{flex:1;min-width:0;}
+  .author .an{font-size:13px;font-weight:800;letter-spacing:-.01em;}
+  .author .ar{font-size:10.5px;color:var(--muted);margin-top:2px;}
+  .author .follow{flex:0 0 auto;border:1px solid var(--brand);background:var(--brand-soft);color:var(--brand);font-family:inherit;font-size:11px;font-weight:800;padding:8px 14px;border-radius:20px;cursor:pointer;transition:transform .16s;}
+  .author .follow:active{transform:scale(.94);} .author .follow.on{background:var(--brand);color:#fff;}
+
+  .stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+  .stat{display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:700;color:var(--slate-700);background:var(--soft1);border:1px solid var(--line);padding:8px 12px;border-radius:20px;}
+  .stat svg{width:13px;height:13px;color:var(--muted);}
+
+  .sec-h{font-size:13.5px;font-weight:800;letter-spacing:-.01em;margin:4px 0 9px;}
+  .body p{font-size:12.5px;line-height:1.68;color:var(--slate-700);margin-bottom:13px;}
+  .body p b{color:var(--ink);}
+  .keypts{list-style:none;margin:2px 0 16px;padding:0;}
+  .keypts li{position:relative;font-size:12px;line-height:1.55;color:var(--slate-700);padding:0 0 9px 22px;}
+  .keypts li::before{content:"";position:absolute;left:2px;top:6px;width:7px;height:7px;border-radius:50%;background:var(--brand);}
+
+  /* document detail rows */
+  .dmeta{border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-bottom:18px;background:var(--card);}
+  .dmeta .dr{display:flex;justify-content:space-between;gap:12px;padding:12px 14px;border-bottom:1px solid var(--line);font-size:12px;}
+  .dmeta .dr:last-child{border-bottom:none;}
+  .dmeta .dr span{color:var(--muted);font-weight:600;} .dmeta .dr b{color:var(--ink);font-weight:800;}
+
+  /* paywall */
+  .paywall{border:1px solid color-mix(in srgb,var(--brand) 30%,var(--line));border-radius:16px;padding:20px 18px;text-align:center;background:var(--brand-soft);margin:6px 0 16px;}
+  .paywall .pw-ic{width:52px;height:52px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;margin:0 auto 12px;}
+  .paywall .pw-ic svg{width:24px;height:24px;}
+  .paywall h3{font-size:15px;font-weight:800;color:var(--ink);}
+  .paywall p{font-size:11px;color:var(--slate-700);line-height:1.55;margin:6px 0 0;}
+  .body.blurred{-webkit-mask-image:linear-gradient(180deg,#000 40%,transparent);mask-image:linear-gradient(180deg,#000 40%,transparent);max-height:130px;overflow:hidden;}
+
+  /* sticky action bar */
+  .actionbar{flex:0 0 auto;display:flex;gap:10px;align-items:center;padding:12px 16px calc(12px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface);}
+  .actionbar .save{width:52px;height:50px;flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:13px;display:grid;place-items:center;color:var(--slate-700);cursor:pointer;transition:transform .16s, color .16s, border-color .16s;}
+  .actionbar .save:active{transform:scale(.92);} .actionbar .save.on{color:var(--brand);border-color:var(--brand);} .actionbar .save svg{width:20px;height:20px;}
+  .actionbar .sec{flex:0 0 auto;padding:0 16px;height:50px;border:1px solid var(--brand);background:var(--brand-soft);color:var(--brand);border-radius:13px;font-family:inherit;font-size:12.5px;font-weight:800;display:inline-flex;align-items:center;gap:7px;cursor:pointer;transition:transform .16s;}
+  .actionbar .sec:active{transform:scale(.97);} .actionbar .sec svg{width:16px;height:16px;}
+  .actionbar .primary{flex:1;height:50px;border:none;background:var(--brand);color:#fff;border-radius:13px;font-family:inherit;font-size:13.5px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 12px 24px -12px var(--brand);transition:transform .16s, background .16s;}
+  .actionbar .primary:active{transform:scale(.98);} .actionbar .primary:hover{background:var(--brand-dark);} .actionbar .primary svg{width:17px;height:17px;}
+
+  .toast{position:absolute;left:50%;bottom:86px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:80%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* hide-mock-statusbar */ .statusbar{display:none !important;}
+</style>
+  <link rel="stylesheet" href="global.css?v=27">
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="tt" id="ttype">Item</span>
+    <button class="ic" id="share" aria-label="Share"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5 8.6 10.5"/></svg></button>
+  </div>
+
+  <div class="scroll" id="scroll"></div>
+
+  <div class="actionbar" id="actionbar"></div>
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1500); }
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='files.html'; });
+  document.getElementById('share').addEventListener('click', ()=>toast('Share link copied'));
+
+  const IC = {
+    play:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg>',
+    lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+    document:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>',
+    article:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h16M4 9h16M4 13h10M4 17h7"/></svg>',
+    general:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>',
+    video:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="14" height="14" rx="3"/><path d="m16 10 6-3v10l-6-3z"/></svg>',
+    eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+    dl:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="m7 11 5 4 5-4"/><path d="M5 21h14"/></svg>',
+    bm:'<svg viewBox="0 0 24 24" fill="currentColor" fill-opacity="0" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17l-6-4-6 4z"/></svg>',
+    clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>',
+    views:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+    cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>',
+    file:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>'
+  };
+
+  // read the item passed from My Space (fallback demo)
+  let item; try{ item = JSON.parse(sessionStorage.getItem('spaceItem')||'null'); }catch(e){}
+  if(!item) item = {type:'video', title:'Cardiometabolic Update — Session 1', by:'Dr. Meera Iyer', av:'https://randomuser.me/api/portraits/women/68.jpg', access:'free', dur:'18:20', views:'3.4k views · 2d'};
+  const MY_AV='https://randomuser.me/api/portraits/men/52.jpg';
+  const av = item.av || MY_AV;
+  const price = item.price || '99';
+  let unlocked = item.access !== 'paid';
+  let saved = false;
+
+  const TYPE_LABEL = {video:'Video', document:'Document', article:'Article', general:'General post'};
+  document.getElementById('ttype').textContent = TYPE_LABEL[item.type] || 'Item';
+
+  function bodyFor(it){
+    if(it.type==='general') return `<div class="body"><p>${esc(it.text||'')}</p></div>`;
+    if(it.type==='document') return `
+      <div class="sec-h">About this document</div>
+      <div class="body"><p>${esc(it.desc||'A reference document shared with the community. Open it in-app to read.')}</p></div>
+      <div class="sec-h">File details</div>
+      <div class="dmeta">
+        <div class="dr"><span>Format</span><b>${esc((it.meta||'PDF').split('·')[0].trim()||'PDF')}</b></div>
+        <div class="dr"><span>Size</span><b>${esc((it.meta||'· 3.4 MB').split('·')[1]?.trim()||'3.4 MB')}</b></div>
+        <div class="dr"><span>Pages</span><b>${esc(it.pages||'24 pages')}</b></div>
+        <div class="dr"><span>Uploaded</span><b>${esc((it.meta||'').split('·')[2]?.trim()||'this week')}</b></div>
+      </div>`;
+    if(it.type==='article') return `
+      <div class="sec-h">Article</div>
+      <div class="body${unlocked?'':' blurred'}">
+        <p><b>${esc(it.title)}.</b> This clinical overview distils current evidence and day-to-day practice into an actionable read for busy physicians.</p>
+        <p>We begin with the pathophysiology and the shifts in the latest guidelines, then move to a pragmatic, stepwise approach you can apply at the bedside — including when to escalate and how to counsel patients.</p>
+        <p>Key considerations include comorbidity-driven target adjustment, drug–drug interactions, monitoring cadence, and the red flags that warrant referral. Real-world caveats are highlighted throughout.</p>
+        <p>We close with a concise checklist and further reading, so you leave with something you can use in your very next consult.</p>
+      </div>`;
+    // video
+    return `
+      <div class="sec-h">About this video</div>
+      <div class="body"><p>${esc(it.desc||('In this session, '+ (it.by||'the speaker') +' walks through the case step by step — from presentation and work-up to management and follow-up — with practical, transferable takeaways for everyday practice.'))}</p></div>
+      <div class="sec-h">What you'll learn</div>
+      <ul class="keypts">
+        <li>The structured approach used and why each step matters</li>
+        <li>Common pitfalls and how to avoid them</li>
+        <li>Guideline-aligned decisions with real-world caveats</li>
+      </ul>`;
+  }
+
+  function heroFor(it){
+    const tag = it.access==='paid' ? `<span class="ptag paid">₹${esc(price)}</span>` : `<span class="ptag free">Free</span>`;
+    if(it.type==='video'){
+      if(unlocked && it.yt) return `<div class="media yt" id="ytHost">
+        <div class="ytface" id="ytFace" style="background-image:url('https://i.ytimg.com/vi/${esc(it.yt)}/hqdefault.jpg')">
+          <span class="play" id="playBtn">${IC.play}</span>
+          <span class="htag">${tag}</span>
+          <span class="dur">${esc(it.dur||'')}</span>
+        </div></div>`;
+      return `<div class="media">
+        ${unlocked?`<span class="play" id="playBtn">${IC.play}</span>`:`<div class="hlock"><div class="lk">${IC.lock}</div></div>`}
+        <span class="htag">${tag}</span>
+        <span class="dur">${esc(it.dur||'00:00')}</span>
+      </div>`;
+    }
+    if(it.type==='document') return `<div class="media">
+        <span class="docbig">${IC.document}</span>
+        <span class="htag">${tag}</span>
+        ${unlocked?'':`<div class="hlock"><div class="lk">${IC.lock}</div></div>`}
+      </div>`;
+    return ''; // article / general have no media hero
+  }
+
+  function statsFor(it){
+    const chips=[];
+    if(it.type==='video'){ chips.push([IC.views, (it.views||'0 views').split('·')[0].trim()]); chips.push([IC.clock, it.dur||'—']); }
+    if(it.type==='article'){ chips.push([IC.clock, (it.meta||'6 min read').split('·')[0].trim()]); chips.push([IC.views, '1.2k reads']); }
+    if(it.type==='document'){ chips.push([IC.file, (it.meta||'PDF').split('·')[0].trim()]); chips.push([IC.eye, '1.4k views']); }
+    if(it.type==='general'){ chips.push([IC.cal, it.meta||'recently']); }
+    return `<div class="stats">${chips.map(c=>`<span class="stat">${c[0]}${esc(c[1])}</span>`).join('')}</div>`;
+  }
+
+  function playYt(){
+    const host=document.getElementById('ytHost');
+    if(!host || host.dataset.on) return;
+    host.dataset.on='1';
+    // YouTube can't play from a file:// page (Error 153) — show an in-app notice instead.
+    if(location.protocol==='file:'){
+      host.innerHTML = `<div class="ytface" style="background-image:url('https://i.ytimg.com/vi/${esc(item.yt)}/hqdefault.jpg')"><div class="fnote">${IC.play}<b>Open over http to watch inline</b><span>YouTube blocks playback from a local file. Run <code>python -m http.server</code> and open <code>http://localhost:8000</code> (or the live site) — it plays right here, no redirect.</span></div></div>`;
+      host.dataset.on='';
+      return;
+    }
+    host.innerHTML = `<iframe src="https://www.youtube.com/embed/${encodeURIComponent(item.yt)}?autoplay=1&playsinline=1&rel=0&modestbranding=1&origin=${encodeURIComponent(location.origin)}" title="${esc(item.title)}" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;
+  }
+  function render(){
+    const it=item;
+    const roleMeta = it.type==='general' ? (it.meta||'Posted recently')
+      : (it.views || it.meta || 'Posted recently');
+    document.getElementById('scroll').innerHTML = `
+      ${heroFor(it)}
+      <div class="typechip">${IC[it.type]||''}${(TYPE_LABEL[it.type]||'Item').toUpperCase()}</div>
+      <div class="h1">${esc(it.type==='general' ? (it.title==='Post'? (it.by+"'s post") : it.title) : it.title)}</div>
+      <div class="author">
+        <img src="${esc(av)}" alt="" onerror="this.style.visibility='hidden'">
+        <div class="ax"><div class="an">${esc(it.by)}</div><div class="ar">${esc(roleMeta)}</div></div>
+        <button class="follow" id="followBtn">+ Follow</button>
+      </div>
+      ${statsFor(it)}
+      ${(!unlocked) ? `<div class="paywall">
+          <div class="pw-ic">${IC.lock}</div>
+          <h3>Paid ${TYPE_LABEL[it.type]||'content'} — ₹${esc(price)}</h3>
+          <p>Unlock to ${it.type==='video'?'watch the full video':it.type==='document'?'view & download the file':'read the full article'} and support the author.</p>
+        </div>` : ''}
+      ${bodyFor(it)}
+    `;
+    const pb=document.getElementById('playBtn'); if(pb) pb.addEventListener('click', ()=> item.yt ? playYt() : toast('Playing “'+item.title+'”…'));
+    const fb=document.getElementById('followBtn'); if(fb) fb.addEventListener('click', ()=>{ fb.classList.toggle('on'); const on=fb.classList.contains('on'); fb.textContent = on?'✓ Following':'+ Follow'; toast(on?('Following '+item.by):'Unfollowed'); });
+    renderBar();
+  }
+
+  function renderBar(){
+    const it=item;
+    const bar=document.getElementById('actionbar');
+    const saveBtn = `<button class="save${saved?' on':''}" id="saveBtn" aria-label="Save">${IC.bm}</button>`;
+    if(!unlocked){
+      bar.innerHTML = saveBtn + `<button class="primary" id="buyBtn">${IC.lock}Buy ₹${esc(price)} to unlock</button>`;
+      document.getElementById('buyBtn').addEventListener('click', ()=>{ unlocked=true; toast('Unlocked — enjoy!'); render(); });
+    } else if(it.type==='video'){
+      bar.innerHTML = saveBtn + `<button class="primary" id="primeBtn">${IC.play}Watch now</button>`;
+      document.getElementById('primeBtn').addEventListener('click', ()=>{ if(it.yt){ document.getElementById('scroll').scrollTo({top:0,behavior:'smooth'}); playYt(); } else toast('Playing “'+it.title+'”…'); });
+    } else if(it.type==='document'){
+      bar.innerHTML = saveBtn + `<button class="primary" id="primeBtn">${IC.eye}View document</button>`;
+      document.getElementById('primeBtn').addEventListener('click', ()=>toast('Opening “'+it.title+'”…'));
+    } else if(it.type==='article'){
+      bar.innerHTML = saveBtn + `<button class="primary" id="primeBtn">${IC.article}Read from top</button>`;
+      document.getElementById('primeBtn').addEventListener('click', ()=>{ document.getElementById('scroll').scrollTo({top:0,behavior:'smooth'}); });
+    } else { // general
+      bar.innerHTML = saveBtn + `<button class="primary" id="shareBtn">${IC.article}Share post</button>`;
+      document.getElementById('shareBtn').addEventListener('click', ()=>toast('Share link copied'));
+    }
+    const sv=document.getElementById('saveBtn'); sv.addEventListener('click', ()=>{ saved=!saved; sv.classList.toggle('on',saved); sv.querySelector('svg').setAttribute('fill-opacity', saved?'1':'0'); toast(saved?'Saved':'Removed from saved'); });
+  }
+
+  render();
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

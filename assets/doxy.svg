@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="dxEye" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffd23f"/>
+      <stop offset=".55" stop-color="#8fd85f"/>
+      <stop offset="1" stop-color="#35d0b8"/>
+    </linearGradient>
+    <radialGradient id="dxBall" cx="35%" cy="30%" r="75%">
+      <stop offset="0" stop-color="#ffd27a"/>
+      <stop offset="1" stop-color="#f5a012"/>
+    </radialGradient>
+  </defs>
+
+  <!-- sticker + body -->
+  <circle cx="100" cy="100" r="98" fill="#ffffff"/>
+  <circle cx="100" cy="100" r="93" fill="#16233a"/>
+
+  <!-- antenna -->
+  <rect x="97" y="30" width="6" height="26" rx="3" fill="#3c4d69"/>
+  <circle cx="100" cy="28" r="9" fill="url(#dxBall)"/>
+  <circle cx="97" cy="25" r="2.4" fill="#ffe6ad" opacity=".9"/>
+
+  <!-- ears -->
+  <rect x="25" y="86" width="20" height="46" rx="10" fill="#62e0cf"/>
+  <rect x="155" y="86" width="20" height="46" rx="10" fill="#62e0cf"/>
+
+  <!-- face plate -->
+  <rect x="47" y="51" width="106" height="106" rx="35" fill="#eef2fa" stroke="#cdd7e6" stroke-width="2"/>
+  <rect x="62" y="66" width="76" height="76" rx="24" fill="#0f1b2e"/>
+
+  <!-- eyes -->
+  <circle cx="84" cy="100" r="17" fill="url(#dxEye)"/>
+  <circle cx="116" cy="100" r="17" fill="url(#dxEye)"/>
+  <circle cx="84" cy="102" r="9.5" fill="#0f1b2e"/>
+  <circle cx="116" cy="102" r="9.5" fill="#0f1b2e"/>
+  <circle cx="88" cy="96.5" r="3.1" fill="#ffffff"/>
+  <circle cx="120" cy="96.5" r="3.1" fill="#ffffff"/>
+  <circle cx="81" cy="105" r="1.4" fill="#ffffff" opacity=".8"/>
+  <circle cx="113" cy="105" r="1.4" fill="#ffffff" opacity=".8"/>
+
+  <!-- smile -->
+  <path d="M83 121 Q100 134 117 121" fill="none" stroke="#3fd6c0" stroke-width="4.2" stroke-linecap="round"/>
+</svg>

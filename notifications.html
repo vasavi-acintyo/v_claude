@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Notifications — DocSynapse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} .topbar{padding-top:max(8px,env(safe-area-inset-top));} }
+
+  .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar .clr{margin-left:auto;background:none;border:none;font-family:inherit;font-size:11px;font-weight:800;color:var(--brand);cursor:pointer;padding:8px 4px;min-height:40px;}
+  .topbar .clr:active{opacity:.6;} .topbar .clr[hidden]{display:none;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:12px 16px 22px;} .scroll::-webkit-scrollbar{width:0;}
+
+  .day{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:8px 2px 8px;}
+  .day:first-child{margin-top:2px;}
+
+  .nlist{display:flex;flex-direction:column;gap:8px;}
+  .nrow{display:flex;gap:12px;align-items:flex-start;background:var(--soft1);border:1px solid var(--line);border-radius:14px;padding:12px;position:relative;animation:fadeIn .3s ease both;transition:opacity .2s, transform .2s;}
+  .nrow.unread{background:var(--brand-soft);}
+  .nrow.removing{opacity:0;transform:translateX(30px);}
+  .ni{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;background:var(--card);}
+  .ni svg{width:19px;height:19px;}
+  .ni.brand{color:var(--brand);} .ni.green{color:var(--green);} .ni.gold{color:var(--gold);} .ni.rose{color:#c0464a;}
+  .nm{flex:1;min-width:0;}
+  .nt{font-size:12px;font-weight:800;letter-spacing:-.01em;line-height:1.3;}
+  .nt b{color:var(--brand);}
+  .ns{font-size:10.5px;color:var(--slate-700);margin-top:3px;line-height:1.45;}
+  .ntime{font-size:9px;color:var(--muted);font-weight:700;margin-top:6px;}
+  .ndot{position:absolute;top:14px;right:44px;width:7px;height:7px;border-radius:50%;background:var(--brand);}
+  .ndel{flex:0 0 auto;width:34px;height:34px;border:none;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:9px;margin:-2px -4px 0 0;transition:color .15s, transform .15s;}
+  .ndel:hover{color:#c0464a;} .ndel:active{transform:scale(.88);} .ndel svg{width:17px;height:17px;}
+
+  .empty{text-align:center;padding:70px 24px;color:var(--muted);}
+  .empty .eic{width:56px;height:56px;border-radius:18px;background:var(--soft1);border:1px solid var(--line);color:var(--muted);display:grid;place-items:center;margin:0 auto 14px;} .empty .eic svg{width:26px;height:26px;}
+  .empty b{display:block;font-size:14px;font-weight:800;font-family:var(--display);color:var(--ink);}
+  .empty span{font-size:11px;display:block;margin-top:5px;line-height:1.5;}
+
+  .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);z-index:60;background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;max-width:82%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* hide-mock-statusbar */ .statusbar{display:none !important;}
+</style>
+  <link rel="stylesheet" href="global.css?v=27">
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="back" id="back" aria-label="Back"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <h1>Notifications</h1>
+    <button class="clr" id="clearAll" type="button">Clear all</button>
+  </div>
+
+  <div class="scroll" id="scroll"></div>
+
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const ICON = {
+    person:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20v-1.4A4.6 4.6 0 0 1 9.6 14h4.8a4.6 4.6 0 0 1 4.6 4.6V20"/></svg>',
+    refer:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="8.5" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h2"/><path d="M14 14h6"/><path d="m17 11 3 3-3 3"/></svg>',
+    cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2.5" x2="8" y2="6"/><line x1="16" y1="2.5" x2="16" y2="6"/></svg>',
+    award:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="5"/><path d="M8.5 12.5 7 21l5-2.5L17 21l-1.5-8.5"/></svg>',
+    chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>',
+    bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
+    trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6l1 14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-14"/><path d="M10 11v6M14 11v6"/></svg>'
+  };
+
+  const SEED = [
+    { id:'n1', ic:'person', tone:'brand', unread:true, day:'Today', time:'2h', title:'<b>Dr. Kavya Reddy</b> sent you a connection request', text:'Endocrinologist · Apollo Hospitals' },
+    { id:'n2', ic:'refer', tone:'green', unread:true, day:'Today', time:'5h', title:'Referral accepted', text:'Dr. Sameer Shah accepted your referral for R. Krishnan.' },
+    { id:'n3', ic:'cal', tone:'gold', unread:true, day:'Today', time:'6h', title:'CME starting soon', text:'“Cardiometabolic Update 2025” goes live in 1 hour.' },
+    { id:'n4', ic:'award', tone:'brand', unread:false, day:'Earlier', time:'1d', title:'Certificate ready', text:'Your certificate for Lipid Update is ready · +1.5 CME.' },
+    { id:'n5', ic:'chat', tone:'brand', unread:false, day:'Earlier', time:'1d', title:'New opinion on your case', text:'Dr. Meera Iyer commented on your posted case.' },
+    { id:'n6', ic:'person', tone:'brand', unread:false, day:'Earlier', time:'2d', title:'<b>Dr. Arjun Mehta</b> started following you', text:'Cardiologist · Fortis' }
+  ];
+
+  const KEY='notifications';
+  function load(){ try{ const s=localStorage.getItem(KEY); if(s===null){ save(SEED); return SEED.slice(); } return JSON.parse(s)||[]; }catch(e){ return SEED.slice(); } }
+  function save(list){ try{ localStorage.setItem(KEY, JSON.stringify(list)); }catch(e){} }
+  let items = load();
+
+  const scroll=document.getElementById('scroll'), clearBtn=document.getElementById('clearAll');
+  let tt; function toast(m){ let el=document.getElementById('toast'); if(!el){ el=document.createElement('div'); el.id='toast'; el.className='toast'; document.querySelector('.phone').appendChild(el);} el.textContent=m; void el.offsetWidth; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),1500); }
+
+  function render(){
+    clearBtn.hidden = items.length===0;
+    if(!items.length){
+      scroll.innerHTML = '<div class="empty">'+'<span class="eic">'+ICON.bell+'</span><b>You’re all caught up</b><span>No notifications right now.</span></div>';
+      return;
+    }
+    const days=[]; items.forEach(n=>{ let g=days.find(d=>d.name===n.day); if(!g){ g={name:n.day, rows:[]}; days.push(g); } g.rows.push(n); });
+    scroll.innerHTML = days.map(g=>
+      '<div class="day">'+esc(g.name)+'</div><div class="nlist">'+g.rows.map(n=>
+        '<div class="nrow'+(n.unread?' unread':'')+'" data-id="'+n.id+'">'+
+          '<span class="ni '+n.tone+'">'+(ICON[n.ic]||ICON.bell)+'</span>'+
+          '<div class="nm"><div class="nt">'+n.title+'</div><div class="ns">'+esc(n.text)+'</div><div class="ntime">'+esc(n.time)+'</div></div>'+
+          '<button class="ndel" data-del="'+n.id+'" aria-label="Delete">'+ICON.trash+'</button>'+
+        '</div>').join('')+'</div>'
+    ).join('');
+  }
+
+  scroll.addEventListener('click', e=>{
+    const del = e.target.closest('[data-del]');
+    if(del){
+      const id=del.dataset.del;
+      const row=scroll.querySelector('.nrow[data-id="'+id+'"]');
+      if(row){ row.classList.add('removing'); }
+      setTimeout(()=>{ items = items.filter(n=>n.id!==id); save(items); render(); }, 200);
+      toast('Notification deleted');
+      return;
+    }
+    const row = e.target.closest('.nrow');
+    if(row){ const n=items.find(x=>x.id===row.dataset.id); if(n && n.unread){ n.unread=false; save(items); render(); } }
+  });
+
+  clearBtn.addEventListener('click', ()=>{ if(!items.length) return; items=[]; save(items); render(); toast('All notifications cleared'); });
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1 ? history.back() : location.href='home.html'; });
+
+  render();
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Live Medical Events</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--line);}
+  .topbar .bk,.topbar .ic{width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;transition:transform .16s, border-color .16s;}
+  .topbar .bk:hover,.topbar .ic:hover{border-color:var(--brand);} .topbar .bk:active,.topbar .ic:active{transform:scale(.92);}
+  .topbar .bk svg,.topbar .ic svg{width:19px;height:19px;}
+  .topbar .tt{flex:1;min-width:0;font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:12px 16px 22px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  /* refresh / status strip */
+  .rstrip{display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--muted);margin:0 2px 12px;}
+  .rstrip .live-dot{width:8px;height:8px;border-radius:50%;background:#e0392b;box-shadow:0 0 0 3px rgba(224,57,43,.2);animation:pulse 1.4s infinite;flex:0 0 auto;}
+  .rstrip b{color:var(--slate-700);font-weight:800;}
+  .rstrip .refresh{margin-left:auto;display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--card);color:var(--slate-700);font-family:inherit;font-size:10.5px;font-weight:800;padding:6px 11px;border-radius:20px;cursor:pointer;}
+  .rstrip .refresh svg{width:13px;height:13px;} .rstrip .refresh:active svg{animation:spin .5s linear;}
+
+  /* search (collapsible) */
+  .search{position:relative;margin-bottom:12px;}
+  .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .search input{width:100%;min-height:38px;height:38px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px 0 36px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .search input::placeholder{color:var(--muted);} .search input:focus{outline:none;border-color:var(--brand);}
+
+  /* status segment */
+  .seg{display:flex;background:var(--chip);border-radius:12px;padding:4px;margin-bottom:12px;}
+  .seg button{flex:1;border:none;background:none;font-family:inherit;font-size:11.5px;font-weight:800;color:var(--muted);padding:9px 4px;min-height:38px;border-radius:9px;cursor:pointer;transition:background .18s, color .18s;white-space:nowrap;}
+  .seg button.active{background:var(--card);color:var(--brand);box-shadow:0 3px 10px -6px rgba(0,0,0,.3);}
+
+  /* filter chips row */
+  .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -2px 14px;padding:2px;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:20px;border:1px solid var(--line);background:var(--card);font-size:11px;font-weight:700;color:var(--slate-700);cursor:pointer;white-space:nowrap;transition:background .16s, color .16s, border-color .16s;}
+  .chip.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .chip.filt{color:var(--brand);border-color:color-mix(in srgb,var(--brand) 40%,var(--line));} .chip.filt svg{width:13px;height:13px;}
+  .chip .fcount{background:var(--brand);color:#fff;font-size:8.5px;font-weight:800;min-width:15px;height:15px;border-radius:8px;display:grid;place-items:center;padding:0 3px;}
+
+  /* event card */
+  .ev{background:var(--soft1);border:1px solid transparent;border-radius:16px;overflow:hidden;margin-bottom:14px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .ev:hover{border-color:var(--brand);} .ev:active{transform:scale(.99);}
+  .ev-thumb{position:relative;height:172px;background:linear-gradient(135deg,var(--g1),var(--g2));background-size:cover;background-position:center;}
+  .ev-badge{position:absolute;left:9px;top:9px;display:inline-flex;align-items:center;gap:5px;font-size:9px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#fff;padding:4px 9px;border-radius:7px;}
+  .ev-badge.live{background:#e0392b;} .ev-badge.upcoming{background:#b26a00;}
+  .ev-badge .bd{width:6px;height:6px;border-radius:50%;background:#fff;animation:pulse 1.3s infinite;}
+  .ev-view{position:absolute;right:9px;top:9px;display:inline-flex;align-items:center;gap:5px;background:rgba(0,0,0,.6);color:#fff;font-size:9.5px;font-weight:700;padding:4px 8px;border-radius:7px;} .ev-view svg{width:11px;height:11px;}
+  .ev-dur{position:absolute;right:9px;bottom:9px;background:rgba(0,0,0,.62);color:#fff;font-size:9.5px;font-weight:700;padding:3px 8px;border-radius:6px;}
+  .ev-lang{position:absolute;left:9px;bottom:9px;background:rgba(255,255,255,.92);color:var(--ink);font-size:9px;font-weight:800;padding:3px 8px;border-radius:6px;}
+  .ev-play{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.92);display:grid;place-items:center;color:var(--brand);box-shadow:0 8px 20px -8px rgba(0,0,0,.45);}
+  .ev-play svg{width:22px;height:22px;margin-left:3px;}
+  .ev-body{padding:12px 13px 13px;}
+  .ev-ch{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+  .ev-ch img{width:24px;height:24px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .ev-ch .cn{flex:1;min-width:0;font-size:10.5px;font-weight:700;color:var(--slate-700);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .ev-spec{font-size:8.5px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:3px 8px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em;flex:0 0 auto;}
+  .ev-title{font-size:13.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.28;}
+  .ev-meta{font-size:10px;color:var(--muted);margin-top:6px;display:flex;align-items:center;gap:6px;flex-wrap:wrap;}
+  .ev-meta svg{width:11px;height:11px;}
+  .ev-desc{font-size:10.5px;color:var(--muted);line-height:1.5;margin-top:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+  .ev-cta{margin-top:11px;display:flex;gap:8px;}
+  .ev-cta button{flex:1;min-height:40px;border-radius:11px;font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;border:none;transition:transform .16s;}
+  .ev-cta button:active{transform:scale(.97);}
+  .ev-cta .join{background:var(--brand);color:#fff;} .ev-cta .join svg{width:15px;height:15px;}
+  .ev-cta .remind{background:var(--brand-soft);color:var(--brand);border:1px solid transparent;} .ev-cta .remind svg{width:15px;height:15px;}
+
+  /* skeleton */
+  .sk{background:var(--soft1);border:1px solid transparent;border-radius:16px;overflow:hidden;margin-bottom:14px;}
+  .sk .sk-th{height:172px;} .sk .sk-b{padding:13px;}
+  .sk-line{height:11px;border-radius:6px;margin-bottom:9px;}
+  .shimmer{background:linear-gradient(90deg,var(--chip) 25%,color-mix(in srgb,var(--line) 60%,var(--chip)) 37%,var(--chip) 63%);background-size:400px 100%;animation:shimmer 1.3s linear infinite;}
+
+  /* states */
+  .state{text-align:center;padding:44px 24px;color:var(--muted);}
+  .state .eic{width:60px;height:60px;border-radius:18px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;margin:0 auto 15px;}
+  .state.err .eic{background:var(--red-soft);color:var(--red);}
+  .state .eic svg{width:28px;height:28px;}
+  .state h3{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+  .state p{font-size:11.5px;line-height:1.55;}
+  .state button{margin-top:15px;background:var(--brand);color:#fff;border:none;font-family:inherit;font-size:12px;font-weight:800;padding:11px 22px;border-radius:12px;cursor:pointer;}
+
+  .loadmore{text-align:center;padding:8px 0 4px;color:var(--muted);font-size:10.5px;font-weight:700;}
+  .loadmore .sp{display:inline-block;width:15px;height:15px;border:2px solid var(--line);border-top-color:var(--brand);border-radius:50%;animation:spin .7s linear infinite;vertical-align:-3px;margin-right:6px;}
+
+  /* filter sheet */
+  .backdrop{z-index:30;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--surface);border-radius:22px 22px 0 0;padding:8px 18px calc(16px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .42s cubic-bezier(.22,1,.36,1);max-height:88%;overflow-y:auto;}
+  .sheet.open{transform:translateY(0);}
+  .sheet .sh-h{display:flex;align-items:center;justify-content:space-between;margin:2px 2px 4px;}
+  .sheet h2{font-size:17px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .sheet .reset{background:none;border:none;font-family:inherit;font-size:11.5px;font-weight:800;color:var(--brand);cursor:pointer;}
+  .flabel{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 2px 9px;}
+  .fchips{display:flex;flex-wrap:wrap;gap:8px;}
+  .fchip{padding:8px 13px;border-radius:20px;border:1px solid var(--line);background:var(--card);font-family:inherit;font-size:11.5px;font-weight:700;color:var(--slate-700);cursor:pointer;transition:background .16s,color .16s,border-color .16s;}
+  .fchip.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .apply{width:100%;min-height:50px;border:none;border-radius:13px;background:var(--brand);color:#fff;font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;margin-top:20px;}
+  .apply:active{transform:scale(.98);}
+
+  .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:82%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* hide-mock-statusbar */ .statusbar{display:none !important;}
+</style>
+  <link rel="stylesheet" href="global.css?v=27">
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="tt">Live Medical Events</span>
+    <button class="ic" id="searchBtn" aria-label="Search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg></button>
+    <button class="ic" id="refreshBtn" aria-label="Refresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 9 16 9"/></svg></button>
+  </div>
+
+  <div class="scroll" id="scroll">
+    <div class="rstrip">
+      <span class="live-dot"></span><span>Auto-refreshing every 5 min · <b id="updated">updated just now</b></span>
+      <button class="refresh" id="pullRefresh"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><polyline points="21 4 21 9 16 9"/></svg>Refresh</button>
+    </div>
+
+    <div class="search" id="searchWrap" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+      <input id="q" placeholder="Search live events, channels, topics…">
+    </div>
+
+    <div class="seg">
+      <button data-s="live" class="active">Live Now</button>
+      <button data-s="upcoming">Upcoming</button>
+      <button data-s="recent">Recently Started</button>
+    </div>
+
+    <div class="chips" id="specChips"></div>
+
+    <div id="list"></div>
+    <div id="tail"></div>
+  </div>
+  <div class="home-ind"></div>
+
+  <!-- Filter sheet -->
+  <div class="backdrop" id="fBackdrop"></div>
+  <div class="sheet" id="fSheet">
+    <div class="grab"></div>
+    <div class="sh-h"><h2>Filters</h2><button class="reset" id="fReset">Reset all</button></div>
+    <div class="flabel">Specialty</div><div class="fchips" id="fSpec"></div>
+    <div class="flabel">Language</div><div class="fchips" id="fLang"></div>
+    <div class="flabel">Country</div><div class="fchips" id="fCountry"></div>
+    <button class="apply" id="fApply">Show results</button>
+  </div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1500); }
+  const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='home.html'; });
+
+  const IC={
+    play:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M8 5v14l11-7z"/></svg>',
+    eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
+    clock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>',
+    filter:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>',
+    bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
+    sat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M7 7V5a5 5 0 0 1 10 0v2"/></svg>',
+    warn:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12" y2="17"/></svg>',
+    tv:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="13" rx="2.5"/><path d="m8 3 4 4 4-4"/></svg>'
+  };
+
+  /* ---- configurable keyword list (drives the backend search) ---- */
+  const KEYWORDS = ['Medical Live','Doctor Webinar','CME Live','Medical Conference','Cardiology Live','Surgery Live','Healthcare Webinar','Clinical Education','Medical Education','Hospital Webinar','Pharmacy Webinar','Medical Seminar','Oncology Live','Orthopedic Live','Pediatrics Live','Neurology Live'];
+
+  /* ---- provider abstraction: youtube today; vimeo / rtmp / ivs / antmedia later ----
+     Each event is source-agnostic; only `provider` + `streamId` change per source.   */
+  const YT_THUMB = id => 'https://i.ytimg.com/vi/'+id+'/hqdefault.jpg';
+
+  /* ---- mock feed (in the real app this comes from GET /api/live-events) ---- */
+  const EVENTS = [
+    {provider:'youtube', streamId:'zQGOcOUBi6s', status:'live', title:'Live: Complex PCI & Bifurcation Stenting — Cath Lab', channel:'Cardiological Society of India', ch_av:'https://randomuser.me/api/portraits/men/32.jpg', specialty:'Cardiology', language:'English', country:'India', viewers:1842, startsAt:'Started 1h ago', duration:'2:14:03', desc:'Live from the cath lab: step-by-step complex PCI with bifurcation stenting, IVUS guidance and real-time Q&A with the operators.'},
+    {provider:'youtube', streamId:'BtN-goy9VOY', status:'live', title:'Tumor Board Live: Breast Cancer Multidisciplinary Cases', channel:'ESMO Webinars', ch_av:'https://randomuser.me/api/portraits/women/68.jpg', specialty:'Oncology', language:'English', country:'UK', viewers:934, startsAt:'Started 40m ago', duration:'1:05:22', desc:'A multidisciplinary tumor board reviews challenging breast cancer cases — surgery, medical oncology and radiation perspectives.'},
+    {provider:'youtube', streamId:'zQGOcOUBi6s', status:'live', title:'Live OR: Laparoscopic Inguinal Hernia Repair (TEP)', channel:'Association of Surgeons of India', ch_av:'https://randomuser.me/api/portraits/men/45.jpg', specialty:'Surgery', language:'English', country:'India', viewers:2317, startsAt:'Started 25m ago', duration:'58:10', desc:'Live operative broadcast demonstrating a totally extraperitoneal (TEP) laparoscopic hernia repair with narrated technique.'},
+    {provider:'youtube', streamId:'BtN-goy9VOY', status:'live', title:'Acute Stroke Thrombectomy — Live Case & Imaging', channel:'World Stroke Organization', ch_av:'https://randomuser.me/api/portraits/women/44.jpg', specialty:'Neurology', language:'English', country:'USA', viewers:611, startsAt:'Started 15m ago', duration:'47:31', desc:'Live neurointervention: mechanical thrombectomy walkthrough with pre/post imaging and decision-making commentary.'},
+    {provider:'youtube', streamId:'zQGOcOUBi6s', status:'recent', title:'Knee Arthroplasty: Alignment & Balancing (Live)', channel:'Indian Orthopaedic Association', ch_av:'https://randomuser.me/api/portraits/men/76.jpg', specialty:'Orthopedics', language:'English', country:'India', viewers:480, startsAt:'Started 12 min ago', duration:'22:04', desc:'Recently started live surgery covering component alignment and soft-tissue balancing in total knee arthroplasty.'},
+    {provider:'youtube', streamId:'BtN-goy9VOY', status:'recent', title:'Pharmacovigilance & ADR Reporting Webinar', channel:'Pharmacy Council Webinars', ch_av:'https://randomuser.me/api/portraits/women/12.jpg', specialty:'Pharmacy', language:'English', country:'India', viewers:210, startsAt:'Started 25 min ago', duration:'31:12', desc:'Recently started: practical pharmacovigilance, adverse drug reaction reporting and signal detection for clinicians.'},
+    {provider:'youtube', streamId:'zQGOcOUBi6s', status:'upcoming', title:'Neonatal Resuscitation Masterclass (NRP)', channel:'Indian Academy of Pediatrics', ch_av:'https://randomuser.me/api/portraits/men/52.jpg', specialty:'Pediatrics', language:'English', country:'India', viewers:0, startsAt:'Today · 6:00 PM IST', duration:'Scheduled', desc:'Upcoming live masterclass on neonatal resuscitation protocols with simulation-based demonstrations.'},
+    {provider:'youtube', streamId:'BtN-goy9VOY', status:'upcoming', title:'CME Live: Diabetes 2025 — What Changed', channel:'RSSDI', ch_av:'https://randomuser.me/api/portraits/women/33.jpg', specialty:'Endocrinology', language:'Hindi', country:'India', viewers:0, startsAt:'Tomorrow · 7:30 PM IST', duration:'Scheduled', desc:'Upcoming CME covering the latest diabetes guideline updates, new agents and practical prescribing — in Hindi.'}
+  ];
+
+  const SPECIALTIES=['All','Cardiology','Oncology','Surgery','Neurology','Orthopedics','Pediatrics','Endocrinology','Pharmacy'];
+  const LANGUAGES=['All','English','Hindi','Spanish'];
+  const COUNTRIES=['All','India','USA','UK'];
+
+  let status='live', specialty='All', language='All', country='All', query='', loading=true, error=false, page=1;
+  const PAGE=4; let refreshedAt=Date.now();
+
+  /* specialty quick-chips (+ Filters entry) */
+  function renderSpecChips(){
+    const fcount=(language!=='All'?1:0)+(country!=='All'?1:0);
+    document.getElementById('specChips').innerHTML =
+      `<button class="chip filt" id="openFilters">${IC.filter}Filters${fcount?`<span class="fcount">${fcount}</span>`:''}</button>`+
+      SPECIALTIES.map(s=>`<button class="chip${s===specialty?' active':''}" data-spec="${s}">${s}</button>`).join('');
+    document.getElementById('openFilters').addEventListener('click', openFilters);
+    document.querySelectorAll('#specChips .chip[data-spec]').forEach(b=>b.addEventListener('click',()=>{ specialty=b.dataset.spec; renderSpecChips(); reload(); }));
+  }
+
+  function filtered(){
+    const q=query.trim().toLowerCase();
+    return EVENTS.filter(e =>
+      e.status===status &&
+      (specialty==='All'||e.specialty===specialty) &&
+      (language==='All'||e.language===language) &&
+      (country==='All'||e.country===country) &&
+      (!q || e.title.toLowerCase().includes(q) || e.channel.toLowerCase().includes(q) || e.specialty.toLowerCase().includes(q) || e.desc.toLowerCase().includes(q))
+    );
+  }
+
+  function fmtViewers(n){ return n>=1000 ? (n/1000).toFixed(1).replace('.0','')+'k' : ''+n; }
+
+  function card(e,i){
+    const isLive = e.status==='live'||e.status==='recent';
+    const badge = e.status==='upcoming'
+      ? `<span class="ev-badge upcoming">Upcoming</span>`
+      : `<span class="ev-badge live"><span class="bd"></span>Live</span>`;
+    const view = (isLive && e.viewers) ? `<span class="ev-view">${IC.eye}${fmtViewers(e.viewers)} watching</span>` : '';
+    const dur = e.duration && e.duration!=='Scheduled' ? `<span class="ev-dur">${esc(e.duration)}</span>` : '';
+    const metaLeft = e.status==='upcoming'
+      ? `<span>${IC.clock}${esc(e.startsAt)}</span>`
+      : `<span>${IC.clock}${esc(e.startsAt)}</span>${e.viewers?`<span>${IC.eye}${fmtViewers(e.viewers)} watching</span>`:''}`;
+    const cta = e.status==='upcoming'
+      ? `<button class="remind" data-act="remind">${IC.bell}Set reminder</button>`
+      : `<button class="join" data-act="join">${IC.play}Watch live</button>`;
+    return `<div class="ev" data-idx="${i}" data-act="open">
+      <div class="ev-thumb" style="background-image:linear-gradient(rgba(0,0,0,.12),rgba(0,0,0,.30)),url('${YT_THUMB(e.streamId)}')">
+        ${badge}${view}${dur}
+        <span class="ev-lang">${esc(e.language)}</span>
+        ${isLive?`<span class="ev-play">${IC.play}</span>`:''}
+      </div>
+      <div class="ev-body">
+        <div class="ev-ch"><img src="${esc(e.ch_av)}" alt="" onerror="this.style.visibility='hidden'"><span class="cn">${esc(e.channel)}</span><span class="ev-spec">${esc(e.specialty)}</span></div>
+        <div class="ev-title">${esc(e.title)}</div>
+        <div class="ev-meta">${metaLeft}</div>
+        <div class="ev-desc">${esc(e.desc)}</div>
+        <div class="ev-cta">${cta}</div>
+      </div>
+    </div>`;
+  }
+
+  function skeletons(n){
+    let h=''; for(let i=0;i<n;i++) h+=`<div class="sk"><div class="sk-th shimmer"></div><div class="sk-b"><div class="sk-line shimmer" style="width:55%"></div><div class="sk-line shimmer" style="width:90%"></div><div class="sk-line shimmer" style="width:70%"></div></div></div>`;
+    return h;
+  }
+
+  let shown=[];
+  function render(){
+    const list=document.getElementById('list'), tail=document.getElementById('tail');
+    if(loading){ list.innerHTML=skeletons(3); tail.innerHTML=''; return; }
+    if(error){
+      list.innerHTML=`<div class="state err"><div class="eic">${IC.warn}</div><h3>Couldn't load live events</h3><p>Check your connection or YouTube API quota,<br>then try again.</p><button id="retry">Retry</button></div>`;
+      tail.innerHTML=''; document.getElementById('retry').addEventListener('click', reload); return;
+    }
+    const all=filtered();
+    shown = all.slice(0, page*PAGE);
+    if(!shown.length){
+      list.innerHTML=`<div class="state"><div class="eic">${IC.sat}</div><h3>No ${status==='upcoming'?'upcoming':status==='recent'?'recently started':'live'} events</h3><p>Try a different specialty, language or country —<br>or check back in a few minutes.</p></div>`;
+      tail.innerHTML=''; return;
+    }
+    list.innerHTML = shown.map((e,i)=>`<div class="rise" style="animation-delay:${(i%PAGE)*45}ms">${card(e,i)}</div>`).join('');
+    tail.innerHTML = (shown.length<all.length) ? `<div class="loadmore" id="loadmore"><span class="sp"></span>Loading more live events…</div>` : `<div class="loadmore">You're all caught up · ${all.length} events</div>`;
+  }
+
+  /* simulate a fetch with skeleton */
+  function reload(){ loading=true; error=(query.trim().toLowerCase()==='error'); page=1; render();
+    clearTimeout(reload._t); reload._t=setTimeout(()=>{ loading=false; refreshedAt=Date.now(); tickUpdated(); render(); }, 650); }
+
+  /* auto-refresh every 5 min + "updated ago" ticker */
+  function tickUpdated(){ const m=Math.round((Date.now()-refreshedAt)/60000); document.getElementById('updated').textContent = m<=0?'updated just now':('updated '+m+' min ago'); }
+  setInterval(tickUpdated, 30000);
+  setInterval(()=>{ if(!loading) reload(); }, 5*60*1000);
+
+  /* infinite scroll */
+  document.getElementById('scroll').addEventListener('scroll', function(){
+    if(loading||error) return;
+    const lm=document.getElementById('loadmore'); if(!lm) return;
+    if(this.scrollTop+this.clientHeight >= this.scrollHeight-140){ page++; setTimeout(render, 400); }
+  });
+
+  /* status segment */
+  document.querySelectorAll('.seg button').forEach(b=>b.addEventListener('click',()=>{ status=b.dataset.s; document.querySelectorAll('.seg button').forEach(x=>x.classList.toggle('active',x===b)); reload(); }));
+
+  /* search */
+  document.getElementById('searchBtn').addEventListener('click',()=>{ const w=document.getElementById('searchWrap'); w.hidden=!w.hidden; if(!w.hidden) document.getElementById('q').focus(); });
+  document.getElementById('q').addEventListener('input', e=>{ query=e.target.value; reload(); });
+
+  /* refresh */
+  document.getElementById('refreshBtn').addEventListener('click', ()=>{ reload(); toast('Refreshing live events…'); });
+  document.getElementById('pullRefresh').addEventListener('click', ()=>{ reload(); toast('Refreshing live events…'); });
+
+  /* card interactions */
+  document.getElementById('list').addEventListener('click', e=>{
+    const wrap=e.target.closest('[data-idx]'); if(!wrap) return;
+    const ev=shown[+wrap.dataset.idx]; if(!ev) return;
+    if(e.target.closest('[data-act="remind"]')){ toast('Reminder set — we\'ll notify you'); return; }
+    if(ev.status==='upcoming'){ toast('Starts '+ev.startsAt); return; }
+    try{ sessionStorage.setItem('liveEvent', JSON.stringify(ev)); }catch(err){}
+    location.href='live-player.html';
+  });
+
+  /* ---- filter sheet ---- */
+  const fBackdrop=document.getElementById('fBackdrop'), fSheet=document.getElementById('fSheet');
+  let tSpec=specialty, tLang=language, tCountry=country;
+  function chipRow(host, opts, val){ document.getElementById(host).innerHTML = opts.map(o=>`<button class="fchip${o===val?' active':''}" data-v="${o}">${o}</button>`).join(''); }
+  function openFilters(){ tSpec=specialty; tLang=language; tCountry=country; chipRow('fSpec',SPECIALTIES,tSpec); chipRow('fLang',LANGUAGES,tLang); chipRow('fCountry',COUNTRIES,tCountry); fBackdrop.classList.add('open'); fSheet.classList.add('open'); }
+  function closeFilters(){ fBackdrop.classList.remove('open'); fSheet.classList.remove('open'); }
+  fBackdrop.addEventListener('click', closeFilters);
+  document.getElementById('fSpec').addEventListener('click',e=>{ const b=e.target.closest('.fchip'); if(b){ tSpec=b.dataset.v; chipRow('fSpec',SPECIALTIES,tSpec); } });
+  document.getElementById('fLang').addEventListener('click',e=>{ const b=e.target.closest('.fchip'); if(b){ tLang=b.dataset.v; chipRow('fLang',LANGUAGES,tLang); } });
+  document.getElementById('fCountry').addEventListener('click',e=>{ const b=e.target.closest('.fchip'); if(b){ tCountry=b.dataset.v; chipRow('fCountry',COUNTRIES,tCountry); } });
+  document.getElementById('fReset').addEventListener('click',()=>{ tSpec='All'; tLang='All'; tCountry='All'; chipRow('fSpec',SPECIALTIES,tSpec); chipRow('fLang',LANGUAGES,tLang); chipRow('fCountry',COUNTRIES,tCountry); });
+  document.getElementById('fApply').addEventListener('click',()=>{ specialty=tSpec; language=tLang; country=tCountry; closeFilters(); renderSpecChips(); reload(); });
+
+  renderSpecChips(); reload();
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

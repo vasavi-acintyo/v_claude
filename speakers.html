@@ -18,12 +18,12 @@
     --surface:#faf6ee; --card:#ffffff; --page:#d8d0c2;
     --g1:#9c4453; --g2:#7d2c3b; --d1:#2b191c; --d2:#5e2029; --d3:#7d2c3b; --glow:rgba(176,137,79,.45);
     --soft1:#f7ede1; --soft2:#f4e7e9; --onGold:#e6cd93;
-    --heart1:#e9cf94; --heart2:#b0894f; --heart3:#6e5326; --live-tint:#fbf5f0;
+    --heart1:#e9cf94; --heart2:#b0894f; --heart3:#6e5326;
   }
   /* native device font — chosen at startup by platform (APK / TestFlight) */
 
-  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#38bdf8;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;--heart1:#8fd6f7;--heart2:#38a3e0;--heart3:#1e5fbf;--live-tint:#f2f7ff;}
-  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#c9a227;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;--heart1:#e9d98a;--heart2:#c9a227;--heart3:#8a6f18;--live-tint:#f0faf5;}
+  [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#38bdf8;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#f7fafd;--card:#ffffff;--page:#cdd8e6;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;--heart1:#8fd6f7;--heart2:#38a3e0;--heart3:#1e5fbf;}
+  [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#c9a227;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;--heart1:#e9d98a;--heart2:#c9a227;--heart3:#8a6f18;}
 
   html,body{
     background:var(--page);
@@ -441,20 +441,20 @@
   }
   .tl-rail::after{
     content:"";position:absolute;left:50%;top:16px;bottom:-10px;transform:translateX(-50%);width:2.5px;
-    background:linear-gradient(var(--brand),rgba(125,44,59,.15));border-radius:2px;
+    background:linear-gradient(var(--brand),color-mix(in srgb,var(--brand) 15%,transparent));border-radius:2px;
   }
   .tl-item:last-child .tl-rail::after{display:none;}
   /* live session */
-  .tl-item.live .tl-rail .d{background:var(--brand);box-shadow:0 0 0 4px rgba(125,44,59,.2);animation:pulseDot 1.6s infinite;}
-  @keyframes pulseDot{0%,100%{box-shadow:0 0 0 4px rgba(125,44,59,.22)}50%{box-shadow:0 0 0 8px rgba(125,44,59,0)}}
+  .tl-item.live .tl-rail .d{background:var(--brand);box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 20%,transparent);animation:pulseDot 1.6s infinite;}
+  @keyframes pulseDot{0%,100%{box-shadow:0 0 0 4px color-mix(in srgb,var(--brand) 22%,transparent)}50%{box-shadow:0 0 0 8px color-mix(in srgb,var(--brand) 0%,transparent)}}
 
   .tl-body{
     background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;
     display:flex;align-items:flex-start;gap:8px;
     box-shadow:0 1px 2px rgba(16,24,40,.03);transition:transform .18s, box-shadow .18s, border-color .18s;
   }
-  .tl-body:hover{transform:translateY(-2px);box-shadow:0 12px 24px -14px rgba(16,24,40,.28);border-color:rgba(125,44,59,.3);}
-  .tl-item.live .tl-body{border-color:var(--brand);background:linear-gradient(180deg,var(--live-tint),var(--card));}
+  .tl-body:hover{transform:translateY(-2px);box-shadow:0 12px 24px -14px rgba(16,24,40,.28);border-color:color-mix(in srgb,var(--brand) 30%,transparent);}
+  .tl-item.live .tl-body{border-color:var(--brand);background:linear-gradient(180deg,color-mix(in srgb,var(--brand) 6%,var(--card)),var(--card));}
   .tl-main{flex:1;min-width:0;}
   .tl-title{font-size:12px;font-weight:700;line-height:1.3;margin-bottom:6px;letter-spacing:-.01em;}
   .tl-meta{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
@@ -465,6 +465,32 @@
   .tl-bm{color:#cdd1d9;cursor:pointer;flex:0 0 auto;transition:color .15s, transform .15s;}
   .tl-bm:hover{color:var(--brand);transform:scale(1.12);}
   .tl-bm.on{color:var(--brand);}
+  /* View-full-agenda CTA — ported from ACINTYO-MED */
+  .fa-open{
+    width:100%;min-height:46px;margin-top:4px;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--brand-soft);color:var(--brand);border:1px solid transparent;border-radius:14px;
+    font-family:inherit;font-size:12px;font-weight:800;letter-spacing:-.01em;cursor:pointer;
+    transition:transform .16s, background .16s;
+  }
+  .fa-open:active{transform:scale(.98);}
+  .fa-open .fa-chev{margin-left:2px;}
+  /* Full agenda sheet (multi-day) — ported from ACINTYO-MED: no equivalent existed in this file */
+  .fullag-sheet{max-height:88%;display:flex;flex-direction:column;}
+  .fa-h{font-size:17px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;margin:2px 0 4px;}
+  .fa-hsub{font-size:11px;color:var(--muted);margin-bottom:13px;}
+  .fa-days{display:flex;gap:8px;margin-bottom:15px;flex:0 0 auto;}
+  .fa-day{
+    flex:1;min-height:46px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;
+    padding:6px 4px;border-radius:13px;border:1px solid var(--line);background:var(--card);cursor:pointer;
+    font-family:inherit;transition:transform .16s, background .16s, border-color .16s;
+  }
+  .fa-day:active{transform:scale(.97);}
+  .fa-day .dn{font-size:11.5px;font-weight:800;color:var(--ink);letter-spacing:-.01em;}
+  .fa-day .dd{font-size:9px;color:var(--muted);font-weight:600;}
+  .fa-day.active{background:var(--brand);border-color:var(--brand);}
+  .fa-day.active .dn,.fa-day.active .dd{color:#fff;}
+  .fa-body{overflow-y:auto;flex:1;-webkit-overflow-scrolling:touch;}
+  .fa-body .timeline{padding-bottom:8px;}
 
   /* ---------- Speaker detail bottom-sheet ---------- */
   .backdrop{
@@ -648,6 +674,33 @@
   .doxy-badge .eyes{animation:doxyLook 3.2s ease-in-out infinite;}
   @keyframes doxyLook{0%,12%{transform:translateX(0)}35%,48%{transform:translateX(-1.4px)}65%,78%{transform:translateX(1.4px)}100%{transform:translateX(0)}}
 
+  /* ---------- V Theme (vibrant) — lift flat tinted surfaces into shadowed cards ---------- */
+  [data-theme="vibrant"] .ks-head h4{position:relative;padding-left:12px;}
+  [data-theme="vibrant"] .ks-head h4::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--brand);}
+
+  [data-theme="vibrant"] .banner{background:var(--card);border:1px solid var(--line);box-shadow:0 8px 20px -16px rgba(30,20,60,.18);}
+
+  [data-theme="vibrant"] .card{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .card:nth-child(2n){background:var(--card);}
+  [data-theme="vibrant"] .card:hover{box-shadow:0 12px 22px -14px rgba(30,20,60,.22);}
+
+  [data-theme="vibrant"] .learn-card{background:var(--card);border:1px solid var(--line);box-shadow:0 8px 20px -16px rgba(30,20,60,.18);}
+  [data-theme="vibrant"] .learn-item{background:var(--card);}
+  [data-theme="vibrant"] .learn-item:nth-child(1) .learn-ico{color:#2563eb;background:#dbeafe;}
+  [data-theme="vibrant"] .learn-item:nth-child(2) .learn-ico{color:#7c3aed;background:#ede9fe;}
+  [data-theme="vibrant"] .learn-item:nth-child(3) .learn-ico{color:#d97706;background:#fef3c7;}
+
+  [data-theme="vibrant"] .reg-card{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+
+  [data-theme="vibrant"] .net-card{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .net-card:hover{box-shadow:0 12px 22px -14px rgba(30,20,60,.22);}
+
+  [data-theme="vibrant"] .ks-card{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .ks-card:hover{box-shadow:0 12px 22px -14px rgba(30,20,60,.22);}
+  [data-theme="vibrant"] .ks-card.featured{background:var(--card);box-shadow:0 10px 24px -18px rgba(30,20,60,.22);}
+
+  [data-theme="vibrant"] .price-card{box-shadow:0 8px 20px -16px rgba(30,20,60,.18);}
+
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
@@ -708,7 +761,7 @@
       </span>
       <h2>Cardiometabolic Update 2025</h2>
       <div class="meta">
-        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2.5" x2="8" y2="6"/><line x1="16" y1="2.5" x2="16" y2="6"/></svg>24 May 2025</span>
+        <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2.5" x2="8" y2="6"/><line x1="16" y1="2.5" x2="16" y2="6"/></svg><span id="bannerDate">24 May 2025</span></span>
         <span><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 16 14"/></svg>09:00 AM – 01:30 PM (IST)</span>
       </div>
       <div class="badges">
@@ -740,13 +793,12 @@
 
     <!-- Agenda panel -->
     <div class="agenda" id="agendaPanel" hidden>
-      <div class="agenda-head">
-        <h3>Agenda</h3>
-        <a class="link">View full agenda
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
-        </a>
-      </div>
       <div class="timeline" id="timeline"></div>
+      <button class="fa-open" id="viewFullAgenda" type="button">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2.5" x2="8" y2="6"/><line x1="16" y1="2.5" x2="16" y2="6"/></svg>
+        <span class="fa-lbl">View full agenda · 3 days</span>
+        <svg class="fa-chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>
+      </button>
     </div>
 
     <!-- About CME panel (hidden until the About CME tab is selected) -->
@@ -961,6 +1013,16 @@
     <div id="netGroups"></div>
   </div>
 
+  <!-- Full agenda (multi-day) sheet — ported from ACINTYO-MED: no equivalent existed in this file -->
+  <div class="backdrop" id="fullAgBackdrop"></div>
+  <div class="sheet fullag-sheet" id="fullAgSheet">
+    <div class="grab"></div>
+    <div class="fa-h">Full Agenda</div>
+    <div class="fa-hsub" id="faHsub">Cardiometabolic Update 2025</div>
+    <div class="fa-days" id="faDays"></div>
+    <div class="fa-body"><div class="timeline" id="faTimeline"></div></div>
+  </div>
+
   <!-- Add past CME form -->
   <div class="backdrop" id="addBackdrop"></div>
   <div class="sheet addcme-sheet" id="addSheet">
@@ -1127,6 +1189,95 @@
       });
     });
   }
+
+  // ---- Full agenda (multi-day) sheet — ported from ACINTYO-MED: no equivalent existed in this file ----
+  // Day 1 reuses the "now" agenda (with the live item); Day 2/3 are additional programme days.
+  const fullAgenda = [
+    { day:'Day 1', date:'24 May', items: agenda },
+    { day:'Day 2', date:'25 May', items:[
+      { start:'09:00 AM', end:'09:45 AM', title:'Obesity & Metabolic Syndrome',            by:'Dr. Priya Nair',   dur:'45 mins' },
+      { start:'09:45 AM', end:'10:30 AM', title:'CGM & Insulin Optimisation',              by:'Dr. Vijay Menon',  dur:'45 mins' },
+      { start:'10:30 AM', end:'11:15 AM', title:'Heart Failure: Guideline-Directed Therapy',by:'Dr. Arvind Kumar', dur:'45 mins' },
+      { start:'11:30 AM', end:'12:15 PM', title:'Chronic Kidney Disease in Diabetes',       by:'Dr. Meera Iyer',   dur:'45 mins' },
+      { start:'12:15 PM', end:'01:00 PM', title:'Panel: Cardio-Renal-Metabolic Continuum',  by:'All faculty',      dur:'45 mins' },
+    ]},
+    { day:'Day 3', date:'26 May', items:[
+      { start:'09:00 AM', end:'09:45 AM', title:'Lipid Lowering: Beyond Statins',           by:'Dr. Priya Nair',   dur:'45 mins' },
+      { start:'09:45 AM', end:'10:30 AM', title:'Hypertension in Special Populations',      by:'Dr. Rohan Sinha',  dur:'45 mins' },
+      { start:'10:30 AM', end:'11:15 AM', title:'Diabetes Technology & AI',                 by:'Dr. Vijay Menon',  dur:'45 mins' },
+      { start:'11:30 AM', end:'12:30 PM', title:'Interactive Case Clinics',                 by:'All faculty',      dur:'60 mins' },
+      { start:'12:30 PM', end:'01:00 PM', title:'Closing Keynote & Certification',          by:'Dr. Arvind Kumar', dur:'30 mins' },
+    ]},
+  ];
+
+  // Derive a date range from however many days the programme runs (1, 2 or 3+) — ported from ACINTYO-MED.
+  // Each day's `date` is "DD Mon"; collapse to "24 May", "24–25 May" or "30 May – 1 Jun".
+  const PROGRAM_YEAR = '2025';
+  function programDateRange(){
+    const days = fullAgenda;
+    const [d1,m1] = days[0].date.split(' ');
+    if(days.length === 1) return `${d1} ${m1} ${PROGRAM_YEAR}`;
+    const [d2,m2] = days[days.length-1].date.split(' ');
+    return m1 === m2
+      ? `${d1}–${d2} ${m1} ${PROGRAM_YEAR}`
+      : `${d1} ${m1} – ${d2} ${m2} ${PROGRAM_YEAR}`;
+  }
+  (function applyProgramDates(){
+    const range = programDateRange();
+    const n = fullAgenda.length;
+    const bd = document.getElementById('bannerDate'); if(bd) bd.textContent = range;
+    const sub = document.getElementById('faHsub'); if(sub) sub.textContent = `${n} day${n>1?'s':''} · ${range}`;
+    const btn = document.getElementById('viewFullAgenda');
+    if(btn){ const lbl = btn.querySelector('.fa-lbl'); if(lbl) lbl.textContent = `View full agenda · ${n} day${n>1?'s':''}`; }
+  })();
+
+  function faTimelineHTML(items){
+    return items.map((a,i) => `
+      <div class="tl-item rise${a.live?' live':''}" style="animation-delay:${i*60}ms">
+        <div class="tl-times"><span class="tl-start">${a.start}</span><span class="tl-end">${a.end}</span></div>
+        <div class="tl-rail"><span class="d"></span></div>
+        <div class="tl-body">
+          <div class="tl-main">
+            <div class="tl-title">${a.title}</div>
+            <div class="tl-meta">
+              <span class="tl-by">${a.by}</span>
+              <span class="tl-dur">${a.dur}</span>
+              ${a.live?'<span class="tl-live"><span class="ldot"></span>LIVE</span>':''}
+            </div>
+          </div>
+          <span class="tl-bm" role="button" aria-label="Bookmark">${bookmark}</span>
+        </div>
+      </div>
+    `).join('');
+  }
+  const fullAgBackdrop = document.getElementById('fullAgBackdrop');
+  const fullAgSheet    = document.getElementById('fullAgSheet');
+  const faDaysEl       = document.getElementById('faDays');
+  const faTimelineEl   = document.getElementById('faTimeline');
+  let faDay = 0;
+  function renderFaDay(){
+    faDaysEl.innerHTML = fullAgenda.map((d,i)=>`
+      <button class="fa-day${i===faDay?' active':''}" type="button" data-d="${i}">
+        <span class="dn">${d.day}</span><span class="dd">${d.date}</span>
+      </button>`).join('');
+    faDaysEl.querySelectorAll('.fa-day').forEach(b=>{
+      b.addEventListener('click', ()=>{ faDay = +b.dataset.d; renderFaDay(); });
+    });
+    faTimelineEl.innerHTML = faTimelineHTML(fullAgenda[faDay].items);
+    faTimelineEl.querySelectorAll('.tl-bm').forEach(bm=>{
+      bm.addEventListener('click', e=>{
+        e.stopPropagation();
+        bm.classList.toggle('on');
+        bm.querySelector('svg').setAttribute('fill-opacity', bm.classList.contains('on') ? '1' : '0');
+      });
+    });
+    faTimelineEl.parentElement.scrollTop = 0;
+  }
+  function openFullAg(){ renderFaDay(); fullAgBackdrop.classList.add('open'); fullAgSheet.classList.add('open'); }
+  function closeFullAg(){ fullAgBackdrop.classList.remove('open'); fullAgSheet.classList.remove('open'); }
+  const viewFullAgendaBtn = document.getElementById('viewFullAgenda');
+  if(viewFullAgendaBtn) viewFullAgendaBtn.addEventListener('click', e=>{ e.preventDefault(); openFullAg(); });
+  fullAgBackdrop.addEventListener('click', closeFullAg);
 
   // ---- Tab router: swaps between speaker list / Agenda / About pages ----
   function selectTab(key){
@@ -1734,7 +1885,7 @@
         if(!sb){
           sb = document.createElement('div');
           sb.className = 'dl-sub';
-          sb.style.cssText = 'position:relative;font-size:10px;font-weight:600;color:#fff;'
+          sb.style.cssText = 'position:relative;font-size:10px;font-weight:600;color:var(--slate-700);'
             + 'opacity:.85;margin:-3px 0 10px;max-width:72%;line-height:1.4;';
           titleEl.parentNode.insertBefore(sb, titleEl.nextSibling);
         }

@@ -132,6 +132,17 @@
   .sheet h2{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;margin:0 2px 3px;}
   .sheet p{font-size:10px;color:var(--muted);margin:0 2px 6px;}
   .theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0 6px;}
+  /* edit profile form + about (ported from ACINTYO-MED: no equivalent existed in this file) */
+  .ep-sheet{max-height:90%;overflow-y:auto;}
+  .ep-field{margin-top:13px;}
+  .ep-field label{display:block;font-size:10.5px;font-weight:800;color:var(--slate-700);margin:0 2px 6px;}
+  .ep-field input,.ep-field textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:12.5px;font-family:inherit;color:var(--ink);}
+  .ep-field textarea{resize:vertical;min-height:64px;line-height:1.5;}
+  .ep-field input:focus,.ep-field textarea:focus{outline:none;border-color:var(--brand);}
+  .ep-save{width:100%;min-height:48px;border:none;border-radius:12px;background:var(--brand);color:#fff;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;margin-top:16px;transition:transform .16s, background .16s;}
+  .ep-save:active{transform:scale(.98);}
+  .about-card{padding:14px 15px;}
+  .about-card p{font-size:12px;line-height:1.6;color:var(--slate-700);}
   .theme-opt{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);cursor:pointer;color:inherit;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
   .theme-opt:active{transform:scale(.96);} .theme-opt.active{border-color:var(--brand);}
   .theme-opt .sw{width:32px;height:32px;border-radius:50%;border:2px solid rgba(255,255,255,.6);box-shadow:0 2px 6px rgba(0,0,0,.15);}
@@ -196,6 +207,18 @@
     <h2>Appearance</h2><p>Pick a colour theme. Fonts adapt to your device.</p>
     <div class="theme-grid" id="themeGrid"></div>
   </div>
+
+  <!-- Edit profile sheet (ported from ACINTYO-MED: no equivalent existed in this file) -->
+  <div class="backdrop" id="epBackdrop"></div>
+  <div class="sheet ep-sheet" id="epSheet">
+    <div class="grab"></div>
+    <h2>Edit profile</h2><p>Update your public details. Your verified registration can't be edited here.</p>
+    <div class="ep-field"><label for="epRole">Designation</label><input id="epRole" placeholder="e.g. MD Internal Medicine"></div>
+    <div class="ep-field"><label for="epWork">Current workplace</label><input id="epWork" placeholder="Hospital / clinic / organisation"></div>
+    <div class="ep-field"><label for="epCity">City</label><input id="epCity" placeholder="e.g. Hyderabad"></div>
+    <div class="ep-field"><label for="epAbout">About</label><textarea id="epAbout" rows="3" placeholder="A short professional bio colleagues will see…"></textarea></div>
+    <button class="ep-save" id="epSave" type="button">Save changes</button>
+  </div>
 </div>
 
 <script>
@@ -214,6 +237,7 @@
   // ---- icons ----
   const I = {
     crown:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M3 7l4.2 3.2L12 4l4.8 6.2L21 7l-1.7 12H4.7z"/></svg>',
+    edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
     star:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 2.9 6.1 6.6.6-5 4.4 1.5 6.5L12 16.9 5.9 20l1.5-6.5-5-4.4 6.6-.6z"/></svg>',
     cam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.2"/></svg>',
     shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg>',
@@ -242,8 +266,14 @@
 
   // ---- signed-in doctor (own profile) ----
   const SESSION_NAME = (function(){ try{ return localStorage.getItem('docName') || 'Dr. Viswa Swaraj'; }catch(e){ return 'Dr. Viswa Swaraj'; } })();
+  // ls/computeRole/editable designation-workplace-city-about ported from ACINTYO-MED (Edit profile feature had no equivalent here)
+  const ls = (k,d)=>{ try{ return localStorage.getItem(k) || d; }catch(e){ return d; } };
   const ME = {
-    name:SESSION_NAME, role:'MD internal medicine · Apollo Hyderabad',
+    name:SESSION_NAME,
+    designation: ls('docRole','MD internal medicine'),
+    workplace: ls('docWorkplace','Apollo Hyderabad'),
+    city: ls('docCity',''),
+    about: ls('docAbout',''),
     img:'https://randomuser.me/api/portraits/men/52.jpg',
     council:'NMC', nmcReg:'54821 / 2014', state:'Telangana',
     price:'₹2,499/mo',
@@ -251,6 +281,8 @@
     practice:{ specialties:'3 specialties', spec2:'Specialty, sub-specialty, languages',
                hospital:'Apollo Hyderabad · 2 more', creds:'MBBS, MD, FRCP', credsCount:'6 documents' }
   };
+  function computeRole(){ ME.role = [ME.designation, ME.workplace, ME.city].filter(Boolean).join(' · '); }
+  computeRole();
   const qName = new URLSearchParams(location.search).get('name') || '';
   const isMe = !qName || qName === ME.name;
 
@@ -299,7 +331,7 @@
             <div class="id-name">${esc(ME.name)} <span class="prem-pill">${I.star}Premium</span></div>
             <span class="nmc-pill">${I.shield}${esc(ME.council)}</span>
             <div class="id-role">${esc(ME.role)}</div>
-            <div class="id-links"><a id="chgPhoto">${I.cam}Change photo</a><a id="rmPhoto">Remove</a></div>
+            <div class="id-links"><a id="editProfile">${I.edit}Edit profile</a><a id="chgPhoto">${I.cam}Change photo</a><a id="rmPhoto">Remove</a></div>
           </div>
         </div>
         <div class="cred-strip">
@@ -314,6 +346,9 @@
           </div>
         </div>
       </div>
+
+      ${ME.about ? `<div class="psec rise">About</div>
+      <div class="card about-card rise"><p>${esc(ME.about)}</p></div>` : ''}
 
       <div id="bannerSlot" class="rise">${bannerHTML()}</div>
 
@@ -360,6 +395,7 @@
     document.getElementById('camBtn').onclick = ()=>toast('Photo upload coming soon');
     document.getElementById('chgPhoto').onclick = ()=>toast('Photo upload coming soon');
     document.getElementById('rmPhoto').onclick = ()=>toast('Photo removed');
+    document.getElementById('editProfile').onclick = openEdit;
     document.getElementById('availOpts').addEventListener('click', e=>{
       const b=e.target.closest('button'); if(!b) return;
       avail=b.dataset.a; try{ localStorage.setItem('docAvail',avail); }catch(err){}
@@ -435,6 +471,27 @@
   const apSheet=document.getElementById('apSheet'), apBackdrop=document.getElementById('apBackdrop');
   document.getElementById('topGear').addEventListener('click', ()=>{ location.href='settings.html'; });
   apBackdrop.addEventListener('click', ()=>{ apBackdrop.classList.remove('open'); apSheet.classList.remove('open'); });
+
+  // ---- Edit profile (ported from ACINTYO-MED: no equivalent existed in this file) ----
+  const epSheet=document.getElementById('epSheet'), epBackdrop=document.getElementById('epBackdrop');
+  const epRole=document.getElementById('epRole'), epWork=document.getElementById('epWork'), epCity=document.getElementById('epCity'), epAbout=document.getElementById('epAbout');
+  function openEdit(){
+    epRole.value=ME.designation; epWork.value=ME.workplace; epCity.value=ME.city; epAbout.value=ME.about;
+    epBackdrop.classList.add('open'); epSheet.classList.add('open');
+  }
+  function closeEdit(){ epBackdrop.classList.remove('open'); epSheet.classList.remove('open'); }
+  epBackdrop.addEventListener('click', closeEdit);
+  document.getElementById('epSave').addEventListener('click', ()=>{
+    ME.designation=epRole.value.trim(); ME.workplace=epWork.value.trim(); ME.city=epCity.value.trim(); ME.about=epAbout.value.trim();
+    try{
+      localStorage.setItem('docRole',ME.designation);
+      localStorage.setItem('docWorkplace',ME.workplace);
+      localStorage.setItem('docCity',ME.city);
+      localStorage.setItem('docAbout',ME.about);
+    }catch(e){}
+    computeRole();
+    closeEdit(); renderMe(); toast('Profile updated');
+  });
   (function(){
     const THEMES=[{id:'vibrant',name:'V Theme',c:'#1e5fbf'},{id:'classical',name:'Classic',c:'#7d2c3b'},{id:'blue',name:'Ocean',c:'#1e5fbf'},{id:'green',name:'Forest',c:'#0f7a5a'}];
     const grid=document.getElementById('themeGrid'); let cur='blue'; try{ cur=localStorage.getItem('cmeTheme')||'blue'; }catch(e){}

@@ -94,6 +94,7 @@
   .ml-note{font-size:9.5px;color:var(--muted);font-weight:600;display:inline-flex;align-items:center;gap:5px;} .ml-note svg{width:12px;height:12px;}
   .ml-act{margin-left:auto;border:none;font-family:inherit;font-size:10.5px;font-weight:800;padding:8px 15px;min-height:40px;border-radius:11px;cursor:pointer;white-space:nowrap;transition:transform .16s cubic-bezier(.22,1,.36,1), background .16s;}
   .ml-act:active{transform:scale(.96);}
+  .ml-act.a-reminded{background:rgba(63,125,78,.15);color:var(--green);}
   .a-primary{background:var(--brand);color:#fff;} .a-primary:hover{background:var(--brand-dark);}
   .a-ghost{background:var(--card);color:var(--ink);} .a-ghost:hover{background:var(--chip);}
 
@@ -123,6 +124,10 @@
   .cert .cr{flex:0 0 auto;font-size:8px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 7px;border-radius:20px;}
   .cert .del{position:absolute;top:0;right:0;width:40px;height:40px;padding:6px 6px 0 0;border:none;background:none;color:transparent;font-size:0;line-height:1;display:flex;align-items:flex-start;justify-content:flex-end;cursor:pointer;z-index:2;}
   .cert .del::before{content:"✕";width:22px;height:22px;border-radius:8px;background:rgba(0,0,0,.5);color:#fff;font-size:12px;display:grid;place-items:center;}
+  .cert-actions{display:flex;justify-content:flex-end;margin-bottom:9px;}
+  .up-btn{display:inline-flex;align-items:center;gap:6px;min-height:38px;font-size:10.5px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:8px 13px;border-radius:11px;cursor:pointer;transition:background .15s, transform .16s cubic-bezier(.22,1,.36,1);}
+  .up-btn:active{transform:scale(.96);}
+  .up-btn svg{width:14px;height:14px;}
   /* full-screen certificate viewer */
   .cert-modal{position:absolute;inset:0;background:rgba(0,0,0,.88);z-index:40;display:none;flex-direction:column;padding:16px;}
   .cert-modal.open{display:flex;animation:fadeIn .2s ease;}
@@ -239,6 +244,13 @@
 
     <!-- Certificates -->
     <div id="certView" hidden>
+      <div class="cert-actions">
+        <label class="up-btn" for="certFile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+          Upload
+        </label>
+        <input type="file" id="certFile" accept="image/*,application/pdf" multiple hidden>
+      </div>
       <div class="cert-grid" id="certGrid"></div>
     </div>
   </div>
@@ -327,7 +339,7 @@
       const note = it.mode==='offline'
         ? `<span class="ml-note">${ic.pin} ${it.venue}</span>`
         : `<span class="ml-note">${ic.wifi} Online</span>`;
-      return note;
+      return `${note}<button class="ml-act a-ghost" onclick="event.stopPropagation();toggleReminder(this)">Set reminder</button>`;
     }
     if(it.status==='video'){
       return `<span class="ml-note">${it.progress}% watched</span><button class="ml-act a-primary" onclick="event.stopPropagation();location.href='cme-sessions.html?title=${encodeURIComponent(it.title)}'">${it.progress?'Resume':'Start'}</button>`;
@@ -341,6 +353,14 @@
     if(!t){ t = document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); }
     t.textContent = msg; void t.offsetWidth; t.classList.add('show');
     clearTimeout(t._h); t._h = setTimeout(()=>t.classList.remove('show'), 1400);
+  }
+
+  /* "Set reminder" — toggle a persistent set/unset state + toast */
+  function toggleReminder(btn){
+    const on = btn.classList.toggle('a-reminded');
+    btn.classList.toggle('a-ghost', !on);
+    btn.textContent = on ? 'Reminder set ✓' : 'Set reminder';
+    toast(on ? 'Reminder set ✓' : 'Reminder removed');
   }
 
   /* "Certificate" — reuse the certificate viewer modal with a generated certificate */
@@ -392,6 +412,7 @@
   /* ---- Certificates: upload, store (localStorage), view, delete ---- */
   const CERT_KEY = 'cmeCerts';
   const grid = document.getElementById('certGrid');
+  const fileInput = document.getElementById('certFile');
   const modal = document.getElementById('certModal');
   const pdfIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
   const sealIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/><polyline points="9 12 11.5 14.5 15.5 9.5"/></svg>';
@@ -402,6 +423,10 @@
   function saveCerts(){
     try{ localStorage.setItem(CERT_KEY, JSON.stringify(certs)); }
     catch(e){ alert('Could not save — local storage is full.'); }
+  }
+  function today(){
+    const d = new Date();
+    return d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
   }
   function renderCerts(){
     const cards = certs.map((c,i)=>`
@@ -422,6 +447,19 @@
     if(del){ e.stopPropagation(); if(confirm('Remove this certificate?')){ certs.splice(+del.dataset.del,1); saveCerts(); renderCerts(); } return; }
     const card = e.target.closest('.cert');
     if(card){ openCert(certs[+card.dataset.i]); }
+  });
+
+  fileInput.addEventListener('change', e=>{
+    const files = [...e.target.files];
+    files.forEach(f=>{
+      const r = new FileReader();
+      r.onload = ()=>{
+        certs.unshift({ name:f.name.replace(/\.[^.]+$/,''), type:f.type||'application/pdf', date:today(), data:r.result });
+        saveCerts(); renderCerts();
+      };
+      r.readAsDataURL(f);
+    });
+    e.target.value = '';
   });
 
   function openCert(c){

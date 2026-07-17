@@ -55,6 +55,31 @@
   .theme-opt .tick{position:absolute;top:7px;right:7px;width:14px;height:14px;color:var(--brand);opacity:0;transition:opacity .16s;}
   .theme-opt.active .tick{opacity:1;}
 
+  /* section label + account rows with current value (ported from ACINTYO-MED: no equivalent existed in this file) */
+  .s-sec{font-size:11px;font-weight:800;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:2px 2px 8px;}
+  .srow .sl-wrap{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;}
+  .srow .sl-wrap .sl{flex:none;}
+  .srow .ss{font-size:10.5px;color:var(--muted);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  /* account-change sheet fields */
+  .ac-note{font-size:10.5px;color:var(--muted);line-height:1.55;margin:0 2px 14px;}
+  .ac-note b{color:var(--slate-700);font-weight:800;}
+  .ac-field{margin-bottom:12px;}
+  .ac-field label{display:block;font-size:10.5px;font-weight:800;color:var(--slate-700);margin:0 2px 6px;}
+  .ac-inp{position:relative;}
+  .ac-inp input{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:12.5px;font-family:inherit;color:var(--ink);}
+  .ac-inp input.haspw{padding-right:42px;}
+  .ac-inp input:focus{outline:none;border-color:var(--brand);}
+  .ac-eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:34px;height:34px;border:none;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:8px;}
+  .ac-eye:active{transform:translateY(-50%) scale(.9);}
+  .ac-eye svg{width:17px;height:17px;}
+  .ac-otp{display:flex;gap:8px;margin:2px 0 12px;}
+  .ac-otp input{flex:1;min-width:0;height:50px;text-align:center;font-size:19px;font-weight:800;font-family:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:11px;}
+  .ac-otp input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft);}
+  .ac-err{font-size:10.5px;font-weight:700;color:#d64545;margin:-6px 2px 12px;}
+  .ac-btn{width:100%;min-height:48px;border:none;border-radius:12px;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;background:var(--brand);color:#fff;margin-top:2px;transition:transform .16s, background .16s;}
+  .ac-btn:disabled{background:var(--chip);color:var(--muted);cursor:default;}
+  .ac-btn:active{transform:scale(.98);}
+
   .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;font-family:inherit;padding:10px 18px;border-radius:22px;opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);max-width:80%;text-align:center;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
@@ -84,6 +109,10 @@
       <h1>Settings</h1>
     </div>
 
+    <div class="s-sec rise">Account</div>
+    <div class="set-card rise" id="acctCard"></div>
+
+    <div class="s-sec rise" style="margin-top:20px">Preferences</div>
     <div class="set-card rise" id="setCard"></div>
 
     <div class="links rise" id="links"></div>
@@ -100,6 +129,14 @@
     <h2>Appearance</h2><p>Pick a colour theme. Fonts adapt to your device.</p>
     <div class="theme-grid" id="themeGrid"></div>
   </div>
+
+  <!-- Account change sheet (ported from ACINTYO-MED: no equivalent existed in this file) -->
+  <div class="backdrop" id="acctBackdrop"></div>
+  <div class="sheet" id="acctSheet">
+    <div class="grab"></div>
+    <h2 id="acctTitle">Account</h2>
+    <div id="acctBody"></div>
+  </div>
 </div>
 
 <script>
@@ -114,6 +151,8 @@
     eye:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>',
     shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg>',
     bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg>',
+    phone:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="2" width="12" height="20" rx="3"/><line x1="10.5" y1="18" x2="13.5" y2="18"/></svg>',
+    mail:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="m4 7 8 6 8-6"/></svg>',
     chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>'
   };
 
@@ -143,6 +182,91 @@
   const apSheet=document.getElementById('apSheet'), apBackdrop=document.getElementById('apBackdrop');
   function openAppearance(){ apBackdrop.classList.add('open'); apSheet.classList.add('open'); }
   apBackdrop.addEventListener('click', ()=>{ apBackdrop.classList.remove('open'); apSheet.classList.remove('open'); });
+
+  // ---- Account: change phone / email / password (ported from ACINTYO-MED: no equivalent existed in this file) ----
+  const gv=(k,d)=>{ try{ return localStorage.getItem(k)||d; }catch(e){ return d; } };
+  const CUR = { phone: gv('docPhone','+91 98765 43210'), email: gv('docUser','you@hospital.org') };
+  const maskPhone=v=>{ const d=(v||'').replace(/\D/g,''); return d.length>=4 ? '+91 ••••• '+d.slice(-4) : v; };
+  const maskEmail=v=>{ v=(v||'').trim(); if(!v.includes('@')) return v; const [u,dm]=v.split('@'); return (u.slice(0,2)||u)+'•••@'+dm; };
+
+  function renderAcctCard(){
+    const rows=[
+      {act:'phone', i:'phone', l:'Phone number', v:maskPhone(CUR.phone)},
+      {act:'email', i:'mail',  l:'Email address', v:CUR.email},
+      {act:'password', i:'lock', l:'Password', v:'Last changed • ••••••••'}
+    ];
+    document.getElementById('acctCard').innerHTML = rows.map(r=>
+      `<button class="srow" data-act="${r.act}"><span class="si">${I[r.i]}</span><span class="sl-wrap"><span class="sl">${r.l}</span><span class="ss">${r.v}</span></span><span class="sc">${I.chev}</span></button>`).join('');
+  }
+  renderAcctCard();
+  document.getElementById('acctCard').addEventListener('click', e=>{ const b=e.target.closest('.srow'); if(b) openAcct(b.dataset.act); });
+
+  const acctSheet=document.getElementById('acctSheet'), acctBackdrop=document.getElementById('acctBackdrop');
+  const acctTitle=document.getElementById('acctTitle'), acctBody=document.getElementById('acctBody');
+  function closeAcct(){ acctBackdrop.classList.remove('open'); acctSheet.classList.remove('open'); }
+  acctBackdrop.addEventListener('click', closeAcct);
+
+  function wireOtp(rowEl, onChange){
+    const boxes=[...rowEl.querySelectorAll('input')];
+    boxes.forEach((inp,i)=>{
+      inp.addEventListener('input', ()=>{ inp.value=inp.value.replace(/\D/g,'').slice(0,1); if(inp.value&&i<boxes.length-1) boxes[i+1].focus(); onChange(); });
+      inp.addEventListener('keydown', e=>{ if(e.key==='Backspace'&&!inp.value&&i>0) boxes[i-1].focus(); });
+      inp.addEventListener('paste', e=>{ e.preventDefault(); const t=(e.clipboardData.getData('text')||'').replace(/\D/g,'').slice(0,6); if(t){ t.split('').forEach((c,k)=>{ if(boxes[k]) boxes[k].value=c; }); boxes[Math.min(t.length,boxes.length-1)].focus(); onChange(); } });
+    });
+    return ()=>boxes.map(b=>b.value).join('');
+  }
+  function eyeToggle(scope){ scope.querySelectorAll('.ac-eye').forEach(b=>b.addEventListener('click',()=>{ const inp=scope.querySelector('#'+b.dataset.for); inp.type = inp.type==='password'?'text':'password'; })); }
+
+  function openAcct(act){ (act==='password'?buildPw:buildContact)(act); acctBackdrop.classList.add('open'); acctSheet.classList.add('open'); }
+
+  function buildContact(act){
+    const isPhone = act==='phone';
+    acctTitle.textContent = isPhone ? 'Change phone number' : 'Change email address';
+    acctBody.innerHTML =
+      `<p class="ac-note">Enter your new ${isPhone?'mobile number':'email address'} — we'll send a 6-digit code to verify it.</p>`+
+      `<div class="ac-field"><label>New ${isPhone?'mobile number':'email address'}</label><div class="ac-inp"><input id="acNew" placeholder="${isPhone?'+91 98765 43210':'you@hospital.org'}" inputmode="${isPhone?'tel':'email'}"></div></div>`+
+      `<button class="ac-btn" id="acSend" disabled>Send code</button>`+
+      `<div id="acStep2" hidden style="margin-top:16px">`+
+        `<p class="ac-note">Enter the code sent to <b id="acDest"></b>.</p>`+
+        `<div class="ac-otp" id="acOtp">${'<input inputmode="numeric" maxlength="1">'.repeat(6)}</div>`+
+        `<button class="ac-btn" id="acVerify" disabled>Verify &amp; save</button>`+
+      `</div>`;
+    const acNew=acctBody.querySelector('#acNew'), acSend=acctBody.querySelector('#acSend'), acStep2=acctBody.querySelector('#acStep2');
+    const valid=()=> isPhone ? acNew.value.replace(/\D/g,'').length>=10 : /.+@.+\..+/.test(acNew.value.trim());
+    acNew.addEventListener('input', ()=>{ acSend.disabled=!valid(); });
+    let otpVal=null;
+    acSend.addEventListener('click', ()=>{
+      if(acSend.disabled) return;
+      acctBody.querySelector('#acDest').textContent = isPhone?maskPhone(acNew.value):maskEmail(acNew.value);
+      acStep2.hidden=false; acSend.textContent='Resend code';
+      const acVerify=acctBody.querySelector('#acVerify');
+      if(!otpVal){ otpVal=wireOtp(acctBody.querySelector('#acOtp'), ()=>{ acVerify.disabled = otpVal().length!==6; }); }
+      acctBody.querySelector('#acOtp input').focus();
+      toast('Code sent to '+(isPhone?maskPhone(acNew.value):maskEmail(acNew.value)));
+      acVerify.onclick=()=>{
+        if(acVerify.disabled) return;
+        if(isPhone){ CUR.phone=acNew.value.trim(); try{ localStorage.setItem('docPhone',CUR.phone); }catch(e){} }
+        else { CUR.email=acNew.value.trim(); try{ localStorage.setItem('docUser',CUR.email); }catch(e){} }
+        renderAcctCard(); closeAcct();
+        toast(isPhone?'Phone number updated':'Email address updated');
+      };
+    });
+  }
+
+  function buildPw(){
+    acctTitle.textContent='Change password';
+    acctBody.innerHTML =
+      `<div class="ac-field"><label>Current password</label><div class="ac-inp"><input id="acCur" class="haspw" type="password" placeholder="Enter current password"><button class="ac-eye" data-for="acCur" type="button">${I.eye}</button></div></div>`+
+      `<div class="ac-field"><label>New password</label><div class="ac-inp"><input id="acN1" class="haspw" type="password" placeholder="Min. 6 characters"><button class="ac-eye" data-for="acN1" type="button">${I.eye}</button></div></div>`+
+      `<div class="ac-field"><label>Confirm new password</label><div class="ac-inp"><input id="acN2" class="haspw" type="password" placeholder="Re-enter new password"><button class="ac-eye" data-for="acN2" type="button">${I.eye}</button></div></div>`+
+      `<div class="ac-err" id="acErr" hidden>Passwords don't match.</div>`+
+      `<button class="ac-btn" id="acUpdate" disabled>Update password</button>`;
+    eyeToggle(acctBody);
+    const cur=acctBody.querySelector('#acCur'), n1=acctBody.querySelector('#acN1'), n2=acctBody.querySelector('#acN2'), err=acctBody.querySelector('#acErr'), upd=acctBody.querySelector('#acUpdate');
+    function v(){ const a=n1.value.trim(), b=n2.value.trim(); err.hidden=!(a&&b&&a!==b); upd.disabled=!(cur.value.trim() && a.length>=6 && a===b); }
+    [cur,n1,n2].forEach(el=>el.addEventListener('input', v));
+    upd.addEventListener('click', ()=>{ if(upd.disabled) return; closeAcct(); toast('Password updated'); });
+  }
   (function(){
     const THEMES=[{id:'vibrant',name:'V Theme',c:'#1e5fbf'},{id:'classical',name:'Classic',c:'#7d2c3b'},{id:'blue',name:'Ocean',c:'#1e5fbf'},{id:'green',name:'Forest',c:'#0f7a5a'}];
     const grid=document.getElementById('themeGrid'); let cur='blue'; try{ cur=localStorage.getItem('cmeTheme')||'blue'; }catch(e){}

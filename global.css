@@ -45,6 +45,17 @@
 [data-theme="blue"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#ffffff;--card:#ffffff;--page:#ffffff;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
 [data-theme="green"]{--brand:#0f7a5a;--brand-dark:#0b5c44;--brand-soft:#e2f5ee;--gold:#b08631;--ink:#12271f;--slate-700:#33473f;--muted:#6f867d;--line:#dbe9e2;--chip:#eef6f2;--green:#0f7a5a;--surface:#f6fbf8;--card:#ffffff;--page:#cfe0d8;--g1:#2aa578;--g2:#0f7a5a;--d1:#0a2b20;--d2:#0e5540;--d3:#0f7a5a;--glow:rgba(201,162,39,.4);--soft1:#e6f5ee;--soft2:#e9f5e6;--onGold:#e6cf7a;}
 [data-theme="vibrant"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#ffffff;--card:#ffffff;--page:#ffffff;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
+[data-theme="white"]{--brand:#111114;--brand-dark:#000000;--brand-soft:#f1f2f6;--gold:#a97e3f;--ink:#111114;--slate-700:#3a3a42;--muted:#7a7a86;--line:#e6e7ee;--chip:#f2f3f7;--green:#1f9d6b;--surface:#ffffff;--card:#ffffff;--page:#e8e9ef;--g1:#2b2b33;--g2:#111114;--d1:#151519;--d2:#232329;--d3:#111114;--glow:rgba(130,120,180,.3);--soft1:#ffffff;--soft2:#ffffff;--onGold:#e6cf7a;}
+[data-theme="whitec"]{--brand:#2f6fed;--brand-dark:#1f57c8;--brand-soft:#e9f1fe;--gold:#b0894f;--ink:#14141a;--slate-700:#3a3a44;--muted:#78788a;--line:#e6e7ee;--chip:#eef3fb;--green:#1f9d6b;--surface:#ffffff;--card:#ffffff;--page:#e8e9ef;--g1:#4f8be8;--g2:#2f6fed;--d1:#0b2545;--d2:#123a72;--d3:#2f6fed;--glow:rgba(56,189,248,.4);--soft1:#ffffff;--soft2:#ffffff;--onGold:#9bdcfa;}
+/* soft cards get a hairline border in every theme so they stay defined (white themes need it; tinted themes gain crispness) */
+.phone :where(.adv,.aicard,.alert,.banner,.card,.case,.cases-link,.cases-row,.ccard,.cert,.cme2,.cont,.cw,.feature,.file,.folder,.gcard,.grp,.hearing,.hero,.ks-card,.learn-card,.learn-item,.live-card,.ml,.mstat,.mtile,.net-card,.pa-post,.pcard,.pcomplete,.pk-row,.post,.prog,.prow,.pts,.rcard,.rec,.reg-badge,.reg-card,.req,.sc,.scard,.shield,.spec,.spec-card,.startpost,.stat,.sub-row,.tcard,.tile,.tool,.vid,.arow,.demo-row,.flyer){border-color:var(--line);}
+/* white + colour: colourful module icons on home */
+[data-theme="whitec"] .modules .mtile:nth-child(1) .ic{color:#2f6fed;background:#e9f1fe;}
+[data-theme="whitec"] .modules .mtile:nth-child(2) .ic{color:#e07b28;background:#fdefe0;}
+[data-theme="whitec"] .modules .mtile:nth-child(3) .ic{color:#12a150;background:#e6f6ec;}
+[data-theme="whitec"] .modules .mtile:nth-child(4) .ic{color:#7c5cff;background:#efeafe;}
+[data-theme="whitec"] .modules .mtile:nth-child(5) .ic{color:#e04a8a;background:#fdeaf2;}
+[data-theme="whitec"] .modules .mtile:nth-child(6) .ic{color:#0ea5a5;background:#e3f6f6;}
 :root{color-scheme:light;}
 
 /* ---------- reset & base ---------- */
@@ -101,6 +112,9 @@ button, input, select, textarea, optgroup{font-family:var(--font-sans);}
 .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:var(--fs-nav);color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1), color .18s;}
 .navitem.active{color:var(--brand);font-weight:var(--fw-semibold);}
 .navitem:active{transform:scale(.9);}
+/* Doxy — prominent raised centre button (full-colour mascot) */
+.navitem.doxy{color:var(--brand);font-weight:var(--fw-semibold);}
+.navitem.doxy svg,.navitem.doxy img{width:48px;height:48px;margin:-24px 0 -1px;border-radius:50%;object-fit:cover;filter:drop-shadow(0 6px 12px rgba(0,0,0,.3));}
 
 /* ---------- shared bottom sheet & toast ---------- */
 .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.5);opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;z-index:30;}
