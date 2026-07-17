@@ -101,6 +101,11 @@
   [data-theme="vibrant"] .doc:hover{box-shadow:0 10px 20px -14px rgba(30,20,60,.22);}
   [data-theme="vibrant"] .doc.sel{box-shadow:none;}
 
+  /* ---------- V Theme (vibrant) — lift flat tinted surfaces into shadowed cards ---------- */
+  /* Scoped to [data-theme="vibrant"] only — NOT [data-theme="blue"] ("Ocean"), which shares the same brand blue but intentionally keeps the flat Classic-style look. */
+  [data-theme="vibrant"] .att{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .consent{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
 </style>
   <link rel="stylesheet" href="global.css?v=10">

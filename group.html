@@ -109,6 +109,21 @@
   .inv-search input:focus{outline:none;border-color:var(--brand);}
   .req .acc:disabled{opacity:.6;cursor:default;}
 
+  /* ---------- V Theme (vibrant) — lift flat tinted surfaces into shadowed cards ---------- */
+  /* Scoped to [data-theme="vibrant"] only — NOT [data-theme="blue"] ("Ocean"), which shares
+     the same brand blue but intentionally keeps the flat Classic-style look. */
+  [data-theme="vibrant"] .sec h2{position:relative;padding-left:12px;}
+  [data-theme="vibrant"] .sec h2::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--brand);}
+
+  [data-theme="vibrant"] .card{box-shadow:0 8px 20px -16px rgba(30,20,60,.18);}
+
+  [data-theme="vibrant"] .req{box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+
+  [data-theme="vibrant"] .composer{box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .composer:hover{box-shadow:0 12px 22px -14px rgba(30,20,60,.22);}
+
+  [data-theme="vibrant"] .post{box-shadow:0 8px 20px -16px rgba(30,20,60,.18);}
+
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
 </style>
   <link rel="stylesheet" href="global.css?v=10">

@@ -77,6 +77,20 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
+
+  /* ---------- V Theme (vibrant) — lift flat tinted surfaces into shadowed cards ---------- */
+  /* Scoped to [data-theme="vibrant"] only — NOT [data-theme="blue"] ("Ocean"), which shares
+     the same brand blue but intentionally keeps the flat Classic-style look. */
+  [data-theme="vibrant"] .sec-lbl{position:relative;padding-left:12px;}
+  [data-theme="vibrant"] .sec-lbl::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--brand);}
+
+  [data-theme="vibrant"] .pv-ban{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+
+  [data-theme="vibrant"] .att{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+
+  [data-theme="vibrant"] .excl{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+
+  [data-theme="vibrant"] .prev{box-shadow:0 8px 20px -16px rgba(30,20,60,.18);}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
 </head>

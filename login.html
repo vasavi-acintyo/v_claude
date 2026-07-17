@@ -113,7 +113,45 @@
   .field textarea{width:100%;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:12.5px;font-family:inherit;color:var(--ink);resize:vertical;min-height:54px;}
   .field textarea:focus{outline:none;border-color:var(--brand);}
 
+  /* searchable select field (specialization / sub-specialization) */
+  .select-inp{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:13px 14px;font-family:inherit;font-size:12.5px;color:var(--ink);cursor:pointer;text-align:left;transition:border-color .16s;}
+  .select-inp:active{transform:scale(.99);}
+  .select-inp .sel-txt.placeholder{color:var(--muted);}
+  .select-inp .sel-chev{width:15px;height:15px;color:var(--muted);flex:0 0 auto;}
+
+  /* specialization picker sheet */
+  .sp-backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;z-index:40;}
+  .sp-backdrop.open{opacity:1;visibility:visible;}
+  .sp-sheet{position:absolute;left:0;right:0;bottom:0;z-index:41;background:var(--card);border-radius:22px 22px 0 0;
+    transform:translateY(100%);transition:transform .45s cubic-bezier(.34,1.3,.5,1);box-shadow:0 -12px 40px -12px rgba(0,0,0,.4);
+    height:52%;max-height:52%;display:flex;flex-direction:column;}
+  .sp-sheet.open{transform:translateY(0);}
+  .sp-grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:8px auto 4px;flex:0 0 auto;}
+  .sp-head{padding:6px 18px 0;flex:0 0 auto;}
+  .sp-head h2{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
+  .sp-search{position:relative;margin:12px 18px 6px;flex:0 0 auto;}
+  .sp-search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .sp-search input{width:100%;min-height:40px;height:40px;background:var(--chip);border:1px solid transparent;border-radius:12px;padding:0 14px 0 36px;font-size:12.5px;font-family:inherit;color:var(--ink);}
+  .sp-search input::placeholder{color:var(--muted);}
+  .sp-search input:focus{outline:none;border-color:var(--brand);}
+  .sp-list{overflow-y:auto;padding:4px 10px calc(14px + env(safe-area-inset-bottom));flex:1 1 auto;min-height:0;}
+  .sp-list::-webkit-scrollbar{width:0;}
+  .sp-opt{width:100%;display:flex;align-items:center;justify-content:space-between;gap:8px;background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);padding:13px 8px;cursor:pointer;border-radius:10px;text-align:left;}
+  .sp-opt:active{background:var(--chip);}
+  .sp-opt.sel{color:var(--brand);font-weight:800;}
+  .sp-opt .sp-check{width:16px;height:16px;color:var(--brand);flex:0 0 auto;visibility:hidden;}
+  .sp-opt.sel .sp-check{visibility:visible;}
+  .sp-empty{text-align:center;font-size:11px;color:var(--muted);padding:26px 10px;}
+
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
+
+  /* ---------- V Theme (vibrant) — lift flat tinted surfaces into shadowed cards ---------- */
+  /* Scoped to [data-theme="vibrant"] only — NOT [data-theme="blue"] ("Ocean"), which shares
+     the same brand blue but intentionally keeps the flat Classic-style look. */
+  [data-theme="vibrant"] .sec-label{position:relative;padding-left:12px;}
+  [data-theme="vibrant"] .sec-label::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--brand);}
+
+  [data-theme="vibrant"] .exp-item{box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
 </head>
@@ -273,6 +311,20 @@
           <div class="inp"><input id="curRole" placeholder="e.g. Consultant Physician"></div>
         </div>
         <div class="field">
+          <label for="curSpec">Specialization</label>
+          <button type="button" class="select-inp" id="curSpec" data-val="">
+            <span class="sel-txt placeholder" id="curSpecTxt">Select specialization</span>
+            <svg class="sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+        <div class="field">
+          <label for="curSubSpec">Sub-specialization (optional)</label>
+          <button type="button" class="select-inp" id="curSubSpec" data-val="">
+            <span class="sel-txt placeholder" id="curSubSpecTxt">Select sub-specialization</span>
+            <svg class="sel-chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+        </div>
+        <div class="field">
           <label for="curCity">City</label>
           <div class="inp"><input id="curCity" placeholder="e.g. Hyderabad"></div>
         </div>
@@ -342,6 +394,18 @@
     </div>
 
     <div class="foot rise">By continuing you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.<br>DocSynapse · Mysaa Life Health Care © 2026</div>
+  </div>
+
+  <!-- Specialization / sub-specialization picker (searchable) -->
+  <div class="sp-backdrop" id="spBackdrop"></div>
+  <div class="sp-sheet" id="spSheet">
+    <div class="sp-grab"></div>
+    <div class="sp-head"><h2 id="spTitle">Select specialization</h2></div>
+    <div class="sp-search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+      <input id="spSearch" placeholder="Search…" inputmode="search">
+    </div>
+    <div class="sp-list" id="spList"></div>
   </div>
 
   <div class="home-ind"></div>
@@ -500,10 +564,46 @@
   });
 
   // Step 4 — current workplace (required) + past experience (optional)
-  const curOrg=document.getElementById('curOrg'), curRole=document.getElementById('curRole'), curCity=document.getElementById('curCity');
+  const curOrg=document.getElementById('curOrg'), curRole=document.getElementById('curRole'), curSpec=document.getElementById('curSpec'), curSubSpec=document.getElementById('curSubSpec'), curCity=document.getElementById('curCity');
   const expList=document.getElementById('expList'), finishBtn=document.getElementById('finishBtn');
-  function validateStep4(){ finishBtn.disabled = !(curOrg.value.trim() && curRole.value.trim() && curCity.value.trim()); }
+  function validateStep4(){ finishBtn.disabled = !(curOrg.value.trim() && curRole.value.trim() && curSpec.dataset.val && curCity.value.trim()); }
   [curOrg,curRole,curCity].forEach(el=>el.addEventListener('input', validateStep4));
+
+  // specialization / sub-specialization — searchable picker sheet
+  const SPECIALTIES=['General Medicine','General Surgery','Cardiology','Dermatology','Endocrinology','ENT (Otorhinolaryngology)','Gastroenterology','Nephrology','Neurology','Neurosurgery','Obstetrics & Gynaecology','Oncology','Ophthalmology','Orthopedics','Pediatrics','Plastic Surgery','Psychiatry','Pulmonology','Radiology','Rheumatology','Urology','Anesthesiology','Emergency Medicine','Family Medicine','Pathology','Physical Medicine & Rehabilitation','Infectious Disease','Hematology','Nuclear Medicine','Dentistry'];
+  const SUBSPECIALTIES=['Interventional Cardiology','Electrophysiology','Heart Failure & Transplant Cardiology','Pediatric Cardiology','Interventional Radiology','Neuro-radiology','Hand Surgery','Spine Surgery','Sports Medicine','Joint Replacement','Pediatric Surgery','Colorectal Surgery','Vascular Surgery','Thoracic Surgery','Reproductive Endocrinology','Maternal-Fetal Medicine','Gynaecologic Oncology','Retina Specialist','Cornea Specialist','Glaucoma Specialist','Movement Disorders','Epilepsy','Stroke Medicine','Critical Care Medicine','Neonatology','Adolescent Medicine','Geriatric Medicine','Sleep Medicine','Allergy & Immunology','Medical Genetics'];
+
+  const spBackdrop=document.getElementById('spBackdrop'), spSheet=document.getElementById('spSheet'), spTitle=document.getElementById('spTitle'), spSearch=document.getElementById('spSearch'), spList=document.getElementById('spList');
+  let spTarget=null, spOptions=[];
+  const checkIco='<svg class="sp-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>';
+
+  function renderSpList(){
+    const q=spSearch.value.trim().toLowerCase();
+    const items=spOptions.filter(o=>o.toLowerCase().includes(q));
+    spList.innerHTML = items.length
+      ? items.map(o=>`<button type="button" class="sp-opt${o===spTarget.dataset.val?' sel':''}" data-v="${o}">${o}${checkIco}</button>`).join('')
+      : `<div class="sp-empty">No matches — try a different search.</div>`;
+    spList.querySelectorAll('.sp-opt').forEach(b=>b.addEventListener('click', ()=>selectSpOption(b.dataset.v)));
+  }
+  function selectSpOption(v){
+    spTarget.dataset.val=v;
+    spTarget.querySelector('.sel-txt').textContent=v;
+    spTarget.querySelector('.sel-txt').classList.remove('placeholder');
+    closeSpSheet();
+    validateStep4();
+  }
+  function openSpSheet(target, options, title){
+    spTarget=target; spOptions=options; spTitle.textContent=title;
+    spSearch.value='';
+    renderSpList();
+    spBackdrop.classList.add('open'); spSheet.classList.add('open');
+    setTimeout(()=>spSearch.focus(), 260);
+  }
+  function closeSpSheet(){ spBackdrop.classList.remove('open'); spSheet.classList.remove('open'); }
+  spBackdrop.addEventListener('click', closeSpSheet);
+  spSearch.addEventListener('input', renderSpList);
+  curSpec.addEventListener('click', ()=>openSpSheet(curSpec, SPECIALTIES, 'Select specialization'));
+  curSubSpec.addEventListener('click', ()=>openSpSheet(curSubSpec, SUBSPECIALTIES, 'Select sub-specialization'));
 
   const rmIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
   document.getElementById('addExp').addEventListener('click', ()=>{
@@ -526,6 +626,8 @@
     try{
       localStorage.setItem('docWorkplace', curOrg.value.trim());
       localStorage.setItem('docRole', curRole.value.trim());
+      localStorage.setItem('docSpecialization', curSpec.dataset.val||'');
+      localStorage.setItem('docSubSpecialization', curSubSpec.dataset.val||'');
       localStorage.setItem('docCity', curCity.value.trim());
       const exp=[...expList.querySelectorAll('.exp-item')].map(it=>({
         org:(it.querySelector('.exOrg').value||'').trim(),

@@ -80,6 +80,21 @@
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
+
+  /* ---------- V Theme (vibrant) — lift flat tinted surfaces into shadowed cards ---------- */
+  /* Scoped to [data-theme="vibrant"] only — NOT [data-theme="blue"] ("Ocean"), which shares
+     the same brand blue but intentionally keeps the flat Classic-style look. */
+  [data-theme="vibrant"] .aff{box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .aff:nth-child(6n+1) .ai{color:#2563eb;background:#dbeafe;}
+  [data-theme="vibrant"] .aff:nth-child(6n+2) .ai{color:#e11d48;background:#ffe4e6;}
+  [data-theme="vibrant"] .aff:nth-child(6n+3) .ai{color:#d97706;background:#fef3c7;}
+  [data-theme="vibrant"] .aff:nth-child(6n+4) .ai{color:#7c3aed;background:#ede9fe;}
+  [data-theme="vibrant"] .aff:nth-child(6n+5) .ai{color:#0d9488;background:#ccfbf1;}
+  [data-theme="vibrant"] .aff:nth-child(6n+6) .ai{color:#0891b2;background:#cffafe;}
+
+  [data-theme="vibrant"] .aff-note{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+
+  [data-theme="vibrant"] .addform{box-shadow:0 8px 20px -16px rgba(30,20,60,.18);}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
 </head>

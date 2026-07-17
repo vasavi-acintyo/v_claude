@@ -57,6 +57,19 @@
   .note{margin-top:18px;background:var(--soft1);border-radius:14px;padding:12px 14px;font-size:10px;line-height:1.6;color:var(--muted);display:flex;gap:9px;align-items:flex-start;}
   .note svg{width:15px;height:15px;flex:0 0 auto;color:var(--brand);margin-top:1px;}
 
+  /* ---------- V Theme (vibrant) — lift flat tinted surfaces into shadowed cards ---------- */
+  /* Scoped to [data-theme="vibrant"] only — NOT [data-theme="blue"] ("Ocean"), which shares
+     the same brand blue but intentionally keeps the flat Classic-style look. */
+  [data-theme="vibrant"] .sec h2{position:relative;padding-left:12px;}
+  [data-theme="vibrant"] .sec h2::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--brand);}
+
+  [data-theme="vibrant"] .prog{background:var(--card);border:1px solid var(--line);box-shadow:0 8px 20px -16px rgba(30,20,60,.18);}
+
+  [data-theme="vibrant"] .vid{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .vid:hover{box-shadow:0 12px 22px -14px rgba(30,20,60,.22);}
+
+  [data-theme="vibrant"] .note{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
