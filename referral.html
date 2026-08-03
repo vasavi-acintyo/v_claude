@@ -309,9 +309,10 @@
         </div>
       </div>
       <div class="pts-stats">
-        <div class="ps"><b id="stSent">0</b><span>Sent</span></div>
-        <div class="ps"><b id="stActive">0</b><span>Active</span></div>
+        <div class="ps"><b id="stPending">0</b><span>Pending</span></div>
+        <div class="ps"><b id="stAccepted">0</b><span>Accepted</span></div>
         <div class="ps"><b id="stDone">0</b><span>Completed</span></div>
+        <div class="ps"><b id="stRejected">0</b><span>Rejected</span></div>
       </div>
     </div>
 
@@ -525,12 +526,15 @@
     const sent = DATA.filter(r=>r.dir==='sent');
     const recv = DATA.filter(r=>r.dir==='received');
     const done = DATA.filter(r=>r.status==='completed');
-    const active = DATA.filter(r=> (r.status==='accepted'||r.status==='intreatment'||r.status==='pending'));
+    const pending = DATA.filter(r=>r.status==='pending');
+    const accepted = DATA.filter(r=> (r.status==='accepted'||r.status==='intreatment'));
+    const rejected = DATA.filter(r=> (r.status==='declined'||r.status==='cancelled'));
     document.getElementById('cSent').textContent = sent.length;
     document.getElementById('cRecv').textContent = recv.length;
-    document.getElementById('stSent').textContent = sent.length;
-    document.getElementById('stActive').textContent = active.length;
+    document.getElementById('stPending').textContent = pending.length;
+    document.getElementById('stAccepted').textContent = accepted.length;
     document.getElementById('stDone').textContent = done.length;
+    document.getElementById('stRejected').textContent = rejected.length;
     const pts = BASE_POINTS + done.length*POINTS_PER;
     document.getElementById('ptsNum').textContent = pts;
     const frac = Math.min(1, pts/GOAL);
@@ -637,7 +641,7 @@
     const r = DATA.find(x=>x.id===openId); if(!r) return;
     const act = btn.dataset.act;
     if(act==='case'){
-      const u = new URLSearchParams({ from:r.id, spec:r.doctor.spec||'', age:r.patient.age||'', sex:r.patient.sex||'', cond:r.condition||'', reason:r.reason||'' });
+      const u = new URLSearchParams({ from:r.id, spec:r.doctor.spec||'', age:r.patient.age||'', sex:r.patient.sex||'', cond:r.condition||'', reason:r.reason||'', priority:r.priority||'', docs:JSON.stringify(r.docs||[]) });
       location.href='post-case.html?'+u.toString(); return;
     }
     if(act==='accept'){ markPrevDone(r); r.status='accepted'; r.timeline.push({label:'Accepted', d:'Just now', note:'You accepted the referral.', state:'now'}); persist(); toast('Referral accepted'); reopen(); }
@@ -767,6 +771,9 @@
   buildSpecOptions();
   updateFilterUI();
   requestAnimationFrame(()=>recompute());
+
+  const openParam = new URLSearchParams(location.search).get('open');
+  if(openParam) openDetail(openParam);
 
   (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
 </script>

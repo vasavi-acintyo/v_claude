@@ -58,6 +58,19 @@
   .d-q{background:var(--soft1);border-radius:12px;padding:11px 12px;margin-top:12px;font-size:11px;line-height:1.55;color:var(--slate-700);}
   .d-q b{color:var(--brand);font-weight:800;}
 
+  /* referral link-back: priority + carried-over docs + original-referral link */
+  .prio{font-size:8px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;padding:2px 7px;border-radius:6px;flex:0 0 auto;}
+  .prio.routine{color:var(--muted);background:var(--chip);}
+  .prio.urgent{color:#b26a00;background:rgba(212,138,20,.16);}
+  .prio.emergency{color:#b3352f;background:rgba(200,64,58,.14);}
+  .d-docs{margin-top:10px;display:flex;flex-direction:column;gap:6px;}
+  .d-doc{display:flex;align-items:center;gap:9px;background:var(--chip);border-radius:10px;padding:8px 10px;}
+  .d-doc svg{width:15px;height:15px;color:var(--brand);flex:0 0 auto;}
+  .d-doc .dn{font-size:10.5px;font-weight:700;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .d-doc .ds{font-size:9px;color:var(--muted);flex:0 0 auto;}
+  .refback{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;min-height:44px;margin-top:10px;border:1.5px dashed var(--line);border-radius:12px;background:none;color:var(--brand);font-family:inherit;font-size:11.5px;font-weight:800;cursor:pointer;text-decoration:none;transition:border-color .18s;}
+  .refback:hover{border-color:var(--brand);} .refback svg{width:15px;height:15px;}
+
   /* AI summary card */
   .ai{margin-top:16px;border-radius:16px;overflow:hidden;background:linear-gradient(140deg,var(--d1),var(--d2) 60%,var(--d3));color:#fff;position:relative;}
   .ai::after{content:"";position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:radial-gradient(circle,var(--glow),transparent 70%);}
@@ -152,6 +165,7 @@
   const sparkIc='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 2l1.6 5L19 8.5l-4.4 2.9L16 17l-4-3.2L8 17l1.4-5.6L5 8.5 10.4 7z"/><circle cx="19" cy="4" r="1.4"/><circle cx="5" cy="19" r="1.2"/></svg>';
   const nextIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m13 6 6 6-6 6"/></svg>';
   const regenIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 3v5h-5"/></svg>';
+  const docIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
   const feedIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
   const emptyIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
   const bookmarkIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v17l-6-4-6 4z"/></svg>';
@@ -293,11 +307,15 @@
     const ops=opinionsFor(c), spec=specOf(c), m=c.caseMeta||{};
     const line=[m.age?m.age+' y':'', m.sex].filter(Boolean).join(' · ');
     const saved = isCaseSaved(c.id);
+    const docs = m.docs||[];
     return '<div class="chead"><span class="d-tag">Case · '+esc(spec)+'</span>'+
+        (m.priority?'<span class="prio '+esc(m.priority)+'">'+esc(m.priority)+'</span>':'')+
         '<span class="cbm'+(saved?' on':'')+'" data-savecase="'+esc(c.id)+'" role="button" aria-label="'+(saved?'Remove from saved':'Save case')+'">'+bookmarkIc+'</span></div>'+
       '<div class="d-title">'+esc(m.cond||'Case for opinion')+'</div>'+
       '<div class="d-meta">'+(line?esc(line)+' · ':'')+'Posted '+esc(c.time||'now')+' · '+ops.length+' opinion'+(ops.length!==1?'s':'')+'</div>'+
       (m.question?'<div class="d-q"><b>Your question:</b> '+esc(m.question)+'</div>':'')+
+      (docs.length?'<div class="d-docs">'+docs.map(d=>'<div class="d-doc">'+docIc+'<span class="dn">'+esc(d.name||'Attachment')+'</span><span class="ds">'+esc(d.size||'')+'</span></div>').join('')+'</div>':'')+
+      (m.fromReferralId?'<a class="refback" href="referral.html?open='+esc(m.fromReferralId)+'">'+nextIc+'View original referral</a>':'')+
 
       '<div class="ai"><div class="ai-in"><div class="ai-hd"><span class="ai-ic">'+sparkIc+'</span>'+
         '<div><div class="t">AI summary of opinions</div><div class="s">Synthesised from '+ops.length+' network repl'+(ops.length!==1?'ies':'y')+'</div></div>'+

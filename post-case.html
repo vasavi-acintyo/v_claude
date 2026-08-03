@@ -24,6 +24,12 @@
   .pv-ban .t{font-size:12.5px;font-weight:800;font-family:var(--display);}
   .pv-ban .s{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.5;}
 
+  /* linked-referral indicator */
+  .ref-link{display:flex;align-items:center;gap:8px;margin-top:8px;padding:9px 12px;background:var(--brand-soft);border-radius:12px;font-size:10.5px;font-weight:700;color:var(--brand);flex-wrap:wrap;}
+  .ref-link svg{width:14px;height:14px;flex:0 0 auto;}
+  .ref-link .rl-sep{opacity:.5;}
+  .ref-link .rl-prio{text-transform:uppercase;letter-spacing:.03em;}
+
   .sec-lbl{font-size:9.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:20px 2px 10px;}
 
   .field{margin-bottom:12px;}
@@ -115,6 +121,7 @@
       <span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
       <div><div class="t">Discuss this case for a second opinion</div><div class="s">Share the clinical picture with your network. <b>No patient-identifying information</b> is ever included.</div></div>
     </div>
+    <div class="ref-link rise" id="refLink" hidden></div>
 
     <!-- case -->
     <div class="sec-lbl rise">The case</div>
@@ -182,6 +189,17 @@
   if(qp.get('cond')) fld('cond').value = qp.get('cond');
   if(qp.get('reason')) fld('details').value = qp.get('reason');
   if(qp.get('from')) document.getElementById('backBtn').setAttribute('href','referral.html');
+  const fromReferralId = qp.get('from') || null;
+  const fromPriority = qp.get('priority') || '';
+  let fromDocs = [];
+  try{ fromDocs = JSON.parse(qp.get('docs')||'[]'); }catch(e){ fromDocs = []; }
+  if(fromReferralId){
+    const linkIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17H7a5 5 0 0 1 0-10h2"/><path d="M15 7h2a5 5 0 0 1 0 10h-2"/><line x1="8" y1="12" x2="16" y2="12"/></svg>';
+    const bits=['Linked to referral'];
+    if(fromPriority) bits.push('<span class="rl-sep">·</span><span class="rl-prio">'+esc(fromPriority)+'</span>');
+    if(fromDocs.length) bits.push('<span class="rl-sep">·</span>'+fromDocs.length+' report'+(fromDocs.length>1?'s':'')+' carried over');
+    const rl=document.getElementById('refLink'); rl.innerHTML=linkIco+bits.join(' '); rl.hidden=false;
+  }
 
   // attachment
   const docIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
@@ -260,7 +278,7 @@
       media: media || null,
       rc:{}, my:null, shares:0, comments:[], _open:false,
       _case:true,
-      caseMeta:{ spec:spec, age:fld('age').value.trim(), sex:fld('sex').value, cond:cond, details:det, question:fld('question').value.trim() }
+      caseMeta:{ spec:spec, age:fld('age').value.trim(), sex:fld('sex').value, cond:cond, details:det, question:fld('question').value.trim(), priority:fromPriority, docs:fromDocs, fromReferralId:fromReferralId }
     };
     // durable handoff (in case the feed store isn't seeded yet) + best-effort live inject
     try{ const q=JSON.parse(localStorage.getItem('casePosts')||'[]'); q.unshift(post); localStorage.setItem('casePosts', JSON.stringify(q)); }catch(e){}
