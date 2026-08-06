@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CMEs by Specialty — DocSynapse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  [hidden]{display:none !important;}
+  .statusbar{flex:0 0 auto;display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:12px;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;transition:transform .16s, border-color .16s;}
+  .topbar .bk:hover{border-color:var(--brand);} .topbar .bk:active{transform:scale(.92);}
+  .topbar .bk svg{width:19px;height:19px;}
+  .topbar .tt{flex:1;min-width:0;font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:12px 16px 22px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  /* search */
+  .search{position:relative;margin-bottom:12px;}
+  .search svg{position:absolute;left:13px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);}
+  .search input{width:100%;min-height:38px;height:38px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px 0 36px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .search input::placeholder{color:var(--muted);} .search input:focus{outline:none;border-color:var(--brand);}
+
+  .seeall{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--brand);text-decoration:none;margin:0 2px 14px;}
+  .resultcount{font-size:10.5px;color:var(--muted);font-weight:700;margin:0 2px 10px;}
+
+  /* CME card */
+  .clist{display:flex;flex-direction:column;gap:10px;}
+  .ccard{position:relative;background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:14px;cursor:pointer;transition:transform .18s cubic-bezier(.22,1,.36,1), border-color .18s;}
+  .ccard:hover{transform:translateY(-3px);border-color:var(--brand);} .ccard:active{transform:scale(.985);}
+  .ctop{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
+  .fmtbadge{display:inline-flex;align-items:center;gap:5px;font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--brand);background:var(--brand-soft);padding:4px 9px;border-radius:20px;}
+  .fmtbadge svg{width:12px;height:12px;}
+  .ptag{display:inline-flex;align-items:center;font-size:8.5px;font-weight:800;letter-spacing:.04em;padding:3px 8px;border-radius:20px;text-transform:uppercase;white-space:nowrap;margin-left:auto;}
+  .ptag.free{color:#15803d;background:#dcfce7;} .ptag.paid{color:var(--brand);background:var(--brand-soft);}
+  [data-theme="dark"] .ptag.free{color:#86efac;background:rgba(34,197,94,.16);}
+  .ctitle{font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;line-height:1.28;margin-top:10px;}
+  .cmeta{font-size:10px;color:var(--muted);margin-top:7px;display:flex;flex-wrap:wrap;gap:9px;}
+  .cmeta span{display:inline-flex;align-items:center;gap:5px;}
+  .cmeta svg{width:12px;height:12px;flex:0 0 auto;color:var(--brand);}
+  .corg{font-size:9.5px;color:var(--muted);margin-top:5px;display:flex;align-items:center;gap:5px;}
+  .corg svg{width:12px;height:12px;flex:0 0 auto;}
+  .cspecs{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px;}
+  .cspec{font-size:8.5px;font-weight:700;color:var(--slate-700);background:var(--chip);padding:3px 8px;border-radius:20px;}
+
+  /* states */
+  .state{text-align:center;padding:44px 24px;color:var(--muted);}
+  .state .eic{width:60px;height:60px;border-radius:18px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;margin:0 auto 15px;}
+  .state .eic svg{width:28px;height:28px;}
+  .state h3{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:6px;}
+  .state p{font-size:11.5px;line-height:1.55;}
+
+  .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:82%;text-align:center;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* hide-mock-statusbar */ .statusbar{display:none !important;}
+
+  /* ---------- V Theme (vibrant) — lift flat tinted surfaces into shadowed cards ---------- */
+  /* Scoped to [data-theme="vibrant"] only — NOT [data-theme="blue"] ("Ocean"), which shares
+     the same brand blue but intentionally keeps the flat Classic-style look. */
+  [data-theme="vibrant"] .ccard{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .ccard:hover{box-shadow:0 12px 22px -14px rgba(30,20,60,.22);}
+</style>
+  <link rel="stylesheet" href="global.css?v=10">
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="tt" id="topTitle">CMEs by Specialty</span>
+  </div>
+
+  <div class="scroll" id="scroll">
+    <div class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+      <input id="q" placeholder="Search by title, city or organiser…">
+    </div>
+
+    <a class="seeall" href="specialties.html">← All specialties</a>
+    <div class="resultcount" id="resultCount"></div>
+    <div id="list"></div>
+  </div>
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1500); }
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='specialties.html'; });
+
+  const IC = {
+    pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+    globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 3.6 6 3.6 9s-1.1 6.5-3.6 9c-2.5-2.5-3.6-6-3.6-9s1.1-6.5 3.6-9Z"/></svg>',
+    hybrid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20s6-4.7 6-9.5A6 6 0 0 0 4 10.5C4 15.3 10 20 10 20Z"/><circle cx="10" cy="10.5" r="2"/><path d="M15.5 7.3c1.4 1 1.4 4.4 0 5.4"/><path d="M18 5.3c2.7 1.9 2.7 7.5 0 9.4"/></svg>',
+    cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2.5" x2="8" y2="6"/><line x1="16" y1="2.5" x2="16" y2="6"/></svg>',
+    org:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M15 21V9h3a1 1 0 0 1 1 1v11"/></svg>',
+    sat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M7 7V5a5 5 0 0 1 10 0v2"/></svg>'
+  };
+
+  // ---- demo seed: real published CMEs (created via create-cme.html) are read from the
+  // same 'cmePrograms' store, so demo + real listings blend together automatically.
+  // (Kept identical to the seed in cme-locations.html so both screens agree on the same data.) ----
+  const SEED = [
+    { id:'loc-seed-1', title:'Cardiometabolic Update 2026', format:'Hybrid', specialties:['Cardiology','Endocrinology'], org:'Cardiological Society of India',
+      eventStartDate:'2026-08-24', eventEndDate:'2026-08-26', eventStartTime:'09:00', timezone:'IST · India Standard Time (GMT+5:30)',
+      accrBody:'Maharashtra Medical Council (MMC)', location:'https://meet.example.com/cardio-update', venue:'Taj Lands End',
+      city:'Mumbai', state:'Maharashtra', country:'India', pincode:'400050', paid:true, fee:'1499' },
+    { id:'loc-seed-2', title:'Advances in Diabetes Management', format:'Offline', specialties:['Endocrinology'], org:'RSSDI',
+      eventStartDate:'2026-09-05', eventEndDate:'2026-09-05', eventStartTime:'10:00', timezone:'IST · India Standard Time (GMT+5:30)',
+      accrBody:'Delhi Medical Council', venue:'India Habitat Centre',
+      city:'New Delhi', state:'Delhi', country:'India', pincode:'110003', paid:false },
+    { id:'loc-seed-3', title:'Neuro Update: Stroke & Epilepsy', format:'Offline', specialties:['Neurology'], org:'Indian Academy of Neurology',
+      eventStartDate:'2026-09-12', eventEndDate:'2026-09-12', eventStartTime:'09:30', timezone:'IST · India Standard Time (GMT+5:30)',
+      accrBody:'Karnataka Medical Council', venue:'NIMHANS Convention Centre',
+      city:'Bengaluru', state:'Karnataka', country:'India', pincode:'560029', paid:true, fee:'999' },
+    { id:'loc-seed-4', title:'Orthopaedic Trauma Masterclass', format:'Hybrid', specialties:['Orthopaedics'], org:'Indian Orthopaedic Association',
+      eventStartDate:'2026-09-20', eventEndDate:'2026-09-20', eventStartTime:'09:00', timezone:'IST · India Standard Time (GMT+5:30)',
+      accrBody:'Telangana Medical Council', location:'https://meet.example.com/ortho-trauma', venue:'HITEX Exhibition Centre',
+      city:'Hyderabad', state:'Telangana', country:'India', pincode:'500084', paid:true, fee:'1299' },
+    { id:'loc-seed-5', title:'Pediatric Nutrition & Growth Summit', format:'Offline', specialties:['Pediatrics'], org:'Indian Academy of Pediatrics',
+      eventStartDate:'2026-10-02', eventEndDate:'2026-10-02', eventStartTime:'10:00', timezone:'IST · India Standard Time (GMT+5:30)',
+      accrBody:'Tamil Nadu Medical Council', venue:'Chennai Trade Centre',
+      city:'Chennai', state:'Tamil Nadu', country:'India', pincode:'600045', paid:false },
+    { id:'loc-seed-6', title:'Oncology Frontiers Conference', format:'Hybrid', specialties:['Oncology'], org:'Indian Society of Oncology',
+      eventStartDate:'2026-10-15', eventEndDate:'2026-10-16', eventStartTime:'09:00', timezone:'IST · India Standard Time (GMT+5:30)',
+      accrBody:'Maharashtra Medical Council (MMC)', location:'https://meet.example.com/onco-frontiers', venue:'JW Marriott',
+      city:'Pune', state:'Maharashtra', country:'India', pincode:'411006', paid:true, fee:'1999' }
+  ];
+
+  // seed once — merge into the real cmePrograms store (without ever overwriting a real program)
+  function loadPrograms(){
+    let programs=[]; try{ programs=JSON.parse(localStorage.getItem('cmePrograms')||'[]'); }catch(e){}
+    let changed=false;
+    SEED.forEach(s=>{ if(!programs.some(p=>p.id===s.id)){ programs.push(s); changed=true; } });
+    if(changed){ try{ localStorage.setItem('cmePrograms', JSON.stringify(programs)); }catch(e){} }
+    return programs;
+  }
+
+  function fmtDate(s){
+    if(!s) return '';
+    const d=new Date(s+'T00:00:00');
+    if(isNaN(d)) return s;
+    return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+  }
+
+  const qp = new URLSearchParams(location.search);
+  const specialty = qp.get('specialty') || '';
+  document.getElementById('topTitle').textContent = specialty ? specialty+' CMEs' : 'CMEs by Specialty';
+
+  const ALL = loadPrograms().filter(p => p.specialties && p.specialties.includes(specialty));
+  ALL.sort((a,b)=>(a.eventStartDate||'').localeCompare(b.eventStartDate||''));
+
+  const today = new Date().toISOString().slice(0,10);
+  const VISIBLE = ALL.filter(p => !(p.eventEndDate||p.eventStartDate) || (p.eventEndDate||p.eventStartDate) >= today);
+
+  let query = '';
+
+  function filtered(){
+    const q=query.trim().toLowerCase();
+    return VISIBLE.filter(p =>
+      !q || (p.title||'').toLowerCase().includes(q) || (p.org||'').toLowerCase().includes(q) || (p.city||'').toLowerCase().includes(q) || (p.venue||'').toLowerCase().includes(q)
+    );
+  }
+
+  function fmtBadge(p){
+    if(p.format==='Hybrid') return `<span class="fmtbadge">${IC.hybrid}Hybrid</span>`;
+    if(p.format==='Offline') return `<span class="fmtbadge">${IC.pin}Offline</span>`;
+    return `<span class="fmtbadge">${IC.globe}Online</span>`;
+  }
+  function priceTag(p){ return p.paid ? `<span class="ptag paid">₹${esc(p.fee||'—')}</span>` : `<span class="ptag free">Free</span>`; }
+  function whereLine(p){
+    if(p.format==='Online') return `<span>${IC.globe}Online</span>`;
+    return `<span>${IC.pin}${esc(p.city||'')}${p.state?', '+esc(p.state):''}</span>`;
+  }
+
+  function card(p){
+    const dateStr = p.eventStartDate ? fmtDate(p.eventStartDate)+(p.eventEndDate && p.eventEndDate!==p.eventStartDate ? ' – '+fmtDate(p.eventEndDate) : '') : '';
+    const otherSpecs = (p.specialties||[]).filter(s=>s!==specialty);
+    return `<div class="ccard rise" data-id="${esc(p.id)}">
+      <div class="ctop">${fmtBadge(p)}${priceTag(p)}</div>
+      <div class="ctitle">${esc(p.title||'Untitled program')}</div>
+      <div class="cmeta">
+        ${dateStr?`<span>${IC.cal}${esc(dateStr)}</span>`:''}
+        ${whereLine(p)}
+      </div>
+      ${p.org?`<div class="corg">${IC.org}Organized by ${esc(p.org)}</div>`:''}
+      ${otherSpecs.length?`<div class="cspecs">${otherSpecs.map(s=>`<span class="cspec">${esc(s)}</span>`).join('')}</div>`:''}
+    </div>`;
+  }
+
+  function render(){
+    const results = filtered();
+    document.getElementById('resultCount').textContent = results.length + ' CME' + (results.length!==1?'s':'') + (specialty?' in '+specialty:'');
+    if(!results.length){
+      document.getElementById('list').innerHTML = `<div class="state"><div class="eic">${IC.sat}</div><h3>No CMEs found</h3><p>Try a different search —<br>or check back later for new programs in this specialty.</p></div>`;
+      return;
+    }
+    document.getElementById('list').innerHTML = `<div class="clist">${results.map(card).join('')}</div>`;
+  }
+
+  document.getElementById('list').addEventListener('click', e=>{
+    const c=e.target.closest('.ccard'); if(!c) return;
+    location.href='cme-details.html?id='+encodeURIComponent(c.dataset.id);
+  });
+
+  document.getElementById('q').addEventListener('input', e=>{ query=e.target.value; render(); });
+
+  render();
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

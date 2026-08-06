@@ -479,6 +479,10 @@
     <div class="sec rise"><h2>Browse by specialty</h2><a href="specialties.html">See all<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></a></div>
     <div class="spec-row rise" id="specRow"></div>
 
+    <!-- Browse by location -->
+    <div class="sec rise"><h2>Browse by location</h2><a href="cme-locations.html">See all<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></a></div>
+    <div class="spec-row rise" id="locRow"></div>
+
     <!-- Upcoming -->
     <div class="sec rise"><h2>Upcoming CMEs</h2><a href="speakers.html?type=upcoming">See all<svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></a></div>
     <div class="agenda rise" id="upcoming"></div>
@@ -808,7 +812,11 @@
     {n:'Neurology', i:'brain'},{n:'Nephrology', i:'drop'},{n:'Rheumatology', i:'bone'}
   ];
   document.getElementById('specRow').innerHTML = specialties.map(s=>`
-    <a class="spec-card" href="speakers.html?type=specialty&specialty=${encodeURIComponent(s.n)}"><span class="si">${ic[s.i]}</span><div class="sn">${s.n}</div></a>`).join('');
+    <a class="spec-card" href="cme-specialty.html?specialty=${encodeURIComponent(s.n)}"><span class="si">${ic[s.i]}</span><div class="sn">${s.n}</div></a>`).join('');
+
+  const locations = ['Mumbai','New Delhi','Bengaluru','Hyderabad','Chennai','Pune'];
+  document.getElementById('locRow').innerHTML = locations.map(c=>`
+    <a class="spec-card" href="cme-locations.html?city=${encodeURIComponent(c)}"><span class="si">${ic.pin}</span><div class="sn">${c}</div></a>`).join('');
 
   const chev = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
   const pTag = (f,price) => f ? '<span class="ptag free">Free</span>' : '<span class="ptag paid">'+(price||'Paid')+'</span>';

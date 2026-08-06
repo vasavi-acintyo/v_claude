@@ -264,6 +264,7 @@
       <div class="seg" id="fmt">
         <div class="opt sel" data-v="Online"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 3.6 6 3.6 9s-1.1 6.5-3.6 9c-2.5-2.5-3.6-6-3.6-9s1.1-6.5 3.6-9Z"/></svg></span><span class="on">Online</span></div>
         <div class="opt" data-v="Offline"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-5.5 7-11a7 7 0 0 0-14 0c0 5.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></span><span class="on">Offline</span></div>
+        <div class="opt" data-v="Hybrid"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20s6-4.7 6-9.5A6 6 0 0 0 4 10.5C4 15.3 10 20 10 20Z"/><circle cx="10" cy="10.5" r="2"/><path d="M15.5 7.3c1.4 1 1.4 4.4 0 5.4"/><path d="M18 5.3c2.7 1.9 2.7 7.5 0 9.4"/></svg></span><span class="on">Hybrid</span></div>
         <div class="opt" data-v="Recorded"><span class="oi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><polygon points="10 9 15 12 10 15" fill="currentColor" stroke="none"/></svg></span><span class="on">Recorded</span></div>
       </div>
     </div>
@@ -321,6 +322,17 @@
       </div>
     </div>
     <div class="field" id="wLoc"><label id="locLabel">Meeting link</label><input class="inp" id="fLoc" placeholder="https://meet.example.com/room"></div>
+    <div class="field" id="wVenue" hidden><label>Venue address</label><input class="inp" id="fVenue" placeholder="e.g. Taj Lands End, Mumbai"></div>
+    <div id="wVenueDetails" hidden>
+      <div class="row2">
+        <div class="field"><label>City</label><input class="inp" id="fCity" placeholder="e.g. Mumbai"></div>
+        <div class="field"><label>State</label><input class="inp" id="fState" placeholder="e.g. Maharashtra"></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Country</label><input class="inp" id="fCountry" placeholder="e.g. India"></div>
+        <div class="field"><label>Pincode</label><input class="inp" id="fPincode" placeholder="e.g. 400050" inputmode="numeric"></div>
+      </div>
+    </div>
     <div class="field" id="wChapters">
       <label>Video chapters <span class="hint" id="chapHint">upload by topic</span></label>
       <div class="chap-list" id="chapList"></div>
@@ -460,6 +472,11 @@
     set('fTz', draftData.timezone);
     set('fAccr', draftData.accrBody);
     set('fLoc', draftData.location);
+    set('fVenue', draftData.venue);
+    set('fCity', draftData.city);
+    set('fState', draftData.state);
+    set('fCountry', draftData.country);
+    set('fPincode', draftData.pincode);
     set('fSeats', draftData.seats);
     set('fSeatsPre', draftData.seatsPre);
     set('fSeatsPost', draftData.seatsPost);
@@ -621,14 +638,18 @@
   });
   renderSpecChips();
 
-  // format → location label
-  const LOC={Online:{l:'Meeting link',p:'https://meet.example.com/room'},Offline:{l:'Venue address',p:'e.g. Taj Lands End, Mumbai'},Recorded:{l:'Recording link',p:'https://vimeo.com/…'}};
+  // format → location label(s)
+  const LOC={Online:{l:'Meeting link',p:'https://meet.example.com/room'},Offline:{l:'Venue address',p:'e.g. Taj Lands End, Mumbai'},Hybrid:{l:'Meeting link',p:'https://meet.example.com/room'},Recorded:{l:'Recording link',p:'https://vimeo.com/…'}};
   let fmt='Online';
   function applyFormat(v){
     fmt=v;
     const c=LOC[v]; document.getElementById('locLabel').textContent=c.l; const inp=document.getElementById('fLoc'); inp.placeholder=c.p;
     const rec = v==='Recorded';            // recorded = on-demand: no live date/time, upload by chapter
+    const hybrid = v==='Hybrid';           // hybrid = both a meeting link and a venue address
+    const hasVenue = v==='Offline' || hybrid;  // any format with a physical venue needs city/state/pincode/country
     ['wRegStart','wRegEnd','wEventStartDate','wEventEndDate','wEventStartTime','wEventEndTime','wTz','wLoc'].forEach(id=>{ document.getElementById(id).hidden=rec; });
+    document.getElementById('wVenue').hidden = rec || !hybrid;
+    document.getElementById('wVenueDetails').hidden = !hasVenue;
     document.getElementById('chapHint').textContent = rec?'upload by topic':'optional · add a recording after the session';
     document.getElementById('schedH').textContent = rec?'On-demand details':'Schedule';
   }
@@ -937,6 +958,11 @@
       accrBody: val('fAccr'),
       certName: certFile ? certFile.name : (draftData?draftData.certName||'':''),
       location: val('fLoc'),
+      venue: val('fVenue'),
+      city: val('fCity'),
+      state: val('fState'),
+      country: val('fCountry'),
+      pincode: val('fPincode'),
       visibility: document.querySelector('#visibility .opt.sel').dataset.v,
       visGroup: selectedGroup,
       invitees: invitees.map(v=>({n:v.n, r:v.r||'', img:v.img||''})),

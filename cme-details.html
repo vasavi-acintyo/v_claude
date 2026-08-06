@@ -268,11 +268,12 @@
     const isRec = p.format==='Recorded';
     const locLabel = p.format==='Offline' ? 'Venue' : (isRec ? 'Recording link' : 'Meeting link');
     const locIcon = p.format==='Offline' ? pinIco : globeIco;
+    const addrLine = [p.city, p.state, p.country, p.pincode].filter(Boolean).join(', ');
     const status = computeStatus(p);
     const statusLabel = {live:'Live now', upcoming:'Upcoming', completed:'Completed'}[status];
     const hasSpeakers = p.speakers && p.speakers.length;
 
-    const hasAgenda = !isRec && (p.eventStartDate || p.timezone || p.location);
+    const hasAgenda = !isRec && (p.eventStartDate || p.timezone || p.location || p.venue);
 
     let html = `<div class="wrap">
       <div class="banner rise">
@@ -390,6 +391,7 @@
                 <div class="tl-meta">
                   ${p.eventStartDate ? `<span class="tl-by">${calIco}${fmtDate(p.eventStartDate)}${p.eventEndDate && p.eventEndDate!==p.eventStartDate ? ' – '+fmtDate(p.eventEndDate) : ''}</span>` : ''}
                   ${p.location ? `<span class="tl-by">${locIcon}${esc(p.location)}</span>` : ''}
+                  ${p.venue ? `<span class="tl-by">${pinIco}${esc(p.venue)}</span>` : ''}
                 </div>
               </div>
             </div>
@@ -398,7 +400,8 @@
         <div class="card rise" style="margin-top:14px">
           ${p.regStart || p.regEnd ? `<div class="kv"><span class="ki">${clockIco}</span><div class="kt"><b>Registration window</b><span>${p.regStart?fmtDate(p.regStart):'Open'} ${p.regEnd?'– '+fmtDate(p.regEnd):''}</span></div></div>` : ''}
           ${p.timezone ? `<div class="kv"><span class="ki">${globeIco}</span><div class="kt"><b>Timezone</b><span>${esc(p.timezone)}</span></div></div>` : ''}
-          ${p.location ? `<div class="kv"><span class="ki">${locIcon}</span><div class="kt"><b>${locLabel}</b><span>${esc(p.location)}</span></div></div>` : ''}
+          ${p.location ? `<div class="kv"><span class="ki">${locIcon}</span><div class="kt"><b>${locLabel}</b><span>${esc(p.location)}</span>${p.format==='Offline' && addrLine ? `<span>${esc(addrLine)}</span>` : ''}</div></div>` : ''}
+          ${p.venue ? `<div class="kv"><span class="ki">${pinIco}</span><div class="kt"><b>Venue</b><span>${esc(p.venue)}</span>${addrLine ? `<span>${esc(addrLine)}</span>` : ''}</div></div>` : ''}
         </div>
       </div>`;
     }

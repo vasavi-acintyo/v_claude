@@ -100,40 +100,60 @@
   const boneIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6a2 2 0 1 0-2 2l6 6a2 2 0 1 0 2 2l6-6a2 2 0 1 0-2-2 2 2 0 1 0-2-2l-4 4-4-4a2 2 0 1 0 0 0Z"/></svg>';
 
   const specs = [
-    {n:'Cardiology', c:128, i:heartIco},
-    {n:'Endocrinology', c:94, i:dropIco},
-    {n:'Diabetes', c:112, i:activityIco},
-    {n:'Neurology', c:76, i:brainIco},
-    {n:'Pulmonology', c:58, i:lungsIco},
-    {n:'Rheumatology', c:41, i:boneIco},
-    {n:'Gastroenterology', c:52},
-    {n:'Dermatology', c:47},
-    {n:'Psychiatry', c:39},
-    {n:'Ophthalmology', c:33},
-    {n:'Urology', c:36},
-    {n:'Radiology', c:44},
-    {n:'Anesthesiology', c:29},
-    {n:'Orthopaedics', c:63, i:boneIco},
-    {n:'Pediatrics', c:71},
-    {n:'Neonatology', c:22},
-    {n:'Gynaecology', c:59},
-    {n:'ENT', c:31},
-    {n:'General Medicine', c:88},
-    {n:'Internal Medicine', c:97},
-    {n:'Infectious Diseases', c:45},
-    {n:'Hematology', c:28},
-    {n:'Immunology & Allergy', c:19},
-    {n:'Geriatrics', c:24},
-    {n:'Emergency Medicine', c:37},
-    {n:'Family Medicine', c:42},
-    {n:'Pathology', c:21},
-    {n:'Plastic Surgery', c:18},
-    {n:'Critical Care', c:34},
-    {n:'Sports Medicine', c:16},
-    {n:'Pain Medicine', c:14},
-    {n:'Sleep Medicine', c:12},
-    {n:'Palliative Care', c:15}
+    {n:'Cardiology', i:heartIco},
+    {n:'Endocrinology', i:dropIco},
+    {n:'Diabetes', i:activityIco},
+    {n:'Neurology', i:brainIco},
+    {n:'Pulmonology', i:lungsIco},
+    {n:'Rheumatology', i:boneIco},
+    {n:'Gastroenterology'},
+    {n:'Dermatology'},
+    {n:'Psychiatry'},
+    {n:'Ophthalmology'},
+    {n:'Urology'},
+    {n:'Radiology'},
+    {n:'Anesthesiology'},
+    {n:'Orthopaedics', i:boneIco},
+    {n:'Pediatrics'},
+    {n:'Neonatology'},
+    {n:'Gynaecology'},
+    {n:'ENT'},
+    {n:'General Medicine'},
+    {n:'Internal Medicine'},
+    {n:'Infectious Diseases'},
+    {n:'Hematology'},
+    {n:'Immunology & Allergy'},
+    {n:'Geriatrics'},
+    {n:'Emergency Medicine'},
+    {n:'Family Medicine'},
+    {n:'Pathology'},
+    {n:'Plastic Surgery'},
+    {n:'Critical Care'},
+    {n:'Sports Medicine'},
+    {n:'Pain Medicine'},
+    {n:'Sleep Medicine'},
+    {n:'Palliative Care'}
   ];
+
+  // ---- demo seed: real published CMEs (created via create-cme.html) are read from the
+  // same 'cmePrograms' store, so counts here reflect the same data cme-specialty.html shows. ----
+  const SEED = [
+    { id:'loc-seed-1', title:'Cardiometabolic Update 2026', format:'Hybrid', specialties:['Cardiology','Endocrinology'] },
+    { id:'loc-seed-2', title:'Advances in Diabetes Management', format:'Offline', specialties:['Endocrinology'] },
+    { id:'loc-seed-3', title:'Neuro Update: Stroke & Epilepsy', format:'Offline', specialties:['Neurology'] },
+    { id:'loc-seed-4', title:'Orthopaedic Trauma Masterclass', format:'Hybrid', specialties:['Orthopaedics'] },
+    { id:'loc-seed-5', title:'Pediatric Nutrition & Growth Summit', format:'Offline', specialties:['Pediatrics'] },
+    { id:'loc-seed-6', title:'Oncology Frontiers Conference', format:'Hybrid', specialties:['Oncology'] }
+  ];
+  function loadPrograms(){
+    let programs=[]; try{ programs=JSON.parse(localStorage.getItem('cmePrograms')||'[]'); }catch(e){}
+    let changed=false;
+    SEED.forEach(s=>{ if(!programs.some(p=>p.id===s.id)){ programs.push(s); changed=true; } });
+    if(changed){ try{ localStorage.setItem('cmePrograms', JSON.stringify(programs)); }catch(e){} }
+    return programs;
+  }
+  const PROGRAMS = loadPrograms();
+  function countFor(name){ return PROGRAMS.filter(p=>p.specialties && p.specialties.includes(name)).length; }
 
   const grid = document.getElementById('grid');
   const countLbl = document.getElementById('countLbl');
@@ -141,12 +161,14 @@
     q = (q||'').trim().toLowerCase();
     const rows = specs.filter(s=>!q || s.n.toLowerCase().includes(q));
     countLbl.textContent = rows.length + (q ? ' match'+(rows.length===1?'':'es') : ' specialties');
-    grid.innerHTML = rows.length ? rows.map(s=>`
-      <a class="srow" href="speakers.html?type=specialty&specialty=${encodeURIComponent(s.n)}">
+    grid.innerHTML = rows.length ? rows.map(s=>{
+      const c = countFor(s.n);
+      return `<a class="srow" href="cme-specialty.html?specialty=${encodeURIComponent(s.n)}">
         <span class="si">${s.i || esc(s.n.charAt(0))}</span>
-        <div class="sm"><div class="sn">${esc(s.n)}</div><div class="sc">${s.c} CMEs</div></div>
+        <div class="sm"><div class="sn">${esc(s.n)}</div><div class="sc">${c} CME${c!==1?'s':''}</div></div>
         <span class="chev"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg></span>
-      </a>`).join('') : `<div class="empty">No specialty matches "${esc(q)}".</div>`;
+      </a>`;
+    }).join('') : `<div class="empty">No specialty matches "${esc(q)}".</div>`;
   }
   render('');
   document.getElementById('specSearch').addEventListener('input', e=>render(e.target.value));
