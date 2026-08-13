@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Activity — DocSynapse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  [hidden]{display:none !important;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} .topbar{padding-top:max(6px,env(safe-area-inset-top));} }
+
+  .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1);}
+  .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{flex:1;min-width:0;font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:14px 18px 22px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .pa-tabs{display:flex;gap:18px;border-bottom:1px solid var(--line);margin-bottom:14px;}
+  .pa-tabs button{background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;min-height:44px;position:relative;cursor:pointer;}
+  .pa-tabs button.active{color:var(--brand);}
+  .pa-tabs button.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;background:var(--brand);border-radius:3px;}
+
+  .post-tag{display:inline-block;font-size:11px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:20px;}
+  .pa-post{background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px;margin-bottom:11px;}
+  .pa-post .by{font-size:10.5px;color:var(--muted);font-weight:700;margin-bottom:6px;}
+  .pa-post .pb{font-size:11.5px;line-height:1.55;color:var(--slate-700);}
+  .pa-post img.m{width:100%;border-radius:11px;margin-top:10px;max-height:220px;object-fit:cover;}
+  .pa-post .pm{font-size:11px;color:var(--muted);margin-top:10px;display:flex;gap:12px;}
+  .pa-cmt{background:var(--soft2);border-left:3px solid var(--brand);border-radius:14px;padding:11px 13px;margin-bottom:10px;}
+  .pa-cmt .ct{font-size:11.5px;color:var(--ink);line-height:1.5;}
+  .pa-cmt .cm{font-size:11px;color:var(--muted);margin-top:5px;}
+  .pa-empty{text-align:center;font-size:11px;color:var(--muted);padding:30px 10px;}
+
+  /* hide-mock-statusbar */ .statusbar{display:none !important;}
+
+  /* ---------- V Theme (vibrant) — lift flat tinted surfaces into shadowed cards ---------- */
+  /* Scoped to [data-theme="vibrant"] only — NOT [data-theme="blue"] ("Ocean"), which shares
+     the same brand blue but intentionally keeps the flat Classic-style look. */
+  [data-theme="vibrant"] .pa-post{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+  [data-theme="vibrant"] .pa-cmt{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--brand);box-shadow:0 4px 12px -12px rgba(30,20,60,.14);}
+</style>
+  <link rel="stylesheet" href="global.css?v=10">
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <span class="tt">My Activity</span>
+  </div>
+
+  <div class="scroll">
+    <div class="pa-tabs rise" id="actTabs">
+      <button data-pt="posts">Posts</button>
+      <button data-pt="liked">Liked</button>
+      <button data-pt="comments">Comments</button>
+    </div>
+    <div id="paPosts" class="rise"><div class="pa-empty">Loading…</div></div>
+    <div id="paLiked" class="rise" hidden></div>
+    <div id="paComments" class="rise" hidden></div>
+  </div>
+
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='profile.html'; });
+
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const I = { docf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>' };
+  function mediaInPost(m){ if(!m) return ''; if(m.type==='image') return `<img class="m" src="${m.data}" alt="">`; if(m.type==='video') return `<video class="m" src="${m.data}" controls preload="metadata"></video>`; if(m.type==='audio') return `<audio class="m" src="${m.data}" controls preload="metadata"></audio>`; return `<div class="att">${I.docf}${esc(m.name||'')}</div>`; }
+
+  function idbOpen(){ return new Promise((res,rej)=>{ const r=indexedDB.open('medhubFeed',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+  async function idbGet(k){ try{ const db=await idbOpen(); return await new Promise(res=>{ const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(undefined); }); }catch(e){ return undefined; } }
+
+  const ME_NAME = (function(){ try{ return localStorage.getItem('docName') || 'Dr. Viswa Swaraj'; }catch(e){ return 'Dr. Viswa Swaraj'; } })();
+
+  const qp = new URLSearchParams(location.search);
+  let tab = qp.get('tab') || 'posts';
+  if(!['posts','liked','comments'].includes(tab)) tab = 'posts';
+
+  function showTab(t){
+    tab = t;
+    document.querySelectorAll('#actTabs button').forEach(x=>x.classList.toggle('active', x.dataset.pt===t));
+    document.getElementById('paPosts').hidden = t!=='posts';
+    document.getElementById('paLiked').hidden = t!=='liked';
+    document.getElementById('paComments').hidden = t!=='comments';
+  }
+  document.getElementById('actTabs').addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    showTab(b.dataset.pt);
+  });
+
+  async function load(){
+    const store = await idbGet('posts3');
+    const posts = store && Array.isArray(store.posts) ? store.posts : (Array.isArray(store) ? store : []);
+    const rsum = p => Object.values(p.rc||{}).reduce((s,v)=>s+v,0);
+
+    const mine = posts.filter(p=>p.name===ME_NAME);
+    const liked = posts.filter(p=>p.my && p.name!==ME_NAME);
+    const cmts = []; posts.forEach(p=>(p.comments||[]).forEach(c=>{ if(c.name===ME_NAME) cmts.push({c,p}); }));
+
+    const postCard = p => `<div class="pa-post">${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}<div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}<div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div></div>`;
+    const likedCard = p => `<div class="pa-post"><div class="by">By ${esc(p.name)}</div>${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}<div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}<div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div></div>`;
+
+    document.getElementById('paPosts').innerHTML = mine.length ? mine.map(postCard).join('') : `<div class="pa-empty">You haven't posted anything yet.</div>`;
+    document.getElementById('paLiked').innerHTML = liked.length ? liked.map(likedCard).join('') : `<div class="pa-empty">You haven't liked any posts yet.</div>`;
+    document.getElementById('paComments').innerHTML = cmts.length ? cmts.map(({c,p})=>`<div class="pa-cmt"><div class="ct">${esc(c.text)}</div><div class="cm">on ${esc(p.name)}’s post · ${esc(c.time)}</div></div>`).join('') : `<div class="pa-empty">You haven't commented on anything yet.</div>`;
+
+    showTab(tab);
+  }
+  load();
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>

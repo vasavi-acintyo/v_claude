@@ -57,6 +57,10 @@
   .req .acc:hover{background:var(--brand-dark);}
   .req .ign{background:var(--chip);color:var(--muted);}
   .req .ign:hover{color:var(--ink);background:var(--line);}
+  .req .pendtag{font-size:8.5px;font-weight:800;color:var(--gold);background:rgba(176,137,79,.14);padding:4px 9px;border-radius:20px;white-space:nowrap;flex:0 0 auto;}
+  .req .wd{border:none;cursor:pointer;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;background:var(--chip);color:var(--muted);}
+  .req .wd svg{width:14px;height:14px;}
+  .req .wd:hover{color:#c0464a;background:rgba(224,106,106,.12);}
   .req.gone{opacity:0;transform:translateX(30px);transition:all .3s ease;}
 
   /* suggested horizontal */
@@ -88,6 +92,13 @@
   .grp .dots{width:32px;height:32px;border-radius:50%;border:none;background:none;color:var(--muted);display:grid;place-items:center;flex:0 0 auto;cursor:pointer;}
   .grp .dots:hover{background:var(--chip);color:var(--brand);}
   .grp .dots svg{width:17px;height:17px;}
+  .grp .ginv-acts{display:flex;align-items:center;gap:6px;flex:0 0 auto;}
+  .grp .gacc,.grp .gign{border:none;cursor:pointer;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;}
+  .grp .gacc svg,.grp .gign svg{width:15px;height:15px;}
+  .grp .gacc{background:var(--brand);color:#fff;}
+  .grp .gacc:hover{background:var(--brand-dark);}
+  .grp .gign{background:var(--chip);color:var(--muted);}
+  .grp .gign:hover{color:var(--ink);background:var(--line);}
   .grp-empty{text-align:center;color:var(--muted);font-size:11px;padding:24px 0;}
 
   /* groups sub-tabs */
@@ -163,15 +174,6 @@
   .mrow .rt{display:flex;flex-direction:column;align-items:flex-end;gap:6px;flex:0 0 auto;}
   .mrow .tm{font-size:8.5px;color:var(--muted);}
   .mrow .ud{width:8px;height:8px;border-radius:50%;background:var(--brand);}
-
-  /* ---- alerts ---- */
-  .arow{display:flex;align-items:center;gap:12px;padding:13px 0;border-bottom:1px solid var(--line);}
-  .arow .ai{width:40px;height:40px;border-radius:12px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;}
-  .arow .ai svg{width:19px;height:19px;}
-  .arow .m{flex:1;min-width:0;}
-  .arow .at{font-size:11px;line-height:1.45;color:var(--slate-700);}
-  .arow .at b{color:var(--ink);font-weight:800;}
-  .arow .aw{font-size:8.5px;color:var(--muted);margin-top:3px;}
 
   /* ---- Feed composer + posts ---- */
   .composer{display:flex;align-items:center;gap:11px;background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:11px 13px;cursor:pointer;transition:border-color .18s, transform .13s, opacity .13s;}
@@ -356,12 +358,12 @@
 
   /* ===== PASS-A: touch feedback + press states ===== */
   .icon-btn,.tb-ic,.tb-av,.pmore,.cmt-add-inline button,.cmt-add button,.comp-head .x,.cm-prev .rm,.mm-bar button,
-  .req .acc,.req .ign,.ntab,.ctag,.comp-post,.comp-foot .tool,.opt-item,.pa-tabs button,.p-actions button,
+  .req .acc,.req .ign,.req .wd,.grp .gacc,.grp .gign,.ntab,.ctag,.comp-post,.comp-foot .tool,.opt-item,.pa-tabs button,.p-actions button,
   .react-pop button,.ci .cact button,.sec a,.grp .go,.req,.scard,.mrow,.pm-pdf,.cmt-peek,.navitem
   { transition:transform .13s ease, opacity .13s ease; }
   /* buttons / chips / tabs / icon-buttons */
   .icon-btn:active,.tb-ic:active,.pmore:active,.cmt-add-inline button:active,.cmt-add button:active,.comp-head .x:active,
-  .cm-prev .rm:active,.mm-bar button:active,.req .acc:active,.req .ign:active,.scard button:active,.sp-act:active,
+  .cm-prev .rm:active,.mm-bar button:active,.req .acc:active,.req .ign:active,.req .wd:active,.grp .gacc:active,.grp .gign:active,.scard button:active,.sp-act:active,
   .ntab:active,.ctag:active,.comp-post:active,.comp-foot .tool:active,.opt-item:active,.pa-tabs button:active,
   .p-actions button:active,.react-pop button:active,.ci .cact button:active,.sec a:active,.grp .go:active
   { transform:scale(.94); }
@@ -423,13 +425,6 @@
   [data-theme="vibrant"] .startpost:hover{box-shadow:0 14px 26px -14px rgba(30,20,60,.24);}
   [data-theme="vibrant"] .composer{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
   [data-theme="vibrant"] .composer:hover{box-shadow:0 12px 22px -14px rgba(30,20,60,.22);}
-
-  [data-theme="vibrant"] .arow:nth-child(6n+1) .ai{color:#2563eb;background:#dbeafe;}
-  [data-theme="vibrant"] .arow:nth-child(6n+2) .ai{color:#e11d48;background:#ffe4e6;}
-  [data-theme="vibrant"] .arow:nth-child(6n+3) .ai{color:#d97706;background:#fef3c7;}
-  [data-theme="vibrant"] .arow:nth-child(6n+4) .ai{color:#7c3aed;background:#ede9fe;}
-  [data-theme="vibrant"] .arow:nth-child(6n+5) .ai{color:#0d9488;background:#ccfbf1;}
-  [data-theme="vibrant"] .arow:nth-child(6n+6) .ai{color:#0891b2;background:#cffafe;}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
 </head>
@@ -457,7 +452,6 @@
     <div class="ntabs rise" id="ntabs">
       <button class="ntab active" data-p="net">Grow</button>
       <button class="ntab" data-p="groups">Groups</button>
-      <button class="ntab" data-p="alerts">Alerts</button>
     </div>
 
     <!-- FEED (moved to post.html) -->
@@ -484,6 +478,8 @@
       </div>
       <div class="sec2">Invitations <b id="invCount">3</b></div>
       <div class="reqs" id="reqs"></div>
+      <div class="sec2">Sent <b id="sentCount">0</b></div>
+      <div class="reqs" id="sentReqs"></div>
       <div class="sec2">People you may know</div>
       <div class="sugg" id="sugg"></div>
     </div>
@@ -493,6 +489,7 @@
       <div class="grp-top rise" style="margin-top:16px">
         <div class="grp-seg" id="grpSeg">
           <button class="on" data-gt="mine">Your groups</button>
+          <button data-gt="invited">Invited</button>
           <button data-gt="requested">Requested</button>
           <button data-gt="discover">Discover</button>
         </div>
@@ -501,6 +498,7 @@
         </button>
       </div>
       <div class="groups" id="groups"></div>
+      <div class="groups" id="invitedGroups" hidden></div>
       <div class="groups" id="requestedGroups" hidden></div>
       <div class="groups" id="discoverGroups" hidden></div>
     </div>
@@ -512,12 +510,6 @@
         <h2>Messages</h2>
       </div>
       <div class="msg-list" id="msgs" style="margin-top:10px"></div>
-    </div>
-
-    <!-- ALERTS -->
-    <div class="panel" data-panel="alerts" hidden>
-      <div class="sec2" style="margin-top:16px">Alerts</div>
-      <div class="alert-list" id="alerts" style="margin-top:8px"></div>
     </div>
   </div>
 
@@ -658,6 +650,39 @@
     if(card){ card.classList.add('gone'); setTimeout(()=>{ requests.splice(idx,1); renderReqs(); }, 280); }
     else { requests.splice(idx,1); renderReqs(); }
   }
+
+  // ---- Sent (outgoing connection requests you've sent, awaiting a response) ----
+  let sentRequests = [];
+  function renderSent(){
+    document.getElementById('sentReqs').innerHTML = sentRequests.map((r,i)=>`
+      <div class="req sent" data-i="${i}">
+        <img src="${r.img}" alt="">
+        <div class="m"><div class="nm">${r.name}</div><div class="sp">${r.spec}<span class="dot">·</span><span class="mut">${r.mutual}</span></div></div>
+        <div class="acts">
+          <span class="pendtag">Pending</span>
+          <button class="wd" data-wd="${i}" aria-label="Withdraw request"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        </div>
+      </div>`).join('') || `<div style="color:var(--muted);font-size:11px;padding:8px 2px">No sent requests yet — connect with someone below.</div>`;
+    const sc=document.getElementById('sentCount'); if(sc) sc.textContent = sentRequests.length;
+  }
+  function markSentByName(name, on){
+    // keep the "+ Connect" card, the profile sheet button, and the Sent list all in sync
+    if(on){ if(!sentRequests.some(r=>r.name===name)){ const p=suggested.find(s=>s.name===name); if(p) sentRequests.push(p); } }
+    else{ sentRequests = sentRequests.filter(r=>r.name!==name); }
+    renderSent();
+    document.querySelectorAll('#sugg [data-connect]').forEach(b=>{
+      const card=b.closest('.scard'); const p=suggested[+card.dataset.si];
+      if(p && p.name===name){ b.textContent = on?'Requested':'+ Connect'; b.classList.toggle('done', on); }
+    });
+  }
+  document.getElementById('sentReqs').addEventListener('click', e=>{
+    const wd=e.target.closest('[data-wd]');
+    if(wd){ const r=sentRequests[+wd.dataset.wd]; if(!r) return; toast('Request withdrawn'); markSentByName(r.name, false); return; }
+    // avatar or row → open full profile
+    const row=e.target.closest('.req'); if(row) openProfile(sentRequests[+row.dataset.i], 'sent', +row.dataset.i);
+  });
+  renderSent();
+
   document.getElementById('reqs').addEventListener('click', e=>{
     const acc=e.target.closest('[data-acc]'), ign=e.target.closest('[data-ign]');
     if(acc){ const i=+acc.dataset.acc; toast('Connected with '+requests[i].name.replace('Dr. ','')); acceptRequest(i); return; }
@@ -693,14 +718,26 @@
     </div>`).join('');
   document.getElementById('sugg').addEventListener('click', e=>{
     const b=e.target.closest('[data-connect]');
-    if(b){ if(b.classList.contains('done')){ b.textContent='+ Connect'; b.classList.remove('done'); toast('Request withdrawn'); } else { b.textContent='Requested'; b.classList.add('done'); toast('Connection requested'); } return; }
+    if(b){
+      const card=b.closest('.scard'), p=suggested[+card.dataset.si];
+      const on=!b.classList.contains('done');
+      markSentByName(p.name, on);
+      toast(on?'Connection requested':'Request withdrawn');
+      return;
+    }
     const card=e.target.closest('.scard');
     if(card) openProfile(suggested[+card.dataset.si], 'suggest', +card.dataset.si);
   });
 
+  // test data — a couple of requests you've already sent, so the Sent screen isn't empty on first look
+  ['Dr. Neha Gupta','Dr. Arjun Rao'].forEach(n=>markSentByName(n, true));
+
   // ---- Groups ----
   let myCreatedGroups=[]; try{ myCreatedGroups=JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){}
-  const groups = myCreatedGroups.map(g=>({ name:g.name, members:g.members, ico:grpIco, avatar:g.avatar, reqCount:(g.joinRequests||[]).length })).concat([
+  let joinedGroups=[]; try{ joinedGroups=JSON.parse(localStorage.getItem('joinedGroups')||'[]'); }catch(e){}
+  const groups = myCreatedGroups.map(g=>({ name:g.name, members:g.members, ico:grpIco, avatar:g.avatar, reqCount:(g.joinRequests||[]).length }))
+    .concat(joinedGroups.map(g=>({ name:g.name, members:g.members, ico:grpIco })))
+    .concat([
     { name:'Indian Diabetes Forum',   members:'12.4k members', ico:grpIco },
     { name:'City Cardiology Society', members:'3.2k members',  ico:grpIco },
     { name:'Young Physicians Network', members:'8.7k members', ico:grpIco }
@@ -712,6 +749,43 @@
       : `<div class="grp-empty">You haven't joined any groups yet.</div>`;
   }
   renderMyGroups();
+
+  // ---- Invited (someone created a group and invited you to join it) ----
+  let groupInvites = [
+    { name:'Diabetes Tech & CGM Circle', members:'4.6k members', invitedBy:'Dr. Rahul Verma', img:'https://randomuser.me/api/portraits/men/22.jpg' },
+    { name:'Preventive Cardiology India', members:'7.9k members', invitedBy:'Dr. Arjun Rao', img:'https://randomuser.me/api/portraits/men/41.jpg' }
+  ];
+  function renderInvited(){
+    document.getElementById('invitedGroups').innerHTML = groupInvites.length ? groupInvites.map((g,i)=>`
+      <div class="grp" data-gi="${i}">
+        <span class="gi"><img src="${g.img}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:14px"></span>
+        <div class="m"><div class="nm">${g.name}</div><div class="sp">Invited by ${g.invitedBy} · ${g.members}</div></div>
+        <div class="ginv-acts">
+          <button class="gacc" data-gacc="${i}" aria-label="Accept invite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></button>
+          <button class="gign" data-gign="${i}" aria-label="Decline invite"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="M6 6l12 12"/></svg></button>
+        </div>
+      </div>`).join('')
+      : `<div class="grp-empty">No group invitations.</div>`;
+  }
+  renderInvited();
+  document.getElementById('invitedGroups').addEventListener('click', e=>{
+    const acc=e.target.closest('[data-gacc]'), ign=e.target.closest('[data-gign]');
+    if(acc){
+      const i=+acc.dataset.gacc, g=groupInvites[i]; if(!g) return;
+      joinedGroups.push({ name:g.name, members:g.members });
+      try{ localStorage.setItem('joinedGroups', JSON.stringify(joinedGroups)); }catch(err){}
+      groups.push({ name:g.name, members:g.members, ico:grpIco });
+      renderMyGroups();
+      groupInvites.splice(i,1); renderInvited();
+      toast('Joined '+g.name);
+      return;
+    }
+    if(ign){
+      const i=+ign.dataset.gign, g=groupInvites[i]; if(!g) return;
+      groupInvites.splice(i,1); renderInvited();
+      toast('Invitation declined');
+    }
+  });
 
   // discover groups
   const discover = [
@@ -788,6 +862,7 @@
     document.querySelectorAll('#grpSeg button').forEach(x=>x.classList.toggle('on', x===b));
     const gt=b.dataset.gt;
     document.getElementById('groups').hidden = gt!=='mine';
+    document.getElementById('invitedGroups').hidden = gt!=='invited';
     document.getElementById('requestedGroups').hidden = gt!=='requested';
     document.getElementById('discoverGroups').hidden = gt!=='discover';
   });
@@ -806,24 +881,6 @@
       <div class="rt"><span class="tm">${m.tm}</span>${m.unread?'<span class="ud"></span>':''}</div>
     </div>`).join('');
   document.getElementById('msgs').addEventListener('click', e=>{ if(e.target.closest('.mrow')) toast('Messaging coming soon'); });
-
-  // ---- Alerts / notifications ----
-  const alerts = [
-    { i:'net', t:'<b>Dr. Kavya Reddy</b> wants to connect with you.', w:'2h' },
-    { i:'like', t:'<b>Dr. Rohan Sinha</b> and 11 others liked your post.', w:'5h' },
-    { i:'chat', t:'<b>Dr. Sameer Shah</b> commented on your post.', w:'8h' },
-    { i:'cal', t:'Reminder: <b>Cardiometabolic Update 2025</b> starts in 3 days.', w:'1d' },
-    { i:'grp', t:'New advisory posted in <b>City Cardiology Society</b>.', w:'2d' }
-  ];
-  const aIco = {
-    net:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/></svg>',
-    like:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M12 21C5 15 2 12 2 8.5A4.5 4.5 0 0 1 12 5 4.5 4.5 0 0 1 22 8.5C22 12 19 15 12 21Z"/></svg>',
-    chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>',
-    cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>',
-    grp:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/></svg>'
-  };
-  document.getElementById('alerts').innerHTML = alerts.map(a=>`
-    <div class="arow"><span class="ai">${aIco[a.i]}</span><div class="m"><div class="at">${a.t}</div><div class="aw">${a.w}</div></div></div>`).join('');
 
   // ---- Sub-tab switching ----
   const panels = document.querySelectorAll('.panel');
@@ -1230,7 +1287,9 @@
       <div class="pv-actions">
         <button class="pv-btn ghost" id="pvMsg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>Message</button>
         <button class="pv-btn primary" id="pvBook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>Book</button>
-        <button class="pv-btn ghost" id="pPri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14H10"/><path d="M17 8v6M14 11h6"/></svg>Connect</button>
+        <button class="pv-btn ghost${ctx==='sent'?' done':''}" id="pPri" title="${ctx==='sent'?'Tap to withdraw':''}">${ctx==='sent'
+          ?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>Requested'
+          :'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14H10"/><path d="M17 8v6M14 11h6"/></svg>Connect'}</button>
       </div>
     `;
     { const bk=document.getElementById('pvBack'); if(bk) bk.onclick=closeProfile; }
@@ -1239,9 +1298,11 @@
     { const bkk=document.getElementById('pvBook'); if(bkk) bkk.onclick=()=>toast('Booking — coming soon'); }
     document.getElementById('pPri').onclick = ()=>{
       const b=document.getElementById('pPri');
+      if(ctx==='sent'){ markSentByName(p.name, false); toast('Request withdrawn'); closeProfile(); return; }
       if(b.classList.contains('done')) return;
       b.textContent = ctx==='request' ? '✓ Connected' : '✓ Requested'; b.classList.add('done');
       if(ctx==='request') setTimeout(()=>{ closeProfile(); acceptRequest(idx); }, 700);
+      else if(ctx==='suggest') markSentByName(p.name, true);
     };
     profBackdrop.classList.add('open'); profSheet.classList.add('open');
     profSheet.scrollTop = 0;

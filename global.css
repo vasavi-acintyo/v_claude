@@ -200,6 +200,7 @@ button, input, select, textarea, optgroup{font-family:var(--font-sans);}
 .pv-btn{flex:1;min-height:50px;border-radius:14px;font-family:inherit;font-size:var(--font-size-sm);font-weight:var(--font-weight-semibold);cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:6px;white-space:nowrap;transition:transform .16s cubic-bezier(.22,1,.36,1),background .16s,border-color .16s;} .pv-btn:active{transform:scale(.96);} .pv-btn svg{width:15px;height:15px;flex:0 0 auto;}
 .pv-btn.primary{flex:1.5;background:var(--brand);color:#fff;border:none;box-shadow:0 12px 24px -12px var(--brand);} .pv-btn.primary:hover{background:var(--brand-dark);}
 .pv-btn.ghost{background:var(--card);color:var(--brand);border:1.5px solid var(--line);} .pv-btn.ghost:hover{border-color:var(--brand);}
+.pv-btn.ghost.done{background:rgba(176,137,79,.14);color:var(--gold);border-color:transparent;} .pv-btn.ghost.done:hover{border-color:transparent;}
 
 /* bento grid variant for the profile preview */
 .p-bento{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
