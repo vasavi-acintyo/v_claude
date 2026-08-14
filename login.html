@@ -152,6 +152,16 @@
   [data-theme="vibrant"] .sec-label::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--brand);}
 
   [data-theme="vibrant"] .exp-item{box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+
+  /* profile photo upload (registration) */
+  .avatar-upload{position:relative;width:88px;height:88px;margin:2px auto 8px;}
+  .au-circle{width:88px;height:88px;border-radius:50%;background:var(--chip);border:1px solid var(--line);display:grid;place-items:center;overflow:hidden;color:var(--muted);}
+  .au-circle img{width:100%;height:100%;object-fit:cover;}
+  .au-circle svg{width:36px;height:36px;}
+  .au-cam{position:absolute;right:-2px;bottom:-2px;width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;border:3px solid var(--card);display:grid;place-items:center;cursor:pointer;padding:0;}
+  .au-cam:active{transform:scale(.9);}
+  .au-cam svg{width:15px;height:15px;}
+  .au-hint{text-align:center;font-size:10.5px;color:var(--muted);font-weight:700;margin:0 0 16px;}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
 </head>
@@ -266,6 +276,14 @@
           <span class="vic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
           <div><div class="vt">Identity verified</div><div class="vs">Matched in the National Medical Register</div></div>
         </div>
+
+        <div class="avatar-upload" id="avatarUpload">
+          <div class="au-circle" id="auCircle"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 20v-1.4A4.6 4.6 0 0 1 9.6 14h4.8a4.6 4.6 0 0 1 4.6 4.6V20"/></svg></div>
+          <button type="button" class="au-cam" id="auCamBtn" aria-label="Upload profile photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.2"/></svg></button>
+          <input type="file" id="auInput" accept="image/*" hidden>
+        </div>
+        <div class="au-hint">Add a profile photo (optional)</div>
+
         <div class="prefill-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>Prefilled from the medical register</div>
         <div class="field locked"><label>Year of registration</label><div class="inp"><input id="pfYear" readonly></div></div>
         <div class="field locked"><label>Registration number</label><div class="inp"><input id="pfReg" readonly></div></div>
@@ -536,6 +554,19 @@
   [regEmail,regPw].forEach(el=>el.addEventListener('input', validateCreate));
   document.getElementById('regPwEye').addEventListener('click', ()=>{ regPw.type = regPw.type==='password'?'text':'password'; });
 
+  // profile photo upload
+  const auCircle=document.getElementById('auCircle'), auInput=document.getElementById('auInput'), auCamBtn=document.getElementById('auCamBtn');
+  let profilePhoto=null;
+  auCamBtn.addEventListener('click', ()=>auInput.click());
+  auInput.addEventListener('change', ()=>{
+    const file=auInput.files && auInput.files[0];
+    if(!file) return;
+    if(!file.type.startsWith('image/')){ toast('Please choose an image file'); auInput.value=''; return; }
+    const reader=new FileReader();
+    reader.onload=()=>{ profilePhoto=reader.result; auCircle.innerHTML='<img src="'+reader.result+'" alt="">'; };
+    reader.readAsDataURL(file);
+  });
+
   // deviation: doctor flags that the register details don't match theirs
   const mismatchToggle=document.getElementById('mismatchToggle'), mismatchBox=document.getElementById('mismatchBox'), mismatchDetail=document.getElementById('mismatchDetail');
   let regMismatch=false;
@@ -554,6 +585,7 @@
       localStorage.setItem('docFather',  document.getElementById('pfFather').value);
       localStorage.setItem('docName',    document.getElementById('pfName').value);
       localStorage.setItem('docUser',    regEmail.value.trim());
+      if(profilePhoto) localStorage.setItem('docAvatar', profilePhoto); else localStorage.removeItem('docAvatar');
       // registration deviation: go with the register data, flag for daily reminder
       localStorage.setItem('docRegMismatch', regMismatch ? '1' : '0');
       if(regMismatch){ localStorage.setItem('docRegDeviation', mismatchDetail.value.trim()); localStorage.removeItem('docRegReminderDate'); }

@@ -856,8 +856,16 @@
     if(seeAll) seeAll.addEventListener('click', e=>{ e.preventDefault(); openDocs(); });
   })();
 
-  // ---- Notifications bell (no dedicated page yet → acknowledge with a toast) ----
-  document.getElementById('bellBtn').addEventListener('click', ()=>toast('3 new notifications'));
+  // ---- Notifications bell ----
+  document.getElementById('bellBtn').addEventListener('click', ()=>location.href='notifications.html');
+  (function(){
+    try{
+      const list = JSON.parse(localStorage.getItem('notifications')||'null');
+      const unread = Array.isArray(list) ? list.filter(n=>n.unread).length : 3; // seed default before notifications.html has ever run
+      const dot = document.querySelector('#bellBtn .ndot');
+      if(dot) dot.hidden = unread===0;
+    }catch(e){}
+  })();
 
   // Registration reconciliation: persistent banner + once-per-day reminder until records match
   (function regRemind(){

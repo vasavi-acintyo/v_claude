@@ -108,7 +108,8 @@
   .tb-search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--muted);}
   .tb-search input{width:100%;min-height:34px;height:34px;background:var(--chip);border:1px solid transparent;border-radius:17px;padding:0 12px 0 33px;font-size:11px;font-family:inherit;color:var(--ink);}
   .tb-search input::placeholder{color:var(--muted);} .tb-search input:focus{outline:none;border-color:var(--brand);}
-  .tb-ic{width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;}
+  .tb-ic{width:44px;height:44px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;position:relative;}
+  .tb-ic .ndot{position:absolute;top:7px;right:8px;width:7px;height:7px;background:var(--brand);border:2px solid var(--card);border-radius:50%;}
   .tb-ic#createPost{background:var(--brand);border-color:var(--brand);color:#fff;}
   .tb-ic svg{width:19px;height:19px;}
   .startpost{margin-top:14px;background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px 14px;transition:border-color .18s;}
@@ -409,6 +410,7 @@
     <!-- top bar -->
     <div class="feedbar rise">
       <div class="feed-title">Post</div>
+      <button class="tb-ic" id="bellBtn" aria-label="Notifications"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 8-3 8h18s-3-1-3-8"/><path d="M13.7 21a2 2 0 0 1-3.4 0"/></svg><span class="ndot" id="bellDot"></span></button>
       <button class="tb-ic" id="createPost" aria-label="Create post"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg></button>
       <a class="tb-prof" href="profile.html" aria-label="My profile"><img class="tb-av" src="https://randomuser.me/api/portraits/women/79.jpg" alt=""></a>
     </div>
@@ -990,6 +992,15 @@
   function openComp(){ compText.value=''; compTag=null; pendingMedia=null; compPrev.innerHTML=''; compPost.disabled=true; document.querySelectorAll('.ctag').forEach(x=>x.classList.remove('on')); compBackdrop.classList.add('open'); compSheet.classList.add('open'); setTimeout(()=>compText.focus(),300); }
   function closeComp(){ compBackdrop.classList.remove('open'); compSheet.classList.remove('open'); }
   document.getElementById('createPost').addEventListener('click', openComp);
+  document.getElementById('bellBtn').addEventListener('click', ()=>location.href='notifications.html');
+  (function(){
+    try{
+      const list = JSON.parse(localStorage.getItem('notifications')||'null');
+      const unread = Array.isArray(list) ? list.filter(n=>n.unread).length : 3;
+      const dot = document.getElementById('bellDot');
+      if(dot) dot.hidden = unread===0;
+    }catch(e){}
+  })();
   document.getElementById('compClose').addEventListener('click', closeComp);
   compBackdrop.addEventListener('click', closeComp);
   compText.addEventListener('input', ()=>{ compPost.disabled = !(compText.value.trim()||pendingMedia); });
