@@ -411,6 +411,40 @@
       </div>
     </div>
 
+    <!-- LOGIN WITH OTP flow -->
+    <div id="otpLoginFlow" class="rise" hidden>
+      <div class="steps"><span class="step active" id="ol1"></span><span class="step" id="ol2"></span></div>
+
+      <!-- OL1 · mobile number -->
+      <div class="wstep" data-olstep="1">
+        <div class="wtitle">Sign in with OTP</div>
+        <div class="wsub">Enter your registered mobile number and we'll send a 6-digit code to sign you in.</div>
+        <div class="field">
+          <label for="olMob">Mobile number</label>
+          <div class="inp"><input id="olMob" placeholder="+91 98765 43210" inputmode="tel"></div>
+        </div>
+        <button class="btn btn-primary" id="olSend" type="button" disabled>Send OTP</button>
+        <button class="link-btn" id="olBack1" type="button">← Back to sign in</button>
+      </div>
+
+      <!-- OL2 · OTP -->
+      <div class="wstep" data-olstep="2" hidden>
+        <div class="wtitle">Enter verification code</div>
+        <div class="wsub">Enter the 6-digit code sent to <b id="olDest">your mobile</b>.</div>
+        <div class="otp-row" id="olOtpRow">
+          <input inputmode="numeric" maxlength="1" aria-label="Digit 1">
+          <input inputmode="numeric" maxlength="1" aria-label="Digit 2">
+          <input inputmode="numeric" maxlength="1" aria-label="Digit 3">
+          <input inputmode="numeric" maxlength="1" aria-label="Digit 4">
+          <input inputmode="numeric" maxlength="1" aria-label="Digit 5">
+          <input inputmode="numeric" maxlength="1" aria-label="Digit 6">
+        </div>
+        <div class="otp-meta"><span>Didn't get the code?</span><button id="olResend" type="button" disabled>Resend in <b>30s</b></button></div>
+        <button class="btn btn-primary" id="olVerify" type="button" disabled>Verify &amp; continue</button>
+        <button class="link-btn" id="olBack2" type="button">← Change number</button>
+      </div>
+    </div>
+
     <div class="foot rise">By continuing you agree to our <a href="#">Terms</a> &amp; <a href="#">Privacy Policy</a>.<br>DocSynapse · Mysaa Life Health Care © 2026</div>
   </div>
 
@@ -440,6 +474,7 @@
 
   const tabLogin=document.getElementById('tabLogin'), tabReg=document.getElementById('tabReg');
   const loginForm=document.getElementById('loginForm'), regWizard=document.getElementById('regWizard'), resetFlow=document.getElementById('resetFlow');
+  const otpLoginFlow=document.getElementById('otpLoginFlow');
   const acct=document.getElementById('acct'), pw=document.getElementById('pw'), loginSubmit=document.getElementById('loginSubmit');
 
   function setMode(m){
@@ -447,6 +482,7 @@
     tabLogin.classList.toggle('active', login);
     tabReg.classList.toggle('active', !login);
     resetFlow.hidden = true;
+    otpLoginFlow.hidden = true;
     loginForm.hidden = !login;
     regWizard.hidden = login;
     if(!login) gotoStep(1);
@@ -473,7 +509,7 @@
   [acct,pw].forEach(el=>el.addEventListener('input', validateLogin));
   document.getElementById('pwEye').addEventListener('click', ()=>{ pw.type = pw.type==='password'?'text':'password'; });
   document.querySelector('#forgot button').addEventListener('click', ()=>openReset());
-  document.getElementById('otp').addEventListener('click', ()=>toast('OTP sent to your mobile'));
+  document.getElementById('otp').addEventListener('click', ()=>openOtpLogin());
   loginSubmit.addEventListener('click', ()=>{
     if(loginSubmit.disabled) return;
     let nm=localStorage.getItem('docName')||'';
@@ -733,6 +769,37 @@
     toast('Password reset successful · sign in');
     acct.value = rsAcct.value.trim(); pw.value=''; validateLogin();
     setMode('login');
+  });
+
+  // ---- Login with OTP flow ----
+  const olMob=document.getElementById('olMob'), olSend=document.getElementById('olSend'), olVerify=document.getElementById('olVerify'), olResend=document.getElementById('olResend');
+  const olOtp = wireOtp(document.getElementById('olOtpRow'), ()=>{ olVerify.disabled = olOtp.value().length!==6; });
+
+  function gotoOLStep(n){
+    otpLoginFlow.querySelectorAll('.wstep').forEach(s=>{ s.hidden = (+s.dataset.olstep !== n); });
+    ['ol1','ol2'].forEach((id,i)=>{ const el=document.getElementById(id); el.classList.toggle('active', i===n-1); el.classList.toggle('done', i<n-1); });
+  }
+  function openOtpLogin(){
+    loginForm.hidden=true; regWizard.hidden=true; resetFlow.hidden=true; otpLoginFlow.hidden=false;
+    olMob.value=''; olSend.disabled=true;
+    gotoOLStep(1);
+  }
+  olMob.addEventListener('input', ()=>{ olSend.disabled = olMob.value.replace(/\D/g,'').length<10; });
+  document.getElementById('olBack1').addEventListener('click', ()=>setMode('login'));
+  document.getElementById('olBack2').addEventListener('click', ()=>gotoOLStep(1));
+
+  olSend.addEventListener('click', ()=>{
+    if(olSend.disabled) return;
+    document.getElementById('olDest').textContent = maskMobile(olMob.value.trim());
+    olOtp.clear(); olVerify.disabled=true;
+    gotoOLStep(2); countdown(olResend); olOtp.focus();
+    toast('OTP sent to '+maskMobile(olMob.value.trim()));
+  });
+  olResend.addEventListener('click', ()=>{ if(!olResend.disabled){ countdown(olResend); toast('OTP resent'); } });
+  olVerify.addEventListener('click', ()=>{
+    if(olVerify.disabled) return;
+    let nm=''; try{ nm=localStorage.getItem('docName')||''; }catch(e){}
+    finish(nm||'Doctor', olMob.value.trim(), 'Welcome back');
   });
 
   setMode('login'); validateLogin();
