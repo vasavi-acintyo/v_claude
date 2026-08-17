@@ -712,7 +712,23 @@
     { id:5, name:'Dr. Rohan Sinha', spec:'Hypertension · AIIMS', img:'https://randomuser.me/api/portraits/men/45.jpg', time:'1d',
       body:'Looking for a nephrology referral in Bengaluru for a complex CKD case with resistant HTN. Please DM.', tag:'Referral',
       rc:{like:12,love:3}, my:null, shares:2,
-      comments:[{name:'Dr. Neha Gupta',img:'https://randomuser.me/api/portraits/women/12.jpg',text:'Happy to help — sending you a message.',time:'20h',likes:1,liked:false}] }
+      comments:[{name:'Dr. Neha Gupta',img:'https://randomuser.me/api/portraits/women/12.jpg',text:'Happy to help — sending you a message.',time:'20h',likes:1,liked:false}] },
+    // ---- my own posts (general + case types) — seeds "My Activity" for the signed-in doctor ----
+    { id:6, name:ME.name, spec:ME.spec, img:ME.img, time:'3h',
+      body:'Grateful to everyone who joined today’s journal club on GLP-1 receptor agonists in cardiometabolic disease. Great discussion on the cardiovascular outcome trials 👏', tag:'',
+      rc:{like:14,celebrate:2}, my:null, shares:1,
+      comments:[{name:'Dr. Priya Nair',img:'https://randomuser.me/api/portraits/women/44.jpg',text:'Wish I could’ve joined — please share the slides!',time:'2h',likes:1,liked:false}] },
+    { id:7, name:ME.name, spec:ME.spec, img:ME.img, time:'now',
+      body:'Seeking opinions on this case 👋<br>Patient: 58 y · Male<br>Presentation: Uncontrolled T2DM with early CKD — poorly controlled type 2 diabetes (HbA1c 9.8%) with rising creatinine (1.6). Requesting endocrine review for insulin optimisation and CKD co-management. — No patient-identifying information shared.', tag:'Case · Endocrinology',
+      rc:{}, my:null, shares:0, comments:[] },
+    { id:8, name:ME.name, spec:ME.spec, img:ME.img, time:'1d',
+      body:'What’s everyone’s preferred first-line agent for a treatment-naive 45M with T2DM, BMI 31 and no cardiorenal disease yet? Leaning metformin + lifestyle, curious about early combination approaches.', tag:'Question',
+      rc:{like:9,insightful:3}, my:null, shares:0,
+      comments:[{name:'Dr. Vijay Menon',img:'https://randomuser.me/api/portraits/men/76.jpg',text:'We’ve moved to early combination therapy for most of these patients now.',time:'20h',likes:2,liked:false}] },
+    { id:9, name:ME.name, spec:ME.spec, img:ME.img, time:'2d',
+      body:'Seeking a second opinion on this case 🙏<br>Patient: 64 y · Female<br>Presentation: Palpitations with intermittent chest tightness, ECG shows non-specific ST changes, troponin borderline. Considering stress echo vs CT coronary angiogram next. — No patient-identifying information shared.', tag:'Case · Cardiology',
+      rc:{like:4}, my:null, shares:0,
+      comments:[{name:'Dr. Arvind Kumar',img:'https://randomuser.me/api/portraits/men/32.jpg',text:'I’d go with CT coronary angiogram first given the borderline troponin.',time:'1d',likes:1,liked:false}] }
   ];
 
   // ---- generate ~95 more sample posts (total ~100) ----
@@ -787,7 +803,7 @@
   async function idbSet(k,v){ try{ const db=await idbOpen(); await new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }catch(e){} }
   async function idbGet(k){ try{ const db=await idbOpen(); return await new Promise(res=>{ const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(undefined); }); }catch(e){ return undefined; } }
   let posts = [];
-  const SEED_V = 4;                       // bump to force a reseed
+  const SEED_V = 5;                       // bump to force a reseed
   function saveFeed(){ idbSet(IDB_KEY, {v:SEED_V, posts}); }
 
   const feedEl = document.getElementById('feed');

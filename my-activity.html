@@ -27,7 +27,8 @@
   .pa-tabs button.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;background:var(--brand);border-radius:3px;}
 
   .post-tag{display:inline-block;font-size:11px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:20px;}
-  .pa-post{background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px;margin-bottom:11px;}
+  .pa-post{background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px;margin-bottom:11px;position:relative;}
+  .pa-post.mine{padding-right:42px;}
   .pa-post .by{font-size:10.5px;color:var(--muted);font-weight:700;margin-bottom:6px;}
   .pa-post .pb{font-size:11.5px;line-height:1.55;color:var(--slate-700);}
   .pa-post img.m{width:100%;border-radius:11px;margin-top:10px;max-height:220px;object-fit:cover;}
@@ -36,6 +37,39 @@
   .pa-cmt .ct{font-size:11.5px;color:var(--ink);line-height:1.5;}
   .pa-cmt .cm{font-size:11px;color:var(--muted);margin-top:5px;}
   .pa-empty{text-align:center;font-size:11px;color:var(--muted);padding:30px 10px;}
+
+  /* per-post ⋯ menu (edit/delete) */
+  .pa-more{position:absolute;top:10px;right:8px;width:28px;height:28px;border:none;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:8px;}
+  .pa-more:active{background:var(--chip);}
+  .pa-more svg{width:16px;height:16px;}
+
+  .pa-backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);opacity:0;visibility:hidden;transition:opacity .3s,visibility .3s;z-index:40;}
+  .pa-backdrop.open{opacity:1;visibility:visible;}
+  .pa-sheet{position:absolute;left:0;right:0;bottom:0;z-index:41;background:var(--card);border-radius:22px 22px 0 0;
+    transform:translateY(100%);transition:transform .4s cubic-bezier(.34,1.3,.5,1);box-shadow:0 -12px 40px -12px rgba(0,0,0,.4);
+    max-height:80%;display:flex;flex-direction:column;}
+  .pa-sheet.open{transform:translateY(0);}
+  .pa-grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:10px auto 6px;flex:0 0 auto;}
+  .pa-sheet-body{padding:2px 18px calc(18px + env(safe-area-inset-bottom));overflow-y:auto;}
+  .pa-opt{width:100%;display:flex;align-items:center;gap:12px;background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);padding:14px 4px;cursor:pointer;border-bottom:1px solid var(--line);text-align:left;}
+  .pa-opt:last-child{border-bottom:none;}
+  .pa-opt svg{width:19px;height:19px;color:var(--muted);flex:0 0 auto;}
+  .pa-opt.danger{color:#ef4444;} .pa-opt.danger svg{color:#ef4444;}
+  .pa-sheet-title{font-size:15px;font-weight:800;font-family:var(--display);margin:4px 4px 14px;}
+  .pa-field{margin-bottom:12px;}
+  .pa-field label{display:block;font-size:10.5px;font-weight:800;color:var(--slate-700);margin:0 2px 7px;}
+  .pa-field textarea,.pa-field input{width:100%;background:var(--soft1);border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:12.5px;font-family:inherit;color:var(--ink);}
+  .pa-field textarea{resize:vertical;min-height:90px;}
+  .pa-field textarea:focus,.pa-field input:focus{outline:none;border-color:var(--brand);}
+  .pa-sheet-actions{display:flex;gap:10px;margin-top:4px;padding-bottom:4px;}
+  .pa-btn{flex:1;min-height:46px;border:none;border-radius:13px;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;}
+  .pa-btn.primary{background:var(--brand);color:#fff;}
+  .pa-btn.ghost{background:var(--chip);color:var(--ink);}
+  .pa-btn.danger{background:#ef4444;color:#fff;}
+  .pa-confirm p{font-size:11.5px;color:var(--muted);line-height:1.5;margin:0 4px 16px;}
+  .pa-done{text-align:center;padding:22px 10px 26px;}
+  .pa-done .ok{width:52px;height:52px;border-radius:50%;background:rgba(63,125,78,.15);color:var(--green);display:grid;place-items:center;margin:0 auto 12px;}
+  .pa-done .ok svg{width:26px;height:26px;} .pa-done b{font-size:14px;font-family:var(--display);}
 
   /* hide-mock-statusbar */ .statusbar{display:none !important;}
 
@@ -75,6 +109,12 @@
   </div>
 
   <div class="home-ind"></div>
+
+  <div class="pa-backdrop" id="paBackdrop"></div>
+  <div class="pa-sheet" id="paSheet">
+    <div class="pa-grab"></div>
+    <div class="pa-sheet-body" id="paSheetBody"></div>
+  </div>
 </div>
 
 <script>
@@ -83,11 +123,18 @@
   document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='profile.html'; });
 
   const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  const I = { docf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>' };
+  const I = {
+    docf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
+    dots:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>',
+    edit:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>',
+    trash:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6l1 14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-14"/><path d="M10 11v6M14 11v6"/></svg>',
+    ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>'
+  };
   function mediaInPost(m){ if(!m) return ''; if(m.type==='image') return `<img class="m" src="${m.data}" alt="">`; if(m.type==='video') return `<video class="m" src="${m.data}" controls preload="metadata"></video>`; if(m.type==='audio') return `<audio class="m" src="${m.data}" controls preload="metadata"></audio>`; return `<div class="att">${I.docf}${esc(m.name||'')}</div>`; }
 
   function idbOpen(){ return new Promise((res,rej)=>{ const r=indexedDB.open('medhubFeed',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
   async function idbGet(k){ try{ const db=await idbOpen(); return await new Promise(res=>{ const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(undefined); }); }catch(e){ return undefined; } }
+  async function idbSet(k,v){ try{ const db=await idbOpen(); await new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }catch(e){} }
 
   const ME_NAME = (function(){ try{ return localStorage.getItem('docName') || 'Dr. Viswa Swaraj'; }catch(e){ return 'Dr. Viswa Swaraj'; } })();
 
@@ -107,25 +154,104 @@
     showTab(b.dataset.pt);
   });
 
-  async function load(){
-    const store = await idbGet('posts3');
-    const posts = store && Array.isArray(store.posts) ? store.posts : (Array.isArray(store) ? store : []);
-    const rsum = p => Object.values(p.rc||{}).reduce((s,v)=>s+v,0);
+  let posts = [];
+  let storeMeta = { v:5 };
+  const rsum = p => Object.values(p.rc||{}).reduce((s,v)=>s+v,0);
 
+  function saveFeed(){ idbSet('posts3', { v:storeMeta.v, posts }); }
+
+  function renderAll(){
     const mine = posts.filter(p=>p.name===ME_NAME);
     const liked = posts.filter(p=>p.my && p.name!==ME_NAME);
     const cmts = []; posts.forEach(p=>(p.comments||[]).forEach(c=>{ if(c.name===ME_NAME) cmts.push({c,p}); }));
 
-    const postCard = p => `<div class="pa-post">${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}<div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}<div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div></div>`;
+    const postCard = p => `<div class="pa-post mine" data-id="${p.id}">
+        <button class="pa-more" data-more aria-label="Post options">${I.dots}</button>
+        ${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}
+        <div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}
+        <div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div>
+      </div>`;
     const likedCard = p => `<div class="pa-post"><div class="by">By ${esc(p.name)}</div>${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}<div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}<div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div></div>`;
 
     document.getElementById('paPosts').innerHTML = mine.length ? mine.map(postCard).join('') : `<div class="pa-empty">You haven't posted anything yet.</div>`;
     document.getElementById('paLiked').innerHTML = liked.length ? liked.map(likedCard).join('') : `<div class="pa-empty">You haven't liked any posts yet.</div>`;
     document.getElementById('paComments').innerHTML = cmts.length ? cmts.map(({c,p})=>`<div class="pa-cmt"><div class="ct">${esc(c.text)}</div><div class="cm">on ${esc(p.name)}’s post · ${esc(c.time)}</div></div>`).join('') : `<div class="pa-empty">You haven't commented on anything yet.</div>`;
+  }
 
+  async function load(){
+    const store = await idbGet('posts3');
+    posts = store && Array.isArray(store.posts) ? store.posts : (Array.isArray(store) ? store : []);
+    storeMeta.v = (store && typeof store.v==='number') ? store.v : 5;
+    renderAll();
     showTab(tab);
   }
   load();
+
+  // ---- Edit / delete own posts ----
+  const paBackdrop=document.getElementById('paBackdrop'), paSheet=document.getElementById('paSheet'), paSheetBody=document.getElementById('paSheetBody');
+  let menuPost=null;
+  function openSheet(){ paBackdrop.classList.add('open'); paSheet.classList.add('open'); }
+  function closeSheet(){ paBackdrop.classList.remove('open'); paSheet.classList.remove('open'); }
+  paBackdrop.addEventListener('click', closeSheet);
+
+  function showMenu(p){
+    menuPost = p;
+    paSheetBody.innerHTML = `
+      <button class="pa-opt" data-mopt="edit">${I.edit}Edit post</button>
+      <button class="pa-opt danger" data-mopt="delete">${I.trash}Delete post</button>`;
+    openSheet();
+  }
+  function showEditForm(p){
+    paSheetBody.innerHTML = `
+      <div class="pa-sheet-title">Edit post</div>
+      <div class="pa-field"><label for="paEditTag">Tag (optional)</label><input id="paEditTag" value="${esc(p.tag||'')}" placeholder="e.g. Case · Endocrinology"></div>
+      <div class="pa-field"><label for="paEditBody">Post</label><textarea id="paEditBody">${esc(p.body||'')}</textarea></div>
+      <div class="pa-sheet-actions">
+        <button class="pa-btn ghost" data-mopt="cancel">Cancel</button>
+        <button class="pa-btn primary" data-mopt="save">Save changes</button>
+      </div>`;
+    openSheet();
+    document.getElementById('paEditBody').focus();
+  }
+  function showDeleteConfirm(p){
+    paSheetBody.innerHTML = `
+      <div class="pa-sheet-title">Delete post?</div>
+      <div class="pa-confirm"><p>This removes the post from your activity permanently. This can't be undone.</p></div>
+      <div class="pa-sheet-actions">
+        <button class="pa-btn ghost" data-mopt="cancel">Cancel</button>
+        <button class="pa-btn danger" data-mopt="confirmDelete">Delete</button>
+      </div>`;
+    openSheet();
+  }
+  function showDone(msg){
+    paSheetBody.innerHTML = `<div class="pa-done"><div class="ok">${I.ok}</div><b>${esc(msg)}</b></div>`;
+    setTimeout(closeSheet, 1100);
+  }
+
+  document.getElementById('paPosts').addEventListener('click', e=>{
+    const mo=e.target.closest('[data-more]'); if(!mo) return;
+    const id=mo.closest('.pa-post').dataset.id;
+    const p=posts.find(x=>String(x.id)===id);
+    if(p) showMenu(p);
+  });
+
+  paSheetBody.addEventListener('click', e=>{
+    const b=e.target.closest('[data-mopt]'); if(!b) return;
+    const opt=b.dataset.mopt;
+    if(opt==='edit') showEditForm(menuPost);
+    else if(opt==='delete') showDeleteConfirm(menuPost);
+    else if(opt==='cancel') closeSheet();
+    else if(opt==='save'){
+      menuPost.tag = document.getElementById('paEditTag').value.trim();
+      menuPost.body = document.getElementById('paEditBody').value.trim();
+      saveFeed(); renderAll();
+      showDone('Post updated');
+    } else if(opt==='confirmDelete'){
+      posts = posts.filter(p=>p.id!==menuPost.id);
+      saveFeed(); renderAll();
+      showDone('Post deleted');
+    }
+  });
 
   (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
 </script>
