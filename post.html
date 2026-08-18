@@ -695,7 +695,7 @@
     { id:1, name:'Dr. Meera Iyer', spec:'Endocrinologist · Apollo', img:'https://randomuser.me/api/portraits/women/68.jpg', time:'2h',
       body:'Sharing my slides from today’s session on insulin resistance in T2DM. Happy to discuss the CGM data — DM me for the full deck.', tag:'CME · Diabetes',
       media:{type:'image', data:slideImg, name:'Session slide'},
-      rc:{like:38,insightful:5}, my:null, shares:6,
+      rc:{like:38,insightful:5}, my:'like', shares:6,
       comments:[{name:'Dr. Rohan Sinha',img:'https://randomuser.me/api/portraits/men/45.jpg',text:'Great session — the CGM segment was excellent.',time:'1h',likes:3,liked:false},{name:'Dr. Ananya Rao',img:'https://randomuser.me/api/portraits/women/79.jpg',text:'Thanks Meera — could you share the CGM interpretation slide?',time:'40m',likes:1,liked:false,me:true}] },
     { id:2, name:'Dr. Arvind Kumar', spec:'Cardiologist · Fortis', img:'https://randomuser.me/api/portraits/men/32.jpg', time:'4h',
       body:'Quick demo clip of the bedside focused-echo technique we discussed. Tap to play.', tag:'Case · Cardiology',
@@ -712,7 +712,7 @@
       rc:{like:33,love:4}, my:null, shares:7, myRepost:true, comments:[] },
     { id:5, name:'Dr. Rohan Sinha', spec:'Hypertension · AIIMS', img:'https://randomuser.me/api/portraits/men/45.jpg', time:'1d',
       body:'Looking for a nephrology referral in Bengaluru for a complex CKD case with resistant HTN. Please DM.', tag:'Referral',
-      rc:{like:12,love:3}, my:null, shares:2,
+      rc:{like:12,love:3}, my:'love', shares:2,
       comments:[{name:'Dr. Neha Gupta',img:'https://randomuser.me/api/portraits/women/12.jpg',text:'Happy to help — sending you a message.',time:'20h',likes:1,liked:false}] },
     // ---- my own posts (general + case types) — seeds "My Activity" for the signed-in doctor ----
     { id:6, name:ME.name, spec:ME.spec, img:ME.img, time:'3h',
@@ -804,7 +804,7 @@
   async function idbSet(k,v){ try{ const db=await idbOpen(); await new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }catch(e){} }
   async function idbGet(k){ try{ const db=await idbOpen(); return await new Promise(res=>{ const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(undefined); }); }catch(e){ return undefined; } }
   let posts = [];
-  const SEED_V = 6;                       // bump to force a reseed
+  const SEED_V = 7;                       // bump to force a reseed
   function saveFeed(){ idbSet(IDB_KEY, {v:SEED_V, posts}); }
 
   const feedEl = document.getElementById('feed');

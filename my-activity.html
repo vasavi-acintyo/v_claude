@@ -29,7 +29,13 @@
   .post-tag{display:inline-block;font-size:11px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:20px;}
   .pa-post{background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px;margin-bottom:11px;position:relative;}
   .pa-post.mine{padding-right:42px;}
-  .pa-post .by{font-size:10.5px;color:var(--muted);font-weight:700;margin-bottom:6px;}
+  .pa-post-h{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+  .pa-post-h img{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
+  .pa-post-h[data-author]{cursor:pointer;}
+  .pa-author .nm{font-size:11.5px;font-weight:800;display:inline-flex;align-items:center;gap:4px;}
+  .pa-author .sp{font-size:9px;color:var(--muted);margin-top:1px;}
+  .pa-post-h .t{margin-left:auto;font-size:8.5px;color:var(--muted);font-weight:600;flex:0 0 auto;}
+  .vchk{width:12px;height:12px;color:var(--brand);flex:0 0 auto;}
   .pa-post .pb{font-size:11.5px;line-height:1.55;color:var(--slate-700);}
   .pa-post img.m{width:100%;border-radius:11px;margin-top:10px;max-height:220px;object-fit:cover;}
   .pa-post .pm{font-size:11px;color:var(--muted);margin-top:10px;display:flex;gap:12px;}
@@ -135,6 +141,8 @@
     ok:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>'
   };
   function mediaInPost(m){ if(!m) return ''; if(m.type==='image') return `<img class="m" src="${m.data}" alt="">`; if(m.type==='video') return `<video class="m" src="${m.data}" controls preload="metadata"></video>`; if(m.type==='audio') return `<audio class="m" src="${m.data}" controls preload="metadata"></audio>`; return `<div class="att">${I.docf}${esc(m.name||'')}</div>`; }
+  const vchk = '<svg class="vchk" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 2.4 1.8 3 .1 1 2.8 2.4 1.8-1 2.8 1 2.8-2.4 1.8-1 2.8-3 .1L12 22l-2.4-1.8-3-.1-1-2.8L3.2 15.4l1-2.8-1-2.8 2.4-1.8 1-2.8 3-.1z"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="var(--card)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  const isVerified = p => p.verified!==false && p.spec!=='Group';
 
   function idbOpen(){ return new Promise((res,rej)=>{ const r=indexedDB.open('medhubFeed',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
   async function idbGet(k){ try{ const db=await idbOpen(); return await new Promise(res=>{ const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(undefined); }); }catch(e){ return undefined; } }
@@ -160,7 +168,7 @@
   });
 
   let posts = [];
-  let storeMeta = { v:6 };
+  let storeMeta = { v:7 };
   const rsum = p => Object.values(p.rc||{}).reduce((s,v)=>s+v,0);
 
   function saveFeed(){ idbSet('posts3', { v:storeMeta.v, posts }); }
@@ -177,7 +185,17 @@
         <div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}
         <div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div>
       </div>`;
-    const otherCard = (p, extra) => `<div class="pa-post"><div class="by">By ${esc(p.name)}</div>${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}<div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}<div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div>${extra||''}</div>`;
+    const otherCard = (p, extra) => `<div class="pa-post">
+        <div class="pa-post-h" data-author="${esc(p.name)}">
+          <img src="${p.img}" alt="">
+          <div class="pa-author"><div class="nm">${esc(p.name)}${isVerified(p)?vchk:''}</div><div class="sp">${esc(p.spec||'')}</div></div>
+          <span class="t">${esc(p.time)}</span>
+        </div>
+        ${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}
+        <div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}
+        <div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span>${p.shares?`<span>${p.shares} reposts</span>`:''}</div>
+        ${extra||''}
+      </div>`;
     const commentCard = p => {
       const mine = (p.comments||[]).filter(c=>c.name===ME_NAME);
       const note = mine.length ? `<div class="my-note">${mine.map(c=>`<b>You commented:</b> ${esc(c.text)}`).join('<br>')}</div>` : '';
@@ -193,7 +211,7 @@
   async function load(){
     const store = await idbGet('posts3');
     posts = store && Array.isArray(store.posts) ? store.posts : (Array.isArray(store) ? store : []);
-    storeMeta.v = (store && typeof store.v==='number') ? store.v : 6;
+    storeMeta.v = (store && typeof store.v==='number') ? store.v : 7;
     renderAll();
     showTab(tab);
   }
@@ -245,6 +263,13 @@
     const id=mo.closest('.pa-post').dataset.id;
     const p=posts.find(x=>String(x.id)===id);
     if(p) showMenu(p);
+  });
+
+  ['paLiked','paComments','paReposts'].forEach(id=>{
+    document.getElementById(id).addEventListener('click', e=>{
+      const au=e.target.closest('[data-author]'); if(!au) return;
+      location.href='profile.html?name='+encodeURIComponent(au.dataset.author);
+    });
   });
 
   paSheetBody.addEventListener('click', e=>{
