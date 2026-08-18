@@ -291,7 +291,8 @@
     chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>',
     vf:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 2.4 1.8 3 .1 1 2.8 2.4 1.8-1 2.8 1 2.8-2.4 1.8-1 2.8-3 .1L12 22l-2.4-1.8-3-.1-1-2.8L3.2 15.4l1-2.8-1-2.8 2.4-1.8 1-2.8 3-.1z"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="var(--surface)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     docf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
-    heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.4 3-5.5A4.5 4.5 0 0 0 12 5 4.5 4.5 0 0 0 2 8.5C2 12 5 15 12 21c2-1.7 3.7-3.2 5-4.5"/></svg>'
+    heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.4 3-5.5A4.5 4.5 0 0 0 12 5 4.5 4.5 0 0 0 2 8.5C2 12 5 15 12 21c2-1.7 3.7-3.2 5-4.5"/></svg>',
+    repeat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>'
   };
 
   function idbOpen(){ return new Promise((res,rej)=>{ const r=indexedDB.open('medhubFeed',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
@@ -412,6 +413,7 @@
         <a class="prow" href="my-activity.html?tab=posts"><span class="ri">${I.docf}</span><div class="rt"><b>Posts</b><span>Everything you've posted</span></div><span class="rchev">${I.chev}</span></a>
         <a class="prow" href="my-activity.html?tab=liked"><span class="ri">${I.heart}</span><div class="rt"><b>Liked</b><span>Posts you've reacted to</span></div><span class="rchev">${I.chev}</span></a>
         <a class="prow" href="my-activity.html?tab=comments"><span class="ri">${I.chat}</span><div class="rt"><b>Comments</b><span>Posts you've commented on</span></div><span class="rchev">${I.chev}</span></a>
+        <a class="prow" href="my-activity.html?tab=reposts"><span class="ri">${I.repeat}</span><div class="rt"><b>Reposts</b><span>Posts you've reposted</span></div><span class="rchev">${I.chev}</span></a>
       </div>
 
       <div class="psec rise">Practice</div>

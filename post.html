@@ -95,6 +95,7 @@
   .post-f>button svg,.reactbtn svg{width:15px;height:15px;flex:0 0 auto;}
   .post-f button:hover{color:var(--brand);}
   .post-f button.liked{color:var(--brand);}
+  .post-f button.reposted{color:var(--green);}
   .post-f svg{width:14px;height:14px;}
 
   .req img,.scard img{cursor:pointer;}
@@ -170,17 +171,6 @@
   .react-sum .emos span{width:16px;height:16px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;font-size:9px;margin-left:-4px;}
   .react-sum .emos span:first-child{margin-left:0;}
   .react-sum .dot{margin:0 3px;}
-  .react-sum [data-et]{cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
-  .react-sum [data-et]:hover{color:var(--brand);}
-  /* engagement sheet (Likes / Comments / Reposts) */
-  .eng-row{display:flex;align-items:center;gap:11px;padding:10px 0;border-bottom:1px solid var(--line);}
-  .eng-row:last-child{border-bottom:none;}
-  .eng-row img{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
-  .eng-row .m{flex:1;min-width:0;}
-  .eng-row .nm{font-size:11.5px;font-weight:800;}
-  .eng-row .sp{font-size:9.5px;color:var(--muted);margin-top:1px;}
-  .eng-row .re{font-size:16px;flex:0 0 auto;}
-  .eng-more{text-align:center;font-size:10px;color:var(--muted);padding:12px 0 4px;}
   .react-wrap{position:relative;flex:0 0 auto;}
   .react-pop{position:absolute;bottom:36px;left:-4px;display:flex;gap:3px;background:var(--card);border:1px solid var(--line);border-radius:24px;padding:5px 8px;box-shadow:0 12px 26px -8px rgba(0,0,0,.4);opacity:0;visibility:hidden;transform:translateY(8px) scale(.9);transform-origin:bottom left;transition:.18s;z-index:6;}
   .react-pop.open,.react-wrap:hover .react-pop{opacity:1;visibility:visible;transform:none;}
@@ -527,20 +517,6 @@
       </div>
     </div>
   </div>
-
-  <!-- Engagement sheet: Likes / Comments / Reposts -->
-  <div class="backdrop" id="engBackdrop"></div>
-  <div class="sheet" id="engSheet">
-    <div class="ps-body">
-      <div class="grab"></div>
-      <div class="pa-tabs" id="engTabs">
-        <button data-et="likes" class="active">Likes</button>
-        <button data-et="comments">Comments</button>
-        <button data-et="reposts">Reposts</button>
-      </div>
-      <div id="engList"></div>
-    </div>
-  </div>
 </div>
 
 <script>
@@ -708,16 +684,6 @@
     support:{e:'🤝',l:'Support',c:'#7c6cf5'}, love:{e:'❤️',l:'Love',c:'#ef4444'},
     insightful:{e:'💡',l:'Insightful',c:'#f59e0b'}, funny:{e:'😄',l:'Funny',c:'#0ea5e9'}
   };
-  // pool of doctors used to populate the Likes/Reposts tabs of the engagement sheet (posts only store aggregate counts, not who)
-  const PEOPLE = [
-    {n:'Dr. Meera Iyer', s:'Endocrinologist · Apollo', g:'women/68'}, {n:'Dr. Arvind Kumar', s:'Cardiologist · Fortis', g:'men/32'},
-    {n:'Dr. Rohan Sinha', s:'Hypertension · AIIMS', g:'men/45'}, {n:'Dr. Priya Nair', s:'Lipidologist · Narayana', g:'women/44'},
-    {n:'Dr. Vijay Menon', s:'Diabetologist · Cleveland', g:'men/76'}, {n:'Dr. Kavya Reddy', s:'Endocrinologist · Apollo', g:'women/65'},
-    {n:'Dr. Sameer Shah', s:'Cardiologist · Fortis', g:'men/52'}, {n:'Dr. Neha Gupta', s:'Nephrologist · Medanta', g:'women/12'},
-    {n:'Dr. Imran Khan', s:'Physician · Max', g:'men/61'}, {n:'Dr. Anjali Desai', s:'Endocrinologist · Sterling', g:'women/32'},
-    {n:'Dr. Rahul Verma', s:'Diabetologist · Manipal', g:'men/22'}, {n:'Dr. Arjun Rao', s:'Cardiologist · Narayana', g:'men/41'}
-  ];
-  function personFor(seed){ const p=PEOPLE[Math.abs(seed)%PEOPLE.length]; return { name:p.n, spec:p.s, img:'https://randomuser.me/api/portraits/'+p.g+'.jpg' }; }
   const thumbUp='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M7 11v9H4a1 1 0 0 1-1-1v-7a1 1 0 0 1 1-1z"/><path d="M7 11l4-8a2 2 0 0 1 3 1.8V9h4.5a2 2 0 0 1 2 2.3l-1.2 7a2 2 0 0 1-2 1.7H7"/></svg>';
   const chatI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
   const repeatI='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>';
@@ -734,7 +700,7 @@
     { id:2, name:'Dr. Arvind Kumar', spec:'Cardiologist · Fortis', img:'https://randomuser.me/api/portraits/men/32.jpg', time:'4h',
       body:'Quick demo clip of the bedside focused-echo technique we discussed. Tap to play.', tag:'Case · Cardiology',
       media:{type:'video', data:'https://www.w3schools.com/html/mov_bbb.mp4', name:'Bedside echo demo'},
-      rc:{like:56,insightful:9}, my:null, shares:11,
+      rc:{like:56,insightful:9}, my:null, shares:11, myRepost:true,
       comments:[{name:'Dr. Priya Nair',img:'https://randomuser.me/api/portraits/women/44.jpg',text:'Very useful, thanks for sharing!',time:'2h',likes:2,liked:false}] },
     { id:3, name:'City Cardiology Society', spec:'Group', img:'https://randomuser.me/api/portraits/men/76.jpg', time:'6h',
       body:'New advisory on managing resistant hypertension — full guideline document attached. Tap to read.', tag:'Advisory',
@@ -743,7 +709,7 @@
     { id:4, name:'Dr. Priya Nair', spec:'Lipidologist · Narayana', img:'https://randomuser.me/api/portraits/women/44.jpg', time:'8h',
       body:'5-minute audio summary of the new lipid guidelines for busy clinicians. 🎧', tag:'CME · Lipids',
       media:{type:'audio', data:'https://www.w3schools.com/html/horse.mp3', name:'Lipid guidelines in 5 min'},
-      rc:{like:33,love:4}, my:null, shares:7, comments:[] },
+      rc:{like:33,love:4}, my:null, shares:7, myRepost:true, comments:[] },
     { id:5, name:'Dr. Rohan Sinha', spec:'Hypertension · AIIMS', img:'https://randomuser.me/api/portraits/men/45.jpg', time:'1d',
       body:'Looking for a nephrology referral in Bengaluru for a complex CKD case with resistant HTN. Please DM.', tag:'Referral',
       rc:{like:12,love:3}, my:null, shares:2,
@@ -838,7 +804,7 @@
   async function idbSet(k,v){ try{ const db=await idbOpen(); await new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }catch(e){} }
   async function idbGet(k){ try{ const db=await idbOpen(); return await new Promise(res=>{ const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(undefined); }); }catch(e){ return undefined; } }
   let posts = [];
-  const SEED_V = 5;                       // bump to force a reseed
+  const SEED_V = 6;                       // bump to force a reseed
   function saveFeed(){ idbSet(IDB_KEY, {v:SEED_V, posts}); }
 
   const feedEl = document.getElementById('feed');
@@ -851,9 +817,9 @@
     if(!total && !cc && !sc) return '';
     const emos = ent.slice(0,3).map(([k])=>`<span>${REACT[k].e}</span>`).join('');
     const parts = [];
-    if(total) parts.push(`<span data-et="likes"><span class="emos">${emos}</span>${p.my?('You'+(total>1?` and ${total-1} others`:'')):total}</span>`);
-    if(cc) parts.push(`<span data-et="comments">${cc} comment${cc>1?'s':''}</span>`);
-    if(sc) parts.push(`<span data-et="reposts">${sc} repost${sc>1?'s':''}</span>`);
+    if(total) parts.push(`<span class="emos">${emos}</span>${p.my?('You'+(total>1?` and ${total-1} others`:'')):total}`);
+    if(cc) parts.push(`${cc} comment${cc>1?'s':''}`);
+    if(sc) parts.push(`${sc} repost${sc>1?'s':''}`);
     return `<div class="react-sum">${parts.join('<span class="dot">·</span>')}</div>`;
   }
   function commentHTML(c,ci){
@@ -887,7 +853,7 @@
         <div class="post-f">
           <div class="react-wrap"><button class="reactbtn ${my?'reacted':''}" data-act="like">${likeInner}</button><div class="react-pop">${pops}</div></div>
           <button data-act="comment">${chatI}Comment</button>
-          <button data-act="repost">${repeatI}${p.shares?`<span>${p.shares}</span>`:'Repost'}</button>
+          <button data-act="repost" class="${p.myRepost?'reposted':''}">${repeatI}${p.myRepost?'Reposted':(p.shares?`<span>${p.shares}</span>`:'Repost')}</button>
           <button data-act="send">${sendI}Send</button>
         </div>
         ${(!p._open && p.comments.length) ? (()=>{ const last=p.comments[p.comments.length-1]; return `<div class="cmt-peek" data-act="comment"><div class="pk"><img src="${last.img}" alt=""><div class="pkb"><div class="nm">${last.name}${last.me?' <span class="youtag">You</span>':''}</div><div class="tx">${last.text}</div></div></div>${p.comments.length>1?`<div class="viewall">View all ${p.comments.length} comments</div>`:''}</div>`; })() : ''}
@@ -932,7 +898,6 @@
   ['pointerup','pointercancel','pointerleave'].forEach(ev=>feedEl.addEventListener(ev, ()=>{ if(lpT){clearTimeout(lpT);lpT=null;} }));
 
   feedEl.addEventListener('click', e=>{
-    const et=e.target.closest('[data-et]'); if(et){ openEngage(postFromEl(et), et.dataset.et); return; }
     const mo=e.target.closest('[data-more]'); if(mo){ openOpts(postFromEl(mo)); return; }
     const au=e.target.closest('[data-author]'); if(au){ location.href='profile.html?name='+encodeURIComponent(postFromEl(au).name); return; }
     const mv=e.target.closest('[data-view]'); if(mv){ openMedia(postFromEl(mv).media); return; }
@@ -945,7 +910,11 @@
     const btn=e.target.closest('[data-act]'); if(!btn) return;
     const p=postFromEl(btn), act=btn.dataset.act;
     if(act==='comment'){ p._open=!p._open; if(p._open) focusId=p.id; renderFeed(); }
-    else if(act==='repost'){ p.shares++; saveFeed(); renderFeed(); }
+    else if(act==='repost'){
+      if(p.myRepost){ p.myRepost=false; p.shares=Math.max(0,(p.shares||0)-1); }
+      else { p.myRepost=true; p.shares=(p.shares||0)+1; }
+      saveFeed(); renderFeed();
+    }
     else if(act==='send'){ btn.innerHTML = sendI+'Sent'; }
   });
   feedEl.addEventListener('keydown', e=>{ if(e.key==='Enter' && e.target.matches('[data-cin]')){ e.preventDefault(); addInline(e.target); } });
@@ -995,62 +964,6 @@
       optBody.innerHTML = `<div class="grab"></div><div class="opt-done"><div class="ok">${okIco}</div><b>${msg}</b></div>`;
       setTimeout(closeOpts, 1100);
     }
-  });
-
-  // ---- Engagement sheet (Likes / Comments / Reposts — tabs, mirroring the post's own author-row look) ----
-  const engBackdrop=document.getElementById('engBackdrop'), engSheet=document.getElementById('engSheet'), engTabs=document.getElementById('engTabs'), engList=document.getElementById('engList');
-  let engPost=null, engTab='likes';
-  const ENG_CAP = 30;
-  function likesRows(p){
-    const ent = Object.entries(p.rc||{}).filter(([,v])=>v>0);
-    const total = ent.reduce((s,[,v])=>s+v,0);
-    const rows=[]; let counter=0;
-    for(const [key,count] of ent){
-      for(let i=0;i<count && rows.length<ENG_CAP;i++){ rows.push({ person:personFor(p.id+counter*5+1), emo:REACT[key].e }); counter++; }
-    }
-    return { rows, total };
-  }
-  function repostRows(p){
-    const total=p.shares||0, n=Math.min(total,ENG_CAP);
-    const rows=[]; for(let i=0;i<n;i++) rows.push({ person:personFor(p.id+i*5+2), emo:null });
-    return { rows, total };
-  }
-  function engRowHTML(r){
-    return `<div class="eng-row" data-eng-name="${r.person.name}"><img src="${r.person.img}" alt=""><div class="m"><div class="nm">${r.person.name}</div><div class="sp">${r.person.spec}</div></div>${r.emo?`<span class="re">${r.emo}</span>`:''}</div>`;
-  }
-  function renderEngTabs(p){
-    const total = Object.values(p.rc||{}).reduce((s,v)=>s+v,0), cc=p.comments.length, sc=p.shares||0;
-    engTabs.innerHTML = `
-      <button data-et="likes" class="${engTab==='likes'?'active':''}">Likes${total?` ${total}`:''}</button>
-      <button data-et="comments" class="${engTab==='comments'?'active':''}">Comments${cc?` ${cc}`:''}</button>
-      <button data-et="reposts" class="${engTab==='reposts'?'active':''}">Reposts${sc?` ${sc}`:''}</button>`;
-  }
-  function renderEngList(){
-    const p=engPost;
-    if(engTab==='comments'){
-      engList.innerHTML = p.comments.length
-        ? p.comments.map(c=>`<div class="cmt"><img src="${c.img}" alt=""><div class="cb"><div class="nm">${c.name}${c.me?' <span class="youtag">You</span>':''}</div><div class="tx">${c.text}</div><div class="tm">${c.time}</div></div></div>`).join('')
-        : `<div class="cmt-empty">No comments yet.</div>`;
-      return;
-    }
-    const {rows,total} = engTab==='reposts' ? repostRows(p) : likesRows(p);
-    if(!rows.length){ engList.innerHTML = `<div class="cmt-empty">No ${engTab} yet.</div>`; return; }
-    const more = total>rows.length ? `<div class="eng-more">+ ${total-rows.length} more</div>` : '';
-    engList.innerHTML = rows.map(engRowHTML).join('') + more;
-  }
-  function openEngage(p, tab){
-    engPost=p; engTab=tab||'likes';
-    renderEngTabs(p); renderEngList();
-    engBackdrop.classList.add('open'); engSheet.classList.add('open');
-  }
-  function closeEngage(){ engBackdrop.classList.remove('open'); engSheet.classList.remove('open'); }
-  engBackdrop.addEventListener('click', closeEngage);
-  engTabs.addEventListener('click', e=>{
-    const b=e.target.closest('button'); if(!b) return;
-    engTab=b.dataset.et; renderEngTabs(engPost); renderEngList();
-  });
-  engList.addEventListener('click', e=>{
-    const row=e.target.closest('[data-eng-name]'); if(row) location.href='profile.html?name='+encodeURIComponent(row.dataset.engName);
   });
 
   // ---- Media viewer (image lightbox / video / pdf) ----
@@ -1246,7 +1159,6 @@
   document.addEventListener('keydown', e=>{
     if(e.key!=='Escape') return;
     if(optSheet.classList.contains('open')){ closeOpts(); return; }
-    if(engSheet.classList.contains('open')){ closeEngage(); return; }
     if(document.getElementById('mediaModal').classList.contains('open')){ closeMedia(); return; }
     if(document.getElementById('cmtSheet').classList.contains('open')){ document.getElementById('cmtSheet').classList.remove('open'); document.getElementById('cmtBackdrop').classList.remove('open'); return; }
     if(document.getElementById('compSheet').classList.contains('open')){ document.getElementById('compSheet').classList.remove('open'); document.getElementById('compBackdrop').classList.remove('open'); return; }

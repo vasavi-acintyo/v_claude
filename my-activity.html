@@ -37,6 +37,8 @@
   .pa-cmt .ct{font-size:11.5px;color:var(--ink);line-height:1.5;}
   .pa-cmt .cm{font-size:11px;color:var(--muted);margin-top:5px;}
   .pa-empty{text-align:center;font-size:11px;color:var(--muted);padding:30px 10px;}
+  .my-note{background:var(--soft2);border-radius:10px;padding:8px 10px;margin-top:10px;font-size:10.5px;line-height:1.5;color:var(--slate-700);}
+  .my-note b{color:var(--brand);font-weight:800;}
 
   /* per-post ⋯ menu (edit/delete) */
   .pa-more{position:absolute;top:10px;right:8px;width:28px;height:28px;border:none;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:8px;}
@@ -102,10 +104,12 @@
       <button data-pt="posts">Posts</button>
       <button data-pt="liked">Liked</button>
       <button data-pt="comments">Comments</button>
+      <button data-pt="reposts">Reposts</button>
     </div>
     <div id="paPosts" class="rise"><div class="pa-empty">Loading…</div></div>
     <div id="paLiked" class="rise" hidden></div>
     <div id="paComments" class="rise" hidden></div>
+    <div id="paReposts" class="rise" hidden></div>
   </div>
 
   <div class="home-ind"></div>
@@ -140,7 +144,7 @@
 
   const qp = new URLSearchParams(location.search);
   let tab = qp.get('tab') || 'posts';
-  if(!['posts','liked','comments'].includes(tab)) tab = 'posts';
+  if(!['posts','liked','comments','reposts'].includes(tab)) tab = 'posts';
 
   function showTab(t){
     tab = t;
@@ -148,6 +152,7 @@
     document.getElementById('paPosts').hidden = t!=='posts';
     document.getElementById('paLiked').hidden = t!=='liked';
     document.getElementById('paComments').hidden = t!=='comments';
+    document.getElementById('paReposts').hidden = t!=='reposts';
   }
   document.getElementById('actTabs').addEventListener('click', e=>{
     const b=e.target.closest('button'); if(!b) return;
@@ -155,7 +160,7 @@
   });
 
   let posts = [];
-  let storeMeta = { v:5 };
+  let storeMeta = { v:6 };
   const rsum = p => Object.values(p.rc||{}).reduce((s,v)=>s+v,0);
 
   function saveFeed(){ idbSet('posts3', { v:storeMeta.v, posts }); }
@@ -163,7 +168,8 @@
   function renderAll(){
     const mine = posts.filter(p=>p.name===ME_NAME);
     const liked = posts.filter(p=>p.my && p.name!==ME_NAME);
-    const cmts = []; posts.forEach(p=>(p.comments||[]).forEach(c=>{ if(c.name===ME_NAME) cmts.push({c,p}); }));
+    const commented = posts.filter(p=>(p.comments||[]).some(c=>c.name===ME_NAME));
+    const reposted = posts.filter(p=>p.myRepost);
 
     const postCard = p => `<div class="pa-post mine" data-id="${p.id}">
         <button class="pa-more" data-more aria-label="Post options">${I.dots}</button>
@@ -171,17 +177,23 @@
         <div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}
         <div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div>
       </div>`;
-    const likedCard = p => `<div class="pa-post"><div class="by">By ${esc(p.name)}</div>${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}<div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}<div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div></div>`;
+    const otherCard = (p, extra) => `<div class="pa-post"><div class="by">By ${esc(p.name)}</div>${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}<div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}<div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div>${extra||''}</div>`;
+    const commentCard = p => {
+      const mine = (p.comments||[]).filter(c=>c.name===ME_NAME);
+      const note = mine.length ? `<div class="my-note">${mine.map(c=>`<b>You commented:</b> ${esc(c.text)}`).join('<br>')}</div>` : '';
+      return otherCard(p, note);
+    };
 
     document.getElementById('paPosts').innerHTML = mine.length ? mine.map(postCard).join('') : `<div class="pa-empty">You haven't posted anything yet.</div>`;
-    document.getElementById('paLiked').innerHTML = liked.length ? liked.map(likedCard).join('') : `<div class="pa-empty">You haven't liked any posts yet.</div>`;
-    document.getElementById('paComments').innerHTML = cmts.length ? cmts.map(({c,p})=>`<div class="pa-cmt"><div class="ct">${esc(c.text)}</div><div class="cm">on ${esc(p.name)}’s post · ${esc(c.time)}</div></div>`).join('') : `<div class="pa-empty">You haven't commented on anything yet.</div>`;
+    document.getElementById('paLiked').innerHTML = liked.length ? liked.map(p=>otherCard(p)).join('') : `<div class="pa-empty">You haven't liked any posts yet.</div>`;
+    document.getElementById('paComments').innerHTML = commented.length ? commented.map(commentCard).join('') : `<div class="pa-empty">You haven't commented on anything yet.</div>`;
+    document.getElementById('paReposts').innerHTML = reposted.length ? reposted.map(p=>otherCard(p)).join('') : `<div class="pa-empty">You haven't reposted anything yet.</div>`;
   }
 
   async function load(){
     const store = await idbGet('posts3');
     posts = store && Array.isArray(store.posts) ? store.posts : (Array.isArray(store) ? store : []);
-    storeMeta.v = (store && typeof store.v==='number') ? store.v : 5;
+    storeMeta.v = (store && typeof store.v==='number') ? store.v : 6;
     renderAll();
     showTab(tab);
   }
