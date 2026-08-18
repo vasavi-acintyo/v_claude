@@ -21,8 +21,8 @@
   .scroll{flex:1 1 auto;overflow-y:auto;padding:14px 18px 22px;}
   .scroll::-webkit-scrollbar{width:0;}
 
-  .pa-tabs{display:flex;gap:18px;border-bottom:1px solid var(--line);margin-bottom:14px;}
-  .pa-tabs button{background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;min-height:44px;position:relative;cursor:pointer;}
+  .pa-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:14px;}
+  .pa-tabs button{flex:1;text-align:center;background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;min-height:44px;position:relative;cursor:pointer;}
   .pa-tabs button.active{color:var(--brand);}
   .pa-tabs button.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;background:var(--brand);border-radius:3px;}
 
