@@ -26,8 +26,6 @@
   .id-av img{width:72px;height:72px;border-radius:50%;object-fit:cover;background:var(--chip);border:1px solid var(--line);}
   .id-crown{position:absolute;left:-3px;top:-3px;width:24px;height:24px;border-radius:50%;background:var(--gold);color:#fff;display:grid;place-items:center;border:2px solid var(--card);}
   .id-crown svg{width:13px;height:13px;}
-  .id-cam{position:absolute;right:-2px;bottom:-2px;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;display:grid;place-items:center;border:2px solid var(--card);cursor:pointer;}
-  .id-cam svg{width:12px;height:12px;}
   .id-info{flex:1;min-width:0;}
   .id-name{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:18px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;}
   .prem-pill{display:inline-flex;align-items:center;gap:4px;font-size:8.5px;font-weight:800;letter-spacing:.06em;color:#fff;background:var(--gold);padding:3px 8px;border-radius:20px;text-transform:uppercase;}
@@ -142,6 +140,13 @@
   .ep-field input:focus,.ep-field textarea:focus{outline:none;border-color:var(--brand);}
   .ep-save{width:100%;min-height:48px;border:none;border-radius:12px;background:var(--brand);color:#fff;font-family:inherit;font-size:13px;font-weight:800;cursor:pointer;margin-top:16px;transition:transform .16s, background .16s;}
   .ep-save:active{transform:scale(.98);}
+  .ep-avatar{position:relative;width:88px;height:88px;margin:6px auto 8px;}
+  .ep-av-circle{width:88px;height:88px;border-radius:50%;overflow:hidden;background:var(--chip);border:1px solid var(--line);}
+  .ep-av-circle img{width:100%;height:100%;object-fit:cover;}
+  .ep-av-cam{position:absolute;right:-2px;bottom:-2px;width:32px;height:32px;border-radius:50%;background:var(--brand);color:#fff;border:3px solid var(--card);display:grid;place-items:center;cursor:pointer;padding:0;}
+  .ep-av-cam:active{transform:scale(.9);}
+  .ep-av-cam svg{width:15px;height:15px;}
+  .ep-av-hint{text-align:center;font-size:10.5px;color:var(--muted);font-weight:700;}
   .about-card{padding:14px 15px;}
   .about-card p{font-size:12px;line-height:1.6;color:var(--slate-700);}
   .theme-opt{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:14px 8px;border:1.5px solid var(--line);border-radius:16px;background:var(--card);cursor:pointer;color:inherit;font-family:inherit;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
@@ -246,6 +251,12 @@
   <div class="sheet ep-sheet" id="epSheet">
     <div class="grab"></div>
     <h2>Edit profile</h2><p>Update your public details. Your verified registration can't be edited here.</p>
+    <div class="ep-avatar">
+      <div class="ep-av-circle" id="epAvCircle"><img id="epAvImg" src="" alt=""></div>
+      <button type="button" class="ep-av-cam" id="epAvCamBtn" aria-label="Change photo"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h3l2-2h6l2 2h3a1 1 0 0 1 1 1v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V8a1 1 0 0 1 1-1Z"/><circle cx="12" cy="13" r="3.2"/></svg></button>
+      <input type="file" id="epAvInput" accept="image/*" hidden>
+    </div>
+    <div class="ep-av-hint">Tap the camera to change your photo</div>
     <div class="ep-field"><label for="epRole">Designation</label><input id="epRole" placeholder="e.g. MD Internal Medicine"></div>
     <div class="ep-field"><label for="epWork">Current workplace</label><input id="epWork" placeholder="Hospital / clinic / organisation"></div>
     <div class="ep-field"><label for="epCity">City</label><input id="epCity" placeholder="e.g. Hyderabad"></div>
@@ -360,13 +371,12 @@
           <div class="id-av">
             <img src="${ME.img}" alt="">
             <span class="id-crown">${I.crown}</span>
-            <span class="id-cam" id="camBtn">${I.cam}</span>
           </div>
           <div class="id-info">
             <div class="id-name">${esc(ME.name)} <span class="prem-pill">${I.star}Premium</span></div>
             <span class="nmc-pill">${I.shield}${esc(ME.council)}</span>
             <div class="id-role">${esc(ME.role)}</div>
-            <div class="id-links"><a id="editProfile">${I.edit}Edit profile</a><a id="chgPhoto">${I.cam}Change photo</a></div>
+            <div class="id-links"><a id="editProfile">${I.edit}Edit profile</a></div>
           </div>
         </div>
         <div class="cred-strip">
@@ -435,8 +445,6 @@
       <div class="pfoot rise">DocSynapse · Mysaa Life Health Care · v1.0 (build 412)</div>`;
 
     // wire interactions
-    document.getElementById('camBtn').onclick = ()=>toast('Photo upload coming soon');
-    document.getElementById('chgPhoto').onclick = ()=>toast('Photo upload coming soon');
     document.getElementById('editProfile').onclick = openEdit;
     document.getElementById('availOpts').addEventListener('click', e=>{
       const b=e.target.closest('button'); if(!b) return;
@@ -517,19 +525,33 @@
   // ---- Edit profile (ported from ACINTYO-MED: no equivalent existed in this file) ----
   const epSheet=document.getElementById('epSheet'), epBackdrop=document.getElementById('epBackdrop');
   const epRole=document.getElementById('epRole'), epWork=document.getElementById('epWork'), epCity=document.getElementById('epCity'), epAbout=document.getElementById('epAbout');
+  const epAvImg=document.getElementById('epAvImg'), epAvInput=document.getElementById('epAvInput'), epAvCamBtn=document.getElementById('epAvCamBtn');
+  let pendingAvatar=null;
+  epAvCamBtn.addEventListener('click', ()=>epAvInput.click());
+  epAvInput.addEventListener('change', ()=>{
+    const file=epAvInput.files && epAvInput.files[0];
+    if(!file) return;
+    if(!file.type.startsWith('image/')){ toast('Please choose an image file'); epAvInput.value=''; return; }
+    const reader=new FileReader();
+    reader.onload=()=>{ pendingAvatar=reader.result; epAvImg.src=reader.result; };
+    reader.readAsDataURL(file);
+  });
   function openEdit(){
     epRole.value=ME.designation; epWork.value=ME.workplace; epCity.value=ME.city; epAbout.value=ME.about;
+    epAvImg.src=ME.img; pendingAvatar=null; epAvInput.value='';
     epBackdrop.classList.add('open'); epSheet.classList.add('open');
   }
   function closeEdit(){ epBackdrop.classList.remove('open'); epSheet.classList.remove('open'); }
   epBackdrop.addEventListener('click', closeEdit);
   document.getElementById('epSave').addEventListener('click', ()=>{
     ME.designation=epRole.value.trim(); ME.workplace=epWork.value.trim(); ME.city=epCity.value.trim(); ME.about=epAbout.value.trim();
+    if(pendingAvatar) ME.img=pendingAvatar;
     try{
       localStorage.setItem('docRole',ME.designation);
       localStorage.setItem('docWorkplace',ME.workplace);
       localStorage.setItem('docCity',ME.city);
       localStorage.setItem('docAbout',ME.about);
+      if(pendingAvatar) localStorage.setItem('docAvatar',pendingAvatar);
     }catch(e){}
     computeRole();
     closeEdit(); renderMe(); toast('Profile updated');
