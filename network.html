@@ -22,9 +22,9 @@
   .feedbar .ptop h1{font-size:18px;line-height:1.15;}
   .icon-btn{width:38px;height:38px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);}
 
-  .search{position:relative;margin-top:14px;}
+  .search{position:relative;margin-top:14px;cursor:pointer;}
   .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--muted);}
-  .search input{width:100%;min-height:34px;height:34px;background:var(--chip);border:1px solid transparent;border-radius:17px;padding:0 12px 0 33px;font-size:11px;font-family:inherit;color:var(--ink);}
+  .search input{width:100%;min-height:34px;height:34px;background:var(--chip);border:1px solid transparent;border-radius:17px;padding:0 12px 0 33px;font-size:11px;font-family:inherit;color:var(--ink);cursor:pointer;}
   .search input::placeholder{color:var(--muted);}
   .search input:focus{outline:none;border-color:var(--brand);}
 
@@ -448,7 +448,7 @@
       <button class="tb-ic" id="msgsBtn" aria-label="Messages"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg></button>
       <a class="tb-prof" href="profile.html" aria-label="My profile"><img class="tb-av" src="https://randomuser.me/api/portraits/women/79.jpg" alt=""></a>
     </div>
-    <div class="search rise"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg><input placeholder="Search doctors, groups, posts…"></div>
+    <div class="search rise" id="searchBar" role="button" tabindex="0" aria-label="Search doctors or groups"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg><input placeholder="Search doctors or groups…" readonly></div>
 
     <!-- sub-tabs -->
     <div class="ntabs rise" id="ntabs">
@@ -616,6 +616,10 @@
     clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'), 1400);
   }
   const grpIco = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg>';
+
+  // ---- search bar → dedicated search screen ----
+  document.getElementById('searchBar').addEventListener('click', ()=>location.href='network-search.html');
+  document.getElementById('searchBar').addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); location.href='network-search.html'; } });
 
   // ---- Requests ----
   let requests = [

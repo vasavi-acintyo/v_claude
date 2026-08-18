@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Search — DocSynapse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  [hidden]{display:none !important;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} .topbar{padding-top:max(6px,env(safe-area-inset-top));} }
+
+  .statusbar{display:flex;align-items:center;justify-content:space-between;padding:14px 26px 4px;font-size:15px;font-weight:700;color:var(--ink);}
+  .statusbar .sys{display:flex;align-items:center;gap:7px;} .statusbar svg{fill:currentColor;stroke:currentColor;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:10px;padding:10px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1);}
+  .topbar .bk:active{transform:scale(.94);}
+
+  .tb-search{flex:1;min-width:0;position:relative;}
+  .tb-search svg.si{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:14px;height:14px;color:var(--muted);pointer-events:none;}
+  .tb-search input{width:100%;min-height:38px;height:38px;background:var(--chip);border:1px solid transparent;border-radius:19px;padding:0 34px 0 34px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .tb-search input::placeholder{color:var(--muted);}
+  .tb-search input:focus{outline:none;border-color:var(--brand);}
+  .tb-search .clr{position:absolute;right:5px;top:50%;transform:translateY(-50%);width:28px;height:28px;border:none;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:50%;}
+  .tb-search .clr:active{background:var(--line);}
+  .tb-search .clr svg{width:14px;height:14px;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:14px 18px 22px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .sr-sec + .sr-sec{margin-top:18px;}
+  .sr-sec-label{font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--muted);margin:0 2px 9px;}
+  .sr-list{display:flex;flex-direction:column;gap:8px;}
+  .sr-row{display:flex;align-items:center;gap:11px;background:var(--soft1);border:1px solid transparent;border-radius:14px;padding:10px 11px;cursor:pointer;transition:border-color .18s, transform .18s cubic-bezier(.22,1,.36,1);}
+  .sr-row:hover{border-color:var(--brand);}
+  .sr-row:active{transform:scale(.98);}
+  .sr-row .av{width:40px;height:40px;border-radius:50%;object-fit:cover;flex:0 0 auto;background:var(--chip);}
+  .sr-row .gi{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;color:var(--brand);background:var(--brand-soft);flex:0 0 auto;}
+  .sr-row .gi svg{width:19px;height:19px;}
+  .sr-row .m{flex:1;min-width:0;}
+  .sr-row .nm{font-size:12px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sr-row .sp{font-size:10px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .sr-row .chev{color:var(--muted);flex:0 0 auto;display:grid;place-items:center;}
+  .sr-row .chev svg{width:15px;height:15px;}
+
+  .sr-state{text-align:center;padding:70px 22px;color:var(--muted);}
+  .sr-state .ic{width:52px;height:52px;border-radius:18px;background:var(--chip);color:var(--muted);display:grid;place-items:center;margin:0 auto 14px;}
+  .sr-state .ic svg{width:24px;height:24px;}
+  .sr-state b{display:block;font-size:13.5px;font-weight:800;font-family:var(--display);color:var(--ink);}
+  .sr-state span{font-size:11px;display:block;margin-top:6px;line-height:1.55;}
+  .sr-state span b{display:inline;font-size:inherit;font-weight:800;color:var(--ink);}
+
+  /* hide-mock-statusbar */ .statusbar{display:none !important;}
+
+  /* ---------- V Theme (vibrant) — lift flat tinted surfaces into shadowed cards ---------- */
+  /* Scoped to [data-theme="vibrant"] only — NOT [data-theme="blue"] ("Ocean"), which shares
+     the same brand blue but intentionally keeps the flat Classic-style look. */
+  [data-theme="vibrant"] .sr-row{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+</style>
+  <link rel="stylesheet" href="global.css?v=10">
+</head>
+<body>
+<div class="phone">
+  <div class="statusbar">
+    <span>9:41</span>
+    <div class="sys">
+      <svg width="17" height="13" viewBox="0 0 20 14"><rect x="0" y="9" width="3" height="5" rx="1"/><rect x="5" y="6" width="3" height="8" rx="1"/><rect x="10" y="3" width="3" height="11" rx="1"/><rect x="15" y="0" width="3" height="14" rx="1"/></svg>
+      <svg width="17" height="13" viewBox="0 0 18 14" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M1 4.5C5.5 .5 12.5 .5 17 4.5"/><path d="M4 7.5C6.8 5 11.2 5 14 7.5"/><path d="M7 10.5C8.2 9.4 9.8 9.4 11 10.5"/><circle cx="9" cy="13" r=".6" fill="currentColor" stroke="none"/></svg>
+      <svg width="26" height="14" viewBox="0 0 26 14"><rect x="0.5" y="0.5" width="22" height="13" rx="3.5" fill="none" stroke="currentColor" stroke-opacity=".4"/><rect x="2" y="2" width="18" height="10" rx="2.2" fill="currentColor"/><rect x="23.5" y="4.5" width="2" height="5" rx="1" fill="currentColor" fill-opacity=".4"/></svg>
+    </div>
+  </div>
+
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="tb-search">
+      <svg class="si" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+      <input id="q" placeholder="Search doctors or groups by name…" autocomplete="off">
+      <button class="clr" id="clearQ" type="button" aria-label="Clear" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    </div>
+  </div>
+
+  <div class="scroll" id="scroll"></div>
+
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='network.html'; });
+
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const searchIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>';
+  const noneIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/><line x1="8" y1="8" x2="14" y2="14"/></svg>';
+  const chevIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>';
+  const grpIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg>';
+
+  // ---- searchable doctors (same people shown across Requests / Sent / Suggested on the Network screen) ----
+  const DOCTORS = [
+    { name:'Dr. Kavya Reddy', role:'Endocrinologist', hospital:'Apollo Hospitals', city:'Chennai', img:'https://randomuser.me/api/portraits/women/65.jpg' },
+    { name:'Dr. Sameer Shah', role:'Interventional Cardiologist', hospital:'Fortis Hospital', city:'Mumbai', img:'https://randomuser.me/api/portraits/men/52.jpg' },
+    { name:'Dr. Imran Khan', role:'Consultant Physician', hospital:'Max Healthcare', city:'New Delhi', img:'https://randomuser.me/api/portraits/men/61.jpg' },
+    { name:'Dr. Neha Gupta', role:'Nephrologist', hospital:'Medanta', city:'Gurugram', img:'https://randomuser.me/api/portraits/women/12.jpg' },
+    { name:'Dr. Rahul Verma', role:'Diabetologist', hospital:'Manipal Hospitals', city:'Bengaluru', img:'https://randomuser.me/api/portraits/men/22.jpg' },
+    { name:'Dr. Anjali Desai', role:'Endocrinologist', hospital:'Sterling Hospital', city:'Ahmedabad', img:'https://randomuser.me/api/portraits/women/32.jpg' },
+    { name:'Dr. Arjun Rao', role:'Cardiologist', hospital:'Narayana Health', city:'Bengaluru', img:'https://randomuser.me/api/portraits/men/41.jpg' }
+  ];
+
+  // ---- searchable groups (the ones group.html can actually open) + anything the user created/joined ----
+  const BASE_GROUPS = [
+    { name:'Indian Diabetes Forum', members:'12.4k members' },
+    { name:'City Cardiology Society', members:'3.2k members' },
+    { name:'Young Physicians Network', members:'8.7k members' },
+    { name:'Endocrine Society of India', members:'22.1k members' },
+    { name:'Clinical Cardiology Hub', members:'15.8k members' },
+    { name:'Nephrology Connect', members:'6.4k members' },
+    { name:'Interventional Cardiology India', members:'9.1k members' },
+    { name:'Women in Medicine Network', members:'14.3k members' }
+  ];
+  function loadGroups(){
+    let mine=[], joined=[];
+    try{ mine=JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){}
+    try{ joined=JSON.parse(localStorage.getItem('joinedGroups')||'[]'); }catch(e){}
+    const extra = mine.concat(joined).map(g=>({ name:g.name, members: typeof g.members==='string' && g.members.includes('member') ? g.members : (g.members||'')+' members' }));
+    const seen = new Set(BASE_GROUPS.map(g=>g.name));
+    return BASE_GROUPS.concat(extra.filter(g=>g.name && !seen.has(g.name) && !seen.add(g.name)));
+  }
+  const GROUPS = loadGroups();
+
+  const scroll = document.getElementById('scroll');
+  const qInput = document.getElementById('q'), clearQ = document.getElementById('clearQ');
+
+  function docRow(d){
+    return `<div class="sr-row" data-doc="${esc(d.name)}">
+      <img class="av" src="${d.img}" alt="">
+      <div class="m"><div class="nm">${esc(d.name)}</div><div class="sp">${esc(d.role)} · ${esc(d.hospital)}${d.city?', '+esc(d.city):''}</div></div>
+      <span class="chev">${chevIco}</span>
+    </div>`;
+  }
+  function grpRow(g){
+    return `<div class="sr-row" data-grp="${esc(g.name)}">
+      <span class="gi">${grpIco}</span>
+      <div class="m"><div class="nm">${esc(g.name)}</div><div class="sp">${esc(g.members)}</div></div>
+      <span class="chev">${chevIco}</span>
+    </div>`;
+  }
+
+  function renderPrompt(){
+    scroll.innerHTML = `<div class="sr-state"><div class="ic">${searchIco}</div><b>Find a colleague or group</b><span>Start typing a doctor's name or a group name to search your network.</span></div>`;
+  }
+  function renderEmpty(q){
+    scroll.innerHTML = `<div class="sr-state"><div class="ic">${noneIco}</div><b>No results found</b><span>We couldn't find any doctor or group matching <b>“${esc(q)}”</b>. Try a different name or spelling.</span></div>`;
+  }
+  function renderResults(docs, grps){
+    let html = '';
+    if(docs.length) html += `<div class="sr-sec"><div class="sr-sec-label">Doctors (${docs.length})</div><div class="sr-list">${docs.map(docRow).join('')}</div></div>`;
+    if(grps.length) html += `<div class="sr-sec"><div class="sr-sec-label">Groups (${grps.length})</div><div class="sr-list">${grps.map(grpRow).join('')}</div></div>`;
+    scroll.innerHTML = html;
+  }
+
+  function runSearch(){
+    const q = qInput.value.trim();
+    clearQ.hidden = !q;
+    if(!q){ renderPrompt(); return; }
+    const ql = q.toLowerCase();
+    const docs = DOCTORS.filter(d=>d.name.toLowerCase().includes(ql));
+    const grps = GROUPS.filter(g=>g.name.toLowerCase().includes(ql));
+    if(!docs.length && !grps.length){ renderEmpty(q); return; }
+    renderResults(docs, grps);
+  }
+
+  qInput.addEventListener('input', runSearch);
+  clearQ.addEventListener('click', ()=>{ qInput.value=''; qInput.focus(); runSearch(); });
+  scroll.addEventListener('click', e=>{
+    const dr=e.target.closest('[data-doc]'); if(dr){ location.href='profile.html?name='+encodeURIComponent(dr.dataset.doc); return; }
+    const gr=e.target.closest('[data-grp]'); if(gr){ location.href='group.html?name='+encodeURIComponent(gr.dataset.grp); return; }
+  });
+
+  renderPrompt();
+  qInput.focus();
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>
