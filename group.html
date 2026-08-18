@@ -218,7 +218,12 @@
       posts:[]},
     'Women in Medicine Network': { members:'14.3k', created:'Est. 2015', admin:'Dr. Ananya Ghosh', status:'pending',
       bio:'A supportive community for women in medicine — mentorship, work-life balance and career growth.',
-      posts:[]}
+      posts:[]},
+    'Dr. Sanjay Oberoi': { members:'1.8k', created:'Est. 2022', admin:'Dr. Sanjay Oberoi', status:'none',
+      bio:'Pulmonology fellowship circle run by Dr. Sanjay Oberoi — case discussions on ILD, sleep medicine and critical care ventilation.',
+      posts:[
+        {n:'Dr. Sanjay Oberoi', img:'https://randomuser.me/api/portraits/men/85.jpg', t:'1d', b:'Sharing our unit\'s weaning protocol for prolonged mechanical ventilation — feedback welcome from fellow intensivists.', likes:17, cmts:5}
+      ]}
   };
 
   function loadMyGroups(){ try{ return JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){ return []; } }
