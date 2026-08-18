@@ -27,11 +27,11 @@
   .pa-tabs button.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;background:var(--brand);border-radius:3px;}
 
   .post-tag{display:inline-block;font-size:11px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:20px;}
-  .pa-post{background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px;margin-bottom:11px;position:relative;}
-  .pa-post.mine{padding-right:42px;}
+  .pa-post{background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px;margin-bottom:11px;}
   .pa-post-h{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
   .pa-post-h img{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
-  .pa-post-h[data-author]{cursor:pointer;}
+  .pa-post-h [data-author]{cursor:pointer;}
+  .pa-author{flex:1;min-width:0;}
   .pa-author .nm{font-size:11.5px;font-weight:800;display:inline-flex;align-items:center;gap:4px;}
   .pa-author .sp{font-size:9px;color:var(--muted);margin-top:1px;}
   .pa-post-h .t{margin-left:auto;font-size:8.5px;color:var(--muted);font-weight:600;flex:0 0 auto;}
@@ -46,8 +46,8 @@
   .my-note{background:var(--soft2);border-radius:10px;padding:8px 10px;margin-top:10px;font-size:10.5px;line-height:1.5;color:var(--slate-700);}
   .my-note b{color:var(--brand);font-weight:800;}
 
-  /* per-post ⋯ menu (edit/delete) */
-  .pa-more{position:absolute;top:10px;right:8px;width:28px;height:28px;border:none;background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center;border-radius:8px;}
+  /* per-post ⋯ menu (edit/delete) — sits inline in the header row, same spot as the feed's own pmore button */
+  .pa-more{background:none;border:none;color:var(--muted);cursor:pointer;width:32px;height:32px;display:grid;place-items:center;flex:0 0 auto;border-radius:8px;}
   .pa-more:active{background:var(--chip);}
   .pa-more svg{width:16px;height:16px;}
 
@@ -179,33 +179,28 @@
     const commented = posts.filter(p=>(p.comments||[]).some(c=>c.name===ME_NAME));
     const reposted = posts.filter(p=>p.myRepost);
 
-    const postCard = p => `<div class="pa-post mine" data-id="${p.id}">
-        <button class="pa-more" data-more aria-label="Post options">${I.dots}</button>
-        ${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}
-        <div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}
-        <div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div>
-      </div>`;
-    const otherCard = (p, extra) => `<div class="pa-post">
-        <div class="pa-post-h" data-author="${esc(p.name)}">
-          <img src="${p.img}" alt="">
-          <div class="pa-author"><div class="nm">${esc(p.name)}${isVerified(p)?vchk:''}</div><div class="sp">${esc(p.spec||'')}</div></div>
+    // one consistent card shape across all four tabs — same header, same body, same stats row
+    const postCardHTML = (p, opts) => { opts = opts || {}; return `<div class="pa-post" data-id="${p.id}">
+        <div class="pa-post-h">
+          <img src="${p.img}" data-author="${esc(p.name)}" alt="">
+          <div class="pa-author" data-author="${esc(p.name)}"><div class="nm">${esc(p.name)}${isVerified(p)?vchk:''}</div><div class="sp">${esc(p.spec||'')}</div></div>
           <span class="t">${esc(p.time)}</span>
+          ${opts.menu?`<button class="pa-more" data-more aria-label="Post options">${I.dots}</button>`:''}
         </div>
         ${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}
         <div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}
         <div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span>${p.shares?`<span>${p.shares} reposts</span>`:''}</div>
-        ${extra||''}
-      </div>`;
-    const commentCard = p => {
-      const mine = (p.comments||[]).filter(c=>c.name===ME_NAME);
-      const note = mine.length ? `<div class="my-note">${mine.map(c=>`<b>You commented:</b> ${esc(c.text)}`).join('<br>')}</div>` : '';
-      return otherCard(p, note);
+        ${opts.extra||''}
+      </div>`; };
+    const commentExtra = p => {
+      const mineC = (p.comments||[]).filter(c=>c.name===ME_NAME);
+      return mineC.length ? `<div class="my-note">${mineC.map(c=>`<b>You commented:</b> ${esc(c.text)}`).join('<br>')}</div>` : '';
     };
 
-    document.getElementById('paPosts').innerHTML = mine.length ? mine.map(postCard).join('') : `<div class="pa-empty">You haven't posted anything yet.</div>`;
-    document.getElementById('paLiked').innerHTML = liked.length ? liked.map(p=>otherCard(p)).join('') : `<div class="pa-empty">You haven't liked any posts yet.</div>`;
-    document.getElementById('paComments').innerHTML = commented.length ? commented.map(commentCard).join('') : `<div class="pa-empty">You haven't commented on anything yet.</div>`;
-    document.getElementById('paReposts').innerHTML = reposted.length ? reposted.map(p=>otherCard(p)).join('') : `<div class="pa-empty">You haven't reposted anything yet.</div>`;
+    document.getElementById('paPosts').innerHTML = mine.length ? mine.map(p=>postCardHTML(p,{menu:true})).join('') : `<div class="pa-empty">You haven't posted anything yet.</div>`;
+    document.getElementById('paLiked').innerHTML = liked.length ? liked.map(p=>postCardHTML(p)).join('') : `<div class="pa-empty">You haven't liked any posts yet.</div>`;
+    document.getElementById('paComments').innerHTML = commented.length ? commented.map(p=>postCardHTML(p,{extra:commentExtra(p)})).join('') : `<div class="pa-empty">You haven't commented on anything yet.</div>`;
+    document.getElementById('paReposts').innerHTML = reposted.length ? reposted.map(p=>postCardHTML(p)).join('') : `<div class="pa-empty">You haven't reposted anything yet.</div>`;
   }
 
   async function load(){
@@ -258,17 +253,18 @@
     setTimeout(closeSheet, 1100);
   }
 
-  document.getElementById('paPosts').addEventListener('click', e=>{
-    const mo=e.target.closest('[data-more]'); if(!mo) return;
-    const id=mo.closest('.pa-post').dataset.id;
-    const p=posts.find(x=>String(x.id)===id);
-    if(p) showMenu(p);
-  });
-
-  ['paLiked','paComments','paReposts'].forEach(id=>{
+  ['paPosts','paLiked','paComments','paReposts'].forEach(id=>{
     document.getElementById(id).addEventListener('click', e=>{
+      const mo=e.target.closest('[data-more]');
+      if(mo){
+        const pid=mo.closest('.pa-post').dataset.id;
+        const p=posts.find(x=>String(x.id)===pid);
+        if(p) showMenu(p);
+        return;
+      }
       const au=e.target.closest('[data-author]'); if(!au) return;
-      location.href='profile.html?name='+encodeURIComponent(au.dataset.author);
+      const name=au.dataset.author;
+      location.href = name===ME_NAME ? 'profile.html' : 'profile.html?name='+encodeURIComponent(name);
     });
   });
 
