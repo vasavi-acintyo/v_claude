@@ -33,11 +33,15 @@
   .htop .mewrap .me{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);border:1px solid var(--line);display:block;}
 
   /* search */
-  .search{position:relative;margin-top:4px;cursor:pointer;}
+  .search-row{display:flex;align-items:center;gap:9px;margin-top:4px;}
+  .search{position:relative;flex:1;min-width:0;cursor:pointer;}
   .search svg{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--muted);}
   .search input{width:100%;min-height:34px;height:34px;background:var(--chip);border:1px solid transparent;border-radius:17px;padding:0 12px 0 33px;font-size:11px;font-family:inherit;color:var(--ink);cursor:pointer;}
   .search input::placeholder{color:var(--muted);}
   .search input:focus{outline:none;border-color:var(--brand);}
+  .filter-btn{width:34px;height:34px;min-width:34px;border-radius:50%;background:var(--brand);color:#fff;border:none;display:grid;place-items:center;cursor:pointer;flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1);}
+  .filter-btn:active{transform:scale(.9);}
+  .filter-btn svg{width:15px;height:15px;}
 
   /* quick access + specialty chips */
   .chips{display:flex;gap:9px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px;margin:0 -2px;}
@@ -414,9 +418,14 @@
     </div>
 
     <!-- Search -->
-    <div class="search rise" id="cmeSearchBar" role="button" tabindex="0" aria-label="Search and filter CMEs">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
-      <input placeholder="Search CMEs, speakers, topics…" readonly>
+    <div class="search-row rise">
+      <div class="search" id="cmeSearchBar" role="button" tabindex="0" aria-label="Search CMEs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
+        <input placeholder="Search CMEs, speakers, topics…" readonly>
+      </div>
+      <button type="button" class="filter-btn" id="cmeFilterBtn" aria-label="Filter CMEs">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>
+      </button>
     </div>
 
     <!-- CME progress (tap to open My History) -->
@@ -646,6 +655,7 @@
   // ---- search bar → dedicated search + filters screen ----
   document.getElementById('cmeSearchBar').addEventListener('click', ()=>location.href='cme-search.html');
   document.getElementById('cmeSearchBar').addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); location.href='cme-search.html'; } });
+  document.getElementById('cmeFilterBtn').addEventListener('click', ()=>location.href='cme-search.html?openFilters=1');
 
   // ---- My History sheet + upload-certificate flow (opened by tapping the progress card) ----
   (function(){
