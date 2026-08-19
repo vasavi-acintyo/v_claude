@@ -71,20 +71,30 @@
   .state p{font-size:11.5px;line-height:1.55;}
 
   /* filter sheet */
-  .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;z-index:30;}
+  .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.4);opacity:0;visibility:hidden;transition:opacity .25s, visibility .25s;z-index:30;}
   .backdrop.open{opacity:1;visibility:visible;}
-  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--surface);border-radius:22px 22px 0 0;padding:8px 18px calc(16px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .42s cubic-bezier(.22,1,.36,1);max-height:84%;overflow-y:auto;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--surface);border-radius:16px 16px 0 0;padding:0 20px calc(16px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:86%;overflow-y:auto;box-shadow:0 -8px 30px -12px rgba(15,15,35,.25);}
   .sheet.open{transform:translateY(0);}
   .sheet::-webkit-scrollbar{width:0;}
-  .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:8px auto 4px;position:sticky;top:0;}
-  .sheet .sh-h{display:flex;align-items:center;justify-content:space-between;margin:2px 2px 4px;}
-  .sheet h2{font-size:17px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
-  .sheet .reset{background:none;border:none;font-family:inherit;font-size:11.5px;font-weight:800;color:var(--brand);cursor:pointer;}
-  .flabel{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 2px 9px;}
+  .grab{width:34px;height:3.5px;background:var(--line);border-radius:3px;margin:10px auto 2px;position:sticky;top:0;background-color:var(--line);}
+  .sheet .sh-h{display:flex;align-items:center;justify-content:space-between;padding:14px 0 12px;border-bottom:1px solid var(--line);position:sticky;top:14px;background:var(--surface);z-index:1;}
+  .sheet h2{font-size:15.5px;font-weight:700;letter-spacing:-.01em;color:var(--ink);}
+  .sh-acts{display:flex;align-items:center;gap:14px;}
+  .sheet .reset{background:none;border:none;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--brand);cursor:pointer;padding:4px 2px;}
+  .fclose{width:26px;height:26px;border-radius:50%;border:none;background:var(--chip);color:var(--muted);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
+  .fclose svg{width:12px;height:12px;}
+  .fclose:active{transform:scale(.9);}
+
+  .fsection{padding:16px 0;border-bottom:1px solid var(--line);}
+  .fsection.last{border-bottom:none;padding-bottom:8px;}
+  .flabel{font-size:10.5px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin-bottom:11px;}
   .fchips{display:flex;flex-wrap:wrap;gap:8px;}
-  .fchip{padding:8px 13px;border-radius:20px;border:1px solid var(--line);background:var(--card);font-family:inherit;font-size:11.5px;font-weight:700;color:var(--slate-700);cursor:pointer;transition:background .16s,color .16s,border-color .16s;}
-  .fchip.active{background:var(--brand);border-color:var(--brand);color:#fff;}
-  .apply{width:100%;min-height:50px;border:none;border-radius:13px;background:var(--brand);color:#fff;font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;margin-top:20px;}
+  .fchip{display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:8px;border:1px solid var(--line);background:var(--card);font-family:inherit;font-size:11.5px;font-weight:500;color:var(--slate-700);cursor:pointer;transition:background .14s,color .14s,border-color .14s;line-height:1.3;}
+  .fchip .fic{display:inline-flex;width:12px;height:12px;flex:0 0 auto;color:var(--muted);}
+  .fchip .fchk{display:inline-flex;width:11px;height:11px;flex:0 0 auto;color:var(--brand);}
+  .fchip.active{background:var(--brand-soft);border-color:color-mix(in srgb,var(--brand) 45%,var(--line));color:var(--brand);font-weight:700;}
+  .fchip.active .fic{color:var(--brand);}
+  .apply{width:100%;min-height:48px;border:none;border-radius:11px;background:var(--brand);color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;margin:18px 0 4px;position:sticky;bottom:0;}
   .apply:active{transform:scale(.98);}
 
   .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:82%;text-align:center;}
@@ -134,14 +144,20 @@
   <div class="backdrop" id="fBackdrop"></div>
   <div class="sheet" id="fSheet">
     <div class="grab"></div>
-    <div class="sh-h"><h2>Filters</h2><button class="reset" id="fReset">Reset all</button></div>
-    <div class="flabel">Format</div><div class="fchips" id="fFormat"></div>
-    <div class="flabel">Fee</div><div class="fchips" id="fFee"></div>
-    <div class="flabel">Phase</div><div class="fchips" id="fPhase"></div>
-    <div class="flabel">Specialization</div><div class="fchips" id="fSpec"></div>
-    <div class="flabel">City</div><div class="fchips" id="fCity"></div>
-    <div class="flabel">State</div><div class="fchips" id="fState"></div>
-    <div class="flabel">Country</div><div class="fchips" id="fCountry"></div>
+    <div class="sh-h">
+      <h2>Filters</h2>
+      <div class="sh-acts">
+        <button class="reset" id="fReset">Reset all</button>
+        <button class="fclose" id="fClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+      </div>
+    </div>
+    <div class="fsection"><div class="flabel">Format</div><div class="fchips" id="fFormat"></div></div>
+    <div class="fsection"><div class="flabel">Fee</div><div class="fchips" id="fFee"></div></div>
+    <div class="fsection"><div class="flabel">Phase</div><div class="fchips" id="fPhase"></div></div>
+    <div class="fsection"><div class="flabel">Specialization</div><div class="fchips" id="fSpec"></div></div>
+    <div class="fsection"><div class="flabel">City</div><div class="fchips" id="fCity"></div></div>
+    <div class="fsection"><div class="flabel">State</div><div class="fchips" id="fState"></div></div>
+    <div class="fsection last"><div class="flabel">Country</div><div class="fchips" id="fCountry"></div></div>
     <button class="apply" id="fApply">Show results</button>
   </div>
 </div>
@@ -315,9 +331,18 @@
   /* ---- filter sheet — every group is single-select (tap a chip to pick it, only one active per group) ---- */
   const fBackdrop=document.getElementById('fBackdrop'), fSheet=document.getElementById('fSheet');
   let tFormat=format, tFee=fee, tPhase=phase, tSpec=specialty, tCity=city, tState=state, tCountry=country;
-  function chipRow(host, opts, val){ document.getElementById(host).innerHTML = ['All',...opts].map(o=>`<button class="fchip${o===val?' active':''}" data-v="${esc(o)}">${esc(o)}</button>`).join(''); }
+  const checkIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 10 17 19 7"/></svg>';
+  const FORMAT_ICON = { Online:IC.globe, Offline:IC.pin, Hybrid:IC.hybrid, Recorded:IC.rec };
+  function chipRow(host, opts, val, iconMap){
+    document.getElementById(host).innerHTML = ['All',...opts].map(o=>{
+      const active = o===val;
+      const ic = iconMap && iconMap[o] ? `<span class="fic">${iconMap[o]}</span>` : '';
+      const chk = active ? `<span class="fchk">${checkIco}</span>` : '';
+      return `<button class="fchip${active?' active':''}" data-v="${esc(o)}">${chk}${ic}${esc(o)}</button>`;
+    }).join('');
+  }
   function renderAllChipRows(){
-    chipRow('fFormat',FORMATS,tFormat);
+    chipRow('fFormat',FORMATS,tFormat,FORMAT_ICON);
     chipRow('fFee',FEES,tFee);
     chipRow('fPhase',PHASES,tPhase);
     chipRow('fSpec',SPECIALTIES,tSpec);
@@ -332,7 +357,8 @@
   }
   function closeFilters(){ fBackdrop.classList.remove('open'); fSheet.classList.remove('open'); }
   fBackdrop.addEventListener('click', closeFilters);
-  document.getElementById('fFormat').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tFormat=b.dataset.v; chipRow('fFormat',FORMATS,tFormat); } });
+  document.getElementById('fClose').addEventListener('click', closeFilters);
+  document.getElementById('fFormat').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tFormat=b.dataset.v; chipRow('fFormat',FORMATS,tFormat,FORMAT_ICON); } });
   document.getElementById('fFee').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tFee=b.dataset.v; chipRow('fFee',FEES,tFee); } });
   document.getElementById('fPhase').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tPhase=b.dataset.v; chipRow('fPhase',PHASES,tPhase); } });
   document.getElementById('fSpec').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tSpec=b.dataset.v; chipRow('fSpec',SPECIALTIES,tSpec); } });
