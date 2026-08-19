@@ -76,8 +76,9 @@
   .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--surface);border-radius:16px 16px 0 0;padding:0 20px calc(16px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);max-height:86%;overflow-y:auto;box-shadow:0 -8px 30px -12px rgba(15,15,35,.25);}
   .sheet.open{transform:translateY(0);}
   .sheet::-webkit-scrollbar{width:0;}
-  .grab{width:34px;height:3.5px;background:var(--line);border-radius:3px;margin:10px auto 2px;position:sticky;top:0;background-color:var(--line);}
-  .sheet .sh-h{display:flex;align-items:center;justify-content:space-between;padding:14px 0 12px;border-bottom:1px solid var(--line);position:sticky;top:14px;background:var(--surface);z-index:1;}
+  .sheet-head{position:sticky;top:0;z-index:2;background:var(--surface);}
+  .grab{width:34px;height:3.5px;background:var(--line);border-radius:3px;margin:10px auto 0;}
+  .sheet .sh-h{display:flex;align-items:center;justify-content:space-between;padding:10px 0 12px;border-bottom:1px solid var(--line);}
   .sheet h2{font-size:15.5px;font-weight:700;letter-spacing:-.01em;color:var(--ink);}
   .sh-acts{display:flex;align-items:center;gap:14px;}
   .sheet .reset{background:none;border:none;font-family:inherit;font-size:11.5px;font-weight:600;color:var(--brand);cursor:pointer;padding:4px 2px;}
@@ -143,12 +144,14 @@
   <!-- Filter sheet -->
   <div class="backdrop" id="fBackdrop"></div>
   <div class="sheet" id="fSheet">
-    <div class="grab"></div>
-    <div class="sh-h">
-      <h2>Filters</h2>
-      <div class="sh-acts">
-        <button class="reset" id="fReset">Reset all</button>
-        <button class="fclose" id="fClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+    <div class="sheet-head">
+      <div class="grab"></div>
+      <div class="sh-h">
+        <h2>Filters</h2>
+        <div class="sh-acts">
+          <button class="reset" id="fReset">Reset all</button>
+          <button class="fclose" id="fClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+        </div>
       </div>
     </div>
     <div class="fsection"><div class="flabel">Format</div><div class="fchips" id="fFormat"></div></div>
