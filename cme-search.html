@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CMEs by Specialty — DocSynapse</title>
+<title>Search CMEs — DocSynapse</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <style>
@@ -26,7 +26,14 @@
   .search input{width:100%;min-height:38px;height:38px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:0 14px 0 36px;font-size:12px;font-family:inherit;color:var(--ink);}
   .search input::placeholder{color:var(--muted);} .search input:focus{outline:none;border-color:var(--brand);}
 
-  .seeall{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--brand);text-decoration:none;margin:0 2px 14px;}
+  /* filters entry row */
+  .chips{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;margin:0 -2px 14px;padding:2px;}
+  .chips::-webkit-scrollbar{display:none;}
+  .chip{flex:0 0 auto;display:inline-flex;align-items:center;gap:6px;padding:8px 13px;border-radius:20px;border:1px solid var(--line);background:var(--card);font-size:11px;font-weight:700;color:var(--slate-700);cursor:pointer;white-space:nowrap;transition:background .16s, color .16s, border-color .16s;}
+  .chip.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .chip.filt{color:var(--brand);border-color:color-mix(in srgb,var(--brand) 40%,var(--line));} .chip.filt svg{width:13px;height:13px;}
+  .chip .fcount{background:var(--brand);color:#fff;font-size:8.5px;font-weight:800;min-width:15px;height:15px;border-radius:8px;display:grid;place-items:center;padding:0 3px;}
+
   .resultcount{font-size:10.5px;color:var(--muted);font-weight:700;margin:0 2px 10px;}
 
   /* CME card */
@@ -36,6 +43,14 @@
   .ctop{display:flex;align-items:center;gap:7px;flex-wrap:wrap;}
   .fmtbadge{display:inline-flex;align-items:center;gap:5px;font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--brand);background:var(--brand-soft);padding:4px 9px;border-radius:20px;}
   .fmtbadge svg{width:12px;height:12px;}
+  .status-pill{display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:20px;font-size:8.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;}
+  .status-pill .d{width:6px;height:6px;border-radius:50%;}
+  .status-pill.live{background:rgba(224,106,106,.12);border:1px solid rgba(224,106,106,.28);color:#c0464a;}
+  .status-pill.live .d{background:#c0464a;animation:pulse 1.4s infinite;}
+  .status-pill.upcoming{background:var(--brand-soft);color:var(--brand);border:1px solid transparent;}
+  .status-pill.upcoming .d{background:var(--brand);}
+  .status-pill.completed{background:var(--chip);color:var(--muted);border:1px solid transparent;}
+  .status-pill.completed .d{background:var(--muted);}
   .ptag{display:inline-flex;align-items:center;font-size:8.5px;font-weight:800;letter-spacing:.04em;padding:3px 8px;border-radius:20px;text-transform:uppercase;white-space:nowrap;margin-left:auto;}
   .ptag.free{color:#15803d;background:#dcfce7;} .ptag.paid{color:var(--brand);background:var(--brand-soft);}
   [data-theme="dark"] .ptag.free{color:#86efac;background:rgba(34,197,94,.16);}
@@ -55,6 +70,23 @@
   .state h3{font-size:15px;font-weight:800;color:var(--ink);margin-bottom:6px;}
   .state p{font-size:11.5px;line-height:1.55;}
 
+  /* filter sheet */
+  .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;z-index:30;}
+  .backdrop.open{opacity:1;visibility:visible;}
+  .sheet{position:absolute;left:0;right:0;bottom:0;z-index:31;background:var(--surface);border-radius:22px 22px 0 0;padding:8px 18px calc(16px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .42s cubic-bezier(.22,1,.36,1);max-height:84%;overflow-y:auto;}
+  .sheet.open{transform:translateY(0);}
+  .sheet::-webkit-scrollbar{width:0;}
+  .grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:8px auto 4px;position:sticky;top:0;}
+  .sheet .sh-h{display:flex;align-items:center;justify-content:space-between;margin:2px 2px 4px;}
+  .sheet h2{font-size:17px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .sheet .reset{background:none;border:none;font-family:inherit;font-size:11.5px;font-weight:800;color:var(--brand);cursor:pointer;}
+  .flabel{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:16px 2px 9px;}
+  .fchips{display:flex;flex-wrap:wrap;gap:8px;}
+  .fchip{padding:8px 13px;border-radius:20px;border:1px solid var(--line);background:var(--card);font-family:inherit;font-size:11.5px;font-weight:700;color:var(--slate-700);cursor:pointer;transition:background .16s,color .16s,border-color .16s;}
+  .fchip.active{background:var(--brand);border-color:var(--brand);color:#fff;}
+  .apply{width:100%;min-height:50px;border:none;border-radius:13px;background:var(--brand);color:#fff;font-family:inherit;font-size:13.5px;font-weight:800;cursor:pointer;margin-top:20px;}
+  .apply:active{transform:scale(.98);}
+
   .toast{position:absolute;left:50%;bottom:40px;transform:translateX(-50%) translateY(10px);background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:99;max-width:82%;text-align:center;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 
@@ -65,6 +97,8 @@
      the same brand blue but intentionally keeps the flat Classic-style look. */
   [data-theme="vibrant"] .ccard{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
   [data-theme="vibrant"] .ccard:hover{box-shadow:0 12px 22px -14px rgba(30,20,60,.22);}
+  [data-theme="vibrant"] .flabel{position:relative;padding-left:12px;}
+  [data-theme="vibrant"] .flabel::before{content:"";position:absolute;left:0;top:50%;transform:translateY(-50%);width:6px;height:6px;border-radius:50%;background:var(--brand);}
 </style>
   <link rel="stylesheet" href="global.css?v=10">
 </head>
@@ -81,20 +115,35 @@
 
   <div class="topbar">
     <button class="bk" id="back" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-    <span class="tt" id="topTitle">CMEs by Specialty</span>
+    <span class="tt">Search CMEs</span>
   </div>
 
   <div class="scroll" id="scroll">
     <div class="search">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.7" y2="16.7"/></svg>
-      <input id="q" placeholder="Search by title, city or organiser…">
+      <input id="q" placeholder="Search by title, organiser or venue…">
     </div>
 
-    <a class="seeall" href="specialties.html">← All specialties</a>
+    <div class="chips" id="filtChips"></div>
     <div class="resultcount" id="resultCount"></div>
     <div id="list"></div>
   </div>
   <div class="home-ind"></div>
+
+  <!-- Filter sheet -->
+  <div class="backdrop" id="fBackdrop"></div>
+  <div class="sheet" id="fSheet">
+    <div class="grab"></div>
+    <div class="sh-h"><h2>Filters</h2><button class="reset" id="fReset">Reset all</button></div>
+    <div class="flabel">Format</div><div class="fchips" id="fFormat"></div>
+    <div class="flabel">Fee</div><div class="fchips" id="fFee"></div>
+    <div class="flabel">Phase</div><div class="fchips" id="fPhase"></div>
+    <div class="flabel">Specialization</div><div class="fchips" id="fSpec"></div>
+    <div class="flabel">City</div><div class="fchips" id="fCity"></div>
+    <div class="flabel">State</div><div class="fchips" id="fState"></div>
+    <div class="flabel">Country</div><div class="fchips" id="fCountry"></div>
+    <button class="apply" id="fApply">Show results</button>
+  </div>
 </div>
 
 <script>
@@ -102,20 +151,21 @@
   try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
   function toast(m){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; document.querySelector('.phone').appendChild(t); } t.textContent=m; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1500); }
   const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='specialties.html'; });
+  document.getElementById('back').addEventListener('click', ()=>{ history.length>1?history.back():location.href='cme.html'; });
 
   const IC = {
+    filter:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="7" y1="12" x2="17" y2="12"/><line x1="10" y1="18" x2="14" y2="18"/></svg>',
     pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>',
     globe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 3.6 6 3.6 9s-1.1 6.5-3.6 9c-2.5-2.5-3.6-6-3.6-9s1.1-6.5 3.6-9Z"/></svg>',
     hybrid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M10 20s6-4.7 6-9.5A6 6 0 0 0 4 10.5C4 15.3 10 20 10 20Z"/><circle cx="10" cy="10.5" r="2"/><path d="M15.5 7.3c1.4 1 1.4 4.4 0 5.4"/><path d="M18 5.3c2.7 1.9 2.7 7.5 0 9.4"/></svg>',
+    rec:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><polygon points="10 9 15 12 10 15" fill="currentColor" stroke="none"/></svg>',
     cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="8" y1="2.5" x2="8" y2="6"/><line x1="16" y1="2.5" x2="16" y2="6"/></svg>',
     org:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M15 21V9h3a1 1 0 0 1 1 1v11"/></svg>',
     sat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="3"/><path d="M7 7V5a5 5 0 0 1 10 0v2"/></svg>'
   };
 
   // ---- demo seed: real published CMEs (created via create-cme.html) are read from the
-  // same 'cmePrograms' store, so demo + real listings blend together automatically.
-  // (Kept identical to the seed in cme-locations.html so both screens agree on the same data.) ----
+  // same 'cmePrograms' store, so demo + real listings blend together automatically. ----
   const SEED = [
     { id:'loc-seed-1', title:'Cardiometabolic Update 2026', format:'Hybrid', specialties:['Cardiology','Endocrinology'], org:'Cardiological Society of India',
       eventStartDate:'2026-08-24', eventEndDate:'2026-08-26', eventStartTime:'09:00', timezone:'IST · India Standard Time (GMT+5:30)',
@@ -165,57 +215,91 @@
     if(isNaN(d)) return s;
     return d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
   }
+  function computeStatus(p){
+    if(!p.eventStartDate) return 'upcoming';
+    const today=new Date().toISOString().slice(0,10);
+    const end=p.eventEndDate || p.eventStartDate;
+    if(today < p.eventStartDate) return 'upcoming';
+    if(today > end) return 'completed';
+    return 'live';
+  }
 
-  const qp = new URLSearchParams(location.search);
-  const specialty = qp.get('specialty') || '';
-  document.getElementById('topTitle').textContent = specialty ? specialty+' CMEs' : 'CMEs by Specialty';
-
-  const ALL = loadPrograms().filter(p => p.specialties && p.specialties.includes(specialty));
+  // no date pre-filtering here — Phase is a first-class filter, including "Completed"
+  const ALL = loadPrograms();
   ALL.sort((a,b)=>(a.eventStartDate||'').localeCompare(b.eventStartDate||''));
 
-  const today = new Date().toISOString().slice(0,10);
-  const VISIBLE = ALL.filter(p => !(p.eventEndDate||p.eventStartDate) || (p.eventEndDate||p.eventStartDate) >= today);
+  function uniqueSorted(arr){ return [...new Set(arr.filter(Boolean))].sort(); }
+  const FORMATS = ['Online','Offline','Hybrid','Recorded'];
+  const FEES = ['Free','Paid'];
+  const PHASES = ['Live','Upcoming','Completed'];
+  const SPECIALTIES = uniqueSorted(ALL.flatMap(p=>p.specialties||[]));
+  const CITIES = uniqueSorted(ALL.map(p=>p.city));
+  const STATES = uniqueSorted(ALL.map(p=>p.state));
+  const COUNTRIES = uniqueSorted(ALL.map(p=>p.country));
 
-  let query = '';
+  let format='All', fee='All', phase='All', specialty='All', city='All', state='All', country='All', query='';
+
+  function activeCount(){
+    return [format,fee,phase,specialty,city,state,country].filter(v=>v!=='All').length;
+  }
+  function renderFiltChips(){
+    const n = activeCount();
+    document.getElementById('filtChips').innerHTML =
+      `<button class="chip filt" id="openFilters">${IC.filter}Filters${n?`<span class="fcount">${n}</span>`:''}</button>`;
+    document.getElementById('openFilters').addEventListener('click', openFilters);
+  }
 
   function filtered(){
     const q=query.trim().toLowerCase();
-    return VISIBLE.filter(p =>
-      !q || (p.title||'').toLowerCase().includes(q) || (p.org||'').toLowerCase().includes(q) || (p.city||'').toLowerCase().includes(q) || (p.venue||'').toLowerCase().includes(q)
-    );
+    return ALL.filter(p=>{
+      if(format!=='All' && p.format!==format) return false;
+      if(fee!=='All'){ const isFree=!p.paid; if(fee==='Free' && !isFree) return false; if(fee==='Paid' && isFree) return false; }
+      if(phase!=='All' && computeStatus(p)!==phase.toLowerCase()) return false;
+      if(specialty!=='All' && !(p.specialties||[]).includes(specialty)) return false;
+      if(city!=='All' && p.city!==city) return false;
+      if(state!=='All' && p.state!==state) return false;
+      if(country!=='All' && p.country!==country) return false;
+      if(q && !((p.title||'').toLowerCase().includes(q) || (p.org||'').toLowerCase().includes(q) || (p.city||'').toLowerCase().includes(q) || (p.venue||'').toLowerCase().includes(q))) return false;
+      return true;
+    });
   }
 
   function fmtBadge(p){
     if(p.format==='Hybrid') return `<span class="fmtbadge">${IC.hybrid}Hybrid</span>`;
     if(p.format==='Offline') return `<span class="fmtbadge">${IC.pin}Offline</span>`;
+    if(p.format==='Recorded') return `<span class="fmtbadge">${IC.rec}Recorded</span>`;
     return `<span class="fmtbadge">${IC.globe}Online</span>`;
   }
   function priceTag(p){ return p.paid ? `<span class="ptag paid">₹${esc(p.fee||'—')}</span>` : `<span class="ptag free">Free</span>`; }
+  function statusPill(p){
+    const s=computeStatus(p);
+    const label={live:'Live now',upcoming:'Upcoming',completed:'Completed'}[s];
+    return `<span class="status-pill ${s}"><span class="d"></span>${label}</span>`;
+  }
   function whereLine(p){
-    if(p.format==='Online') return `<span>${IC.globe}Online</span>`;
+    if(p.format==='Online' || p.format==='Recorded') return `<span>${IC.globe}${esc(p.format)}</span>`;
     return `<span>${IC.pin}${esc(p.city||'')}${p.state?', '+esc(p.state):''}</span>`;
   }
 
   function card(p){
     const dateStr = p.eventStartDate ? fmtDate(p.eventStartDate)+(p.eventEndDate && p.eventEndDate!==p.eventStartDate ? ' – '+fmtDate(p.eventEndDate) : '') : '';
-    const otherSpecs = (p.specialties||[]).filter(s=>s!==specialty);
     return `<div class="ccard rise" data-id="${esc(p.id)}">
-      <div class="ctop">${fmtBadge(p)}${priceTag(p)}</div>
+      <div class="ctop">${fmtBadge(p)}${statusPill(p)}${priceTag(p)}</div>
       <div class="ctitle">${esc(p.title||'Untitled program')}</div>
       <div class="cmeta">
         ${dateStr?`<span>${IC.cal}${esc(dateStr)}</span>`:''}
         ${whereLine(p)}
       </div>
       ${p.org?`<div class="corg">${IC.org}Organized by ${esc(p.org)}</div>`:''}
-      ${otherSpecs.length?`<div class="cspecs">${otherSpecs.map(s=>`<span class="cspec">${esc(s)}</span>`).join('')}</div>`:''}
+      ${p.specialties&&p.specialties.length?`<div class="cspecs">${p.specialties.map(s=>`<span class="cspec">${esc(s)}</span>`).join('')}</div>`:''}
     </div>`;
   }
 
   function render(){
     const results = filtered();
-    document.getElementById('resultCount').textContent = results.length + ' CME' + (results.length!==1?'s':'') + (specialty?' in '+specialty:'');
+    document.getElementById('resultCount').textContent = results.length + ' CME' + (results.length!==1?'s':'') + ' found';
     if(!results.length){
-      document.getElementById('list').innerHTML = `<div class="state"><div class="eic">${IC.sat}</div><h3>No CMEs found</h3><p>Try a different search —<br>or check back later for new programs in this specialty.</p></div>`;
+      document.getElementById('list').innerHTML = `<div class="state"><div class="eic">${IC.sat}</div><h3>No CMEs found</h3><p>Try a different search or fewer filters —<br>or check back later for new programs.</p></div>`;
       return;
     }
     document.getElementById('list').innerHTML = `<div class="clist">${results.map(card).join('')}</div>`;
@@ -228,6 +312,40 @@
 
   document.getElementById('q').addEventListener('input', e=>{ query=e.target.value; render(); });
 
+  /* ---- filter sheet — every group is single-select (tap a chip to pick it, only one active per group) ---- */
+  const fBackdrop=document.getElementById('fBackdrop'), fSheet=document.getElementById('fSheet');
+  let tFormat=format, tFee=fee, tPhase=phase, tSpec=specialty, tCity=city, tState=state, tCountry=country;
+  function chipRow(host, opts, val){ document.getElementById(host).innerHTML = ['All',...opts].map(o=>`<button class="fchip${o===val?' active':''}" data-v="${esc(o)}">${esc(o)}</button>`).join(''); }
+  function renderAllChipRows(){
+    chipRow('fFormat',FORMATS,tFormat);
+    chipRow('fFee',FEES,tFee);
+    chipRow('fPhase',PHASES,tPhase);
+    chipRow('fSpec',SPECIALTIES,tSpec);
+    chipRow('fCity',CITIES,tCity);
+    chipRow('fState',STATES,tState);
+    chipRow('fCountry',COUNTRIES,tCountry);
+  }
+  function openFilters(){
+    tFormat=format; tFee=fee; tPhase=phase; tSpec=specialty; tCity=city; tState=state; tCountry=country;
+    renderAllChipRows();
+    fBackdrop.classList.add('open'); fSheet.classList.add('open');
+  }
+  function closeFilters(){ fBackdrop.classList.remove('open'); fSheet.classList.remove('open'); }
+  fBackdrop.addEventListener('click', closeFilters);
+  document.getElementById('fFormat').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tFormat=b.dataset.v; chipRow('fFormat',FORMATS,tFormat); } });
+  document.getElementById('fFee').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tFee=b.dataset.v; chipRow('fFee',FEES,tFee); } });
+  document.getElementById('fPhase').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tPhase=b.dataset.v; chipRow('fPhase',PHASES,tPhase); } });
+  document.getElementById('fSpec').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tSpec=b.dataset.v; chipRow('fSpec',SPECIALTIES,tSpec); } });
+  document.getElementById('fCity').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tCity=b.dataset.v; chipRow('fCity',CITIES,tCity); } });
+  document.getElementById('fState').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tState=b.dataset.v; chipRow('fState',STATES,tState); } });
+  document.getElementById('fCountry').addEventListener('click', e=>{ const b=e.target.closest('.fchip'); if(b){ tCountry=b.dataset.v; chipRow('fCountry',COUNTRIES,tCountry); } });
+  document.getElementById('fReset').addEventListener('click', ()=>{ tFormat='All'; tFee='All'; tPhase='All'; tSpec='All'; tCity='All'; tState='All'; tCountry='All'; renderAllChipRows(); });
+  document.getElementById('fApply').addEventListener('click', ()=>{
+    format=tFormat; fee=tFee; phase=tPhase; specialty=tSpec; city=tCity; state=tState; country=tCountry;
+    closeFilters(); renderFiltChips(); render();
+  });
+
+  renderFiltChips();
   render();
 
   (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
