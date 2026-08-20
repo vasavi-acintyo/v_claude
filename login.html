@@ -246,6 +246,12 @@
           </select></div>
         </div>
         <div class="field">
+          <label for="regYear">Year of registration</label>
+          <div class="inp"><select id="regYear" required>
+            <option value="" disabled selected>Select year</option>
+          </select></div>
+        </div>
+        <div class="field">
           <label for="mob">Mobile number</label>
           <div class="inp"><input id="mob" placeholder="+91 98765 43210" inputmode="tel"></div>
         </div>
@@ -518,12 +524,20 @@
   });
 
   // ---- REGISTER wizard ----
-  const regNo=document.getElementById('regNo'), council=document.getElementById('council'), mob=document.getElementById('mob');
+  const regNo=document.getElementById('regNo'), council=document.getElementById('council'), regYear=document.getElementById('regYear'), mob=document.getElementById('mob');
   const sendOtp=document.getElementById('sendOtp');
   const otpRow=document.getElementById('otpRow'), otpInputs=[...otpRow.querySelectorAll('input')];
   const verifyOtp=document.getElementById('verifyOtp'), resend=document.getElementById('resend');
   const createAcct=document.getElementById('createAcct'), regEmail=document.getElementById('regEmail'), regPw=document.getElementById('regPw');
   let matched=null, resendInt=null;
+
+  // Year of registration — populate the select with a descending range up to the current year
+  (function(){
+    const thisYear = new Date().getFullYear();
+    let opts = '';
+    for(let y=thisYear; y>=1950; y--) opts += `<option value="${y}">${y}</option>`;
+    regYear.insertAdjacentHTML('beforeend', opts);
+  })();
 
   function gotoStep(n){
     regWizard.querySelectorAll('.wstep').forEach(s=>{ s.hidden = (+s.dataset.step !== n); });
@@ -531,9 +545,10 @@
   }
 
   // Step 1 — identity
-  function validateStep1(){ sendOtp.disabled = !(regNo.value.trim() && council.value && mob.value.replace(/\D/g,'').length>=10); }
+  function validateStep1(){ sendOtp.disabled = !(regNo.value.trim() && council.value && regYear.value && mob.value.replace(/\D/g,'').length>=10); }
   [regNo,mob].forEach(el=>el.addEventListener('input', validateStep1));
   council.addEventListener('change', validateStep1);
+  regYear.addEventListener('change', validateStep1);
 
   // Mock National Medical Register lookup (reg no → doctor record)
   const REGISTER=[
@@ -618,6 +633,7 @@
       localStorage.setItem('docRegNo',   document.getElementById('pfReg').value);
       localStorage.setItem('docCouncil', document.getElementById('pfCouncil').value);
       localStorage.setItem('docRegYear', document.getElementById('pfYear').value);
+      localStorage.setItem('docRegYearEntered', regYear.value);
       localStorage.setItem('docFather',  document.getElementById('pfFather').value);
       localStorage.setItem('docName',    document.getElementById('pfName').value);
       localStorage.setItem('docUser',    regEmail.value.trim());
