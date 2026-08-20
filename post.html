@@ -219,6 +219,11 @@
   .ci .cact button{background:none;border:none;font-family:inherit;font-size:8.5px;font-weight:700;color:var(--muted);cursor:pointer;padding:0;}
   .ci .cact button.liked{color:var(--brand);}
   .ci .cact span{font-size:8.5px;color:var(--muted);}
+  .ci .cact .clikes-count{margin-left:-8px;color:var(--muted);}
+  .ci .cact .clikes-count:hover{color:var(--brand);text-decoration:underline;}
+  .view-replies{display:flex;align-items:center;gap:5px;margin-left:39px;background:none;border:none;font-family:inherit;font-size:10.5px;font-weight:700;color:var(--muted);cursor:pointer;padding:0;}
+  .view-replies svg{width:11px;height:11px;}
+  .view-replies:hover{color:var(--brand);}
   .ci .nm .cmore{display:inline-flex;align-items:center;color:var(--muted);flex:0 0 auto;background:none;border:none;cursor:pointer;padding:0;}
   .ci .nm .cmore svg{width:13px;height:13px;}
   .ci.reply{margin-left:39px;padding-left:12px;border-left:2px solid var(--line);}
@@ -890,19 +895,29 @@
     return `<div class="react-sum">${parts.join('<span class="dot">·</span>')}</div>`;
   }
   function commentHTML(c,ci){
-    const repliesHTML = (c.replies||[]).map((r,ri)=>replyHTML(r,ci,ri)).join('');
+    const replies = c.replies||[];
+    let repliesBlock = '';
+    if(replies.length > 1){
+      repliesBlock = c._repliesOpen
+        ? replies.map((r,ri)=>replyHTML(r,ci,ri)).join('') + `<button class="view-replies" data-hidereplies="${ci}">${chevUp}Hide replies</button>`
+        : `<button class="view-replies" data-viewreplies="${ci}">${chevDown}View ${replies.length} replies</button>`;
+    } else if(replies.length === 1){
+      repliesBlock = replyHTML(replies[0], ci, 0);
+    }
     return `<div class="ci${c.me?' me':''}"><img src="${c.img}" alt=""><div class="cbx"><div class="bub"><div class="nm"><span>${c.name}${c.me?' <span class="youtag">You</span>':''}</span>${c.me?`<button class="cmore" data-cmore="${ci}" aria-label="Comment options">${dots}</button>`:''}</div><div class="tx">${c.text}</div></div>
-      <div class="cact"><button data-clike="${ci}" class="${c.liked?'liked':''}">Like${c.likes?` · ${c.likes}`:''}</button><button data-creply="${ci}">Reply</button><span>${c.time}</span></div></div></div>${repliesHTML}`;
+      <div class="cact"><button data-clike="${ci}" class="${c.liked?'liked':''}">Like</button>${c.likes?`<button class="clikes-count" data-cwho="${ci}">· ${c.likes}</button>`:''}<button data-creply="${ci}">Reply</button><span>${c.time}</span></div></div></div>${repliesBlock}`;
   }
   function replyHTML(r,ci,ri){
     const key = ci+':'+ri;
     return `<div class="ci reply${r.me?' me':''}"><img src="${r.img}" alt=""><div class="cbx"><div class="bub"><div class="nm"><span>${r.name}${r.me?' <span class="youtag">You</span>':''}</span>${r.me?`<button class="cmore" data-rmore="${key}" aria-label="Comment options">${dots}</button>`:''}</div><div class="tx">${r.text}</div></div>
-      <div class="cact"><button data-rlike="${key}" class="${r.liked?'liked':''}">Like${r.likes?` · ${r.likes}`:''}</button><button data-creply="${ci}" data-mention="${esc(r.name)}">Reply</button><span>${r.time}</span></div></div></div>`;
+      <div class="cact"><button data-rlike="${key}" class="${r.liked?'liked':''}">Like</button>${r.likes?`<button class="clikes-count" data-cwho="${key}">· ${r.likes}</button>`:''}<button data-creply="${ci}" data-mention="${esc(r.name)}">Reply</button><span>${r.time}</span></div></div></div>`;
   }
   const pdfIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
   const vchk = '<svg class="vchk" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 2.4 1.8 3 .1 1 2.8 2.4 1.8-1 2.8 1 2.8-2.4 1.8-1 2.8-3 .1L12 22l-2.4-1.8-3-.1-1-2.8L3.2 15.4l1-2.8-1-2.8 2.4-1.8 1-2.8 3-.1z"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="var(--card)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const dots = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
   const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const chevDown = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  const chevUp = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>';
   const isVerified = p => p.verified!==false && p.spec!=='Group';
   const docIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>';
   function mediaHTML(m){
@@ -970,6 +985,7 @@
       const parent = p.comments[target.ci];
       parent.replies = parent.replies || [];
       parent.replies.push({name:ME.name,img:ME.img,text,time:'now',likes:0,liked:false,me:true});
+      parent._repliesOpen = true; // surface your own new reply immediately instead of leaving it behind a collapsed "View replies"
     } else {
       p.comments.push({name:ME.name,img:ME.img,text,time:'now',likes:0,liked:false,me:true});
     }
@@ -997,6 +1013,9 @@
     const rlk=e.target.closest('[data-rlike]'); if(rlk){ const p=postFromEl(rlk); const [ci,ri]=rlk.dataset.rlike.split(':').map(Number); const r=p.comments[ci].replies[ri]; r.liked=!r.liked; r.likes=(r.likes||0)+(r.liked?1:-1); saveFeed(); renderFeed(); return; }
     const cmo=e.target.closest('[data-cmore]'); if(cmo){ openCommentOpts(postFromEl(cmo), +cmo.dataset.cmore); return; }
     const rmo=e.target.closest('[data-rmore]'); if(rmo){ openCommentOpts(postFromEl(rmo), rmo.dataset.rmore); return; }
+    const cwho=e.target.closest('[data-cwho]'); if(cwho){ openCommentLikes(postFromEl(cwho), cwho.dataset.cwho); return; }
+    const vr=e.target.closest('[data-viewreplies]'); if(vr){ const p=postFromEl(vr); p.comments[+vr.dataset.viewreplies]._repliesOpen=true; renderFeed(); return; }
+    const hr=e.target.closest('[data-hidereplies]'); if(hr){ const p=postFromEl(hr); p.comments[+hr.dataset.hidereplies]._repliesOpen=false; renderFeed(); return; }
     const rpl=e.target.closest('[data-creply]'); if(rpl){
       const p=postFromEl(rpl); const ci=+rpl.dataset.creply;
       const mentionName = rpl.dataset.mention || p.comments[ci].name;
@@ -1130,7 +1149,7 @@
   // Likes → filterable by individual reaction type (All / Like / Celebrate / Support / Love / Insightful / Funny)
   // Comments → just the real commenters. Reposts → just the reposters. No cross-navigation between the three.
   const engBackdrop=document.getElementById('engBackdrop'), engSheet=document.getElementById('engSheet'), engChips=document.getElementById('engChips'), engList=document.getElementById('engList');
-  let engPost=null, engMode='likes', engReact='all';
+  let engPost=null, engMode='likes', engReact='all', engCommentRef=null;
   const ENG_CAP = 30;
   function likesRowsAll(p){
     const ent = Object.entries(p.rc||{}).filter(([,v])=>v>0);
@@ -1159,11 +1178,19 @@
     for(let i=0;i<n;i++) rows.push({ person:personFor(p.id+i*5+2), emo:null });
     return { rows, total };
   }
+  function commentLikeRows(p, key, c){
+    const total = c.likes||0; const rows=[];
+    if(c.liked) rows.push({ person:{name:ME.name,spec:ME.spec,img:ME.img}, emo:'👍' });
+    const keyNum = String(key).includes(':') ? String(key).split(':').reduce((s,n)=>s*100+ +n, 0) : +key;
+    const remaining = total - rows.length, n = Math.min(remaining, ENG_CAP-rows.length);
+    for(let i=0;i<n;i++) rows.push({ person:personFor(p.id*1000 + keyNum*7 + i*5 + 11), emo:'👍' });
+    return { rows, total };
+  }
   function engRowHTML(r){
     return `<div class="eng-row" data-eng-name="${r.person.name}"><img src="${r.person.img}" alt=""><div class="m"><div class="nm">${r.person.name}</div><div class="sp">${r.person.spec}</div></div>${r.emo?`<span class="re">${r.emo}</span>`:''}</div>`;
   }
   function renderEngHeader(){
-    document.getElementById('engTitle').textContent = engMode==='likes' ? 'Reactions' : engMode==='comments' ? 'Comments' : 'Reposts';
+    document.getElementById('engTitle').textContent = engMode==='likes' ? 'Reactions' : engMode==='comments' ? 'Comments' : engMode==='reposts' ? 'Reposts' : 'Likes';
   }
   function renderEngChips(){
     if(engMode!=='likes'){ engChips.hidden=true; engChips.innerHTML=''; return; }
@@ -1177,6 +1204,13 @@
   }
   function renderEngList(){
     const p=engPost;
+    if(engMode==='commentLikes'){
+      const {rows,total} = commentLikeRows(p, engCommentRef.key, engCommentRef.c);
+      if(!rows.length){ engList.innerHTML = `<div class="eng-empty">No likes yet.</div>`; return; }
+      const more = total>rows.length ? `<div class="eng-more">+ ${total-rows.length} more</div>` : '';
+      engList.innerHTML = rows.map(engRowHTML).join('') + more;
+      return;
+    }
     if(engMode==='comments'){
       engList.innerHTML = p.comments.length
         ? p.comments.map(c=>`<div class="eng-row" data-eng-name="${c.name}"><img src="${c.img}" alt=""><div class="m"><div class="nm">${c.name}${c.me?' <span class="youtag">You</span>':''}</div><div class="cmt-prev">${esc(c.text)}</div></div></div>`).join('')
@@ -1197,6 +1231,15 @@
   }
   function openEngage(p, mode){
     engPost=p; engMode=mode||'likes'; engReact='all';
+    renderEngHeader(); renderEngChips(); renderEngList();
+    engBackdrop.classList.add('open'); engSheet.classList.add('open');
+  }
+  function openCommentLikes(p, key){
+    const c = String(key).includes(':')
+      ? (()=>{ const [ci,ri]=String(key).split(':').map(Number); return p.comments[ci].replies[ri]; })()
+      : p.comments[+key];
+    if(!c) return;
+    engPost=p; engMode='commentLikes'; engCommentRef={ key, c };
     renderEngHeader(); renderEngChips(); renderEngList();
     engBackdrop.classList.add('open'); engSheet.classList.add('open');
   }
