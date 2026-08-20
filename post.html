@@ -897,7 +897,7 @@
   function replyHTML(r,ci,ri){
     const key = ci+':'+ri;
     return `<div class="ci reply${r.me?' me':''}"><img src="${r.img}" alt=""><div class="cbx"><div class="bub"><div class="nm"><span>${r.name}${r.me?' <span class="youtag">You</span>':''}</span>${r.me?`<button class="cmore" data-rmore="${key}" aria-label="Comment options">${dots}</button>`:''}</div><div class="tx">${r.text}</div></div>
-      <div class="cact"><button data-rlike="${key}" class="${r.liked?'liked':''}">Like${r.likes?` · ${r.likes}`:''}</button><span>${r.time}</span></div></div></div>`;
+      <div class="cact"><button data-rlike="${key}" class="${r.liked?'liked':''}">Like${r.likes?` · ${r.likes}`:''}</button><button data-creply="${ci}" data-mention="${esc(r.name)}">Reply</button><span>${r.time}</span></div></div></div>`;
   }
   const pdfIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
   const vchk = '<svg class="vchk" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 2.4 1.8 3 .1 1 2.8 2.4 1.8-1 2.8 1 2.8-2.4 1.8-1 2.8-3 .1L12 22l-2.4-1.8-3-.1-1-2.8L3.2 15.4l1-2.8-1-2.8 2.4-1.8 1-2.8 3-.1z"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="var(--card)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -999,7 +999,8 @@
     const rmo=e.target.closest('[data-rmore]'); if(rmo){ openCommentOpts(postFromEl(rmo), rmo.dataset.rmore); return; }
     const rpl=e.target.closest('[data-creply]'); if(rpl){
       const p=postFromEl(rpl); const ci=+rpl.dataset.creply;
-      const prefix = '@'+p.comments[ci].name.replace('Dr. ','')+' ';
+      const mentionName = rpl.dataset.mention || p.comments[ci].name;
+      const prefix = '@'+mentionName.replace('Dr. ','')+' ';
       replyTarget = { postId:p.id, ci, prefix };
       p._open=true; focusId=p.id; renderFeed();
       const inp=feedEl.querySelector(`.post[data-id="${p.id}"] [data-cin]`);
