@@ -158,10 +158,12 @@
   .pmore{background:none;border:none;color:var(--muted);cursor:pointer;width:44px;height:44px;display:grid;place-items:center;flex:0 0 auto;align-self:flex-start;border-radius:10px;}
   .pmore svg{width:18px;height:18px;} .pmore:hover{background:var(--chip);}
   /* post options sheet */
-  .opt-item{width:100%;display:flex;align-items:center;gap:12px;background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);padding:14px 4px;cursor:pointer;border-bottom:1px solid var(--line);text-align:left;}
+  .opt-item{width:100%;display:flex;align-items:center;gap:13px;background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--ink);padding:11px 4px;cursor:pointer;border-bottom:1px solid var(--line);text-align:left;}
   .opt-item:last-child{border-bottom:none;}
-  .opt-item svg{width:19px;height:19px;color:var(--muted);flex:0 0 auto;}
-  .opt-item.danger{color:#ef4444;} .opt-item.danger svg{color:#ef4444;}
+  .opt-item .opt-ic{width:34px;height:34px;border-radius:10px;background:var(--chip);color:var(--slate-700);display:grid;place-items:center;flex:0 0 auto;}
+  .opt-item .opt-ic svg{width:16px;height:16px;}
+  .opt-item.danger{color:#ef4444;}
+  .opt-item.danger .opt-ic{background:rgba(239,68,68,.1);color:#ef4444;}
   .opt-done{text-align:center;padding:22px 10px;}
   .opt-done .ok{width:52px;height:52px;border-radius:50%;background:rgba(63,125,78,.15);color:var(--green);display:grid;place-items:center;margin:0 auto 12px;}
   .opt-done .ok svg{width:26px;height:26px;} .opt-done b{font-size:14px;font-family:var(--display);} .opt-done p{font-size:10.5px;color:var(--muted);margin-top:5px;line-height:1.5;}
@@ -189,13 +191,26 @@
   .ci img{width:30px;height:30px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
   .ci .cbx{flex:1;min-width:0;}
   .ci .bub{background:var(--chip);border-radius:12px;padding:8px 11px;}
-  .ci .nm{font-size:10.5px;font-weight:800;}
+  .ci .nm{display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10.5px;font-weight:800;}
   .ci .tx{font-size:10px;color:var(--slate-700);margin-top:2px;line-height:1.45;}
   .ci .cact{display:flex;align-items:center;gap:14px;margin:5px 0 0 4px;}
   .ci .cact button{background:none;border:none;font-family:inherit;font-size:8.5px;font-weight:700;color:var(--muted);cursor:pointer;padding:0;}
   .ci .cact button.liked{color:var(--brand);}
   .ci .cact span{font-size:8.5px;color:var(--muted);}
+  .ci .nm .cmore{display:inline-flex;align-items:center;color:var(--muted);flex:0 0 auto;background:none;border:none;cursor:pointer;padding:0;}
+  .ci .nm .cmore svg{width:13px;height:13px;}
+  .ci.reply{margin-left:39px;padding-left:12px;border-left:2px solid var(--line);}
+  .ci.reply img{width:24px;height:24px;}
   .ci.me .bub{background:var(--brand-soft);}
+  /* comment edit / delete mini-sheet */
+  .cedit-ta{width:100%;min-height:70px;background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-family:inherit;font-size:11.5px;color:var(--ink);resize:vertical;outline:none;}
+  .cedit-ta:focus{border-color:var(--brand);}
+  .cedit-actions{display:flex;gap:10px;margin-top:14px;}
+  .cedit-actions button{flex:1;min-height:44px;border:none;border-radius:12px;font-family:inherit;font-size:12px;font-weight:800;cursor:pointer;}
+  .cedit-actions .cancel{background:var(--chip);color:var(--ink);}
+  .cedit-actions .save{background:var(--brand);color:#fff;}
+  .cedit-actions .save.danger{background:#ef4444;}
+  .cconfirm p{font-size:11px;color:var(--muted);line-height:1.5;margin:10px 4px 4px;text-align:center;}
   .youtag{font-size:9px;font-weight:800;color:#fff;background:var(--brand);padding:1px 6px;border-radius:20px;vertical-align:middle;}
   /* collapsed comment preview */
   .cmt-peek{margin-top:11px;cursor:pointer;}
@@ -517,6 +532,12 @@
       </div>
     </div>
   </div>
+
+  <!-- Comment options sheet (edit / delete — own comments only) -->
+  <div class="backdrop" id="cOptBackdrop"></div>
+  <div class="sheet" id="cOptSheet">
+    <div class="ps-body" id="cOptBody"></div>
+  </div>
 </div>
 
 <script>
@@ -823,12 +844,19 @@
     return `<div class="react-sum">${parts.join('<span class="dot">·</span>')}</div>`;
   }
   function commentHTML(c,ci){
-    return `<div class="ci${c.me?' me':''}"><img src="${c.img}" alt=""><div class="cbx"><div class="bub"><div class="nm">${c.name}${c.me?' <span class="youtag">You</span>':''}</div><div class="tx">${c.text}</div></div>
-      <div class="cact"><button data-clike="${ci}" class="${c.liked?'liked':''}">Like${c.likes?` · ${c.likes}`:''}</button><button data-creply="${ci}">Reply</button><span>${c.time}</span></div></div></div>`;
+    const repliesHTML = (c.replies||[]).map((r,ri)=>replyHTML(r,ci,ri)).join('');
+    return `<div class="ci${c.me?' me':''}"><img src="${c.img}" alt=""><div class="cbx"><div class="bub"><div class="nm"><span>${c.name}${c.me?' <span class="youtag">You</span>':''}</span>${c.me?`<button class="cmore" data-cmore="${ci}" aria-label="Comment options">${dots}</button>`:''}</div><div class="tx">${c.text}</div></div>
+      <div class="cact"><button data-clike="${ci}" class="${c.liked?'liked':''}">Like${c.likes?` · ${c.likes}`:''}</button><button data-creply="${ci}">Reply</button><span>${c.time}</span></div></div></div>${repliesHTML}`;
+  }
+  function replyHTML(r,ci,ri){
+    const key = ci+':'+ri;
+    return `<div class="ci reply${r.me?' me':''}"><img src="${r.img}" alt=""><div class="cbx"><div class="bub"><div class="nm"><span>${r.name}${r.me?' <span class="youtag">You</span>':''}</span>${r.me?`<button class="cmore" data-rmore="${key}" aria-label="Comment options">${dots}</button>`:''}</div><div class="tx">${r.text}</div></div>
+      <div class="cact"><button data-rlike="${key}" class="${r.liked?'liked':''}">Like${r.likes?` · ${r.likes}`:''}</button><span>${r.time}</span></div></div></div>`;
   }
   const pdfIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
   const vchk = '<svg class="vchk" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 2.4 1.8 3 .1 1 2.8 2.4 1.8-1 2.8 1 2.8-2.4 1.8-1 2.8-3 .1L12 22l-2.4-1.8-3-.1-1-2.8L3.2 15.4l1-2.8-1-2.8 2.4-1.8 1-2.8 3-.1z"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="var(--card)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   const dots = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const isVerified = p => p.verified!==false && p.spec!=='Group';
   const docIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>';
   function mediaHTML(m){
@@ -887,7 +915,21 @@
     saveFeed(); renderFeed();
   }
   function closePops(){ feedEl.querySelectorAll('.react-pop.open').forEach(x=>x.classList.remove('open')); }
-  function addInline(input){ const text=input.value.trim(); if(!text) return; const p=postFromEl(input); p.comments.push({name:ME.name,img:ME.img,text,time:'now',likes:0,liked:false,me:true}); p._open=true; focusId=p.id; saveFeed(); renderFeed(); }
+  let replyTarget = null; // { postId, ci, prefix } — set by tapping "Reply"; the @mention prefix left in the box is what confirms the reply is still intended
+  function addInline(input){
+    const raw = input.value, text = raw.trim(); if(!text) return;
+    const p=postFromEl(input);
+    const target = (replyTarget && replyTarget.postId===p.id && raw.startsWith(replyTarget.prefix)) ? replyTarget : null;
+    if(target && p.comments[target.ci]){
+      const parent = p.comments[target.ci];
+      parent.replies = parent.replies || [];
+      parent.replies.push({name:ME.name,img:ME.img,text,time:'now',likes:0,liked:false,me:true});
+    } else {
+      p.comments.push({name:ME.name,img:ME.img,text,time:'now',likes:0,liked:false,me:true});
+    }
+    replyTarget = null;
+    p._open=true; focusId=p.id; saveFeed(); renderFeed();
+  }
 
   // long-press → reaction picker (tap = quick Like)
   let lpT=null, lpFired=false;
@@ -905,7 +947,18 @@
     const rx=e.target.closest('[data-react]'); if(rx){ react(postFromEl(rx), rx.dataset.react); closePops(); return; }
     const lb=e.target.closest('.reactbtn'); if(lb){ if(lpFired){ lpFired=false; return; } react(postFromEl(lb),'like'); return; }
     const clk=e.target.closest('[data-clike]'); if(clk){ const p=postFromEl(clk); const c=p.comments[+clk.dataset.clike]; c.liked=!c.liked; c.likes=(c.likes||0)+(c.liked?1:-1); saveFeed(); renderFeed(); return; }
-    const rpl=e.target.closest('[data-creply]'); if(rpl){ const p=postFromEl(rpl); p._open=true; focusId=p.id; renderFeed(); const inp=feedEl.querySelector(`.post[data-id="${p.id}"] [data-cin]`); if(inp){ inp.value='@'+p.comments[+rpl.dataset.creply].name.replace('Dr. ','')+' '; inp.focus(); } return; }
+    const rlk=e.target.closest('[data-rlike]'); if(rlk){ const p=postFromEl(rlk); const [ci,ri]=rlk.dataset.rlike.split(':').map(Number); const r=p.comments[ci].replies[ri]; r.liked=!r.liked; r.likes=(r.likes||0)+(r.liked?1:-1); saveFeed(); renderFeed(); return; }
+    const cmo=e.target.closest('[data-cmore]'); if(cmo){ openCommentOpts(postFromEl(cmo), +cmo.dataset.cmore); return; }
+    const rmo=e.target.closest('[data-rmore]'); if(rmo){ openCommentOpts(postFromEl(rmo), rmo.dataset.rmore); return; }
+    const rpl=e.target.closest('[data-creply]'); if(rpl){
+      const p=postFromEl(rpl); const ci=+rpl.dataset.creply;
+      const prefix = '@'+p.comments[ci].name.replace('Dr. ','')+' ';
+      replyTarget = { postId:p.id, ci, prefix };
+      p._open=true; focusId=p.id; renderFeed();
+      const inp=feedEl.querySelector(`.post[data-id="${p.id}"] [data-cin]`);
+      if(inp){ inp.value=prefix; inp.focus(); }
+      return;
+    }
     const cs=e.target.closest('[data-csend]'); if(cs){ addInline(cs.parentElement.querySelector('[data-cin]')); return; }
     const btn=e.target.closest('[data-act]'); if(!btn) return;
     const p=postFromEl(btn), act=btn.dataset.act;
@@ -936,10 +989,10 @@
   function optMenu(){
     const saved = optPost && isPostSaved(optPost.id);
     optBody.innerHTML = `<div class="grab"></div>
-      <button class="opt-item" data-opt="save">${menuIco.save}${saved?'Remove from saved':'Save post'}</button>
-      <button class="opt-item" data-opt="link">${menuIco.link}Copy link</button>
-      <button class="opt-item" data-opt="mute">${menuIco.mute}Not interested</button>
-      <button class="opt-item danger" data-opt="report">${menuIco.report}Report post</button>`;
+      <button class="opt-item" data-opt="save"><span class="opt-ic">${menuIco.save}</span>${saved?'Remove from saved':'Save post'}</button>
+      <button class="opt-item" data-opt="link"><span class="opt-ic">${menuIco.link}</span>Copy link</button>
+      <button class="opt-item" data-opt="mute"><span class="opt-ic">${menuIco.mute}</span>Not interested</button>
+      <button class="opt-item danger" data-opt="report"><span class="opt-ic">${menuIco.report}</span>Report post</button>`;
   }
   function openOpts(p){ optPost=p; optMenu(); optBackdrop.classList.add('open'); optSheet.classList.add('open'); }
   function closeOpts(){ optBackdrop.classList.remove('open'); optSheet.classList.remove('open'); }
@@ -963,6 +1016,65 @@
       const msg = opt==='link'?'Link copied':'You’ll see fewer posts like this';
       optBody.innerHTML = `<div class="grab"></div><div class="opt-done"><div class="ok">${okIco}</div><b>${msg}</b></div>`;
       setTimeout(closeOpts, 1100);
+    }
+  });
+
+  // ---- Comment options (edit / delete — own comments only) ----
+  const cOptBackdrop=document.getElementById('cOptBackdrop'), cOptSheet=document.getElementById('cOptSheet'), cOptBody=document.getElementById('cOptBody');
+  let cOptPost=null, cOptIdx=-1;
+  const editIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>';
+  const trashIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6l1 14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-14"/><path d="M10 11v6M14 11v6"/></svg>';
+  function openCommentOpts(p, key){ cOptPost=p; cOptIdx=key; cOptMenu(); cOptBackdrop.classList.add('open'); cOptSheet.classList.add('open'); }
+  function closeCommentOpts(){ cOptBackdrop.classList.remove('open'); cOptSheet.classList.remove('open'); }
+  cOptBackdrop.addEventListener('click', closeCommentOpts);
+  // cOptIdx is either a plain comment index (number/numeric string) or "ci:ri" for a nested reply
+  function resolveCOpt(){
+    const key = String(cOptIdx);
+    if(key.includes(':')){ const [ci,ri]=key.split(':').map(Number); return cOptPost.comments[ci].replies[ri]; }
+    return cOptPost.comments[+key];
+  }
+  function deleteCOpt(){
+    const key = String(cOptIdx);
+    if(key.includes(':')){ const [ci,ri]=key.split(':').map(Number); cOptPost.comments[ci].replies.splice(ri,1); }
+    else cOptPost.comments.splice(+key,1);
+  }
+  function cOptMenu(){
+    cOptBody.innerHTML = `<div class="grab"></div>
+      <button class="opt-item" data-copt="edit"><span class="opt-ic">${editIco}</span>Edit</button>
+      <button class="opt-item danger" data-copt="delete"><span class="opt-ic">${trashIco}</span>Delete</button>`;
+  }
+  function cOptEditForm(){
+    const c = resolveCOpt();
+    cOptBody.innerHTML = `<div class="grab"></div>
+      <textarea class="cedit-ta" id="cEditTa">${esc(c.text)}</textarea>
+      <div class="cedit-actions">
+        <button class="cancel" data-copt="cancel">Cancel</button>
+        <button class="save" data-copt="saveEdit">Save</button>
+      </div>`;
+    document.getElementById('cEditTa').focus();
+  }
+  function cOptDeleteConfirm(){
+    cOptBody.innerHTML = `<div class="grab"></div>
+      <div class="cconfirm"><p>Delete this comment? This can't be undone.</p></div>
+      <div class="cedit-actions">
+        <button class="cancel" data-copt="cancel">Cancel</button>
+        <button class="save danger" data-copt="confirmDelete">Delete</button>
+      </div>`;
+  }
+  cOptBody.addEventListener('click', e=>{
+    const b=e.target.closest('[data-copt]'); if(!b) return;
+    const opt=b.dataset.copt;
+    if(opt==='edit') cOptEditForm();
+    else if(opt==='delete') cOptDeleteConfirm();
+    else if(opt==='cancel') closeCommentOpts();
+    else if(opt==='saveEdit'){
+      const text=document.getElementById('cEditTa').value.trim();
+      if(text){ resolveCOpt().text=text; saveFeed(); renderFeed(); }
+      closeCommentOpts();
+    } else if(opt==='confirmDelete'){
+      deleteCOpt();
+      saveFeed(); renderFeed();
+      closeCommentOpts();
     }
   });
 
@@ -1159,6 +1271,7 @@
   document.addEventListener('keydown', e=>{
     if(e.key!=='Escape') return;
     if(optSheet.classList.contains('open')){ closeOpts(); return; }
+    if(cOptSheet.classList.contains('open')){ closeCommentOpts(); return; }
     if(document.getElementById('mediaModal').classList.contains('open')){ closeMedia(); return; }
     if(document.getElementById('cmtSheet').classList.contains('open')){ document.getElementById('cmtSheet').classList.remove('open'); document.getElementById('cmtBackdrop').classList.remove('open'); return; }
     if(document.getElementById('compSheet').classList.contains('open')){ document.getElementById('compSheet').classList.remove('open'); document.getElementById('compBackdrop').classList.remove('open'); return; }
