@@ -938,59 +938,8 @@
       <button class="pc" type="button" data-i="${i}">${spkLabel(spkStatus[i])}</button>
     </div>`).join('');
 
-  const pinIco = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>';
-  const chatIco = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
-  const capIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>';
-  const profBackdrop = document.getElementById('profBackdrop');
-  const profSheet = document.getElementById('profSheet');
-  const profBody = document.getElementById('profBody');
-  function openSpkProfile(i){
-    const p = speakers[i];
-    openSpkIdx = i;
-    const _people='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/></svg>';
-    profBody.innerHTML = `
-      <div class="pv-hero">
-        <div class="pv-bar">
-          <button class="pv-ic" id="pvBack" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-          <button class="pv-ic" id="pvMenu" aria-label="More"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg></button>
-        </div>
-        <div class="pv-id">
-          <div class="pv-avw"><img class="pv-av" src="${p.img}" alt=""><span class="pv-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
-          <div class="pv-idt">
-            <div class="pv-name">${p.n}<svg class="vf" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#3d8bfd"/><path d="m8 12 2.5 2.5 5.5-5.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <div class="pv-role">${p.r}</div>
-            <div class="pv-loc">${pinIco}${p.hospital}, ${p.city}</div>
-          </div>
-        </div>
-      </div>
-      <div class="pv-stats">
-        <div class="pv-stat"><span class="pv-sic b">${_people}</span><div class="pv-sm"><b>${p.connections}</b><span>Connections</span></div></div>
-        <div class="pv-vdiv"></div>
-        <div class="pv-stat"><span class="pv-sic g">${_people}</span><div class="pv-sm"><b>${p.mutual}</b><span>Mutual</span></div></div>
-        <div class="pv-vdiv"></div>
-        <div class="pv-stat"><span class="pv-sic p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="M8.5 13 7 22l5-3 5 3-1.5-9"/></svg></span><div class="pv-sm"><b>${p.exp}</b><span>Experience</span></div></div>
-      </div>
-      <div class="pv-card2">
-        <div class="pv-col"><span class="pv-cic b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg></span><div class="pv-ct">Specialization</div><div class="pv-cd">${p.tags.join(', ')}</div></div>
-        <div class="pv-vdiv"></div>
-        <div class="pv-col"><span class="pv-cic g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M15 21V9h3a1 1 0 0 1 1 1v11"/><path d="M9 8h2M9 12h2M9 16h2"/></svg></span><div class="pv-ct">Affiliation</div><div class="pv-cd">${p.hospital}, ${p.city}</div></div>
-      </div>
-      <div class="pv-quote"><span class="pv-q">&ldquo;</span><p>${p.bio}</p></div>
-      <div class="pv-actions">
-        <button class="pv-btn ghost" id="pvMsg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>Message</button>
-        <button class="pv-btn primary" id="pvBook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>Book</button>
-        <button class="pv-btn ghost" id="pPri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14H10"/><path d="M17 8v6M14 11h6"/></svg>Connect</button>
-      </div>
-    `;
-    { const bk=document.getElementById('pvBack'); if(bk) bk.onclick=closeSpkProfile; }
-    { const mn=document.getElementById('pvMenu'); if(mn) mn.onclick=()=>toast('More options'); }
-    { const mg=document.getElementById('pvMsg'); if(mg) mg.onclick=()=>toast('Messaging coming soon'); }
-    { const bkk=document.getElementById('pvBook'); if(bkk) bkk.onclick=()=>toast('Booking — coming soon'); }
-    document.getElementById('pPri').onclick = ()=>toggleSpkConnect(i);
-    profBackdrop.classList.add('open'); profSheet.classList.add('open'); profSheet.scrollTop=0;
-  }
-  function closeSpkProfile(){ profBackdrop.classList.remove('open'); profSheet.classList.remove('open'); openSpkIdx=-1; }
-  profBackdrop.addEventListener('click', closeSpkProfile);
+  // speaker profile → dedicated profile page (was a bottom sheet; now real navigation)
+  function openSpkProfile(i){ location.href='profile.html?name='+encodeURIComponent(speakers[i].n); }
   spkEl.addEventListener('click', e=>{
     const b=e.target.closest('.pc');
     if(b){ toggleSpkConnect(+b.dataset.i); return; }

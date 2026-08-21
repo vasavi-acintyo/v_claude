@@ -112,15 +112,34 @@
   .pa-tabs button.active{color:var(--brand);}
   .pa-tabs button.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;background:var(--brand);border-radius:3px;}
   .post-tag{display:inline-block;font-size:11px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:20px;}
-  .pa-post{background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:13px;margin-bottom:11px;}
-  .pa-post .pb{font-size:11.5px;line-height:1.55;color:var(--slate-700);}
+  .pa-post{background:var(--soft1);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;}
+  .pa-post-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .pa-time{font-size:10px;color:var(--muted);font-weight:600;white-space:nowrap;}
+  .pa-post .pb{font-size:11.5px;line-height:1.55;color:var(--slate-700);margin-top:8px;}
   .pa-post img.m{width:100%;border-radius:11px;margin-top:10px;max-height:220px;object-fit:cover;}
-  .pa-post .pm{font-size:11px;color:var(--muted);margin-top:10px;display:flex;gap:12px;}
+  .pa-post video.m,.pa-post audio.m{width:100%;border-radius:11px;margin-top:10px;}
+  .pa-post .pm{font-size:11px;color:var(--muted);font-weight:700;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);display:flex;gap:16px;}
+  .pa-post .pm span{display:inline-flex;align-items:center;gap:5px;}
+  .pa-post .pm svg{width:13px;height:13px;flex:0 0 auto;}
   .pa-cmt{background:var(--soft2);border-left:3px solid var(--brand);border-radius:14px;padding:11px 13px;margin-bottom:10px;}
   .pa-cmt .ct{font-size:11.5px;color:var(--ink);line-height:1.5;}
   .pa-cmt .cm{font-size:11px;color:var(--muted);margin-top:5px;}
   .pa-empty{text-align:center;font-size:11px;color:var(--muted);padding:30px 10px;}
+  .my-note{background:var(--soft2);border-radius:10px;padding:8px 10px;margin-top:10px;font-size:10.5px;line-height:1.5;color:var(--slate-700);}
+  .my-note b{color:var(--brand);font-weight:800;}
+  .edu-row{padding:8px 0;border-bottom:1px solid var(--line);}
+  .edu-row:last-child{border-bottom:none;}
+  .edu-deg{font-size:11.5px;font-weight:800;}
+  .edu-inst{font-size:10.5px;color:var(--muted);margin-top:2px;}
   .pa-post .by{font-size:10.5px;color:var(--muted);font-weight:700;margin-bottom:6px;}
+  .pa-showall{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;background:var(--soft1);border:1px solid var(--line);font-family:inherit;font-size:11.5px;font-weight:800;color:var(--brand);padding:11px 0;border-radius:12px;cursor:pointer;margin-top:-2px;}
+  .pa-showall svg{width:13px;height:13px;transition:transform .2s;}
+  .pa-showall.open svg{transform:rotate(180deg);}
+  .pv-actions.compact{justify-content:center;}
+  .pv-btn.compact{flex:0 0 auto;min-height:42px;padding:0 26px;border-radius:999px;font-size:12px;}
+  .pv-btn.connected{background:var(--soft2);color:var(--green);border:1.5px solid transparent;box-shadow:none;}
+  .pv-btn.pending{background:var(--card);color:var(--slate-700);border:1.5px solid var(--line);box-shadow:none;}
+  .pv-btn.connected svg,.pv-btn.pending svg{width:14px;height:14px;}
 
   /* appearance sheet */
   .backdrop{position:absolute;inset:0;background:rgba(15,15,35,.45);opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;z-index:30;}
@@ -300,6 +319,12 @@
     lang:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c2.5 2.5 3.6 6 3.6 9s-1.1 6.5-3.6 9c-2.5-2.5-3.6-6-3.6-9s1.1-6.5 3.6-9Z"/></svg>',
     signout:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>',
     chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>',
+    pin:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+    people:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/></svg>',
+    cap:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>',
+    book:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>',
+    send:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>',
+    connect:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14H10"/><path d="M17 8v6M14 11h6"/></svg>',
     vf:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 2.4 1.8 3 .1 1 2.8 2.4 1.8-1 2.8 1 2.8-2.4 1.8-1 2.8-3 .1L12 22l-2.4-1.8-3-.1-1-2.8L3.2 15.4l1-2.8-1-2.8 2.4-1.8 1-2.8 3-.1z"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="var(--surface)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
     docf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>',
     heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.4 3-5.5A4.5 4.5 0 0 0 12 5 4.5 4.5 0 0 0 2 8.5C2 12 5 15 12 21c2-1.7 3.7-3.2 5-4.5"/></svg>',
@@ -468,50 +493,187 @@
   function wireBanner(){ const b=document.getElementById('planBtn'); if(b) b.onclick = ()=> toast(plan==='premium'?'Manage subscription':(plan==='lapsed'?'Renewing Premium…':'Upgrading to Premium…')); }
 
   // ---- public (other doctor) view ----
+  // shared directory of the doctors who recur across Network/CME/Post — gives their profile page real
+  // stats/specialization/affiliation/bio instead of only whatever can be inferred from their own posts
+  const DIRECTORY = {
+    'Dr. Meera Iyer': { role:'Endocrinologist', hospital:'Apollo Hospitals', city:'Chennai', exp:'11 yrs', connections:'3.2k', mutual:'18',
+      council:'Tamil Nadu Medical Council', regYear:'2014',
+      edu:[{t:'DM Endocrinology',s:'PGIMER, Chandigarh · 2014'},{t:'MD General Medicine',s:'CMC, Vellore · 2010'}],
+      bio:'Endocrinologist focused on diabetes, thyroid disorders and metabolic bone disease, with a special interest in PCOS.', tags:['Diabetes','Thyroid','PCOS'] },
+    'Dr. Arvind Kumar': { role:'Cardiologist', hospital:'Fortis Escorts', city:'Delhi', exp:'16 yrs', connections:'5.6k', mutual:'27',
+      connectionStatus:'connected',
+      council:'Delhi Medical Council', regYear:'2009',
+      edu:[{t:'DM Cardiology',s:'AIIMS, New Delhi · 2009'},{t:'MD General Medicine',s:'KEM Hospital, Mumbai · 2005'}],
+      bio:'Interventional cardiologist with expertise in complex coronary intervention and preventive cardiology.', tags:['Interventional','Heart Failure','Preventive'] },
+    'Dr. Rohan Sinha': { role:'Hypertension Specialist', hospital:'AIIMS', city:'New Delhi', exp:'10 yrs', connections:'860', mutual:'12',
+      council:'Delhi Medical Council', regYear:'2016',
+      edu:[{t:'MD General Medicine',s:'MAMC, New Delhi · 2016'}],
+      bio:'Physician focused on resistant hypertension and cardiometabolic risk reduction in complex patients.', tags:['Resistant Hypertension','Cardiometabolic Risk','CKD'] },
+    'Dr. Priya Nair': { role:'Lipidologist', hospital:'Narayana Health', city:'Bengaluru', exp:'13 yrs', connections:'4.4k', mutual:'21',
+      connectionStatus:'pending',
+      council:'Karnataka Medical Council', regYear:'2012',
+      edu:[{t:'DM Cardiology',s:'NIMHANS, Bengaluru · 2012'},{t:'MD General Medicine',s:'CMC, Vellore · 2008'}],
+      bio:'Specialist in lipid disorders and preventive cardiology, with active research in statin therapy.', tags:['Lipidology','Preventive Cardiology'] },
+    'Dr. Vijay Menon': { role:'Diabetologist', hospital:'Amrita Hospital', city:'Kochi', exp:'14 yrs', connections:'3.8k', mutual:'15',
+      council:'Kerala Medical Council', regYear:'2011',
+      edu:[{t:'DM Endocrinology',s:'PGIMER, Chandigarh · 2011'},{t:'MD General Medicine',s:'Amrita, Kochi · 2007'}],
+      bio:'Diabetologist focused on CGM-guided therapy, insulin management and diabetic complications.', tags:['Diabetes','CGM','Insulin Therapy'] },
+    'Dr. Kavya Reddy': { role:'Endocrinologist', hospital:'Apollo Hospitals', city:'Chennai', exp:'14 yrs', connections:'980', mutual:'12',
+      council:'Tamil Nadu Medical Council', regYear:'2011',
+      edu:[{t:'DM Endocrinology',s:'CMC, Vellore · 2011'},{t:'MD General Medicine',s:'Madras Medical College · 2007'}],
+      bio:'Endocrinologist focused on diabetes, thyroid and metabolic disorders. Special interest in obesity, insulin resistance and PCOS management.', tags:['Type 2 Diabetes','Thyroid','Obesity','PCOS'] },
+    'Dr. Sameer Shah': { role:'Interventional Cardiologist', hospital:'Fortis Hospital', city:'Mumbai', exp:'18 yrs', connections:'2.1k', mutual:'8',
+      council:'Maharashtra Medical Council', regYear:'2007',
+      edu:[{t:'DM Cardiology',s:'KEM Hospital, Mumbai · 2007'},{t:'MD General Medicine',s:'Grant Medical College, Mumbai · 2003'}],
+      bio:'Interventional cardiologist with 18 years in angioplasty and structural heart disease. Passionate about preventive cardiology.', tags:['Angioplasty','Heart Failure','Preventive Cardiology'] },
+    'Dr. Imran Khan': { role:'Consultant Physician', hospital:'Max Healthcare', city:'New Delhi', exp:'9 yrs', connections:'640', mutual:'5',
+      council:'Delhi Medical Council', regYear:'2016',
+      edu:[{t:'MD General Medicine',s:'Maulana Azad Medical College, New Delhi · 2016'}],
+      bio:'Consultant physician managing complex internal medicine, hypertension and cardiometabolic cases.', tags:['Internal Medicine','Hypertension','Diabetes'] },
+    'Dr. Neha Gupta': { role:'Nephrologist', hospital:'Medanta', city:'Gurugram', exp:'11 yrs', connections:'1.3k', mutual:'9',
+      council:'Delhi Medical Council', regYear:'2013',
+      edu:[{t:'DM Nephrology',s:'SGPGI, Lucknow · 2013'},{t:'MD Medicine',s:'KGMU · 2009'}],
+      bio:'Nephrologist managing CKD, dialysis and transplant care with a focus on cardio-renal syndrome.', tags:['CKD','Dialysis','Transplant','Cardio-Renal'] },
+    'Dr. Rahul Verma': { role:'Diabetologist', hospital:'Manipal Hospitals', city:'Bengaluru', exp:'8 yrs', connections:'720', mutual:'6',
+      council:'Karnataka Medical Council', regYear:'2016',
+      edu:[{t:'DNB Endocrinology',s:'Manipal · 2016'},{t:'MBBS',s:'BMCRI · 2011'}],
+      bio:'Diabetologist specialising in technology-driven diabetes care, CGM and insulin pump therapy.', tags:['Type 1 & 2 Diabetes','CGM','Insulin Pumps'] },
+    'Dr. Anjali Desai': { role:'Endocrinologist', hospital:'Sterling Hospital', city:'Ahmedabad', exp:'10 yrs', connections:'890', mutual:'4',
+      council:'Gujarat Medical Council', regYear:'2014',
+      edu:[{t:'DM Endocrinology',s:'PGIMER · 2014'}],
+      bio:'Endocrinologist with interest in reproductive endocrinology, thyroid and bone metabolism.', tags:['Thyroid','Reproductive Endo','Osteoporosis'] },
+    'Dr. Arjun Rao': { role:'Cardiologist', hospital:'Narayana Health', city:'Bengaluru', exp:'13 yrs', connections:'1.6k', mutual:'3',
+      council:'Karnataka Medical Council', regYear:'2011',
+      edu:[{t:'DM Cardiology',s:'JIPMER · 2011'}],
+      bio:'Clinical cardiologist focused on heart failure, arrhythmia and preventive cardiology.', tags:['Heart Failure','Arrhythmia','Echocardiography'] }
+  };
+
   async function renderOther(){
     const store = await idbGet('posts3');
     const posts = store && Array.isArray(store.posts) ? store.posts : (Array.isArray(store) ? store : []);
     const src = posts.find(p=>p.name===qName);
+    const dir = DIRECTORY[qName];
     const img = src ? src.img : 'https://randomuser.me/api/portraits/lego/1.jpg';
-    const spec = src ? src.spec : 'Doctor';
-    const ver = spec!=='Group';
+    const spec = dir ? dir.role : (src ? src.spec : 'Doctor');
+    const ver = (src ? src.spec : spec) !== 'Group';
     const rsum = p => Object.values(p.rc||{}).reduce((s,v)=>s+v,0);
     const mine = posts.filter(p=>p.name===qName);
-    const cmts = []; posts.forEach(p=>(p.comments||[]).forEach(c=>{ if(c.name===qName) cmts.push({c,p}); }));
-    const conns = ((qName.length*137)%1900)+300;
-    const postsHTML = mine.length ? mine.map(p=>`<div class="pa-post">${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:''}<div class="pb"${p.tag?' style="margin-top:8px"':''}>${p.body||''}</div>${mediaInPost(p.media)}<div class="pm"><span>${rsum(p)} reactions</span><span>${(p.comments||[]).length} comments</span><span>${esc(p.time)}</span></div></div>`).join('') : `<div class="pa-empty">No posts yet.</div>`;
-    const cmtsHTML = cmts.length ? cmts.map(({c,p})=>`<div class="pa-cmt"><div class="ct">${esc(c.text)}</div><div class="cm">on ${esc(p.name)}’s post · ${esc(c.time)}</div></div>`).join('') : `<div class="pa-empty">No comments yet.</div>`;
+    const commented = posts.filter(p=>(p.comments||[]).some(c=>c.name===qName));
+    const reposted = posts.filter(p=>(p.repostedBy||[]).includes(qName));
+    const connections = dir ? dir.connections : (((qName.length*137)%1900)+300).toLocaleString();
+
+    const otherCard = (p, extra) => `<div class="pa-post">
+        <div class="pa-post-head">${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:'<span></span>'}${p.time?`<span class="pa-time">${esc(p.time)}</span>`:''}</div>
+        <div class="pb">${p.body||''}</div>
+        ${mediaInPost(p.media)}
+        <div class="pm"><span>${I.heart}${rsum(p)}</span><span>${I.chat}${(p.comments||[]).length}</span><span>${I.repeat}${p.shares||0}</span></div>
+        ${extra||''}
+      </div>`;
+    const commentExtra = p => {
+      const theirs = (p.comments||[]).filter(c=>c.name===qName);
+      return theirs.length ? `<div class="my-note">${theirs.map(c=>`<b>Commented:</b> ${esc(c.text)}`).join('<br>')}</div>` : '';
+    };
+    const caret = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+
+    const connState = (dir && dir.connectionStatus) || 'none';
+    function connectBtnHTML(state){
+      if(state==='connected') return `<button class="pv-btn compact connected" id="connect" data-state="connected">${I.check}Connected</button>`;
+      if(state==='pending') return `<button class="pv-btn compact pending" id="connect" data-state="pending">${I.check}Requested</button>`;
+      return `<button class="pv-btn compact primary" id="connect" data-state="none">${I.connect}Connect</button>`;
+    }
+
+    const showAll = { posts:false, comments:false, reposts:false };
+    const TABS = {
+      posts:    { list: mine,      extra: null,         empty: 'No posts yet.' },
+      comments: { list: commented, extra: commentExtra, empty: 'No comments yet.' },
+      reposts:  { list: reposted,  extra: null,         empty: 'No reposts yet.' }
+    };
+    function tabHTML(key){
+      const { list, extra, empty } = TABS[key];
+      if(!list.length) return `<div class="pa-empty">${empty}</div>`;
+      const open = showAll[key];
+      const shown = open ? list : list.slice(0,1);
+      const cards = shown.map(p=>otherCard(p, extra?extra(p):'')).join('');
+      const toggle = list.length>1
+        ? `<button class="pa-showall${open?' open':''}" data-key="${key}">${open?'Show less':'Show all '+list.length}${caret}</button>`
+        : '';
+      return cards + toggle;
+    }
+    function paintTabs(){
+      document.getElementById('paPosts').innerHTML = tabHTML('posts');
+      document.getElementById('paComments').innerHTML = tabHTML('comments');
+      document.getElementById('paReposts').innerHTML = tabHTML('reposts');
+    }
 
     document.getElementById('prof').innerHTML = `
-      <div class="card idcard rise">
-        <div class="id-row">
-          <div class="id-av"><img src="${img}" alt=""></div>
-          <div class="id-info">
-            <div class="id-name">${esc(qName)}${ver?'<span style="width:16px;height:16px;color:var(--brand);display:inline-flex">'+I.vf+'</span>':''}</div>
-            <div class="id-role">${esc(spec)}</div>
+      <div class="pv-hero rise">
+        <div class="pv-id">
+          <div class="pv-avw"><img class="pv-av" src="${img}" alt=""></div>
+          <div class="pv-idt">
+            <div class="pv-name">${esc(qName)}${ver?'<span style="width:18px;height:18px;color:var(--brand);display:inline-flex;flex:0 0 auto">'+I.vf+'</span>':''}</div>
+            <div class="pv-role">${esc(spec)}</div>
+            ${dir?`<div class="pv-loc">${I.pin}${esc(dir.hospital)}, ${esc(dir.city)}</div>`:''}
           </div>
         </div>
-        <div class="pub-actions">
-          <button class="pub-pri" id="connect">Connect</button>
-          <button class="pub-sec" id="message">${I.chat}Message</button>
-        </div>
       </div>
+      ${dir?`
+      <div class="pv-stats rise">
+        <div class="pv-stat"><span class="pv-sic b">${I.people}</span><div class="pv-sm"><b>${esc(dir.connections)}</b><span>Connections</span></div></div>
+        <div class="pv-vdiv"></div>
+        <div class="pv-stat"><span class="pv-sic g">${I.people}</span><div class="pv-sm"><b>${esc(dir.mutual)}</b><span>Mutual</span></div></div>
+        <div class="pv-vdiv"></div>
+        <div class="pv-stat"><span class="pv-sic p">${I.creds}</span><div class="pv-sm"><b>${esc(dir.exp)}</b><span>Experience</span></div></div>
+      </div>
+      <div class="pv-actions compact rise">${connectBtnHTML(connState)}</div>
+      <div class="cred-strip rise">
+        <div><span>Medical Council</span><b>${esc(dir.council)}</b></div>
+        <div><span>Reg. Year</span><b>${esc(dir.regYear)}</b></div>
+      </div>
+      <div class="pv-card2 rise">
+        <div class="pv-col"><span class="pv-cic b">${I.cap}</span><div class="pv-ct">Specialization</div><div class="pv-cd">${dir.tags.map(esc).join(', ')}</div></div>
+        <div class="pv-vdiv"></div>
+        <div class="pv-col"><span class="pv-cic g">${I.hospital}</span><div class="pv-ct">Affiliation</div><div class="pv-cd">${esc(dir.hospital)}, ${esc(dir.city)}</div></div>
+      </div>
+      <div class="pv-card2 rise" style="display:block;">
+        <div class="pv-ct">Education</div>
+        <div style="margin-top:6px;">${dir.edu.map(e=>`<div class="edu-row"><div class="edu-deg">${esc(e.t)}</div><div class="edu-inst">${esc(e.s)}</div></div>`).join('')}</div>
+      </div>
+      <div class="pv-card2 rise" style="display:block;">
+        <div class="pv-ct">About</div>
+        <div class="pv-cd" style="margin-top:8px;">${esc(dir.bio)}</div>
+      </div>`:`
       <div class="tiles rise">
-        <div class="tile"><b>${mine.length}</b><span>Posts</span></div>
-        <div class="tile"><b>${cmts.length}</b><span>Comments</span></div>
-        <div class="tile" style="grid-column:span 2"><b>${conns.toLocaleString()}</b><span>Connections</span></div>
+        <div class="tile" style="grid-column:span 2"><b>${connections}</b><span>Connections</span></div>
       </div>
-      <div class="pa-tabs rise"><button data-pt="posts" class="active">Posts</button><button data-pt="comments">Comments</button></div>
-      <div id="paPosts" class="rise">${postsHTML}</div>
-      <div id="paComments" hidden>${cmtsHTML}</div>`;
+      <div class="pv-actions compact rise">${connectBtnHTML(connState)}</div>`}
+      <div class="pa-tabs rise"><button data-pt="posts" class="active">Posts</button><button data-pt="comments">Comments</button><button data-pt="reposts">Reposts</button></div>
+      <div id="paPosts" class="rise"></div>
+      <div id="paComments" class="rise" hidden></div>
+      <div id="paReposts" class="rise" hidden></div>`;
 
+    paintTabs();
+    document.getElementById('prof').addEventListener('click', e=>{
+      const b = e.target.closest('.pa-showall');
+      if(!b) return;
+      showAll[b.dataset.key] = !showAll[b.dataset.key];
+      paintTabs();
+    });
     document.querySelectorAll('.pa-tabs button').forEach(b=>b.addEventListener('click',()=>{
       document.querySelectorAll('.pa-tabs button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
       document.getElementById('paPosts').hidden = b.dataset.pt!=='posts';
       document.getElementById('paComments').hidden = b.dataset.pt!=='comments';
+      document.getElementById('paReposts').hidden = b.dataset.pt!=='reposts';
     }));
-    document.getElementById('connect').onclick = e=>{ e.target.textContent='✓ Requested'; e.target.classList.add('done'); toast('Connection request sent'); };
-    document.getElementById('message').onclick = ()=> toast('Messaging coming soon');
+    document.getElementById('connect').onclick = e=>{
+      const b=e.currentTarget, state=b.dataset.state;
+      if(state==='connected'){ toast('You are already connected'); return; }
+      if(state==='pending'){
+        b.dataset.state='none'; b.className='pv-btn compact primary'; b.innerHTML=I.connect+'Connect';
+        toast('Request withdrawn'); return;
+      }
+      b.dataset.state='pending'; b.className='pv-btn compact pending'; b.innerHTML=I.check+'Requested';
+      toast('Connection request sent');
+    };
   }
 
   if(isMe){ document.getElementById('topGear').hidden = false; renderMe(); }

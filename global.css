@@ -175,14 +175,15 @@ button, input, select, textarea, optgroup{font-family:var(--font-sans);}
 .pv-role{font-size:var(--font-size-md);color:rgba(255,255,255,.9);font-weight:var(--font-weight-semibold);margin-top:6px;}
 .pv-loc{font-size:var(--font-size-sm);color:rgba(255,255,255,.72);margin-top:8px;display:flex;align-items:center;gap:5px;} .pv-loc svg{width:14px;height:14px;flex:0 0 auto;}
 /* overlapping stats card */
-.pv-stats{position:relative;z-index:2;margin:-28px 6px 0;background:var(--card);border-radius:18px;box-shadow:0 16px 36px -18px rgba(0,0,0,.35);display:flex;align-items:center;padding:15px 4px;}
+.pv-stats{position:relative;z-index:2;margin:-28px 6px 0;background:var(--card);border-radius:18px;box-shadow:0 16px 36px -18px rgba(0,0,0,.35);display:flex;align-items:center;padding:16px 10px;}
 .pv-stat{flex:1;display:flex;align-items:center;gap:10px;justify-content:center;padding:0 2px;min-width:0;}
 .pv-sic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;flex:0 0 auto;} .pv-sic svg{width:19px;height:19px;}
 .pv-sic.b{background:var(--brand-soft);color:var(--brand);}
 .pv-sic.g{background:rgba(63,125,78,.14);color:var(--green);}
 .pv-sic.p{background:rgba(176,137,79,.18);color:var(--gold);}
-.pv-sm{min-width:0;} .pv-sm b{display:block;font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);letter-spacing:-.02em;line-height:1;} .pv-sm span{display:block;font-size:var(--font-size-xs);color:var(--muted);margin-top:3px;white-space:nowrap;}
+.pv-sm{min-width:0;} .pv-sm b{display:block;font-size:var(--font-size-lg);font-weight:var(--font-weight-bold);letter-spacing:-.02em;line-height:1;white-space:nowrap;} .pv-sm span{display:block;font-size:var(--font-size-xs);color:var(--muted);margin-top:3px;white-space:nowrap;}
 .pv-vdiv{width:1px;align-self:stretch;background:var(--line);margin:4px 0;flex:0 0 auto;}
+.pv-stats .pv-vdiv{margin:4px 10px;}
 /* specialization / affiliation card */
 .pv-card2{display:flex;margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;}
 .pv-col{flex:1;min-width:0;padding:0 8px;}

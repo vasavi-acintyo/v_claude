@@ -772,7 +772,7 @@
     { id:2, name:'Dr. Arvind Kumar', spec:'Cardiologist · Fortis', img:'https://randomuser.me/api/portraits/men/32.jpg', time:'4h',
       body:'Quick demo clip of the bedside focused-echo technique we discussed. Tap to play.', tag:'Case · Cardiology',
       media:{type:'video', data:'https://www.w3schools.com/html/mov_bbb.mp4', name:'Bedside echo demo'},
-      rc:{like:56,insightful:9}, my:null, shares:11, myRepost:true,
+      rc:{like:56,insightful:9}, my:null, shares:11, myRepost:true, repostedBy:['Dr. Kavya Reddy'],
       comments:[{name:'Dr. Priya Nair',img:'https://randomuser.me/api/portraits/women/44.jpg',text:'Very useful, thanks for sharing!',time:'2h',likes:2,liked:false}] },
     { id:3, name:'City Cardiology Society', spec:'Group', img:'https://randomuser.me/api/portraits/men/76.jpg', time:'6h',
       body:'New advisory on managing resistant hypertension — full guideline document attached. Tap to read.', tag:'Advisory',
@@ -781,7 +781,7 @@
     { id:4, name:'Dr. Priya Nair', spec:'Lipidologist · Narayana', img:'https://randomuser.me/api/portraits/women/44.jpg', time:'8h',
       body:'5-minute audio summary of the new lipid guidelines for busy clinicians. 🎧', tag:'CME · Lipids',
       media:{type:'audio', data:'https://www.w3schools.com/html/horse.mp3', name:'Lipid guidelines in 5 min'},
-      rc:{like:33,love:4}, my:null, shares:7, myRepost:true, comments:[] },
+      rc:{like:33,love:4}, my:null, shares:7, myRepost:true, repostedBy:['Dr. Sameer Shah'], comments:[] },
     { id:5, name:'Dr. Rohan Sinha', spec:'Hypertension · AIIMS', img:'https://randomuser.me/api/portraits/men/45.jpg', time:'1d',
       body:'Looking for a nephrology referral in Bengaluru for a complex CKD case with resistant HTN. Please DM.', tag:'Referral',
       rc:{like:12,love:3}, my:'love', shares:2,
@@ -876,7 +876,7 @@
   async function idbSet(k,v){ try{ const db=await idbOpen(); await new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }catch(e){} }
   async function idbGet(k){ try{ const db=await idbOpen(); return await new Promise(res=>{ const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(undefined); }); }catch(e){ return undefined; } }
   let posts = [];
-  const SEED_V = 7;                       // bump to force a reseed
+  const SEED_V = 8;                       // bump to force a reseed
   function saveFeed(){ idbSet(IDB_KEY, {v:SEED_V, posts}); }
 
   const feedEl = document.getElementById('feed');
@@ -1352,60 +1352,10 @@
   const profSheet = document.getElementById('profSheet');
   const profBody = document.getElementById('profBody');
   const vfIco = '<svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="m12 2 2.4 1.8 3 .1 1 2.8 2.4 1.8-1 2.8 1 2.8-2.4 1.8-1 2.8-3 .1L12 22l-2.4-1.8-3-.1-1-2.8L3.2 15.4l1-2.8-1-2.8 2.4-1.8 1-2.8 3-.1z"/><path d="m8.5 12 2.5 2.5 4.5-5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
-  const pinIco = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s7-6.5 7-12a7 7 0 0 0-14 0c0 5.5 7 12 7 12Z"/><circle cx="12" cy="9" r="2.5"/></svg>';
   const chatIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>';
-  const capIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg>';
 
-  function openProfile(p, ctx, idx){
-    const primary = ctx==='request' ? 'Accept request' : 'Connect';
-    const _people='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/></svg>';
-    profBody.innerHTML = `
-      <div class="pv-hero">
-        <div class="pv-bar">
-          <button class="pv-ic" id="pvBack" aria-label="Back"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
-          <button class="pv-ic" id="pvMenu" aria-label="More"><svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.7"/><circle cx="12" cy="12" r="1.7"/><circle cx="12" cy="19" r="1.7"/></svg></button>
-        </div>
-        <div class="pv-id">
-          <div class="pv-avw"><img class="pv-av" src="${p.img}" alt=""><span class="pv-chk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span></div>
-          <div class="pv-idt">
-            <div class="pv-name">${p.name}<svg class="vf" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" fill="#3d8bfd"/><path d="m8 12 2.5 2.5 5.5-5.5" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-            <div class="pv-role">${p.role}</div>
-            <div class="pv-loc">${pinIco}${p.hospital}, ${p.city}</div>
-          </div>
-        </div>
-      </div>
-      <div class="pv-stats">
-        <div class="pv-stat"><span class="pv-sic b">${_people}</span><div class="pv-sm"><b>${p.connections}</b><span>Connections</span></div></div>
-        <div class="pv-vdiv"></div>
-        <div class="pv-stat"><span class="pv-sic g">${_people}</span><div class="pv-sm"><b>${p.mutual.replace(' mutual','')}</b><span>Mutual</span></div></div>
-        <div class="pv-vdiv"></div>
-        <div class="pv-stat"><span class="pv-sic p"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="M8.5 13 7 22l5-3 5 3-1.5-9"/></svg></span><div class="pv-sm"><b>${p.exp}</b><span>Experience</span></div></div>
-      </div>
-      <div class="pv-card2">
-        <div class="pv-col"><span class="pv-cic b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10 12 5 2 10l10 5 10-5Z"/><path d="M6 12v5c0 1 2.7 2.5 6 2.5s6-1.5 6-2.5v-5"/></svg></span><div class="pv-ct">Specialization</div><div class="pv-cd">${p.tags.join(', ')}</div></div>
-        <div class="pv-vdiv"></div>
-        <div class="pv-col"><span class="pv-cic g"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16"/><path d="M15 21V9h3a1 1 0 0 1 1 1v11"/><path d="M9 8h2M9 12h2M9 16h2"/></svg></span><div class="pv-ct">Affiliation</div><div class="pv-cd">${p.hospital}, ${p.city}</div></div>
-      </div>
-      <div class="pv-quote"><span class="pv-q">&ldquo;</span><p>${p.bio}</p></div>
-      <div class="pv-actions">
-        <button class="pv-btn ghost" id="pvMsg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2 11 13"/><path d="M22 2 15 22l-4-9-9-4Z"/></svg>Message</button>
-        <button class="pv-btn primary" id="pvBook"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>Book</button>
-        <button class="pv-btn ghost" id="pPri"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14H10"/><path d="M17 8v6M14 11h6"/></svg>Connect</button>
-      </div>
-    `;
-    { const bk=document.getElementById('pvBack'); if(bk) bk.onclick=closeProfile; }
-    { const mn=document.getElementById('pvMenu'); if(mn) mn.onclick=()=>toast('More options'); }
-    { const mg=document.getElementById('pvMsg'); if(mg) mg.onclick=()=>toast('Messaging coming soon'); }
-    { const bkk=document.getElementById('pvBook'); if(bkk) bkk.onclick=()=>toast('Booking — coming soon'); }
-    document.getElementById('pPri').onclick = ()=>{
-      const b=document.getElementById('pPri');
-      if(b.classList.contains('done')) return;
-      b.textContent = ctx==='request' ? '✓ Connected' : '✓ Requested'; b.classList.add('done');
-      if(ctx==='request') setTimeout(()=>{ closeProfile(); acceptRequest(idx); }, 700);
-    };
-    profBackdrop.classList.add('open'); profSheet.classList.add('open');
-    profSheet.scrollTop = 0;
-  }
+  // profile → dedicated profile page (was a bottom sheet; now real navigation)
+  function openProfile(p){ location.href='profile.html?name='+encodeURIComponent(p.name); }
   function closeProfile(){ profBackdrop.classList.remove('open'); profSheet.classList.remove('open'); }
   profBackdrop.addEventListener('click', closeProfile);
 
