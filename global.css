@@ -187,10 +187,11 @@ button, input, select, textarea, optgroup{font-family:var(--font-sans);}
 /* specialization / affiliation card */
 .pv-card2{display:flex;margin-top:14px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;}
 .pv-col{flex:1;min-width:0;padding:0 8px;}
-.pv-cic{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;margin-bottom:14px;} .pv-cic svg{width:19px;height:19px;}
+.pv-ch{display:flex;align-items:center;gap:8px;margin-bottom:9px;}
+.pv-cic{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;flex:0 0 auto;} .pv-cic svg{width:15px;height:15px;}
 .pv-cic.b{background:var(--brand-soft);color:var(--brand);} .pv-cic.g{background:rgba(63,125,78,.14);color:var(--green);}
-.pv-ct{font-size:var(--font-size-md);font-weight:var(--font-weight-bold);letter-spacing:-.01em;}
-.pv-cd{font-size:var(--font-size-sm);color:var(--muted);margin-top:6px;line-height:1.5;}
+.pv-ct{font-size:var(--font-size-sm);font-weight:var(--font-weight-bold);letter-spacing:-.01em;}
+.pv-cd{font-size:var(--font-size-xs);color:var(--muted);margin-top:5px;line-height:1.5;}
 .pv-card2 .pv-vdiv{margin:2px 8px;}
 /* quote */
 .pv-quote{display:flex;gap:12px;align-items:flex-start;margin-top:14px;background:var(--soft1);border-radius:16px;padding:15px 16px;}
