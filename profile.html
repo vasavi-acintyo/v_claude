@@ -133,8 +133,7 @@
   .edu-inst{font-size:10.5px;color:var(--muted);margin-top:2px;}
   .pa-post .by{font-size:10.5px;color:var(--muted);font-weight:700;margin-bottom:6px;}
   .pa-showall{display:flex;align-items:center;justify-content:center;gap:5px;width:100%;background:var(--soft1);border:1px solid var(--line);font-family:inherit;font-size:11.5px;font-weight:800;color:var(--brand);padding:11px 0;border-radius:12px;cursor:pointer;margin-top:-2px;}
-  .pa-showall svg{width:13px;height:13px;transition:transform .2s;}
-  .pa-showall.open svg{transform:rotate(180deg);}
+  .pa-showall svg{width:13px;height:13px;}
   .pv-actions.compact{justify-content:center;}
   .pv-btn.compact{flex:0 0 auto;min-height:42px;padding:0 26px;border-radius:999px;font-size:12px;}
   .pv-btn.connected{background:var(--soft2);color:var(--green);border:1.5px solid transparent;box-shadow:none;}
@@ -573,8 +572,6 @@
       const theirs = (p.comments||[]).filter(c=>c.name===qName);
       return theirs.length ? `<div class="my-note">${theirs.map(c=>`<b>Commented:</b> ${esc(c.text)}`).join('<br>')}</div>` : '';
     };
-    const caret = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
-
     const connState = (dir && dir.connectionStatus) || 'none';
     function connectBtnHTML(state){
       if(state==='connected') return `<button class="pv-btn compact connected" id="connect" data-state="connected">${I.check}Connected</button>`;
@@ -582,7 +579,6 @@
       return `<button class="pv-btn compact primary" id="connect" data-state="none">${I.connect}Connect</button>`;
     }
 
-    const showAll = { posts:false, comments:false, reposts:false };
     const TABS = {
       posts:    { list: mine,      extra: null,         empty: 'No posts yet.' },
       comments: { list: commented, extra: commentExtra, empty: 'No comments yet.' },
@@ -591,11 +587,10 @@
     function tabHTML(key){
       const { list, extra, empty } = TABS[key];
       if(!list.length) return `<div class="pa-empty">${empty}</div>`;
-      const open = showAll[key];
-      const shown = open ? list : list.slice(0,1);
+      const shown = list.slice(0,1);
       const cards = shown.map(p=>otherCard(p, extra?extra(p):'')).join('');
       const toggle = list.length>1
-        ? `<button class="pa-showall${open?' open':''}" data-key="${key}">${open?'Show less':'Show all '+list.length}${caret}</button>`
+        ? `<button class="pa-showall" data-key="${key}">Show all ${list.length}${I.chev}</button>`
         : '';
       return cards + toggle;
     }
@@ -653,8 +648,7 @@
     document.getElementById('prof').addEventListener('click', e=>{
       const b = e.target.closest('.pa-showall');
       if(!b) return;
-      showAll[b.dataset.key] = !showAll[b.dataset.key];
-      paintTabs();
+      location.href = 'profile-activity.html?name='+encodeURIComponent(qName)+'&tab='+b.dataset.key;
     });
     document.querySelectorAll('.pa-tabs button').forEach(b=>b.addEventListener('click',()=>{
       document.querySelectorAll('.pa-tabs button').forEach(x=>x.classList.remove('active')); b.classList.add('active');

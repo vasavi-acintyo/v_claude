@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Activity — DocSynapse</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<style>
+  [hidden]{display:none !important;}
+  @media (max-width:600px){ body{padding:0;overflow:hidden;justify-content:flex-start;} .phone{border-radius:0;box-shadow:none;transform-origin:top left;} .home-ind{display:none;} .statusbar{display:none;} .topbar{padding-top:max(6px,env(safe-area-inset-top));} }
+
+  .statusbar{display:none !important;}
+
+  .topbar{flex:0 0 auto;display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid var(--line);}
+  .topbar .bk{width:40px;height:40px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;cursor:pointer;color:var(--ink);flex:0 0 auto;transition:transform .18s cubic-bezier(.22,1,.36,1);}
+  .topbar .bk:active{transform:scale(.94);}
+  .topbar .tt{flex:1;min-width:0;}
+  .topbar .tt b{display:block;font-size:15px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .topbar .tt span{display:block;font-size:11px;color:var(--muted);font-weight:600;margin-top:1px;}
+
+  .scroll{flex:1 1 auto;overflow-y:auto;padding:14px 18px 22px;}
+  .scroll::-webkit-scrollbar{width:0;}
+
+  .pa-tabs{display:flex;border-bottom:1px solid var(--line);margin-bottom:14px;}
+  .pa-tabs button{flex:1;text-align:center;background:none;border:none;font-family:inherit;font-size:12.5px;font-weight:700;color:var(--muted);padding:9px 4px;min-height:44px;position:relative;cursor:pointer;}
+  .pa-tabs button.active{color:var(--brand);}
+  .pa-tabs button.active::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2.5px;background:var(--brand);border-radius:3px;}
+
+  .post-tag{display:inline-block;font-size:11px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:20px;}
+  .pa-post{background:var(--soft1);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px;}
+  .pa-post-head{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+  .pa-time{font-size:10px;color:var(--muted);font-weight:600;white-space:nowrap;}
+  .pa-post .pb{font-size:11.5px;line-height:1.55;color:var(--slate-700);margin-top:8px;}
+  .pa-post img.m{width:100%;border-radius:11px;margin-top:10px;max-height:220px;object-fit:cover;}
+  .pa-post video.m,.pa-post audio.m{width:100%;border-radius:11px;margin-top:10px;}
+  .pa-post .pm{font-size:11px;color:var(--muted);font-weight:700;margin-top:11px;padding-top:11px;border-top:1px solid var(--line);display:flex;gap:16px;}
+  .pa-post .pm span{display:inline-flex;align-items:center;gap:5px;}
+  .pa-post .pm svg{width:13px;height:13px;flex:0 0 auto;}
+  .pa-empty{text-align:center;font-size:11px;color:var(--muted);padding:30px 10px;}
+  .my-note{background:var(--soft2);border-radius:10px;padding:8px 10px;margin-top:10px;font-size:10.5px;line-height:1.5;color:var(--slate-700);}
+  .my-note b{color:var(--brand);font-weight:800;}
+
+  /* ---------- V Theme (vibrant) — lift flat tinted surfaces into shadowed cards ---------- */
+  [data-theme="vibrant"] .pa-post{background:var(--card);border:1px solid var(--line);box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
+</style>
+  <link rel="stylesheet" href="global.css?v=10">
+</head>
+<body>
+<div class="phone">
+  <div class="topbar">
+    <button class="bk" id="back" aria-label="Back"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+    <div class="tt"><b id="ttName">Activity</b><span id="ttSub"></span></div>
+  </div>
+
+  <div class="scroll">
+    <div class="pa-tabs rise" id="actTabs">
+      <button data-pt="posts">Posts</button>
+      <button data-pt="comments">Comments</button>
+      <button data-pt="reposts">Reposts</button>
+    </div>
+    <div id="paPosts" class="rise"><div class="pa-empty">Loading…</div></div>
+    <div id="paComments" class="rise" hidden></div>
+    <div id="paReposts" class="rise" hidden></div>
+  </div>
+
+  <div class="home-ind"></div>
+</div>
+
+<script>
+  (function(){ const ua=navigator.userAgent||''; const isIOS=/iPad|iPhone|iPod/.test(ua)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1); const isAndroid=/Android/.test(ua); document.documentElement.setAttribute('data-os', isIOS?'ios':isAndroid?'android':'other'); })();
+  try{ const t=localStorage.getItem('cmeTheme')||'blue'; if(t&&t!=='classical') document.documentElement.setAttribute('data-theme',t); }catch(e){}
+
+  const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+  const I = {
+    heart:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.4 3-5.5A4.5 4.5 0 0 0 12 5 4.5 4.5 0 0 0 2 8.5C2 12 5 15 12 21c2-1.7 3.7-3.2 5-4.5"/></svg>',
+    chat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H8l-4 4V5a2 2 0 0 1 2-2h13a2 2 0 0 1 2 2z"/></svg>',
+    repeat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m17 2 4 4-4 4"/><path d="M3 11V9a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v2a4 4 0 0 1-4 4H3"/></svg>',
+    docf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>'
+  };
+  function mediaInPost(m){ if(!m) return ''; if(m.type==='image') return `<img class="m" src="${m.data}" alt="">`; if(m.type==='video') return `<video class="m" src="${m.data}" controls preload="metadata"></video>`; if(m.type==='audio') return `<audio class="m" src="${m.data}" controls preload="metadata"></audio>`; return `<div class="att">${I.docf}${esc(m.name||'')}</div>`; }
+
+  function idbOpen(){ return new Promise((res,rej)=>{ const r=indexedDB.open('medhubFeed',1); r.onupgradeneeded=()=>r.result.createObjectStore('kv'); r.onsuccess=()=>res(r.result); r.onerror=()=>rej(r.error); }); }
+  async function idbGet(k){ try{ const db=await idbOpen(); return await new Promise(res=>{ const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(undefined); }); }catch(e){ return undefined; } }
+
+  const qp = new URLSearchParams(location.search);
+  const qName = qp.get('name') || '';
+  let tab = qp.get('tab') || 'posts';
+  if(!['posts','comments','reposts'].includes(tab)) tab = 'posts';
+
+  document.getElementById('ttName').textContent = qName || 'Activity';
+
+  document.getElementById('back').addEventListener('click', ()=>{
+    const dest = 'profile.html?name='+encodeURIComponent(qName);
+    if(history.length>1){ history.back(); } else { location.href = dest; }
+  });
+
+  function showTab(t){
+    tab = t;
+    document.querySelectorAll('#actTabs button').forEach(x=>x.classList.toggle('active', x.dataset.pt===t));
+    document.getElementById('paPosts').hidden = t!=='posts';
+    document.getElementById('paComments').hidden = t!=='comments';
+    document.getElementById('paReposts').hidden = t!=='reposts';
+    const sub = { posts:'Posts', comments:'Comments', reposts:'Reposts' }[t];
+    document.getElementById('ttSub').textContent = sub;
+    try{ history.replaceState(null, '', '?name='+encodeURIComponent(qName)+'&tab='+t); }catch(e){}
+  }
+  document.getElementById('actTabs').addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    showTab(b.dataset.pt);
+  });
+
+  async function load(){
+    const store = await idbGet('posts3');
+    const posts = store && Array.isArray(store.posts) ? store.posts : (Array.isArray(store) ? store : []);
+    const rsum = p => Object.values(p.rc||{}).reduce((s,v)=>s+v,0);
+
+    const mine = posts.filter(p=>p.name===qName);
+    const commented = posts.filter(p=>(p.comments||[]).some(c=>c.name===qName));
+    const reposted = posts.filter(p=>(p.repostedBy||[]).includes(qName));
+
+    const card = (p, extra) => `<div class="pa-post">
+        <div class="pa-post-head">${p.tag?`<span class="post-tag">${esc(p.tag)}</span>`:'<span></span>'}${p.time?`<span class="pa-time">${esc(p.time)}</span>`:''}</div>
+        <div class="pb">${p.body||''}</div>
+        ${mediaInPost(p.media)}
+        <div class="pm"><span>${I.heart}${rsum(p)}</span><span>${I.chat}${(p.comments||[]).length}</span><span>${I.repeat}${p.shares||0}</span></div>
+        ${extra||''}
+      </div>`;
+    const commentExtra = p => {
+      const theirs = (p.comments||[]).filter(c=>c.name===qName);
+      return theirs.length ? `<div class="my-note">${theirs.map(c=>`<b>Commented:</b> ${esc(c.text)}`).join('<br>')}</div>` : '';
+    };
+
+    document.getElementById('paPosts').innerHTML = mine.length ? mine.map(p=>card(p)).join('') : `<div class="pa-empty">No posts yet.</div>`;
+    document.getElementById('paComments').innerHTML = commented.length ? commented.map(p=>card(p, commentExtra(p))).join('') : `<div class="pa-empty">No comments yet.</div>`;
+    document.getElementById('paReposts').innerHTML = reposted.length ? reposted.map(p=>card(p)).join('') : `<div class="pa-empty">No reposts yet.</div>`;
+
+    showTab(tab);
+  }
+  load();
+
+  (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
+</script>
+</body>
+</html>
