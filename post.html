@@ -87,6 +87,10 @@
   .post-h .nm{font-size:11.5px;font-weight:800;}
   .post-h .sp{font-size:9px;color:var(--muted);margin-top:1px;}
   .post-h .t{margin-left:auto;font-size:8.5px;color:var(--muted);font-weight:600;}
+  .pgroup-bar{display:flex;align-items:center;gap:8px;padding:9px 11px;margin-bottom:11px;border-radius:11px;background:linear-gradient(135deg,var(--brand-soft),var(--chip));cursor:pointer;}
+  .pgroup-bar>svg:first-child{width:16px;height:16px;flex:0 0 auto;color:var(--brand);}
+  .pgroup-bar span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px;font-weight:800;color:var(--brand);}
+  .pgroup-bar .chev,.pgroup-bar svg:last-child{width:14px;height:14px;flex:0 0 auto;color:var(--brand);}
   .post-b{font-size:11px;line-height:1.6;color:var(--slate-700);margin-top:10px;}
   .post-tag{display:inline-block;font-size:9px;font-weight:800;color:var(--brand);background:var(--brand-soft);padding:2px 8px;border-radius:20px;margin-top:8px;}
   .post-f{display:flex;justify-content:space-between;gap:4px;margin-top:11px;padding-top:10px;border-top:1px solid var(--line);}
@@ -606,6 +610,7 @@
     clearTimeout(toastT); toastT=setTimeout(()=>el.classList.remove('show'), 1400);
   }
   const grpIco = '<svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg>';
+  const grpIcoMuted = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/><circle cx="17.5" cy="8.5" r="2.5"/><path d="M21 20v-1a4 4 0 0 0-3-3.8"/></svg>';
 
   // ---- Requests ----
   let requests = [
@@ -765,11 +770,13 @@
   const slideImg = 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="440" height="248"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#1e293b"/><stop offset="1" stop-color="#0f172a"/></linearGradient></defs><rect width="440" height="248" fill="url(#g)"/><text x="22" y="42" fill="#fff" font-family="Georgia,serif" font-size="19" font-weight="bold">Insulin Resistance in T2DM</text><text x="22" y="64" fill="#94a3b8" font-family="sans-serif" font-size="11">HbA1c response · 12-week cohort</text><polyline points="30,205 100,160 170,175 240,120 310,135 400,80" fill="none" stroke="#38bdf8" stroke-width="4"/><line x1="30" y1="215" x2="410" y2="215" stroke="#334155" stroke-width="2"/><circle cx="240" cy="120" r="5" fill="#38bdf8"/><circle cx="400" cy="80" r="5" fill="#38bdf8"/></svg>');
   const seed = [
     { id:1, name:'Dr. Meera Iyer', spec:'Endocrinologist · Apollo', img:'https://randomuser.me/api/portraits/women/68.jpg', time:'2h',
+      group:'Indian Diabetes Forum',
       body:'Sharing my slides from today’s session on insulin resistance in T2DM. Happy to discuss the CGM data — DM me for the full deck.', tag:'CME · Diabetes',
       media:{type:'image', data:slideImg, name:'Session slide'},
       rc:{like:38,insightful:5}, my:'like', shares:6,
       comments:[{name:'Dr. Rohan Sinha',img:'https://randomuser.me/api/portraits/men/45.jpg',text:'Great session — the CGM segment was excellent.',time:'1h',likes:3,liked:false},{name:'Dr. Ananya Rao',img:'https://randomuser.me/api/portraits/women/79.jpg',text:'Thanks Meera — could you share the CGM interpretation slide?',time:'40m',likes:1,liked:false,me:true}] },
     { id:2, name:'Dr. Arvind Kumar', spec:'Cardiologist · Fortis', img:'https://randomuser.me/api/portraits/men/32.jpg', time:'4h',
+      group:'City Cardiology Society',
       body:'Quick demo clip of the bedside focused-echo technique we discussed. Tap to play.', tag:'Case · Cardiology',
       media:{type:'video', data:'https://www.w3schools.com/html/mov_bbb.mp4', name:'Bedside echo demo'},
       rc:{like:56,insightful:9}, my:null, shares:11, myRepost:true, repostedBy:['Dr. Kavya Reddy'],
@@ -876,7 +883,7 @@
   async function idbSet(k,v){ try{ const db=await idbOpen(); await new Promise((res,rej)=>{ const tx=db.transaction('kv','readwrite'); tx.objectStore('kv').put(v,k); tx.oncomplete=res; tx.onerror=()=>rej(tx.error); }); }catch(e){} }
   async function idbGet(k){ try{ const db=await idbOpen(); return await new Promise(res=>{ const tx=db.transaction('kv','readonly'); const q=tx.objectStore('kv').get(k); q.onsuccess=()=>res(q.result); q.onerror=()=>res(undefined); }); }catch(e){ return undefined; } }
   let posts = [];
-  const SEED_V = 8;                       // bump to force a reseed
+  const SEED_V = 9;                       // bump to force a reseed
   function saveFeed(){ idbSet(IDB_KEY, {v:SEED_V, posts}); }
 
   const feedEl = document.getElementById('feed');
@@ -917,6 +924,7 @@
   const dots = '<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>';
   const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
   const chevDown = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>';
+  const chevRightSm = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
   const chevUp = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="18 15 12 9 6 15"/></svg>';
   const isVerified = p => p.verified!==false && p.spec!=='Group';
   const docIco = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M8 13h8M8 17h5"/></svg>';
@@ -934,6 +942,7 @@
       const likeInner = my ? `<span style="color:${REACT[my].c}">${REACT[my].e} ${REACT[my].l}</span>` : `${thumbUp}Like`;
       const pops = Object.keys(REACT).map(k=>`<button data-react="${k}" title="${REACT[k].l}">${REACT[k].e}</button>`).join('');
       return `<div class="post" data-id="${p.id}">
+        ${p.group?`<div class="pgroup-bar" data-group="${esc(p.group)}">${grpIcoMuted}<span>${esc(p.group)}</span>${chevRightSm}</div>`:''}
         <div class="post-h"><img src="${p.img}" data-author alt=""><div class="pauthor" data-author style="flex:1;min-width:0"><div class="nm">${p.name}${isVerified(p)?vchk:''}</div><div class="sp">${p.spec}</div></div><span class="t">${p.time}</span><button class="pmore" data-more aria-label="More">${dots}</button></div>
         <div class="post-b">${p.body}</div>
         ${p.tag?`<span class="post-tag">${p.tag}</span>`:''}
@@ -1004,6 +1013,7 @@
   feedEl.addEventListener('click', e=>{
     const et=e.target.closest('[data-et]'); if(et){ openEngage(postFromEl(et), et.dataset.et); return; }
     const mo=e.target.closest('[data-more]'); if(mo){ openOpts(postFromEl(mo)); return; }
+    const gr=e.target.closest('[data-group]'); if(gr){ location.href='group.html?name='+encodeURIComponent(gr.dataset.group); return; }
     const au=e.target.closest('[data-author]'); if(au){ location.href='profile.html?name='+encodeURIComponent(postFromEl(au).name); return; }
     const mv=e.target.closest('[data-view]'); if(mv){ openMedia(postFromEl(mv).media); return; }
     const dv=e.target.closest('[data-doc]'); if(dv){ const m=postFromEl(dv).media; const w=window.open(); if(w) w.location=m.data; return; }
