@@ -47,6 +47,7 @@
 [data-theme="vibrant"]{--brand:#1e5fbf;--brand-dark:#164a99;--brand-soft:#e7effc;--gold:#b0894f;--ink:#0f2438;--slate-700:#31465e;--muted:#546a80;--line:#e1e9f3;--chip:#eef4fb;--green:#1f9d6b;--surface:#ffffff;--card:#ffffff;--page:#ffffff;--g1:#4f8be8;--g2:#1e5fbf;--d1:#0b2545;--d2:#123a72;--d3:#1e5fbf;--glow:rgba(56,189,248,.42);--soft1:#e9f1ff;--soft2:#eaf3ff;--onGold:#9bdcfa;}
 [data-theme="white"]{--brand:#111114;--brand-dark:#000000;--brand-soft:#f1f2f6;--gold:#a97e3f;--ink:#111114;--slate-700:#3a3a42;--muted:#7a7a86;--line:#e6e7ee;--chip:#f2f3f7;--green:#1f9d6b;--surface:#ffffff;--card:#ffffff;--page:#e8e9ef;--g1:#2b2b33;--g2:#111114;--d1:#151519;--d2:#232329;--d3:#111114;--glow:rgba(130,120,180,.3);--soft1:#ffffff;--soft2:#ffffff;--onGold:#e6cf7a;}
 [data-theme="whitec"]{--brand:#2f6fed;--brand-dark:#1f57c8;--brand-soft:#e9f1fe;--gold:#b0894f;--ink:#14141a;--slate-700:#3a3a44;--muted:#78788a;--line:#e6e7ee;--chip:#eef3fb;--green:#1f9d6b;--surface:#ffffff;--card:#ffffff;--page:#e8e9ef;--g1:#4f8be8;--g2:#2f6fed;--d1:#0b2545;--d2:#123a72;--d3:#2f6fed;--glow:rgba(56,189,248,.4);--soft1:#ffffff;--soft2:#ffffff;--onGold:#9bdcfa;}
+[data-theme="dark"]{color-scheme:dark;--brand:#70b5f9;--brand-dark:#4d99e0;--brand-soft:#1c2b3a;--gold:#e7b464;--ink:#ffffff;--slate-700:#c7ccd1;--muted:#a3adb8;--line:#38434f;--chip:#1e2226;--green:#5cb85c;--surface:#000000;--card:#1b1f23;--page:#000000;--g1:#70b5f9;--g2:#4d99e0;--d1:#0a1420;--d2:#132436;--d3:#1f3f66;--glow:rgba(112,181,249,.32);--soft1:#1d2226;--soft2:#202428;--onGold:#ffdca8;--red:#f27171;--red-soft:rgba(242,113,113,.16);--amber:#e0a53d;--amber-soft:rgba(224,165,61,.16);}
 /* soft cards get a hairline border in every theme so they stay defined (white themes need it; tinted themes gain crispness) */
 .phone :where(.adv,.aicard,.alert,.banner,.card,.case,.cases-link,.cases-row,.ccard,.cert,.cme2,.cont,.cw,.feature,.file,.folder,.gcard,.grp,.hearing,.hero,.ks-card,.learn-card,.learn-item,.live-card,.ml,.mstat,.mtile,.net-card,.pa-post,.pcard,.pcomplete,.pk-row,.post,.prog,.prow,.pts,.rcard,.rec,.reg-badge,.reg-card,.req,.sc,.scard,.shield,.spec,.spec-card,.startpost,.stat,.sub-row,.tcard,.tile,.tool,.vid,.arow,.demo-row,.flyer){border-color:var(--line);}
 /* white + colour: colourful module icons on home */
@@ -64,7 +65,7 @@
 html,body{background:var(--page);color:var(--ink);font-family:var(--font-sans) !important;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 body{display:flex;justify-content:center;padding:18px;font-size:var(--fs-body);line-height:var(--lh-normal);letter-spacing:var(--ls-normal);}
 svg{display:block;}
-button, input, select, textarea, optgroup{font-family:var(--font-sans);}
+button, input, select, textarea, optgroup{font-family:var(--font-sans);color:inherit;}
 
 /* ---------- shared keyframes ---------- */
 @keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
@@ -111,6 +112,9 @@ button, input, select, textarea, optgroup{font-family:var(--font-sans);}
 .nav{flex:0 0 auto;display:flex;justify-content:space-around;background:var(--surface);border-top:1px solid var(--line);padding:9px 0 22px;}
 .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:var(--fs-nav);color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1), color .18s;}
 .navitem.active{color:var(--brand);font-weight:var(--fw-semibold);}
+[data-theme="dark"] .navitem{color:#d9c9a8;}
+[data-theme="dark"] .navitem.doxy{color:#d9c9a8;}
+[data-theme="dark"] .navitem.active{color:var(--brand);}
 .navitem:active{transform:scale(.9);}
 /* Doxy — prominent raised centre button (full-colour mascot) */
 .navitem.doxy{color:var(--brand);font-weight:var(--fw-semibold);}

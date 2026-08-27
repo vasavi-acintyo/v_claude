@@ -40,7 +40,7 @@
 
   /* join requests (admin view) */
   .reqs{display:flex;flex-direction:column;gap:8px;}
-  .req{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 11px;transition:opacity .3s ease, transform .3s ease;}
+  .req{position:relative;display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 11px;transition:opacity .3s ease, transform .3s ease;}
   .req img{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;}
   .req .m{flex:1;min-width:0;}
   .req .nm{font-size:11.5px;font-weight:800;font-family:var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -52,6 +52,21 @@
   .req .acc:hover{background:var(--brand-dark);}
   .req .ign{background:var(--chip);color:var(--muted);}
   .req .ign:hover{color:var(--ink);background:var(--line);}
+  .req .racts{display:flex;align-items:center;gap:4px;flex:0 0 auto;}
+  .req .role{font-size:9px;font-weight:800;padding:3px 8px;border-radius:20px;flex:0 0 auto;white-space:nowrap;}
+  .req .role.admin{color:var(--brand);background:var(--brand-soft);}
+  .req .role.member{color:var(--muted);background:var(--chip);}
+  .req .kebab{border:none;cursor:pointer;background:none;color:var(--muted);width:26px;height:26px;border-radius:50%;display:grid;place-items:center;flex:0 0 auto;}
+  .req .kebab:hover{background:var(--chip);color:var(--ink);}
+  .req .kebab svg{width:15px;height:15px;}
+
+  /* member action sheet (stacked above the members sheet) */
+  #maBackdrop{z-index:40;}
+  #maSheet{z-index:41;}
+  .ma-row{display:flex;align-items:center;gap:12px;padding:2px 4px 16px;}
+  .ma-row img{width:44px;height:44px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;border:2px solid var(--card);}
+  .ma-row .nm{font-size:13px;font-weight:800;font-family:var(--display);}
+  .ma-row .sp{font-size:10.5px;color:var(--muted);margin-top:2px;}
   .req.gone{opacity:0;transform:translateX(30px);}
 
   .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px;}
@@ -154,6 +169,13 @@
     <div class="sheet-body" id="optBody"></div>
   </div>
 
+  <!-- Member action sheet (stacked above the members list) -->
+  <div class="backdrop" id="maBackdrop"></div>
+  <div class="sheet" id="maSheet">
+    <div class="grab"></div>
+    <div class="sheet-body" id="maBody"></div>
+  </div>
+
   <div class="home-ind"></div>
 </div>
 
@@ -177,50 +199,93 @@
   const calIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><rect x="3" y="4.5" width="18" height="17" rx="2.5"/><line x1="3" y1="9" x2="21" y2="9"/></svg>';
   const shieldIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 4 5v6c0 5 3.5 8.5 8 11 4.5-2.5 8-6 8-11V5l-8-3Z"/></svg>';
   const emptyIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"/><path d="M3 20v-1.5A4.5 4.5 0 0 1 7.5 14h3A4.5 4.5 0 0 1 15 18.5V20"/></svg>';
+  const dotsIco='<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><circle cx="12" cy="5" r="1.8"/><circle cx="12" cy="12" r="1.8"/><circle cx="12" cy="19" r="1.8"/></svg>';
   const checkIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
   const xIco='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+  const chevIco='<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 6 15 12 9 18"/></svg>';
 
   const GROUPS = {
     'Indian Diabetes Forum': { members:'12.4k', created:'Est. 2016', admin:'Dr. Meera Iyer', status:'member',
       bio:'A community for endocrinologists and physicians managing diabetes across India — sharing guidelines, case discussions and the latest in CGM and insulin therapy.',
+      memberList:[
+        {name:'Dr. Meera Iyer', spec:'Endocrinologist · Apollo Hospitals', img:'https://randomuser.me/api/portraits/women/68.jpg'},
+        {name:'Dr. Vijay Menon', spec:'Diabetologist · Amrita Hospital', img:'https://randomuser.me/api/portraits/men/76.jpg'},
+        {name:'Dr. Kavya Reddy', spec:'Endocrinologist · Apollo Hospitals', img:'https://randomuser.me/api/portraits/women/65.jpg'}
+      ],
       posts:[
         {n:'Dr. Meera Iyer', img:'https://randomuser.me/api/portraits/women/68.jpg', t:'2h', b:'New ADA 2025 guideline summary is up in files — key changes to GLP-1 first-line recommendations for T2DM with CVD risk.', likes:34, cmts:8},
         {n:'Dr. Vijay Menon', img:'https://randomuser.me/api/portraits/men/76.jpg', t:'1d', b:'Case: 52F with brittle T1DM on hybrid closed-loop, recurring nocturnal hypos. Anyone tried adjusting active insulin time vs target glucose first?', likes:19, cmts:12}
       ]},
     'City Cardiology Society': { members:'3.2k', created:'Est. 2019', admin:'Dr. Arvind Kumar', status:'member',
       bio:'Regional cardiology society for case discussions, journal clubs and CME announcements across the city\'s hospital network.',
+      memberList:[
+        {name:'Dr. Arvind Kumar', spec:'Cardiologist · Fortis Escorts', img:'https://randomuser.me/api/portraits/men/32.jpg'},
+        {name:'Dr. Sameer Shah', spec:'Interventional Cardiologist · Fortis Hospital', img:'https://randomuser.me/api/portraits/men/52.jpg'},
+        {name:'Dr. Anjali Desai', spec:'Endocrinologist · Sterling Hospital', img:'https://randomuser.me/api/portraits/women/32.jpg'}
+      ],
       posts:[
         {n:'Dr. Arvind Kumar', img:'https://randomuser.me/api/portraits/men/32.jpg', t:'5h', b:'Reminder: journal club this Friday covering the new resistant-hypertension trial data. Venue details pinned.', likes:22, cmts:4}
       ]},
     'Young Physicians Network': { members:'8.7k', created:'Est. 2021', admin:'Dr. Rohan Sinha', status:'member',
       bio:'For residents and early-career physicians — mentorship, career advice and peer support.',
+      memberList:[
+        {name:'Dr. Rohan Sinha', spec:'Hypertension Specialist · AIIMS', img:'https://randomuser.me/api/portraits/men/45.jpg'},
+        {name:'Dr. Priya Nair', spec:'Lipidologist · Narayana Health', img:'https://randomuser.me/api/portraits/women/44.jpg'},
+        {name:'Dr. Vijay Menon', spec:'Diabetologist · Amrita Hospital', img:'https://randomuser.me/api/portraits/men/76.jpg'}
+      ],
       posts:[
         {n:'Dr. Rohan Sinha', img:'https://randomuser.me/api/portraits/men/45.jpg', t:'3h', b:'Hot take: the hardest part of residency isn\'t the hours, it\'s learning to say "I don\'t know, let me check" out loud. Anyone else?', likes:61, cmts:23},
         {n:'Dr. Priya Nair', img:'https://randomuser.me/api/portraits/women/44.jpg', t:'2d', b:'Sharing my note-taking system for ward rounds — happy to walk anyone through it if useful.', likes:15, cmts:6}
       ]},
     'Endocrine Society of India': { members:'22.1k', created:'Est. 2010', admin:'Dr. Kavya Reddy', status:'none',
       bio:'National society for endocrinologists — accredited CME, annual conference updates and specialty guidelines.',
+      memberList:[
+        {name:'Dr. Kavya Reddy', spec:'Endocrinologist · Apollo Hospitals', img:'https://randomuser.me/api/portraits/women/65.jpg'},
+        {name:'Dr. Meera Iyer', spec:'Endocrinologist · Apollo Hospitals', img:'https://randomuser.me/api/portraits/women/68.jpg'},
+        {name:'Dr. Anjali Desai', spec:'Endocrinologist · Sterling Hospital', img:'https://randomuser.me/api/portraits/women/32.jpg'}
+      ],
       posts:[
         {n:'Dr. Kavya Reddy', img:'https://randomuser.me/api/portraits/women/65.jpg', t:'1d', b:'Registrations for the annual conference open next week. Early bird pricing for society members.', likes:48, cmts:9}
       ]},
     'Clinical Cardiology Hub': { members:'15.8k', created:'Est. 2014', admin:'Dr. Sameer Shah', status:'none',
       bio:'Clinical discussion hub for interventional and non-interventional cardiologists — case reviews and guideline updates.',
+      memberList:[
+        {name:'Dr. Sameer Shah', spec:'Interventional Cardiologist · Fortis Hospital', img:'https://randomuser.me/api/portraits/men/52.jpg'},
+        {name:'Dr. Arvind Kumar', spec:'Cardiologist · Fortis Escorts', img:'https://randomuser.me/api/portraits/men/32.jpg'}
+      ],
       posts:[
         {n:'Dr. Sameer Shah', img:'https://randomuser.me/api/portraits/men/52.jpg', t:'6h', b:'Interesting ECG from clinic today — happy to share for a group read if useful for teaching.', likes:27, cmts:11}
       ]},
     'Nephrology Connect': { members:'6.4k', created:'Est. 2018', admin:'Dr. Imran Khan', status:'none',
       bio:'Connecting nephrologists for CKD management discussions, dialysis case reviews and transplant updates.',
+      memberList:[
+        {name:'Dr. Imran Khan', spec:'Consultant Physician · Max Healthcare', img:'https://randomuser.me/api/portraits/men/61.jpg'},
+        {name:'Dr. Rohan Sinha', spec:'Hypertension Specialist · AIIMS', img:'https://randomuser.me/api/portraits/men/45.jpg'}
+      ],
       posts:[
         {n:'Dr. Imran Khan', img:'https://randomuser.me/api/portraits/men/61.jpg', t:'4h', b:'Anyone using the new eGFR calculator in practice yet? Curious how it\'s changing referral timing.', likes:14, cmts:5}
       ]},
     'Interventional Cardiology India': { members:'9.1k', created:'Est. 2017', admin:'Dr. Anjali Desai', status:'pending',
       bio:'For interventional cardiologists — procedural case discussions, device updates and fellowship opportunities.',
+      memberList:[
+        {name:'Dr. Anjali Desai', spec:'Endocrinologist · Sterling Hospital', img:'https://randomuser.me/api/portraits/women/32.jpg'},
+        {name:'Dr. Arvind Kumar', spec:'Cardiologist · Fortis Escorts', img:'https://randomuser.me/api/portraits/men/32.jpg'},
+        {name:'Dr. Sameer Shah', spec:'Interventional Cardiologist · Fortis Hospital', img:'https://randomuser.me/api/portraits/men/52.jpg'}
+      ],
       posts:[]},
     'Women in Medicine Network': { members:'14.3k', created:'Est. 2015', admin:'Dr. Ananya Ghosh', status:'pending',
       bio:'A supportive community for women in medicine — mentorship, work-life balance and career growth.',
+      memberList:[
+        {name:'Dr. Ananya Ghosh', spec:'Paediatrician · IPGMER Kolkata', img:'https://randomuser.me/api/portraits/women/33.jpg'},
+        {name:'Dr. Priya Nair', spec:'Lipidologist · Narayana Health', img:'https://randomuser.me/api/portraits/women/44.jpg'},
+        {name:'Dr. Kavya Reddy', spec:'Endocrinologist · Apollo Hospitals', img:'https://randomuser.me/api/portraits/women/65.jpg'}
+      ],
       posts:[]},
     'Dr. Sanjay Oberoi': { members:'1.8k', created:'Est. 2022', admin:'Dr. Sanjay Oberoi', status:'none',
       bio:'Pulmonology fellowship circle run by Dr. Sanjay Oberoi — case discussions on ILD, sleep medicine and critical care ventilation.',
+      memberList:[
+        {name:'Dr. Sanjay Oberoi', spec:'Pulmonologist · AIIMS', img:'https://randomuser.me/api/portraits/men/85.jpg'}
+      ],
       posts:[
         {n:'Dr. Sanjay Oberoi', img:'https://randomuser.me/api/portraits/men/85.jpg', t:'1d', b:'Sharing our unit\'s weaning protocol for prolonged mechanical ventilation — feedback welcome from fellow intensivists.', likes:17, cmts:5}
       ]}
@@ -245,6 +310,16 @@
       return;
     }
     curG=g; curCustom=custom; curName=name;
+    // groups created before the member-list feature existed won't have one yet — backfill it
+    // with at least the owner, so Members always has something to show and persist changes to.
+    if(custom && (!g.memberList || !g.memberList.length)){
+      const myDesignation = (function(){try{return localStorage.getItem('docRole')||'MD internal medicine';}catch(e){return 'MD internal medicine';}})();
+      const myAvatar = (function(){try{return localStorage.getItem('docAvatar')||'https://randomuser.me/api/portraits/men/52.jpg';}catch(e){return 'https://randomuser.me/api/portraits/men/52.jpg';}})();
+      g.memberList = [{name: g.admin, spec: myDesignation, img: myAvatar}];
+      const mine = loadMyGroups(); const idx = mine.findIndex(x=>x.name===name);
+      if(idx>-1){ mine[idx].memberList = g.memberList; try{ localStorage.setItem('myGroups', JSON.stringify(mine)); }catch(e){} }
+    }
+    const isOwner = custom && g.admin==='You';
     document.getElementById('topTitle').textContent = name;
     const btnLabel = g.status==='member' ? 'Joined' : g.status==='pending' ? 'Pending' : 'Join';
     const btnClass = g.status==='member' ? 'joined' : g.status==='pending' ? 'pending' : '';
@@ -266,6 +341,14 @@
         <div class="about-kv"><span>${shieldIco}</span><span>Admin · ${esc(g.admin)}</span></div>
         ${g.type ? `<div class="about-kv"><span>${shieldIco}</span><span>${esc(g.type)} group</span></div>` : ''}
       </div>
+
+      ${(g.memberList && g.memberList.length) ? `
+      <div class="sec"><h2>Members</h2><span class="cnt">${g.memberList.length}</span></div>
+      <button type="button" class="composer rise" id="membersRow">
+        <img src="${g.memberList[0].img}" alt="">
+        <div class="cbox">${esc(g.memberList.slice(0,2).map(m=>m.name).join(', '))}${g.memberList.length>2?` and ${g.memberList.length-2} other${g.memberList.length-2>1?'s':''}`:''}</div>
+        <span style="color:var(--muted);flex:0 0 auto;display:flex">${chevIco}</span>
+      </button>` : ''}
 
       ${(custom && g.admin==='You' && g.joinRequests && g.joinRequests.length) ? `
       <div class="sec"><h2>Requests to join</h2><span class="cnt">${g.joinRequests.length}</span></div>
@@ -319,7 +402,9 @@
         if(idx>-1){
           mine[idx].joinRequests = (mine[idx].joinRequests||[]).filter((_,ri)=>ri!==i);
           if(acc){
-            const n = (parseInt(String(mine[idx].members).replace(/\D/g,''),10)||1) + 1;
+            mine[idx].memberList = mine[idx].memberList||[];
+            mine[idx].memberList.push({name:req.name, spec:req.spec, img:req.img});
+            const n = mine[idx].memberList.length;
             mine[idx].members = n+' member'+(n>1?'s':'');
           }
           try{ localStorage.setItem('myGroups', JSON.stringify(mine)); }catch(e){}
@@ -329,6 +414,8 @@
         if(row){ row.classList.add('gone'); setTimeout(()=>render(name), 280); } else render(name);
       });
     }
+    const membersRow = document.getElementById('membersRow');
+    if(membersRow) membersRow.addEventListener('click', openMembers);
     const composer=document.getElementById('composer');
     if(composer) composer.addEventListener('click', ()=>toast('Post composer coming soon'));
     document.getElementById('feed').addEventListener('click', e=>{
@@ -375,6 +462,48 @@
     `;
   }
 
+  function renderMemberRows(){
+    const g = curG, isOwner = curCustom && g.admin==='You';
+    return (g.memberList||[]).map((m,i)=>{
+      const isAdmin = m.name===g.admin;
+      return `
+      <div class="req">
+        <img src="${m.img}" alt="">
+        <div class="m"><div class="nm">${esc(m.name)}</div><div class="sp">${esc(m.spec)}</div></div>
+        <div class="racts">
+          <span class="role ${isAdmin?'admin':'member'}">${isAdmin?'Admin':'Member'}</span>
+          ${(!isAdmin && isOwner) ? `<button type="button" class="kebab" data-mkebab="${i}" aria-label="More options for ${esc(m.name)}">${dotsIco}</button>` : ''}
+        </div>
+      </div>`;
+    }).join('') || `<div class="empty" style="padding:30px 10px">${emptyIco}<p>No members yet.</p></div>`;
+  }
+  function openMembers(){
+    optBody.innerHTML = `
+      <div class="sheet-title"><b>Members</b><span>${(curG.memberList||[]).length} in ${esc(curName)}</span></div>
+      <div class="reqs" id="memberResults">${renderMemberRows()}</div>
+    `;
+    optBackdrop.classList.add('open'); optSheet.classList.add('open');
+  }
+  function removeMember(i){
+    const g = curG; if(!g || !g.memberList) return;
+    const member = g.memberList[i]; if(!member) return;
+    if(!confirm('Remove '+member.name+' from '+curName+'? They will need to request to join again.')) return;
+    g.memberList.splice(i,1);
+    if(curCustom){
+      const mine = loadMyGroups(); const idx = mine.findIndex(x=>x.name===curName);
+      if(idx>-1){
+        mine[idx].memberList = g.memberList;
+        const n = g.memberList.length;
+        mine[idx].members = n+' member'+(n===1?'':'s');
+        try{ localStorage.setItem('myGroups', JSON.stringify(mine)); }catch(e){}
+      }
+    }
+    toast(member.name+' removed from '+curName);
+    const results = document.getElementById('memberResults');
+    if(results) results.innerHTML = renderMemberRows();
+    render(curName);
+  }
+
   function openOpts(){
     if(!curG) return;
     const isOwner = curCustom && curG.admin==='You';
@@ -392,17 +521,43 @@
   function closeOpts(){ optBackdrop.classList.remove('open'); optSheet.classList.remove('open'); }
   document.getElementById('moreBtn').addEventListener('click', openOpts);
   optBackdrop.addEventListener('click', closeOpts);
+
+  const maBackdrop=document.getElementById('maBackdrop'), maSheet=document.getElementById('maSheet'), maBody=document.getElementById('maBody');
+  let maIndex=null;
+  function openMemberAction(i){
+    const g=curG, m=g && g.memberList && g.memberList[i]; if(!m) return;
+    maIndex=i;
+    maBody.innerHTML = `
+      <div class="ma-row"><img src="${m.img}" alt=""><div><div class="nm">${esc(m.name)}</div><div class="sp">${esc(m.spec)}</div></div></div>
+      <button type="button" class="opt-item danger" id="maRemoveBtn">Remove from group</button>
+      <button type="button" class="opt-item" id="maCancelBtn">Cancel</button>
+    `;
+    maBackdrop.classList.add('open'); maSheet.classList.add('open');
+  }
+  function closeMemberAction(){ maBackdrop.classList.remove('open'); maSheet.classList.remove('open'); maIndex=null; }
+  maBackdrop.addEventListener('click', closeMemberAction);
+  maBody.addEventListener('click', e=>{
+    if(e.target.closest('#maCancelBtn')){ closeMemberAction(); return; }
+    if(e.target.closest('#maRemoveBtn')){ const i=maIndex; closeMemberAction(); removeMember(i); return; }
+  });
+
   optBody.addEventListener('click', e=>{
+    const kb=e.target.closest('[data-mkebab]');
+    if(kb){ openMemberAction(+kb.dataset.mkebab); return; }
     const inv=e.target.closest('[data-invite]');
     if(inv){
       const n=inv.dataset.invite;
       if(invited.has(n)) return;
       invited.add(n);
+      const doc=INVITE_POOL.find(d=>d.n===n);
       const mine=loadMyGroups(); const idx=mine.findIndex(x=>x.name===curName);
       if(idx>-1){
-        const cnt=(parseInt(String(mine[idx].members).replace(/\D/g,''),10)||1)+1;
+        mine[idx].memberList = mine[idx].memberList||[];
+        if(doc) mine[idx].memberList.push({name:doc.n, spec:doc.spec, img:doc.img});
+        const cnt = mine[idx].memberList.length;
         mine[idx].members = cnt+' member'+(cnt>1?'s':'');
         try{ localStorage.setItem('myGroups', JSON.stringify(mine)); }catch(e){}
+        if(curG) curG.memberList = mine[idx].memberList;
       }
       toast(n+' invited to '+curName);
       const results=document.getElementById('inviteResults2');
@@ -425,7 +580,15 @@
       return;
     }
     if(opt==='leave'){
-      curG.status='none'; toast('Left '+curName); closeOpts(); render(curName);
+      curG.status='none';
+      if(curCustom){
+        const mine=loadMyGroups(); const idx=mine.findIndex(x=>x.name===curName);
+        if(idx>-1){
+          mine[idx].status='none';
+          try{ localStorage.setItem('myGroups', JSON.stringify(mine)); }catch(e){}
+        }
+      }
+      toast('Left '+curName); closeOpts(); render(curName);
     }
   });
   optBody.addEventListener('input', e=>{

@@ -88,7 +88,7 @@
   .list{display:flex;flex-direction:column;gap:6px;}
   .prow{display:flex;align-items:center;gap:12px;width:100%;background:var(--soft1);border:1px solid transparent;border-radius:14px;padding:13px;font-family:inherit;color:inherit;text-align:left;cursor:pointer;text-decoration:none;transition:transform .16s cubic-bezier(.22,1,.36,1), border-color .16s;}
   .prow:hover{border-color:var(--brand);} .prow:active{transform:scale(.99);}
-  .prow .ri{width:38px;height:38px;border-radius:11px;background:rgba(255,255,255,.6);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;}
+  .prow .ri{width:38px;height:38px;border-radius:11px;background:var(--brand-soft);color:var(--brand);display:grid;place-items:center;flex:0 0 auto;}
   .prow .ri svg{width:19px;height:19px;}
   .prow .rt{flex:1;min-width:0;}
   .prow .rt b{display:block;font-size:12.5px;font-weight:800;letter-spacing:-.01em;}
@@ -173,6 +173,7 @@
   .theme-opt .tn{font-size:10px;font-weight:700;}
   .theme-opt .tick{position:absolute;top:7px;right:7px;width:14px;height:14px;color:var(--brand);opacity:0;transition:opacity .16s;}
   .theme-opt.active .tick{opacity:1;}
+  .theme-opt:last-child:nth-child(odd){grid-column:span 2;}
 
   .navitem{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;font-size:10px;color:var(--muted);background:none;border:none;cursor:pointer;text-decoration:none;transition:transform .18s cubic-bezier(.22,1,.36,1), color .18s;}
   .navitem.active{color:var(--brand);font-weight:600;} .navitem:active{transform:scale(.9);}
@@ -711,7 +712,7 @@
     closeEdit(); renderMe(); toast('Profile updated');
   });
   (function(){
-    const THEMES=[{id:'vibrant',name:'V Theme',c:'#1e5fbf'},{id:'classical',name:'Classic',c:'#7d2c3b'},{id:'blue',name:'Ocean',c:'#1e5fbf'},{id:'green',name:'Forest',c:'#0f7a5a'}];
+    const THEMES=[{id:'vibrant',name:'V Theme',c:'#1e5fbf'},{id:'classical',name:'Classic',c:'#7d2c3b'},{id:'blue',name:'Ocean',c:'#1e5fbf'},{id:'green',name:'Forest',c:'#0f7a5a'},{id:'dark',name:'Dark',c:'linear-gradient(135deg,#000000 55%,#70b5f9)'}];
     const grid=document.getElementById('themeGrid'); let cur='blue'; try{ cur=localStorage.getItem('cmeTheme')||'blue'; }catch(e){}
     const tick='<svg class="tick" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
     grid.innerHTML=THEMES.map(t=>`<button class="theme-opt${t.id===cur?' active':''}" data-t="${t.id}">${tick}<span class="sw" style="background:${t.c}"></span><span class="tn">${t.name}</span></button>`).join('');

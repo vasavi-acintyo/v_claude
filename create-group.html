@@ -267,6 +267,8 @@
       {name:'Dr. Rohan Verma', spec:'Oncologist · Tata Memorial', img:'https://randomuser.me/api/portraits/men/54.jpg', t:'1d'}
     ];
 
+    const myDesignation=(function(){try{return localStorage.getItem('docRole')||'MD internal medicine';}catch(e){return 'MD internal medicine';}})();
+    const myAvatar=(function(){try{return localStorage.getItem('docAvatar')||'https://randomuser.me/api/portraits/men/52.jpg';}catch(e){return 'https://randomuser.me/api/portraits/men/52.jpg';}})();
     const group={
       name: name,
       bio: about,
@@ -278,6 +280,7 @@
       admin: 'You',
       status: 'member',
       posts: [],
+      memberList: [{name:'You', spec: myDesignation, img: myAvatar}],
       joinRequests: FAKE_REQUESTERS,
       createdAt: Date.now()
     };

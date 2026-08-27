@@ -44,7 +44,7 @@
   .reqs{display:flex;flex-direction:column;gap:8px;}
   .req{display:flex;align-items:center;gap:10px;background:var(--soft1);border:1px solid transparent;border-radius:14px;padding:9px 10px;animation:fadeIn .4s ease both;transition:border-color .18s, transform .18s cubic-bezier(.22,1,.36,1);}
   .req:hover{border-color:var(--brand);}
-  .req img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:0 0 auto;background:var(--chip);border:2px solid rgba(255,255,255,.6);}
+  .req img{width:38px;height:38px;border-radius:50%;object-fit:cover;flex:0 0 auto;background:var(--chip);border:2px solid var(--card);}
   .req .m{flex:1;min-width:0;}
   .req .nm{font-size:11.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .req .sp{font-size:9px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -68,7 +68,7 @@
   .sugg::-webkit-scrollbar{display:none;}
   .scard{flex:0 0 132px;background:var(--soft1);border:1px solid transparent;border-radius:16px;padding:14px 12px;text-align:center;transition:border-color .18s, transform .18s cubic-bezier(.22,1,.36,1);}
   .scard:hover{border-color:var(--brand);}
-  .scard img{width:56px;height:56px;border-radius:50%;object-fit:cover;margin:0 auto 9px;background:var(--chip);display:block;border:2px solid rgba(255,255,255,.6);}
+  .scard img{width:56px;height:56px;border-radius:50%;object-fit:cover;margin:0 auto 9px;background:var(--chip);display:block;border:2px solid var(--card);}
   .scard .nm{font-size:11px;font-weight:800;font-family:var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .scard .sp{font-size:9px;color:var(--muted);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .scard .mut{font-size:9px;color:var(--muted);margin-top:4px;}
@@ -168,7 +168,7 @@
 
   /* ---- messages ---- */
   .mrow{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);cursor:pointer;}
-  .mrow img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;border:2px solid rgba(255,255,255,.5);}
+  .mrow img{width:48px;height:48px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;border:2px solid var(--card);}
   .mrow .m{flex:1;min-width:0;}
   .mrow .nm{font-size:12px;font-weight:700;}
   .mrow .lm{font-size:10px;color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -740,6 +740,25 @@
   ['Dr. Neha Gupta','Dr. Arjun Rao'].forEach(n=>markSentByName(n, true));
 
   // ---- Groups ----
+  // seed a demo group you own (with a member + a pending join request) the very first time,
+  // so the owner-only tools — remove member, accept/decline requests — have something to try
+  try{
+    if(!localStorage.getItem('myGroups')){
+      const myDesignation = localStorage.getItem('docRole') || 'MD internal medicine';
+      const myAvatar = localStorage.getItem('docAvatar') || 'https://randomuser.me/api/portraits/men/52.jpg';
+      const demoGroup = {
+        name:'Metabolic Health Circle', bio:'A small group for sharing cardiometabolic case discussions and referrals.',
+        type:'Private', avatar:'', cover:'', members:'2 members', created:'Est. 2026', admin:'You', status:'member',
+        posts:[], memberList:[
+          {name:'You', spec:myDesignation, img:myAvatar},
+          {name:'Dr. Neha Gupta', spec:'Nephrologist · Medanta', img:'https://randomuser.me/api/portraits/women/12.jpg'}
+        ],
+        joinRequests:[{name:'Dr. Kavya Reddy', spec:'Endocrinologist · Apollo Hospitals', img:'https://randomuser.me/api/portraits/women/65.jpg', t:'2h'}],
+        createdAt: Date.now()
+      };
+      localStorage.setItem('myGroups', JSON.stringify([demoGroup]));
+    }
+  }catch(e){}
   let myCreatedGroups=[]; try{ myCreatedGroups=JSON.parse(localStorage.getItem('myGroups')||'[]'); }catch(e){}
   let joinedGroups=[]; try{ joinedGroups=JSON.parse(localStorage.getItem('joinedGroups')||'[]'); }catch(e){}
   const groups = myCreatedGroups.map(g=>({ name:g.name, members:g.members, ico:grpIco, avatar:g.avatar, reqCount:(g.joinRequests||[]).length, owner:true }))
