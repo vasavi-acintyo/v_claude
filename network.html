@@ -476,7 +476,7 @@
     <!-- MY NETWORK -->
     <div class="panel" data-panel="net">
       <div class="stats" style="margin-top:14px">
-        <div class="stat"><b>1,240</b><span>Connections</span></div>
+        <div class="stat" id="connStat" role="button" tabindex="0" style="cursor:pointer"><b>1,240</b><span>Connections</span></div>
         <div class="stat"><b id="invStat">3</b><span>Invitations</span></div>
       </div>
       <div class="sec2">Invitations <b id="invCount">3</b></div>
@@ -621,6 +621,10 @@
   // ---- search bar → dedicated search screen ----
   document.getElementById('searchBar').addEventListener('click', ()=>location.href='network-search.html');
   document.getElementById('searchBar').addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); location.href='network-search.html'; } });
+
+  // ---- Connections stat → connections list ----
+  document.getElementById('connStat').addEventListener('click', ()=>location.href='connections.html');
+  document.getElementById('connStat').addEventListener('keydown', e=>{ if(e.key==='Enter' || e.key===' '){ e.preventDefault(); location.href='connections.html'; } });
 
   // ---- Requests ----
   let requests = [

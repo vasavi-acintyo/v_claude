@@ -149,6 +149,19 @@
   .sheet h2{font-size:16px;font-weight:800;font-family:var(--display);letter-spacing:-.02em;margin:0 2px 3px;}
   .sheet p{font-size:10px;color:var(--muted);margin:0 2px 6px;}
   .theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin:12px 0 6px;}
+  /* mutual connections sheet */
+  .mut-sheet{max-height:78%;overflow-y:auto;}
+  .sheet-title{padding:2px 2px 10px;}
+  .sheet-title b{font-size:15px;font-weight:800;font-family:var(--display);}
+  .sheet-title span{font-size:10.5px;color:var(--muted);display:block;margin-top:3px;}
+  .reqs{display:flex;flex-direction:column;gap:8px;}
+  .req{display:flex;align-items:center;gap:10px;width:100%;background:var(--soft1);border:1px solid var(--line);border-radius:14px;padding:10px 11px;font-family:inherit;color:inherit;text-align:left;cursor:pointer;transition:border-color .16s;}
+  .req:hover{border-color:var(--brand);}
+  .req img{width:38px;height:38px;border-radius:50%;object-fit:cover;background:var(--chip);flex:0 0 auto;border:2px solid var(--card);}
+  .req .m{flex:1;min-width:0;}
+  .req .nm{font-size:12px;font-weight:800;font-family:var(--display);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .req .sp{font-size:10px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .mut-more{text-align:center;font-size:10.5px;font-weight:600;color:var(--muted);padding:14px 4px 2px;}
   /* edit profile form + about (ported from ACINTYO-MED: no equivalent existed in this file) */
   .ep-sheet{max-height:90%;overflow-y:auto;}
   .ep-field{margin-top:13px;}
@@ -263,6 +276,13 @@
     <div class="grab"></div>
     <h2>Appearance</h2><p>Pick a colour theme. Fonts adapt to your device.</p>
     <div class="theme-grid" id="themeGrid"></div>
+  </div>
+
+  <!-- Mutual connections sheet -->
+  <div class="backdrop" id="mutBackdrop"></div>
+  <div class="sheet mut-sheet" id="mutSheet">
+    <div class="grab"></div>
+    <div id="mutBody"></div>
   </div>
 
   <!-- Edit profile sheet (ported from ACINTYO-MED: no equivalent existed in this file) -->
@@ -548,6 +568,57 @@
       bio:'Clinical cardiologist focused on heart failure, arrhythmia and preventive cardiology.', tags:['Heart Failure','Arrhythmia','Echocardiography'] }
   };
 
+  // avatars for DIRECTORY doctors, matching the photos already used for these same names elsewhere in the app
+  const DIR_PHOTOS = {
+    'Dr. Meera Iyer':'https://randomuser.me/api/portraits/women/68.jpg',
+    'Dr. Arvind Kumar':'https://randomuser.me/api/portraits/men/32.jpg',
+    'Dr. Rohan Sinha':'https://randomuser.me/api/portraits/men/45.jpg',
+    'Dr. Priya Nair':'https://randomuser.me/api/portraits/women/44.jpg',
+    'Dr. Vijay Menon':'https://randomuser.me/api/portraits/men/76.jpg',
+    'Dr. Kavya Reddy':'https://randomuser.me/api/portraits/women/65.jpg',
+    'Dr. Sameer Shah':'https://randomuser.me/api/portraits/men/52.jpg',
+    'Dr. Imran Khan':'https://randomuser.me/api/portraits/men/61.jpg',
+    'Dr. Neha Gupta':'https://randomuser.me/api/portraits/women/12.jpg',
+    'Dr. Rahul Verma':'https://randomuser.me/api/portraits/men/22.jpg',
+    'Dr. Anjali Desai':'https://randomuser.me/api/portraits/women/32.jpg',
+    'Dr. Arjun Rao':'https://randomuser.me/api/portraits/men/41.jpg'
+  };
+  // the doctors both "you" and the viewed doctor know — drawn from the same directory (excluding
+  // the viewed doctor themself), rotated per-name so different profiles surface a different mix
+  function mutualListFor(name){
+    const total = parseInt((DIRECTORY[name]&&DIRECTORY[name].mutual)||'0',10) || 0;
+    const others = Object.keys(DIRECTORY).filter(n=>n!==name);
+    let offset = 0; for(let i=0;i<name.length;i++) offset += name.charCodeAt(i);
+    offset = others.length ? (offset % others.length) : 0;
+    const rotated = others.slice(offset).concat(others.slice(0,offset));
+    const shown = rotated.slice(0, Math.min(total, rotated.length)).map(n=>({
+      name:n, spec: DIRECTORY[n].role+' · '+DIRECTORY[n].hospital, img: DIR_PHOTOS[n]
+    }));
+    return { shown, total };
+  }
+
+  const mutBackdrop=document.getElementById('mutBackdrop'), mutSheet=document.getElementById('mutSheet'), mutBody=document.getElementById('mutBody');
+  function openMutual(name){
+    const { shown, total } = mutualListFor(name);
+    mutBody.innerHTML = `
+      <div class="sheet-title"><b>Mutual connections</b><span>${total} ${total===1?'connection':'connections'} you and ${esc(name)} both know</span></div>
+      <div class="reqs">${shown.map(m=>`
+        <button type="button" class="req" data-mutname="${esc(m.name)}">
+          <img src="${m.img}" alt="">
+          <div class="m"><div class="nm">${esc(m.name)}</div><div class="sp">${esc(m.spec)}</div></div>
+          <span style="color:var(--muted);flex:0 0 auto;display:flex">${I.chev}</span>
+        </button>`).join('')}</div>
+      ${total>shown.length ? `<div class="mut-more">+${total-shown.length} more mutual connection${total-shown.length>1?'s':''}</div>` : ''}
+    `;
+    mutBackdrop.classList.add('open'); mutSheet.classList.add('open');
+  }
+  function closeMutual(){ mutBackdrop.classList.remove('open'); mutSheet.classList.remove('open'); }
+  mutBackdrop.addEventListener('click', closeMutual);
+  mutBody.addEventListener('click', e=>{
+    const b=e.target.closest('[data-mutname]'); if(!b) return;
+    location.href = 'profile.html?name='+encodeURIComponent(b.dataset.mutname);
+  });
+
   async function renderOther(){
     const store = await idbGet('posts3');
     const posts = store && Array.isArray(store.posts) ? store.posts : (Array.isArray(store) ? store : []);
@@ -616,7 +687,7 @@
       <div class="pv-stats rise">
         <div class="pv-stat"><span class="pv-sic b">${I.people}</span><div class="pv-sm"><b>${esc(dir.connections)}</b><span>Connections</span></div></div>
         <div class="pv-vdiv"></div>
-        <div class="pv-stat"><span class="pv-sic g">${I.people}</span><div class="pv-sm"><b>${esc(dir.mutual)}</b><span>Mutual</span></div></div>
+        <div class="pv-stat" id="mutStat" role="button" tabindex="0" style="cursor:pointer"><span class="pv-sic g">${I.people}</span><div class="pv-sm"><b>${esc(dir.mutual)}</b><span>Mutual</span></div></div>
       </div>
       <div class="pv-actions compact rise">${connectBtnHTML(connState)}</div>
       <div class="cred-strip rise">
@@ -651,6 +722,11 @@
       if(!b) return;
       location.href = 'profile-activity.html?name='+encodeURIComponent(qName)+'&tab='+b.dataset.key;
     });
+    const mutStat = document.getElementById('mutStat');
+    if(mutStat){
+      mutStat.addEventListener('click', ()=>openMutual(qName));
+      mutStat.addEventListener('keydown', e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); openMutual(qName); } });
+    }
     document.querySelectorAll('.pa-tabs button').forEach(b=>b.addEventListener('click',()=>{
       document.querySelectorAll('.pa-tabs button').forEach(x=>x.classList.remove('active')); b.classList.add('active');
       document.getElementById('paPosts').hidden = b.dataset.pt!=='posts';
