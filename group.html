@@ -310,14 +310,18 @@
       return;
     }
     curG=g; curCustom=custom; curName=name;
-    // groups created before the member-list feature existed won't have one yet — backfill it
-    // with at least the owner, so Members always has something to show and persist changes to.
-    if(custom && (!g.memberList || !g.memberList.length)){
+    // groups created before the member-list/join-request fields existed won't have them yet —
+    // backfill so Members and Requests to join always have something to show and persist to.
+    if(custom && ((!g.memberList || !g.memberList.length) || !g.joinRequests)){
       const myDesignation = (function(){try{return localStorage.getItem('docRole')||'MD internal medicine';}catch(e){return 'MD internal medicine';}})();
       const myAvatar = (function(){try{return localStorage.getItem('docAvatar')||'https://randomuser.me/api/portraits/men/52.jpg';}catch(e){return 'https://randomuser.me/api/portraits/men/52.jpg';}})();
-      g.memberList = [{name: g.admin, spec: myDesignation, img: myAvatar}];
+      if(!g.memberList || !g.memberList.length) g.memberList = [{name: g.admin, spec: myDesignation, img: myAvatar}];
+      if(!g.joinRequests) g.joinRequests = [
+        {name:'Dr. Kavya Reddy', spec:'Endocrinologist · Apollo Hospitals', img:'https://randomuser.me/api/portraits/women/65.jpg', t:'2h'},
+        {name:'Dr. Rohan Verma', spec:'Oncologist · Tata Memorial', img:'https://randomuser.me/api/portraits/men/54.jpg', t:'1d'}
+      ];
       const mine = loadMyGroups(); const idx = mine.findIndex(x=>x.name===name);
-      if(idx>-1){ mine[idx].memberList = g.memberList; try{ localStorage.setItem('myGroups', JSON.stringify(mine)); }catch(e){} }
+      if(idx>-1){ mine[idx].memberList = g.memberList; mine[idx].joinRequests = g.joinRequests; try{ localStorage.setItem('myGroups', JSON.stringify(mine)); }catch(e){} }
     }
     const isOwner = custom && g.admin==='You';
     document.getElementById('topTitle').textContent = name;

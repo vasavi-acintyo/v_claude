@@ -317,6 +317,12 @@
   function toast(msg){ let t=document.getElementById('toast'); if(!t){ t=document.createElement('div'); t.id='toast'; t.className='toast'; (document.querySelector('.phone')||document.body).appendChild(t); } t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),1400); }
   const esc = s => String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
+  // default doctor avatar — a generic silhouette placeholder (LinkedIn-style: plain grey person
+  // icon on a light grey square), used whenever a viewed doctor has no real photo on file.
+  // Swap this path for the AWS-hosted URL once assets/default-doctor-avatar.png is uploaded.
+  const DEFAULT_DOCTOR_AVATAR = 'assets/default-doctor-avatar.png';
+  function defaultDoctorAvatar(){ return DEFAULT_DOCTOR_AVATAR; }
+
   // ---- icons ----
   const I = {
     crown:'<svg viewBox="0 0 24 24" fill="currentColor" stroke="none"><path d="M3 7l4.2 3.2L12 4l4.8 6.2L21 7l-1.7 12H4.7z"/></svg>',
@@ -624,7 +630,7 @@
     const posts = store && Array.isArray(store.posts) ? store.posts : (Array.isArray(store) ? store : []);
     const src = posts.find(p=>p.name===qName);
     const dir = DIRECTORY[qName];
-    const img = src ? src.img : 'https://randomuser.me/api/portraits/lego/1.jpg';
+    const img = src ? src.img : defaultDoctorAvatar(qName);
     const spec = dir ? dir.role : (src ? src.spec : 'Doctor');
     const ver = (src ? src.spec : spec) !== 'Group';
     const rsum = p => Object.values(p.rc||{}).reduce((s,v)=>s+v,0);
