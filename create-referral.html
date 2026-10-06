@@ -75,6 +75,27 @@
   .consent.on .box{border-color:var(--brand);background:var(--brand);} .consent .box svg{width:13px;height:13px;color:#fff;opacity:0;transition:opacity .18s;} .consent.on .box svg{opacity:1;}
   .consent .m{flex:1;min-width:0;} .consent .t{font-size:11.5px;font-weight:800;} .consent .s{font-size:9.5px;color:var(--muted);margin-top:3px;line-height:1.5;}
 
+  /* consent method segmented + OTP + consent-form link */
+  .cons-seg{display:flex;gap:8px;margin-bottom:9px;}
+  .cons-seg button{flex:1;min-height:42px;border:1.5px solid var(--line);background:var(--card);border-radius:12px;font-family:inherit;font-size:10.5px;font-weight:800;color:var(--slate-700);cursor:pointer;transition:border-color .18s, background .18s, color .18s;}
+  .cons-seg button.on{border-color:var(--brand);background:var(--brand-soft);color:var(--brand);}
+  .otp-panel{background:var(--soft1);border-radius:14px;padding:13px;margin-top:8px;}
+  .otp-panel .ot-t{font-size:11.5px;font-weight:800;}
+  .otp-panel .ot-s{font-size:9.5px;color:var(--muted);margin-top:3px;line-height:1.5;}
+  .otp-row{display:flex;gap:8px;margin-top:11px;}
+  .otp-row input{flex:1;min-width:0;min-height:42px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:0 12px;font-size:12px;font-family:inherit;color:var(--ink);}
+  .otp-row input:focus{outline:none;border-color:var(--brand);}
+  .otp-row button{flex:0 0 auto;min-height:42px;padding:0 16px;border:none;border-radius:11px;background:var(--brand);color:#fff;font-family:inherit;font-size:11px;font-weight:800;cursor:pointer;transition:background .18s;}
+  .otp-row button:disabled{opacity:.5;cursor:not-allowed;}
+  .otp-boxes{display:flex;gap:7px;margin-top:11px;}
+  .otp-boxes input{flex:1;min-width:0;height:46px;text-align:center;font-size:17px;font-weight:800;font-family:inherit;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;}
+  .otp-boxes input:focus{outline:none;border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft);}
+  .otp-verified{display:flex;align-items:center;gap:8px;margin-top:11px;font-size:10.5px;font-weight:800;color:var(--green);}
+  .otp-verified svg{width:15px;height:15px;flex:0 0 auto;}
+  .cf-link{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;margin-top:9px;background:none;border:none;font-family:inherit;font-size:10.5px;font-weight:800;color:var(--brand);cursor:pointer;padding:9px;border-radius:10px;}
+  .cf-link:hover{background:var(--chip);}
+  .cf-link svg{width:13px;height:13px;}
+
   /* footer submit */
   .foot{flex:0 0 auto;padding:12px 18px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);background:var(--surface);}
   .send{width:100%;min-height:50px;border:none;border-radius:14px;background:var(--brand);color:#fff;font-family:inherit;font-size:14px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:9px;transition:transform .18s cubic-bezier(.22,1,.36,1), background .18s, opacity .18s;}
@@ -95,6 +116,45 @@
 
   .toast{position:absolute;left:50%;bottom:100px;transform:translateX(-50%) translateY(10px);z-index:60;background:var(--ink);color:var(--surface);font-size:11.5px;font-weight:700;padding:10px 18px;border-radius:22px;box-shadow:0 10px 30px -8px rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;max-width:82%;text-align:center;}
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* ---- Patient consent form sheet ---- */
+  .cf-backdrop{position:absolute;inset:0;z-index:70;background:rgba(15,15,35,.5);opacity:0;visibility:hidden;transition:opacity .3s, visibility .3s;}
+  .cf-backdrop.open{opacity:1;visibility:visible;}
+  .cf-sheet{position:absolute;left:0;right:0;bottom:0;top:6%;z-index:71;background:var(--card);border-radius:22px 22px 0 0;transform:translateY(100%);transition:transform .45s cubic-bezier(.34,1.2,.5,1);box-shadow:0 -12px 40px -12px rgba(0,0,0,.4);display:flex;flex-direction:column;}
+  .cf-sheet.open{transform:translateY(0);}
+  .cf-grab{width:38px;height:4px;background:var(--line);border-radius:3px;margin:8px auto 2px;flex:0 0 auto;}
+  .cf-head{flex:0 0 auto;padding:6px 18px 10px;border-bottom:1px solid var(--line);}
+  .cf-head-top{display:flex;align-items:center;gap:10px;}
+  .cf-head-top b{flex:1;min-width:0;font-size:14.5px;font-weight:800;font-family:var(--display);letter-spacing:-.01em;}
+  .cf-close{width:32px;height:32px;border-radius:50%;border:none;background:var(--chip);color:var(--ink);display:grid;place-items:center;cursor:pointer;flex:0 0 auto;}
+  .cf-close svg{width:15px;height:15px;}
+  .cf-filter-wrap{position:relative;margin-top:10px;}
+  .cf-filter{display:inline-flex;align-items:center;gap:7px;min-height:32px;padding:0 13px;border-radius:17px;border:1.5px solid var(--line);background:var(--card);color:var(--ink);font-family:inherit;font-size:11.5px;font-weight:700;cursor:pointer;}
+  .cf-filter svg{width:14px;height:14px;flex:0 0 auto;color:var(--brand);}
+  .cf-filter .chev{width:11px;height:11px;color:var(--muted);margin-left:2px;}
+  .cf-filter-pop{position:absolute;top:calc(100% + 6px);left:0;z-index:5;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 14px 34px -10px rgba(0,0,0,.35);padding:6px;min-width:190px;max-height:260px;overflow-y:auto;display:none;}
+  .cf-filter-pop.open{display:block;}
+  .cf-filter-pop button{display:block;width:100%;text-align:left;background:none;border:none;font-family:inherit;font-size:12px;font-weight:700;color:var(--ink);padding:9px 10px;border-radius:9px;cursor:pointer;}
+  .cf-filter-pop button:hover{background:var(--chip);}
+  .cf-filter-pop button.on{color:var(--brand);background:var(--brand-soft);}
+  .cf-body{flex:1 1 auto;overflow-y:auto;padding:14px 18px calc(16px + env(safe-area-inset-bottom));}
+  .cf-body::-webkit-scrollbar{width:0;}
+  .cf-body[dir="rtl"]{text-align:right;}
+  .cf-intro{font-size:11.5px;line-height:1.65;color:var(--slate-700);background:var(--soft1);border-radius:12px;padding:12px 13px;}
+  .cf-sub{font-size:9.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:16px 2px 8px;}
+  .cf-purposes{display:flex;flex-direction:column;gap:9px;}
+  .cf-purpose{background:var(--soft1);border:1.5px solid transparent;border-radius:14px;padding:12px 13px;transition:border-color .18s;}
+  .cf-purpose.core{border-color:var(--brand-soft);}
+  .cf-prow{display:flex;align-items:flex-start;gap:10px;}
+  .cf-ptxt{flex:1;min-width:0;}
+  .cf-ptxt .t{font-size:12px;font-weight:800;}
+  .cf-ptxt .d{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.55;}
+  .cf-tag{display:inline-block;font-size:8px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 6px;border-radius:6px;margin-top:6px;}
+  .cf-tag.req{color:var(--brand);background:var(--brand-soft);}
+  .cf-tag.opt{color:var(--muted);background:var(--chip);}
+  .cf-rights{font-size:9.5px;color:var(--muted);line-height:1.6;margin-top:14px;padding-top:12px;border-top:1px solid var(--line);}
+  .cf-foot{flex:0 0 auto;padding:12px 18px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line);}
+  .cf-save{width:100%;min-height:46px;border:none;border-radius:13px;background:var(--brand);color:#fff;font-family:inherit;font-size:12.5px;font-weight:800;cursor:pointer;}
 
   /* V Theme */
   [data-theme="vibrant"] .doc{box-shadow:0 6px 16px -14px rgba(30,20,60,.16);}
@@ -167,11 +227,40 @@
     <div class="rec-count" id="recCount">0 selected</div>
     <div class="reclist rise" id="reclist"></div>
 
-    <!-- consent -->
+    <!-- 5. patient consent -->
+    <div class="sec-lbl rise"><span class="n">5</span>Patient consent</div>
+    <div class="cons-seg rise" id="consSeg">
+      <button type="button" class="on" data-m="confirm">I confirm consent</button>
+      <button type="button" data-m="otp">Verify with OTP</button>
+    </div>
+
     <div class="consent rise on" id="consent">
       <span class="box"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>
       <div class="m"><div class="t">Patient consent obtained</div><div class="s">I confirm the patient consents to securely share these details and documents with the selected doctor.</div></div>
     </div>
+
+    <div class="otp-panel rise" id="otpPanel" hidden>
+      <div class="ot-t">Verify consent by OTP</div>
+      <div class="ot-s">We'll send a 6-digit code to the patient's phone (from Section 2) to confirm they consent to sharing.</div>
+      <div class="otp-row">
+        <input id="otpPhone" type="tel" inputmode="tel" placeholder="Patient phone number" disabled>
+        <button type="button" id="sendOtpBtn">Send OTP</button>
+      </div>
+      <div class="otp-boxes" id="otpBoxes" hidden>
+        <input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1">
+        <input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1"><input inputmode="numeric" maxlength="1">
+      </div>
+      <div class="otp-row" id="verifyRow" hidden><button type="button" id="verifyOtpBtn" style="flex:1" disabled>Verify code</button></div>
+      <div class="otp-verified" id="otpVerified" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        Consent verified by OTP
+      </div>
+    </div>
+
+    <button type="button" class="cf-link rise" id="openConsentForm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg>
+      View patient consent form (22 languages)
+    </button>
   </div>
 
   <div class="foot">
@@ -189,6 +278,30 @@
     <h2>Referral sent</h2>
     <p id="doneMsg">Your referral has been securely shared. You'll be notified when it's accepted.</p>
     <button class="ok" id="doneOk" type="button">View my referrals</button>
+  </div>
+
+  <!-- Patient consent form -->
+  <div class="cf-backdrop" id="cfBackdrop"></div>
+  <div class="cf-sheet" id="cfSheet">
+    <div class="cf-grab"></div>
+    <div class="cf-head">
+      <div class="cf-head-top">
+        <b id="cfTitle">Patient Consent Form</b>
+        <button type="button" class="cf-close" id="cfClose" aria-label="Close"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg></button>
+      </div>
+      <div class="cf-filter-wrap">
+        <button type="button" class="cf-filter" id="cfFilterBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="4 4 20 4 14 12.5 14 19 10 21 10 12.5 4 4"/></svg>
+          <span id="cfFilterLabel">हिन्दी</span>
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+        <div class="cf-filter-pop" id="cfFilterPop"></div>
+      </div>
+    </div>
+    <div class="cf-body" id="cfBody"></div>
+    <div class="cf-foot">
+      <button type="button" class="cf-save" id="cfSave">Close</button>
+    </div>
   </div>
 </div>
 
@@ -239,30 +352,63 @@
     document.querySelectorAll('#prio button').forEach(x=>x.classList.toggle('on', x===b));
   });
 
-  // consent
+  // consent — method choice: confirm checkbox, or OTP sent to patient
   const consentEl = document.getElementById('consent');
+  const otpPanel = document.getElementById('otpPanel');
   let consent=true;
+  let consentMethod='confirm';
+  let otpVerified=false;
   consentEl.addEventListener('click', ()=>{ consent=!consent; consentEl.classList.toggle('on', consent); });
 
-  // attachments
-  const fileIn=document.getElementById('fileIn'), attachedEl=document.getElementById('attached');
-  let files=[];
-  const rmIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><line x1="6" y1="6" x2="18" y2="18"/><line x1="18" y1="6" x2="6" y2="18"/></svg>';
-  const docIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>';
-  const imgIc='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9" r="1.6"/><path d="m21 16-5-5L5 22"/></svg>';
-  function fmtSize(b){ if(b<1024) return b+' B'; if(b<1048576) return (b/1024).toFixed(0)+' KB'; return (b/1048576).toFixed(1)+' MB'; }
-  function renderAttached(){
-    attachedEl.innerHTML = files.map((f,i)=>{
-      const isImg=/^image\//.test(f.type);
-      return '<div class="att"><span class="ai">'+(isImg?imgIc:docIc)+'</span><div class="m"><div class="t">'+esc(f.name)+'</div><div class="s">'+(isImg?'Image':'PDF')+' · '+fmtSize(f.size)+'</div></div><button class="rm" type="button" data-i="'+i+'" aria-label="Remove">'+rmIc+'</button></div>';
-    }).join('');
-  }
-  fileIn.addEventListener('change', ()=>{
-    Array.from(fileIn.files||[]).forEach(f=>files.push(f));
-    fileIn.value='';
-    renderAttached();
+  document.getElementById('consSeg').addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    consentMethod=b.dataset.m;
+    document.querySelectorAll('#consSeg button').forEach(x=>x.classList.toggle('on', x===b));
+    consentEl.hidden = consentMethod!=='confirm';
+    otpPanel.hidden = consentMethod!=='otp';
+    if(consentMethod==='otp'){
+      document.getElementById('otpPhone').value = document.getElementById('pPhone').value.trim();
+    }
   });
-  attachedEl.addEventListener('click', e=>{ const b=e.target.closest('.rm'); if(!b) return; files.splice(+b.dataset.i,1); renderAttached(); });
+
+  function consentGiven(){ return consentMethod==='otp' ? otpVerified : consent; }
+
+  // OTP: send + verify (mocked — no real SMS is sent in this demo)
+  const otpBoxesEl = document.getElementById('otpBoxes');
+  const otpDigits = [...otpBoxesEl.querySelectorAll('input')];
+  const verifyRow = document.getElementById('verifyRow');
+  const verifyBtn = document.getElementById('verifyOtpBtn');
+  const otpVerifiedEl = document.getElementById('otpVerified');
+  let otpSentCode = null;
+  document.getElementById('sendOtpBtn').addEventListener('click', ()=>{
+    const phone = document.getElementById('otpPhone').value.trim() || document.getElementById('pPhone').value.trim();
+    if(!phone){ toast('Enter the patient\'s phone number in Section 2 first'); return; }
+    otpSentCode = String(Math.floor(100000+Math.random()*900000));
+    otpBoxesEl.hidden=false; verifyRow.hidden=false; otpVerifiedEl.hidden=true; otpVerified=false;
+    otpDigits.forEach(i=>i.value='');
+    otpDigits[0].focus();
+    toast('OTP sent to '+phone+' (demo code: '+otpSentCode+')');
+  });
+  otpDigits.forEach((inp,i)=>{
+    inp.addEventListener('input', ()=>{
+      inp.value = inp.value.replace(/\D/g,'').slice(0,1);
+      if(inp.value && i<otpDigits.length-1) otpDigits[i+1].focus();
+      verifyBtn.disabled = otpDigits.some(d=>!d.value);
+    });
+    inp.addEventListener('keydown', e=>{ if(e.key==='Backspace' && !inp.value && i>0) otpDigits[i-1].focus(); });
+  });
+  verifyBtn.addEventListener('click', ()=>{
+    const entered = otpDigits.map(d=>d.value).join('');
+    if(entered.length!==6) return;
+    otpVerified = true; // demo: any complete 6-digit code verifies
+    otpVerifiedEl.hidden=false;
+    toast('Consent verified');
+  });
+
+  // attachments — the "Search patient records to attach" list (#reclist) is the current
+  // attach flow; `files` stays empty here since there's no raw file-upload input on this page.
+  let files=[];
+  function fmtSize(b){ if(b<1024) return b+' B'; if(b<1048576) return (b/1024).toFixed(0)+' KB'; return (b/1048576).toFixed(1)+' MB'; }
 
   // toast
   let tt; function toast(m){ let el=document.getElementById('toast'); if(!el){ el=document.createElement('div'); el.id='toast'; el.className='toast'; document.querySelector('.phone').appendChild(el);} el.textContent=m; void el.offsetWidth; el.classList.add('show'); clearTimeout(tt); tt=setTimeout(()=>el.classList.remove('show'),1700); }
@@ -278,7 +424,11 @@
     if(!selectedDoc){ toast('Choose a doctor to refer to'); document.getElementById('docs').scrollIntoView({behavior:'smooth'}); return; }
     if(!name){ toast('Enter the patient name'); return; }
     if(!cond){ toast('Add a short condition summary'); return; }
-    if(!consent){ toast('Please confirm patient consent'); consentEl.scrollIntoView({behavior:'smooth'}); return; }
+    if(!consentGiven()){
+      toast(consentMethod==='otp' ? 'Please verify consent with the OTP first' : 'Please confirm patient consent');
+      (consentMethod==='otp' ? otpPanel : consentEl).scrollIntoView({behavior:'smooth'});
+      return;
+    }
 
     const ref = {
       id:'u'+(Date.now?Date.now():Math.floor(performance.now())),
@@ -309,6 +459,264 @@
     });
     location.href='post-case.html?'+u.toString();
   });
+
+  // ---- Patient consent form: unbundled per-purpose toggles, 22 scheduled languages ----
+  // DPDPA 2023 alignment: free (nothing pre-ticked), unbundled + specific (one toggle per
+  // distinct purpose, not one blanket checkbox), informed (plain-language notice up front),
+  // affirmative action (patient must actively switch each toggle on), unconditional (only the
+  // purpose core to the referral itself is required — every other purpose can be declined
+  // without affecting care).
+  const LANGS = [
+    { code:'as', name:'অসমীয়া', dir:'ltr', title:'ৰোগীৰ সন্মতি ফৰ্ম',
+      intro:'ইয়াত ব্যাখ্যা কৰা হৈছে যে বিশেষজ্ঞলৈ ৰেফাৰেলৰ বাবে আপোনাৰ স্বাস্থ্য তথ্য কেনেকৈ ব্যৱহাৰ কৰা হ\'ব। তলৰ প্ৰতিটো উদ্দেশ্যৰ বাবে পৃথকে বাছনি কৰক — বৈকল্পিক উদ্দেশ্যত “নহয়” বুলিলে আপোনাৰ চিকিৎসাত প্ৰভাৱ নপৰিব।',
+      p1t:'চিকিৎসা সাৰাংশ শ্বেয়াৰ কৰক', p1d:'আপোনাৰ ইতিহাস, ফলাফল আৰু ৰেফাৰেলৰ কাৰণ, ওপৰত উল্লেখিত বিশেষজ্ঞৰ সৈতে শ্বেয়াৰ কৰা হ\'ব।',
+      p2t:'সংযুক্ত নথি শ্বেয়াৰ কৰক', p2d:'এই ৰেফাৰেলৰ বাবে বাছি লোৱা প্ৰতিবেদন, স্কেন বা নথিসমূহ।',
+      p3t:'প্ৰত্যক্ষ যোগাযোগৰ অনুমতি', p3d:'বিশেষজ্ঞৰ ক্লিনিকে এই পৰামৰ্শৰ বিষয়ে আপোনাক ফোন বা বাৰ্তা পঠাব পাৰে।',
+      p4t:'ভৱিষ্যতৰ যত্নৰ বাবে ৰাখক', p4d:'যাতে ভৱিষ্যতৰ ৰেফাৰেলত পুনৰ শ্বেয়াৰ কৰাৰ প্ৰয়োজন নহয়।',
+      req:'প্ৰয়োজনীয়', opt:'বৈকল্পিক',
+      warn:'এই ৰেফাৰেল পঠোৱাৰ আগতে চিকিৎসা সাৰাংশ শ্বেয়াৰ কৰাৰ বাবে আপোনাৰ সন্মতি প্ৰয়োজন।',
+      rights:'আপুনি যিকোনো সময়ত এই সন্মতি প্ৰত্যাহাৰ কৰিব পাৰে। ৰেফাৰ কৰা ক্লিনিকৰ সৈতে যোগাযোগ কৰি এই তথ্য চাব, শুধৰাব বা মচিব পাৰে।', save:'সন্মতিৰ বাছনি সংৰক্ষণ কৰক' },
+    { code:'bn', name:'বাংলা', dir:'ltr', title:'রোগীর সম্মতি ফর্ম',
+      intro:'এটি ব্যাখ্যা করে যে বিশেষজ্ঞের কাছে রেফারেলের জন্য আপনার স্বাস্থ্য তথ্য কীভাবে ব্যবহার করা হবে। নিচের প্রতিটি উদ্দেশ্যের জন্য আলাদাভাবে বেছে নিন — ঐচ্ছিক উদ্দেশ্যে “না” বললে আপনার চিকিৎসায় প্রভাব পড়বে না।',
+      p1t:'ক্লিনিক্যাল সারাংশ শেয়ার করুন', p1d:'আপনার ইতিহাস, ফলাফল ও রেফারেলের কারণ, উপরে উল্লেখিত বিশেষজ্ঞের সাথে শেয়ার করা হবে।',
+      p2t:'সংযুক্ত রেকর্ড শেয়ার করুন', p2d:'এই রেফারেলের জন্য নির্বাচিত রিপোর্ট, স্ক্যান বা নথিপত্র।',
+      p3t:'সরাসরি যোগাযোগের অনুমতি', p3d:'বিশেষজ্ঞের ক্লিনিক এই পরামর্শ নিয়ে আপনাকে কল বা বার্তা পাঠাতে পারে।',
+      p4t:'ভবিষ্যতের যত্নের জন্য রাখুন', p4d:'যাতে ভবিষ্যতের রেফারেলে আবার শেয়ার করার প্রয়োজন না হয়।',
+      req:'আবশ্যক', opt:'ঐচ্ছিক',
+      warn:'এই রেফারেল পাঠানোর আগে ক্লিনিক্যাল সারাংশ শেয়ার করতে আপনার সম্মতি প্রয়োজন।',
+      rights:'আপনি যেকোনো সময় এই সম্মতি প্রত্যাহার করতে পারেন। রেফারকারী ক্লিনিকের সাথে যোগাযোগ করে এই তথ্য দেখতে, সংশোধন বা মুছে ফেলতে পারেন।', save:'সম্মতির পছন্দ সংরক্ষণ করুন' },
+    { code:'brx', name:'बड़ो', dir:'ltr', title:'रोगीनि मानि फोरम',
+      intro:'बेयो थांखिनायाव जायखनायनि थाखाय नोंथांनि ग’दान बिजाब मा rदा बाहायनाय जागोन बेयो सोलायो। रुनि उजा गोसोआव अलग-अलग wjw बाहायनाय गोनांथिं — फजग wjwाव “नाइ” होनो हादो नोंथांनि सिकिस्रा हामनि गुबुन जायो।',
+      p1t:'क्लिनिकेल सारसंग्रह शेयार', p1d:'नोंथांनि इतिहास, फोरमायथि आरो जायखनायनि हेतु, गोजोनथाव थुनायाव देखाबाय बिसेजोंनिफ्राय शेयार खालामनाय जागोन।',
+      p2t:'दाजाबथाव रेकर्ड शेयार', p2d:'बे जायखनायनि थाखाय सायखनाय रिपोर्ट, स्क्यान एबा दफावसार।',
+      p3t:'गोरलै फोंजोबनायनि खावखौ', p3d:'बिसेजोंनि क्लिनिकआ बे सोलोंनायखौ लाबोनो नोंथांखौ फोन एबा गोसो होनो हागौ।',
+      p4t:'रायजोनि सिकिस्रानि थाखाय होगारनाय', p4d:'जायखनायाव फिर शेयार होनो गोनां जायाखै दा।',
+      req:'गोनां', opt:'फजग',
+      warn:'बे जायखनाया दैथाय होनायनि सिगाङाव क्लिनिकेल सारसंग्रह शेयार खालामनायनि थाखाय नोंथांनि मानि गोनां।',
+      rights:'नोंथाङा जायखिजासे समावनो बे मानिखौ फैनाय होनो हायो। जायखनाय दिहुननाय क्लिनिकजों गोसो खालामनानै बे रादाबखौ निनो, थिक खालामनो एबा खोमोरनो हायो।', save:'मानिनि rजासे सेब खालाम' },
+    { code:'doi', name:'डोगरी', dir:'ltr', title:'मरीज़ सहमति फार्म',
+      intro:'एह् दस्सी करदा ऐ जे माहिरे कन्नै रैफरल आस्तै तुंदी सेह्त दी जानकारी किस चाल्ली इस्तेमाल कीती जाग। थल्ले हर मकसद आस्तै अलग-अलग चुनो — बैकल्पिक मकसद पर "नेईं" आखने कन्नै तुंदे इलाज उप्पर कोई असर नेईं पौग।',
+      p1t:'क्लिनिकल सारांश साझा करो', p1d:'तुंदा इतिहास, नतीजे ते रैफरल दा कारण, उप्पर दस्से माहिर कन्नै साझा कीता जाग।',
+      p2t:'नत्थी रिकार्ड साझा करो', p2d:'इस रैफरल आस्तै चुने गे रिपोर्ट, स्कैन जां दस्तावेज़।',
+      p3t:'सिद्धे संपर्क दी इजाज़त', p3d:'माहिर दा क्लिनिक इस सलाह बारै तुंदे कन्नै फोन जां संदेश राहें संपर्क करी सकदा ऐ।',
+      p4t:'भविष्य दी देखभाल आस्तै रक्खो', p4d:'ताकि भविष्य दे रैफरल च मुड़ के साझा करने दी लोड़ नेईं पौग।',
+      req:'ज़रूरी', opt:'बैकल्पिक',
+      warn:'ई रैफरल भेजने थमां पैह्ले क्लिनिकल सारांश साझा करने आस्तै तुंदी सहमति ज़रूरी ऐ।',
+      rights:'तुस केही बी बेल़े ई सहमति वापस लेई सकदे ओ। रैफर करने आह़ले क्लिनिक कन्नै संपर्क करियै ई जानकारी दिक्खी, ठीक करी जां हटाई सकदे ओ।', save:'सहमति दी चोण सुरक्षत करो' },
+    { code:'gu', name:'ગુજરાતી', dir:'ltr', title:'દર્દી સંમતિ ફોર્મ',
+      intro:'આ સમજાવે છે કે નિષ્ણાત પાસે રેફરલ માટે તમારી આરોગ્ય માહિતીનો ઉપયોગ કેવી રીતે થશે. નીચેના દરેક હેતુ માટે અલગ-અલગ પસંદગી કરો — વૈકલ્પિક હેતુ માટે “ના” કહેવાથી તમારી સારવાર પર અસર નહીં થાય.',
+      p1t:'ક્લિનિકલ સારાંશ શેર કરો', p1d:'તમારો ઇતિહાસ, તારણો અને રેફરલનું કારણ, ઉપર દર્શાવેલ નિષ્ણાત સાથે શેર કરવામાં આવશે.',
+      p2t:'જોડેલા રેકોર્ડ શેર કરો', p2d:'આ રેફરલ માટે પસંદ કરેલા રિપોર્ટ, સ્કેન અથવા દસ્તાવેજો.',
+      p3t:'સીધા સંપર્કની મંજૂરી', p3d:'નિષ્ણાતની ક્લિનિક આ પરામર્શ અંગે તમને ફોન અથવા સંદેશો મોકલી શકે છે.',
+      p4t:'ભવિષ્યની સંભાળ માટે રાખો', p4d:'જેથી ભવિષ્યના રેફરલમાં ફરીથી શેર કરવાની જરૂર ન પડે.',
+      req:'જરૂરી', opt:'વૈકલ્પિક',
+      warn:'આ રેફરલ મોકલતા પહેલાં ક્લિનિકલ સારાંશ શેર કરવા માટે તમારી સંમતિ જરૂરી છે.',
+      rights:'તમે કોઈપણ સમયે આ સંમતિ પાછી ખેંચી શકો છો. રેફર કરનાર ક્લિનિકનો સંપર્ક કરીને આ માહિતી જોઈ, સુધારી અથવા કાઢી શકો છો.', save:'સંમતિ પસંદગીઓ સાચવો' },
+    { code:'hi', name:'हिन्दी', dir:'ltr', title:'रोगी सहमति फॉर्म',
+      intro:'यह बताता है कि विशेषज्ञ को रेफ़रल के लिए आपकी स्वास्थ्य जानकारी का उपयोग कैसे किया जाएगा। कृपया नीचे दिए गए हर उद्देश्य के लिए अलग-अलग चुनाव करें — किसी वैकल्पिक उद्देश्य पर "नहीं" कहने से आपके इलाज पर कोई असर नहीं पड़ेगा।',
+      p1t:'नैदानिक सारांश साझा करें', p1d:'आपका इतिहास, निष्कर्ष और रेफ़रल का कारण, ऊपर बताए गए विशेषज्ञ के साथ साझा किया जाएगा।',
+      p2t:'संलग्न रिकॉर्ड साझा करें', p2d:'इस रेफ़रल के लिए चुनी गई रिपोर्ट, स्कैन या दस्तावेज़।',
+      p3t:'सीधे संपर्क की अनुमति', p3d:'विशेषज्ञ का क्लिनिक इस परामर्श के बारे में आपको कॉल या संदेश भेज सकता है।',
+      p4t:'भविष्य की देखभाल के लिए रखें', p4d:'ताकि भविष्य के रेफ़रल में दोबारा साझा करने की ज़रूरत न पड़े।',
+      req:'आवश्यक', opt:'वैकल्पिक',
+      warn:'यह रेफ़रल भेजने से पहले नैदानिक सारांश साझा करने के लिए आपकी सहमति ज़रूरी है।',
+      rights:'आप किसी भी समय यह सहमति वापस ले सकते हैं। रेफ़र करने वाले क्लिनिक से संपर्क करके इस जानकारी को देख, ठीक या हटा सकते हैं।', save:'सहमति विकल्प सहेजें' },
+    { code:'kn', name:'ಕನ್ನಡ', dir:'ltr', title:'ರೋಗಿಯ ಒಪ್ಪಿಗೆ ನಮೂನೆ',
+      intro:'ತಜ್ಞರಿಗೆ ರೆಫರಲ್‌ಗಾಗಿ ನಿಮ್ಮ ಆರೋಗ್ಯ ಮಾಹಿತಿಯನ್ನು ಹೇಗೆ ಬಳಸಲಾಗುತ್ತದೆ ಎಂಬುದನ್ನು ಇದು ವಿವರಿಸುತ್ತದೆ. ದಯವಿಟ್ಟು ಕೆಳಗಿನ ಪ್ರತಿ ಉದ್ದೇಶಕ್ಕೂ ಪ್ರತ್ಯೇಕವಾಗಿ ಆಯ್ಕೆ ಮಾಡಿ — ಐಚ್ಛಿಕ ಉದ್ದೇಶಕ್ಕೆ “ಇಲ್ಲ” ಎಂದರೆ ನಿಮ್ಮ ಚಿಕಿತ್ಸೆಯ ಮೇಲೆ ಪರಿಣಾಮ ಬೀರುವುದಿಲ್ಲ.',
+      p1t:'ಕ್ಲಿನಿಕಲ್ ಸಾರಾಂಶ ಹಂಚಿಕೊಳ್ಳಿ', p1d:'ನಿಮ್ಮ ಇತಿಹಾಸ, ಸಂಶೋಧನೆಗಳು ಮತ್ತು ರೆಫರಲ್‌ ಕಾರಣ, ಮೇಲೆ ತಿಳಿಸಿದ ತಜ್ಞರೊಂದಿಗೆ ಹಂಚಿಕೊಳ್ಳಲಾಗುತ್ತದೆ.',
+      p2t:'ಲಗತ್ತಿಸಿದ ದಾಖಲೆಗಳ ಹಂಚಿಕೆ', p2d:'ಈ ರೆಫರಲ್‌ಗಾಗಿ ಆಯ್ಕೆ ಮಾಡಿದ ವರದಿಗಳು, ಸ್ಕ್ಯಾನ್‌ಗಳು ಅಥವಾ ದಾಖಲೆಗಳು.',
+      p3t:'ನೇರ ಸಂಪರ್ಕಕ್ಕೆ ಅನುಮತಿ', p3d:'ತಜ್ಞರ ಕ್ಲಿನಿಕ್ ಈ ಸಮಾಲೋಚನೆ ಕುರಿತು ನಿಮಗೆ ಕರೆ ಅಥವಾ ಸಂದೇಶ ಕಳುಹಿಸಬಹುದು.',
+      p4t:'ಭವಿಷ್ಯದ ಆರೈಕೆಗಾಗಿ ಇರಿಸಿ', p4d:'ಇದರಿಂದ ಭವಿಷ್ಯದ ರೆಫರಲ್‌ಗಳಿಗೆ ಮತ್ತೆ ಹಂಚಿಕೊಳ್ಳುವ ಅಗತ್ಯವಿಲ್ಲ.',
+      req:'ಅಗತ್ಯ', opt:'ಐಚ್ಛಿಕ',
+      warn:'ಈ ರೆಫರಲ್ ಕಳುಹಿಸುವ ಮೊದಲು ಕ್ಲಿನಿಕಲ್ ಸಾರಾಂಶ ಹಂಚಿಕೊಳ್ಳಲು ನಿಮ್ಮ ಒಪ್ಪಿಗೆ ಅಗತ್ಯ.',
+      rights:'ನೀವು ಯಾವುದೇ ಸಮಯದಲ್ಲಿ ಈ ಒಪ್ಪಿಗೆಯನ್ನು ಹಿಂಪಡೆಯಬಹುದು. ರೆಫರ್ ಮಾಡಿದ ಕ್ಲಿನಿಕ್ ಅನ್ನು ಸಂಪರ್ಕಿಸಿ ಈ ಮಾಹಿತಿಯನ್ನು ನೋಡಬಹುದು, ಸರಿಪಡಿಸಬಹುದು ಅಥವಾ ಅಳಿಸಬಹುದು.', save:'ಒಪ್ಪಿಗೆ ಆಯ್ಕೆಗಳನ್ನು ಉಳಿಸಿ' },
+    { code:'ks', name:'कॉशुर', dir:'ltr', title:'मरीज़ रज़ामंदी फार्म',
+      intro:'यि वुछ़नाय दिथावुन ज़ि माहिर सिन्ज़ रेफ़रल खातर तुहुंदि सेहत सुंद मालूमात कतुह् इस्तिमाल गछ़ी। हर मक़सद खातर वुछ़मुत बापर करो — इख़्तियारी मक़सदस मंज़ "ना" वुनोवुन तुहुंदि ईलाज पेठ असर ना पावी।',
+      p1t:'क्लीनिकल ख़ुलासा शेयर करो', p1d:'तुहुंद तवारीख़, नतीजे तेय रेफ़रल हुंद वजाह, बाला दुत्तमुत माहिर सिती शेयर करनि यिवुन।',
+      p2t:'लगावमत रिकार्ड शेयर करो', p2d:'यम रेफ़रल खातर छुख़ वुछ़मुत रिपोर्ट, स्कैन या दस्तावेज़।',
+      p3t:'सीधि राबता हिंद इजाज़त', p3d:'माहिर हिंज़ क्लीनिक करि हेकी तुहे फोन या पयाम गछ़नावुन यि मशवरे मुताल्लिक़।',
+      p4t:'मुस्तक़बिल खातर सुरक्षित करो', p4d:'ताकि मुस्तक़बिल हिंदि रेफ़रल मंज़ फिरि शेयर करनि जरूरत ना पेवि।',
+      req:'ज़रूरी', opt:'इख़्तियारी',
+      warn:'यि रेफ़रल गछ़नावनि बरामद क्लीनिकल ख़ुलासा शेयर करनि खातर तुहुंदि रज़ामंदी ज़रूरी छे।',
+      rights:'तोहि हेकिव कोन वख़्त यि रज़ामंदी वापस लिवुन। रेफ़र करनवाल क्लीनिक सिती राबता करिथ यि मालूमात वुछ़नावुन, दुरुस्त या मिटावुन।', save:'रज़ामंदी हुंद इंतिख़ाब महफ़ूज़ करो' },
+    { code:'kok', name:'कोंकणी', dir:'ltr', title:'रोग्याचो संमती फॉर्म',
+      intro:'हो स्पश्ट करता की विशेषज्ञाक रेफरलाखातीर तुमची भलायकेची म्हायती कशी वापरतले. सकयल दिल्ल्या दर एका हेतुखातीर वेगळो निवड करात — पर्यायी हेतुक "ना" म्हणल्यार तुमच्या उपचारार परिणाम जावचो ना.',
+      p1t:'क्लिनिकल सारांश वाटो', p1d:'तुमचो इतिहास, सोदाड आनी रेफरलाचें कारण, वयर सांगिल्ल्या विशेषज्ञासयत वांटले वतले.',
+      p2t:'जोडिल्ले रेकॉर्ड वाटो', p2d:'ह्या रेफरलाखातीर निवडील्ले रिपोर्ट, स्कॅन वा कागाळपत्रां.',
+      p3t:'सरळ संपर्काक परवानगी', p3d:'विशेषज्ञाचें क्लिनिक ह्या सल्ल्याविशीं तुमकां कॉल वा संदेश धाडूं येता.',
+      p4t:'फुडाराच्या उपचाराखातीर दवरात', p4d:'जाल्यार फुडाराच्या रेफरलांत परत वाटपाची गरज पडची ना.',
+      req:'गरजेचें', opt:'पर्यायी',
+      warn:'हो रेफरल धाडचे पयलीं क्लिनिकल सारांश वाटपाखातीर तुमची संमती गरजेची.',
+      rights:'तुमी केन्नाय हे संमती फाटीं घेवं येता. रेफर करपी क्लिनिकाकडेन संपर्क करून ही म्हायती पळोवं, सारकी करूं वा काडून उडोवं येता.', save:'संमतीच्यो निवडी जतनाय करात' },
+    { code:'mai', name:'मैथिली', dir:'ltr', title:'रोगी सहमति फार्म',
+      intro:'ई बताबैत अछि जे विशेषज्ञ लग रेफरल लेल अहाँक स्वास्थ्य जानकारीक उपयोग कोना कएल जेतैक। कृपया नीचाँ देल हर उद्देश्य लेल अलग-अलग चुनाव करू — ऐच्छिक उद्देश्य पर "नहि" कहला सँ अहाँक इलाज पर कोनो असर नहि पड़त।',
+      p1t:'नैदानिक सारांश साझा करू', p1d:'अहाँक इतिहास, निष्कर्ष आ रेफरलक कारण, ऊपर बताएल विशेषज्ञक संग साझा कएल जाएत।',
+      p2t:'संलग्न रिकॉर्ड साझा करू', p2d:'ई रेफरल लेल चुनल गेल रिपोर्ट, स्कैन वा दस्तावेज।',
+      p3t:'सीधा संपर्कक अनुमति', p3d:'विशेषज्ञक क्लिनिक ई परामर्शक संबंधमे अहाँके कॉल वा संदेश पठा सकैत अछि।',
+      p4t:'भविष्यक देखभाल लेल राखू', p4d:'जाहिसँ भविष्यक रेफरलमे फेर सँ साझा करबाक जरूरति नहि पड़ए।',
+      req:'आवश्यक', opt:'ऐच्छिक',
+      warn:'ई रेफरल पठेबाक पहिने नैदानिक सारांश साझा करबाक लेल अहाँक सहमति आवश्यक अछि।',
+      rights:'अहाँ कखनहु ई सहमति वापस लऽ सकैत छी। रेफर करएवाला क्लिनिक सँ संपर्क कऽ क ई जानकारी देखि, ठीक वा मेटा सकैत छी।', save:'सहमतिक चयन सहेजू' },
+    { code:'ml', name:'മലയാളം', dir:'ltr', title:'രോഗിയുടെ സമ്മത ഫോറം',
+      intro:'സ്പെഷ്യലിസ്റ്റിന് റഫറൽ ചെയ്യുന്നതിന് നിങ്ങളുടെ ആരോഗ്യ വിവരങ്ങൾ എങ്ങനെ ഉപയോഗിക്കുമെന്ന് ഇത് വിശദീകരിക്കുന്നു. ചുവടെയുള്ള ഓരോ ആവശ്യത്തിനും പ്രത്യേകം തിരഞ്ഞെടുക്കുക — ഐച്ഛിക ആവശ്യത്തിന് "വേണ്ട" എന്ന് പറഞ്ഞാൽ നിങ്ങളുടെ ചികിത്സയെ ബാധിക്കില്ല.',
+      p1t:'ക്ലിനിക്കൽ സംഗ്രഹം പങ്കിടുക', p1d:'നിങ്ങളുടെ ചരിത്രം, കണ്ടെത്തലുകൾ, റഫറലിന്റെ കാരണം എന്നിവ മുകളിൽ പറഞ്ഞ സ്പെഷ്യലിസ്റ്റുമായി പങ്കിടും.',
+      p2t:'അറ്റാച്ച് ചെയ്ത രേഖകൾ പങ്കിടുക', p2d:'ഈ റഫറലിനായി തിരഞ്ഞെടുത്ത റിപ്പോർട്ടുകൾ, സ്കാനുകൾ അല്ലെങ്കിൽ രേഖകൾ.',
+      p3t:'നേരിട്ടുള്ള ബന്ധപ്പെടലിന് അനുമതി', p3d:'ഈ കൺസൾട്ടേഷനെക്കുറിച്ച് സ്പെഷ്യലിസ്റ്റിന്റെ ക്ലിനിക് നിങ്ങളെ വിളിക്കുകയോ സന്ദേശം അയക്കുകയോ ചെയ്യാം.',
+      p4t:'ഭാവി പരിചരണത്തിനായി സൂക്ഷിക്കുക', p4d:'ഭാവിയിലെ റഫറലുകളിൽ വീണ്ടും പങ്കിടേണ്ടി വരാതിരിക്കാൻ.',
+      req:'ആവശ്യമാണ്', opt:'ഐച്ഛികം',
+      warn:'ഈ റഫറൽ അയക്കുന്നതിന് മുമ്പ് ക്ലിനിക്കൽ സംഗ്രഹം പങ്കിടാൻ നിങ്ങളുടെ സമ്മതം ആവശ്യമാണ്.',
+      rights:'നിങ്ങൾക്ക് എപ്പോൾ വേണമെങ്കിലും ഈ സമ്മതം പിൻവലിക്കാം. റഫർ ചെയ്ത ക്ലിനിക്കുമായി ബന്ധപ്പെട്ട് ഈ വിവരങ്ങൾ കാണാനോ തിരുത്താനോ ഇല്ലാതാക്കാനോ കഴിയും.', save:'സമ്മത തിരഞ്ഞെടുപ്പുകൾ സേവ് ചെയ്യുക' },
+    { code:'mni', name:'মৈতৈলোন্', dir:'ltr', title:'অতুরবা য়াগদবগী ফোরম',
+      intro:'অসিনা স্পেশালিস্টতা রেফরেল তৌবগীদমক নহাক্কী হেল্থগী ইনফোরমেসন করমনা শিজিন্নগনি হায়বসি সেংনা তাক্লি। মখাদা পীরিবা পর্পস খুদিংমক তোঙানা খল্লু — চয়নবা পর্পসতা "নত্তে" হায়রবদি নহাক্কী চিকিৎসাদা অসোন্ব পীরোই।',
+      p1t:'ক্লিনিকেল সামারী শেয়ার তৌবা', p1d:'নহাক্কী হিস্ত্রি, ফাইন্দিং, অমসুং রেফরেলগী মরম অদু, মথক্তা তাকপা স্পেশালিস্টকা লোয়ননা শেয়ার তৌগনি।',
+      p2t:'য়ানবা রেকর্দ শেয়ার তৌবা', p2d:'রেফরেলসিদগীদমক খল্লবা রিপোর্ত, স্কেন নত্রগা দোকুমেন্ত।',
+      p3t:'ডাইরেক্ত কনতেক্তনা য়াবা', p3d:'স্পেশালিস্টকী ক্লিনিকনা অসিগী কনসল্তেসনগীদমক নহাক্পু কল নত্রগা মেসেজ থাবা য়াই।',
+      p4t:'অতোপ্পা চিকিৎসাগীদমক থমজবা', p4d:'অতোপ্পা রেফরেলদা আমুক শেয়ার তৌনবা মথৌ তাদনবগীদমক।',
+      req:'মথৌ তাই', opt:'চয়নবা',
+      warn:'রেফরেলসি থাদ্রিংদা ক্লিনিকেল সামারী শেয়ার তৌনবগীদমক নহাক্কী য়াগদবা মথৌ তাই।',
+      rights:'নহাক্না মতম করিফাওবদা য়াগদবসি লৌথোকপা য়াই। রেফর তৌরিবা ক্লিনিকতা কন্তেক্ত তৌনা ইনফোরমেসনসি য়েংবা, সেমদোকপা নত্রগা লৌথোকপা য়াই।', save:'য়াগদবগী খল্লবা সেব তৌবা' },
+    { code:'mr', name:'मराठी', dir:'ltr', title:'रुग्ण संमती फॉर्म',
+      intro:'तज्ज्ञांकडे रेफरलसाठी तुमची आरोग्य माहिती कशी वापरली जाईल हे यात स्पष्ट केले आहे. कृपया खालील प्रत्येक उद्देशासाठी स्वतंत्रपणे निवड करा — पर्यायी उद्देशाला "नाही" म्हटल्यास तुमच्या उपचारावर परिणाम होणार नाही.',
+      p1t:'क्लिनिकल सारांश शेअर करा', p1d:'तुमचा इतिहास, निष्कर्ष आणि रेफरलचे कारण, वर नमूद तज्ज्ञांसोबत शेअर केले जाईल.',
+      p2t:'जोडलेले रेकॉर्ड शेअर करा', p2d:'या रेफरलसाठी निवडलेले अहवाल, स्कॅन किंवा कागदपत्रे.',
+      p3t:'थेट संपर्काची परवानगी', p3d:'तज्ज्ञांचे क्लिनिक या सल्ल्याबाबत तुम्हाला फोन किंवा संदेश पाठवू शकते.',
+      p4t:'भविष्यातील काळजीसाठी ठेवा', p4d:'जेणेकरून भविष्यातील रेफरलमध्ये पुन्हा शेअर करण्याची गरज पडणार नाही.',
+      req:'आवश्यक', opt:'पर्यायी',
+      warn:'हा रेफरल पाठवण्यापूर्वी क्लिनिकल सारांश शेअर करण्यासाठी तुमची संमती आवश्यक आहे.',
+      rights:'तुम्ही केव्हाही ही संमती मागे घेऊ शकता. रेफर करणाऱ्या क्लिनिकशी संपर्क साधून ही माहिती पाहू, दुरुस्त किंवा हटवू शकता.', save:'संमती निवडी जतन करा' },
+    { code:'ne', name:'नेपाली', dir:'ltr', title:'बिरामी सहमति फारम',
+      intro:'यसले विशेषज्ञलाई रेफरलका लागि तपाईंको स्वास्थ्य जानकारी कसरी प्रयोग गरिनेछ भनी बताउँछ। कृपया तलका प्रत्येक उद्देश्यका लागि छुट्टाछुट्टै छनोट गर्नुहोस् — वैकल्पिक उद्देश्यमा "होइन" भन्दा तपाईंको उपचारमा असर पर्दैन।',
+      p1t:'क्लिनिकल सारांश साझा गर्नुहोस्', p1d:'तपाईंको इतिहास, निष्कर्ष र रेफरलको कारण, माथि उल्लेखित विशेषज्ञसँग साझा गरिनेछ।',
+      p2t:'संलग्न रेकर्ड साझा गर्नुहोस्', p2d:'यो रेफरलका लागि छानिएका रिपोर्ट, स्क्यान वा कागजातहरू।',
+      p3t:'प्रत्यक्ष सम्पर्कको अनुमति', p3d:'विशेषज्ञको क्लिनिकले यो परामर्शका बारेमा तपाईंलाई फोन वा सन्देश पठाउन सक्छ।',
+      p4t:'भविष्यको स्याहारका लागि राख्नुहोस्', p4d:'ताकि भविष्यका रेफरलहरूमा फेरि साझा गर्नुपर्दैन।',
+      req:'आवश्यक', opt:'वैकल्पिक',
+      warn:'यो रेफरल पठाउनुअघि क्लिनिकल सारांश साझा गर्न तपाईंको सहमति आवश्यक छ।',
+      rights:'तपाईं जुनसुकै बेला यो सहमति फिर्ता लिन सक्नुहुन्छ। रेफर गर्ने क्लिनिकलाई सम्पर्क गरेर यो जानकारी हेर्न, सुधार्न वा मेटाउन सक्नुहुन्छ।', save:'सहमति छनोटहरू सुरक्षित गर्नुहोस्' },
+    { code:'or', name:'ଓଡ଼ିଆ', dir:'ltr', title:'ରୋଗୀ ସମ୍ମତି ଫର୍ମ',
+      intro:'ଏହା ବର୍ଣ୍ଣନା କରେ ଯେ ବିଶେଷଜ୍ଞଙ୍କ ନିକଟକୁ ରେଫରାଲ ପାଇଁ ଆପଣଙ୍କ ସ୍ୱାସ୍ଥ୍ୟ ସୂଚନା କିପରି ବ୍ୟବହାର ହେବ। ଦୟାକରି ତଳେ ଥିବା ପ୍ରତ୍ୟେକ ଉଦ୍ଦେଶ୍ୟ ପାଇଁ ଅଲଗା ଭାବେ ବାଛନ୍ତୁ — ଐଚ୍ଛିକ ଉଦ୍ଦେଶ୍ୟରେ "ନା" କହିଲେ ଆପଣଙ୍କ ଚିକିତ୍ସାରେ କୌଣସି ପ୍ରଭାବ ପଡ଼ିବ ନାହିଁ।',
+      p1t:'କ୍ଲିନିକାଲ ସାରାଂଶ ସେୟାର କରନ୍ତୁ', p1d:'ଆପଣଙ୍କ ଇତିହାସ, ଫଳାଫଳ ଏବଂ ରେଫରାଲର କାରଣ, ଉପରେ ଉଲ୍ଲେଖିତ ବିଶେଷଜ୍ଞଙ୍କ ସହ ସେୟାର ହେବ।',
+      p2t:'ସଂଲଗ୍ନ ରେକର୍ଡ ସେୟାର କରନ୍ତୁ', p2d:'ଏହି ରେଫରାଲ ପାଇଁ ବଛା ଯାଇଥିବା ରିପୋର୍ଟ, ସ୍କାନ କିମ୍ବା ଡକ୍ୟୁମେଣ୍ଟ।',
+      p3t:'ସିଧାସଳଖ ଯୋଗାଯୋଗର ଅନୁମତି', p3d:'ବିଶେଷଜ୍ଞଙ୍କ କ୍ଲିନିକ ଏହି ପରାମର୍ଶ ବିଷୟରେ ଆପଣଙ୍କୁ କଲ କିମ୍ବା ମେସେଜ କରିପାରନ୍ତି।',
+      p4t:'ଭବିଷ୍ୟତ ଯତ୍ନ ପାଇଁ ରଖନ୍ତୁ', p4d:'ଯାହାଫଳରେ ଭବିଷ୍ୟତ ରେଫରାଲରେ ପୁଣି ସେୟାର କରିବାର ଆବଶ୍ୟକତା ପଡ଼ିବ ନାହିଁ।',
+      req:'ଆବଶ୍ୟକ', opt:'ଐଚ୍ଛିକ',
+      warn:'ଏହି ରେଫରାଲ ପଠାଇବା ପୂର୍ବରୁ କ୍ଲିନିକାଲ ସାରାଂଶ ସେୟାର କରିବାକୁ ଆପଣଙ୍କ ସମ୍ମତି ଆବଶ୍ୟକ।',
+      rights:'ଆପଣ ଯେକୌଣସି ସମୟରେ ଏହି ସମ୍ମତି ପ୍ରତ୍ୟାହାର କରିପାରିବେ। ରେଫର କରିଥିବା କ୍ଲିନିକ ସହ ଯୋଗାଯୋଗ କରି ଏହି ସୂଚନା ଦେଖିପାରିବେ, ସଂଶୋଧନ କିମ୍ବା ଡିଲିଟ କରିପାରିବେ।', save:'ସମ୍ମତି ପସନ୍ଦ ସେଭ କରନ୍ତୁ' },
+    { code:'pa', name:'ਪੰਜਾਬੀ', dir:'ltr', title:'ਮਰੀਜ਼ ਸਹਿਮਤੀ ਫਾਰਮ',
+      intro:'ਇਹ ਦੱਸਦਾ ਹੈ ਕਿ ਮਾਹਰ ਕੋਲ ਰੈਫਰਲ ਲਈ ਤੁਹਾਡੀ ਸਿਹਤ ਜਾਣਕਾਰੀ ਕਿਵੇਂ ਵਰਤੀ ਜਾਵੇਗੀ। ਕਿਰਪਾ ਕਰਕੇ ਹੇਠਾਂ ਦਿੱਤੇ ਹਰ ਮਕਸਦ ਲਈ ਵੱਖਰੇ ਤੌਰ \'ਤੇ ਚੋਣ ਕਰੋ — ਵਿਕਲਪਿਕ ਮਕਸਦ \'ਤੇ "ਨਹੀਂ" ਕਹਿਣ ਨਾਲ ਤੁਹਾਡੇ ਇਲਾਜ \'ਤੇ ਕੋਈ ਅਸਰ ਨਹੀਂ ਪਵੇਗਾ।',
+      p1t:'ਕਲੀਨਿਕਲ ਸੰਖੇਪ ਸਾਂਝਾ ਕਰੋ', p1d:'ਤੁਹਾਡਾ ਇਤਿਹਾਸ, ਨਤੀਜੇ ਅਤੇ ਰੈਫਰਲ ਦਾ ਕਾਰਨ, ਉੱਪਰ ਦੱਸੇ ਮਾਹਰ ਨਾਲ ਸਾਂਝਾ ਕੀਤਾ ਜਾਵੇਗਾ।',
+      p2t:'ਨੱਥੀ ਰਿਕਾਰਡ ਸਾਂਝੇ ਕਰੋ', p2d:'ਇਸ ਰੈਫਰਲ ਲਈ ਚੁਣੀਆਂ ਰਿਪੋਰਟਾਂ, ਸਕੈਨ ਜਾਂ ਦਸਤਾਵੇਜ਼।',
+      p3t:'ਸਿੱਧੇ ਸੰਪਰਕ ਦੀ ਇਜਾਜ਼ਤ', p3d:'ਮਾਹਰ ਦਾ ਕਲੀਨਿਕ ਇਸ ਸਲਾਹ ਬਾਰੇ ਤੁਹਾਨੂੰ ਕਾਲ ਜਾਂ ਸੁਨੇਹਾ ਭੇਜ ਸਕਦਾ ਹੈ।',
+      p4t:'ਭਵਿੱਖ ਦੀ ਦੇਖਭਾਲ ਲਈ ਰੱਖੋ', p4d:'ਤਾਂ ਜੋ ਭਵਿੱਖ ਦੇ ਰੈਫਰਲ ਵਿੱਚ ਦੁਬਾਰਾ ਸਾਂਝਾ ਕਰਨ ਦੀ ਲੋੜ ਨਾ ਪਵੇ।',
+      req:'ਜ਼ਰੂਰੀ', opt:'ਵਿਕਲਪਿਕ',
+      warn:'ਇਹ ਰੈਫਰਲ ਭੇਜਣ ਤੋਂ ਪਹਿਲਾਂ ਕਲੀਨਿਕਲ ਸੰਖੇਪ ਸਾਂਝਾ ਕਰਨ ਲਈ ਤੁਹਾਡੀ ਸਹਿਮਤੀ ਜ਼ਰੂਰੀ ਹੈ।',
+      rights:'ਤੁਸੀਂ ਕਿਸੇ ਵੀ ਸਮੇਂ ਇਹ ਸਹਿਮਤੀ ਵਾਪਸ ਲੈ ਸਕਦੇ ਹੋ। ਰੈਫਰ ਕਰਨ ਵਾਲੇ ਕਲੀਨਿਕ ਨਾਲ ਸੰਪਰਕ ਕਰਕੇ ਇਹ ਜਾਣਕਾਰੀ ਦੇਖ, ਠੀਕ ਜਾਂ ਮਿਟਾ ਸਕਦੇ ਹੋ।', save:'ਸਹਿਮਤੀ ਚੋਣਾਂ ਸੰਭਾਲੋ' },
+    { code:'sa', name:'संस्कृतम्', dir:'ltr', title:'रोगी सम्मति पत्रम्',
+      intro:'इदं वर्णयति यत् विशेषज्ञाय प्रेषणार्थं भवतः स्वास्थ्य सूचना कथं उपयुज्यते। कृपया अधोलिखितं प्रत्येकं प्रयोजनं पृथक् चिनुत — ऐच्छिकप्रयोजने "न" इति उक्ते भवतः चिकित्सायां कोऽपि प्रभावो न भविष्यति।',
+      p1t:'चिकित्सा सारांशं साझां कुरुत', p1d:'भवतः इतिहासः, निष्कर्षाः, प्रेषणस्य कारणं च, उपरि उक्तेन विशेषज्ञेन सह साझां भविष्यति।',
+      p2t:'संलग्न अभिलेखान् साझान् कुरुत', p2d:'अस्य प्रेषणस्य कृते चयनिताः प्रतिवेदनाः, स्कैनाः वा दस्तावेजाः।',
+      p3t:'प्रत्यक्ष सम्पर्कस्य अनुमतिः', p3d:'विशेषज्ञस्य चिकित्सालयः अस्मिन् विषये भवन्तं आह्वयितुं सन्देशं वा प्रेषयितुं शक्नोति।',
+      p4t:'भविष्यत् चिकित्सार्थं रक्षतु', p4d:'यथा भविष्यत् प्रेषणेषु पुनः साझाकरणस्य आवश्यकता न भवति।',
+      req:'आवश्यकम्', opt:'ऐच्छिकम्',
+      warn:'इदं प्रेषणं प्रेषयितुं पूर्वं चिकित्सा सारांशस्य साझाकरणार्थं भवतः सम्मतिः आवश्यकी।',
+      rights:'भवान् कदापि एतां सम्मतिं निवर्तयितुं शक्नोति। प्रेषकचिकित्सालयेन सह सम्पर्कं कृत्वा एतां सूचनां द्रष्टुं, संशोधयितुं वा विलोपयितुं शक्नोति।', save:'सम्मति चयनं रक्षतु' },
+    { code:'sat', name:'संताली', dir:'ltr', title:'रोगी मानति फार्म',
+      intro:'नोवा उदुक कान जे विशेषज्ञ ठाइरे रेफरल लागित आम रेन सास्थो बारा जकात लेखा इस्तेमाल होयोक। सारेन उदेस्य लागित सोरेस सोरेस बाछाव मे — इख्तियारी उदेस्य रे "बाङ" मेनाम रे आम रेन इलाज रे बाहा बाङ होयोक।',
+      p1t:'क्लीनिकल सारांश आदेर मे', p1d:'आम रेन इतिहास, नामाव आर रेफरल रेन कारण, चेते ओड़ोक ओड़ोक विशेषज्ञ थेन आदेर काना।',
+      p2t:'जोड़ावाकान रेकर्ड आदेर मे', p2d:'नोवा रेफरल लागित बाछावाकान रिपोर्ट, स्कैन आर दस्तावेज।',
+      p3t:'सिधा राबता रेन इजाजत', p3d:'विशेषज्ञ रेन क्लीनिक आमाक फोन आर पयाम एड़ मे दाड़ेयाक।',
+      p4t:'सेंगेल रेन इलाज लागित दहा मे', p4d:'जाहान सेंगेल रेफरल रे फिर आदेर बाङ लाग ओका ।',
+      req:'जरूरी', opt:'इख्तियारी',
+      warn:'नोवा रेफरल एड़ आगेय क्लीनिकल सारांश आदेर लागित आम रेन मानति जरूरी काना।',
+      rights:'आम ओका बेला योय नोवा मानति रोड़ ओको दाड़ेयाम। रेफर एड़ाकाते क्लीनिक थेन राबता एड़ आर नोवा जकात नेल, ठीक आर मेटाव दाड़ेयाम।', save:'मानति रेन बाछाव संचय मे' },
+    { code:'sd', name:'सिन्धी', dir:'ltr', title:'مريض جي رضامندي فارم',
+      intro:'هي وضاحت ڪري ٿو ته ماهر ڏانهن رجوع لاءِ توهان جي صحت جي معلومات ڪيئن استعمال ٿيندي. مهرباني ڪري هيٺ ڏنل هر مقصد لاءِ الڳ چونڊ ڪريو — اختياري مقصد تي "نه" چوڻ سان توهان جي علاج تي ڪو اثر نه پوندو.',
+      p1t:'ڪلينڪل خلاصو شيئر ڪريو', p1d:'توهان جي تاريخ، نتيجا ۽ رجوع جو سبب، مٿي ڄاڻايل ماهر سان شيئر ڪيا ويندا.',
+      p2t:'شامل ٿيل رڪارڊ شيئر ڪريو', p2d:'هن رجوع لاءِ چونڊيل رپورٽون، اسڪين يا دستاويز.',
+      p3t:'سڌي رابطي جي اجازت', p3d:'ماهر جو ڪلينڪ هن صلاح بابت توهان کي ڪال يا پيغام موڪلي سگهي ٿو.',
+      p4t:'مستقبل جي سنڀال لاءِ رکو', p4d:'ته جيئن مستقبل جي رجوعن ۾ ٻيهر شيئر ڪرڻ جي ضرورت نه پوي.',
+      req:'ضروري', opt:'اختياري',
+      warn:'هي رجوع موڪلڻ کان اڳ ڪلينڪل خلاصو شيئر ڪرڻ لاءِ توهان جي رضامندي ضروري آهي.',
+      rights:'توهان ڪنهن به وقت هي رضامندي واپس وٺي سگهو ٿا. رجوع ڪندڙ ڪلينڪ سان رابطو ڪري هي معلومات ڏسي، درست يا ختم ڪري سگهو ٿا.', save:'رضامندي جون چونڊون سانڍيو' },
+    { code:'ta', name:'தமிழ்', dir:'ltr', title:'நோயாளி ஒப்புதல் படிவம்',
+      intro:'நிபுணருக்கு பரிந்துரைக்காக உங்கள் உடல்நல தகவல்கள் எவ்வாறு பயன்படுத்தப்படும் என்பதை இது விளக்குகிறது. கீழே உள்ள ஒவ்வொரு நோக்கத்திற்கும் தனித்தனியாக தேர்வு செய்யவும் — விருப்ப நோக்கத்திற்கு "வேண்டாம்" எனக் கூறுவது உங்கள் சிகிச்சையை பாதிக்காது.',
+      p1t:'மருத்துவ சுருக்கத்தை பகிரவும்', p1d:'உங்கள் வரலாறு, கண்டறிதல்கள் மற்றும் பரிந்துரைக்கான காரணம், மேலே குறிப்பிட்ட நிபுணருடன் பகிரப்படும்.',
+      p2t:'இணைக்கப்பட்ட பதிவுகளை பகிரவும்', p2d:'இந்த பரிந்துரைக்காக தேர்ந்தெடுக்கப்பட்ட அறிக்கைகள், ஸ்கேன்கள் அல்லது ஆவணங்கள்.',
+      p3t:'நேரடி தொடர்புக்கு அனுமதி', p3d:'இந்த ஆலோசனை குறித்து நிபுணரின் மருத்துவமனை உங்களை அழைக்கவோ செய்தி அனுப்பவோ செய்யலாம்.',
+      p4t:'எதிர்கால கவனிப்புக்காக வைத்திருக்கவும்', p4d:'இதனால் எதிர்கால பரிந்துரைகளில் மீண்டும் பகிர வேண்டியதில்லை.',
+      req:'அவசியம்', opt:'விருப்பத்திற்குரியது',
+      warn:'இந்த பரிந்துரையை அனுப்பும் முன் மருத்துவ சுருக்கத்தை பகிர உங்கள் ஒப்புதல் தேவை.',
+      rights:'நீங்கள் எப்போது வேண்டுமானாலும் இந்த ஒப்புதலை திரும்பப் பெறலாம். பரிந்துரைத்த மருத்துவமனையை தொடர்பு கொண்டு இந்த தகவலை பார்க்கவோ திருத்தவோ நீக்கவோ முடியும்.', save:'ஒப்புதல் தேர்வுகளை சேமிக்கவும்' },
+    { code:'te', name:'తెలుగు', dir:'ltr', title:'రోగి సమ్మతి పత్రం',
+      intro:'నిపుణుడికి రెఫరల్ కోసం మీ ఆరోగ్య సమాచారం ఎలా ఉపయోగించబడుతుందో ఇది వివరిస్తుంది. దయచేసి కింద ఉన్న ప్రతి ప్రయోజనానికి విడివిడిగా ఎంచుకోండి — ఐచ్ఛిక ప్రయోజనానికి "వద్దు" అనడం మీ చికిత్సను ప్రభావితం చేయదు.',
+      p1t:'క్లినికల్ సారాంశాన్ని పంచుకోండి', p1d:'మీ చరిత్ర, పరిశోధనలు మరియు రెఫరల్ కారణం, పైన పేర్కొన్న నిపుణుడితో పంచుకోబడతాయి.',
+      p2t:'జోడించిన రికార్డులను పంచుకోండి', p2d:'ఈ రెఫరల్ కోసం ఎంచుకున్న నివేదికలు, స్కాన్‌లు లేదా పత్రాలు.',
+      p3t:'ప్రత్యక్ష సంప్రదింపునకు అనుమతి', p3d:'ఈ సంప్రదింపు గురించి నిపుణుడి క్లినిక్ మీకు కాల్ చేయవచ్చు లేదా సందేశం పంపవచ్చు.',
+      p4t:'భవిష్యత్ సంరక్షణ కోసం ఉంచండి', p4d:'తద్వారా భవిష్యత్ రెఫరల్స్‌లో మళ్ళీ పంచుకోవాల్సిన అవసరం ఉండదు.',
+      req:'అవసరం', opt:'ఐచ్ఛికం',
+      warn:'ఈ రెఫరల్ పంపే ముందు క్లినికల్ సారాంశాన్ని పంచుకోవడానికి మీ సమ్మతి అవసరం.',
+      rights:'మీరు ఎప్పుడైనా ఈ సమ్మతిని ఉపసంహరించుకోవచ్చు. రెఫర్ చేసిన క్లినిక్‌ను సంప్రదించి ఈ సమాచారాన్ని చూడవచ్చు, సరిదిద్దవచ్చు లేదా తొలగించవచ్చు.', save:'సమ్మతి ఎంపికలను సేవ్ చేయండి' },
+    { code:'ur', name:'اردو', dir:'rtl', title:'مریض کی رضامندی کا فارم',
+      intro:'یہ بتاتا ہے کہ ماہر کے پاس ریفرل کے لیے آپ کی صحت کی معلومات کیسے استعمال کی جائیں گی۔ براہ کرم نیچے دیے گئے ہر مقصد کے لیے الگ الگ انتخاب کریں — اختیاری مقصد پر "نہیں" کہنے سے آپ کے علاج پر کوئی اثر نہیں پڑے گا۔',
+      p1t:'کلینیکل خلاصہ شیئر کریں', p1d:'آپ کی تاریخ، نتائج اور ریفرل کی وجہ، اوپر بتائے گئے ماہر کے ساتھ شیئر کی جائے گی۔',
+      p2t:'منسلک ریکارڈ شیئر کریں', p2d:'اس ریفرل کے لیے منتخب کردہ رپورٹس، اسکینز یا دستاویزات۔',
+      p3t:'براہ راست رابطے کی اجازت', p3d:'ماہر کا کلینک اس مشاورت کے بارے میں آپ کو کال یا پیغام بھیج سکتا ہے۔',
+      p4t:'مستقبل کی دیکھ بھال کے لیے محفوظ رکھیں', p4d:'تاکہ مستقبل کے ریفرلز میں دوبارہ شیئر کرنے کی ضرورت نہ پڑے۔',
+      req:'ضروری', opt:'اختیاری',
+      warn:'یہ ریفرل بھیجنے سے پہلے کلینیکل خلاصہ شیئر کرنے کے لیے آپ کی رضامندی ضروری ہے۔',
+      rights:'آپ کسی بھی وقت یہ رضامندی واپس لے سکتے ہیں۔ ریفر کرنے والے کلینک سے رابطہ کر کے یہ معلومات دیکھ، درست یا حذف کر سکتے ہیں۔', save:'رضامندی کے انتخاب محفوظ کریں' }
+  ];
+
+  let cfLang = LANGS.find(l=>l.code==='hi');
+  const cfBackdrop=document.getElementById('cfBackdrop'), cfSheet=document.getElementById('cfSheet'), cfBody=document.getElementById('cfBody');
+  const cfFilterBtn=document.getElementById('cfFilterBtn'), cfFilterPop=document.getElementById('cfFilterPop'), cfFilterLabel=document.getElementById('cfFilterLabel');
+
+  function renderCfFilterPop(){
+    cfFilterPop.innerHTML = LANGS.map(l=>
+      '<button type="button" class="'+(l===cfLang?'on':'')+'" data-code="'+l.code+'">'+l.name+'</button>').join('');
+  }
+  function renderCfBody(){
+    const l = cfLang;
+    document.getElementById('cfTitle').textContent = l.title;
+    cfFilterLabel.textContent = l.name;
+    cfBody.setAttribute('dir', l.dir);
+    const purposes = [
+      {t:l.p1t, d:l.p1d, core:true},
+      {t:l.p2t, d:l.p2d, core:false},
+      {t:l.p3t, d:l.p3d, core:false},
+      {t:l.p4t, d:l.p4d, core:false}
+    ];
+    cfBody.innerHTML =
+      '<div class="cf-intro">'+esc(l.intro)+'</div>'+
+      '<div class="cf-purposes" style="margin-top:14px">'+
+      purposes.map(p=>
+        '<div class="cf-purpose'+(p.core?' core':'')+'">'+
+          '<div class="cf-prow">'+
+            '<div class="cf-ptxt"><div class="t">'+esc(p.t)+'</div><div class="d">'+esc(p.d)+'</div>'+
+              '<span class="cf-tag '+(p.core?'req':'opt')+'">'+esc(p.core?l.req:l.opt)+'</span></div>'+
+          '</div>'+
+        '</div>').join('')+
+      '</div>'+
+      '<div class="cf-rights">'+esc(l.rights)+'</div>';
+  }
+  cfFilterBtn.addEventListener('click', e=>{
+    e.stopPropagation();
+    const willOpen = !cfFilterPop.classList.contains('open');
+    cfFilterPop.classList.toggle('open', willOpen);
+  });
+  cfFilterPop.addEventListener('click', e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    cfLang = LANGS.find(x=>x.code===b.dataset.code) || cfLang;
+    cfFilterPop.classList.remove('open');
+    renderCfBody();
+  });
+  cfBody.addEventListener('click', ()=>cfFilterPop.classList.remove('open'));
+  function openConsentSheet(){ renderCfFilterPop(); renderCfBody(); cfBackdrop.classList.add('open'); cfSheet.classList.add('open'); }
+  function closeConsentSheet(){ cfFilterPop.classList.remove('open'); cfBackdrop.classList.remove('open'); cfSheet.classList.remove('open'); }
+  document.getElementById('openConsentForm').addEventListener('click', openConsentSheet);
+  document.getElementById('cfClose').addEventListener('click', closeConsentSheet);
+  cfBackdrop.addEventListener('click', closeConsentSheet);
+  document.getElementById('cfSave').addEventListener('click', closeConsentSheet);
 
   (function(){ var p=document.querySelector('.phone'),B=390; function f(){ if(innerWidth<=600){ var s=innerWidth/B; p.style.width=B+'px'; p.style.height=(innerHeight/s)+'px'; p.style.transform='scale('+s+')'; } else { p.style.transform=''; p.style.width=''; p.style.height=''; } } f(); addEventListener('resize',f); addEventListener('orientationchange',f); })();
 </script>
