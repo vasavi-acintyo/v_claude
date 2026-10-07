@@ -292,7 +292,7 @@
       <div class="cf-filter-wrap">
         <button type="button" class="cf-filter" id="cfFilterBtn">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="4 4 20 4 14 12.5 14 19 10 21 10 12.5 4 4"/></svg>
-          <span id="cfFilterLabel">हिन्दी</span>
+          <span id="cfFilterLabel">English</span>
           <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="cf-filter-pop" id="cfFilterPop"></div>
@@ -467,6 +467,15 @@
   // purpose core to the referral itself is required — every other purpose can be declined
   // without affecting care).
   const LANGS = [
+    { code:'en', name:'English', dir:'ltr', title:'Patient Consent Form',
+      intro:'This explains how your health information will be used for your referral to the specialist named below. Please read each item before proceeding.',
+      p1t:'Share clinical summary', p1d:'Your history, findings and the reason for this referral, shared with the specialist named above.',
+      p2t:'Share attached records', p2d:'The specific reports, scans or documents selected for this referral.',
+      p3t:'Allow direct contact', p3d:"The specialist's clinic may call or message you about this consultation.",
+      p4t:'Keep on file for future care', p4d:"So future referrals don't need this shared again.",
+      req:'Required', opt:'Optional',
+      warn:'Sharing the clinical summary is required to send this referral.',
+      rights:'You may withdraw this consent at any time. You can ask to see, correct or delete this information by contacting the clinic that referred you.', save:'Save consent choices' },
     { code:'as', name:'অসমীয়া', dir:'ltr', title:'ৰোগীৰ সন্মতি ফৰ্ম',
       intro:'ইয়াত ব্যাখ্যা কৰা হৈছে যে বিশেষজ্ঞলৈ ৰেফাৰেলৰ বাবে আপোনাৰ স্বাস্থ্য তথ্য কেনেকৈ ব্যৱহাৰ কৰা হ\'ব। তলৰ প্ৰতিটো উদ্দেশ্যৰ বাবে পৃথকে বাছনি কৰক — বৈকল্পিক উদ্দেশ্যত “নহয়” বুলিলে আপোনাৰ চিকিৎসাত প্ৰভাৱ নপৰিব।',
       p1t:'চিকিৎসা সাৰাংশ শ্বেয়াৰ কৰক', p1d:'আপোনাৰ ইতিহাস, ফলাফল আৰু ৰেফাৰেলৰ কাৰণ, ওপৰত উল্লেখিত বিশেষজ্ঞৰ সৈতে শ্বেয়াৰ কৰা হ\'ব।',
@@ -667,7 +676,7 @@
       rights:'آپ کسی بھی وقت یہ رضامندی واپس لے سکتے ہیں۔ ریفر کرنے والے کلینک سے رابطہ کر کے یہ معلومات دیکھ، درست یا حذف کر سکتے ہیں۔', save:'رضامندی کے انتخاب محفوظ کریں' }
   ];
 
-  let cfLang = LANGS.find(l=>l.code==='hi');
+  let cfLang = LANGS.find(l=>l.code==='en');
   const cfBackdrop=document.getElementById('cfBackdrop'), cfSheet=document.getElementById('cfSheet'), cfBody=document.getElementById('cfBody');
   const cfFilterBtn=document.getElementById('cfFilterBtn'), cfFilterPop=document.getElementById('cfFilterPop'), cfFilterLabel=document.getElementById('cfFilterLabel');
 
